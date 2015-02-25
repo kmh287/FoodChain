@@ -31,7 +31,12 @@ public class GameMap {
     //the i'th coordinate in coordinates.
     private List<Animal.animalType> animals = null;
     private List<Coordinate> coordinates = null;
-    private Coordinate playerStartPosition = null;
+    
+    //Player information that needs to be stored
+    //in the map such as the start position and 
+    //starting trap
+    private Coordinate hunterStartPosition = null;
+    private Hunter.Trap hunterStartingTrap = null;
     
     //Should be 16 tiles across, and 9 down.
     //Therefore, layout should be [9][16] to match
@@ -90,11 +95,13 @@ public class GameMap {
     public GameMap(Tile[][] layout,
                    List<Animal.animalType>animals,
                    List<Coordinate> coordinates,
-                   Coordinate playerStartPosition){
+                   Coordinate hunterStartPosition,
+                   Hunter.Trap hunterStartingTrap){
         this.layout = layout;
         this.animals = animals;
         this.coordinates = coordinates;
-        this.playerStartPosition = playerStartPosition;
+        this.hunterStartPosition = hunterStartPosition;
+        this.hunterStartingTrap = hunterStartingTrap;
     }
     
     /** Return a string representation of the map
@@ -140,33 +147,80 @@ public class GameMap {
     }
     
     /**
+     * Convert an x-axis tile index to the pixel at its
+     * lower left corner
+     * @param xTileIndex The index, as in the second dimension index into layout
+     * @return an int, corresponding to the proper pixel
+     */
+    public int mapXToScreen(int xTileIndex){
+        int screenWidth = Gdx.graphics.getWidth();
+        int xIncrement = screenWidth / layout[0].length;
+        return xTileIndex * xIncrement;
+    }
+    
+    /**
+     * Convert an y-axis tile index to the pixel at its
+     * lower left corner
+     * @param xTileIndex The index, as in the first dimension index into layout
+     * @return an int, corresponding to the proper pixel
+     */
+    public int mapYToScreen(int yTileIndex){
+        int screenHeight = Gdx.graphics.getHeight();
+        int yIncrement = screenHeight / layout.length;
+        return yTileIndex * yIncrement;
+    }
+    
+    /**
+     * Convert a position on the screen to an x-index
+     * @param xPos a float representing the x coordinate
+     * @return The x-index in layout for the containing tile
+     */
+    public int screenXToMap(float xPos){
+        int screenWidth = Gdx.graphics.getWidth();
+        int xIncrement = screenWidth / layout[0].length;
+        return (int) (xPos % xIncrement);
+    }
+    
+    /**
+     * Convert a position on the screen to a y-index
+     * @param yPos a float representing the y coordinate
+     * @return The y-index in layout for the containing tile
+     */
+    public int screenYToMap(float yPos){
+        int screenHeight = Gdx.graphics.getHeight();
+        int yIncrement = screenHeight / layout.length;
+        return (int) (yPos % yIncrement);
+    }
+    
+    /**
      * Function to draw the entire game board
      * @param canvas an instance of GameCanvas
      */
     public void draw(GameCanvas canvas){
         canvas.begin();
-        int screenWidth = Gdx.graphics.getWidth();
-        int screenHeight = Gdx.graphics.getHeight();
-        //If screenWidth = 1280 and there are 16 horiontal tiles
-        //This would be 80
-        int xIncrement = screenWidth / layout[0].length;
-        int yIncrement = screenHeight / layout.length;
-        
         for (int i = 0; i < layout.length; ++i){
             for (int j = 0; j < layout[0].length; ++j){
                 Texture tex = getTextureFromTile(layout[i][j]);
-                canvas.draw(tex, j*xIncrement, i*yIncrement);
+                canvas.draw(tex, mapXToScreen(j), mapYToScreen(i));
             }
         }
         canvas.end();
     }
     
     public List<Animal.animalType>getAnimalTypeList(){
-        return animals;
+        return this.animals;
     }
     
     public List<Coordinate> getCoordinates(){
-        return coordinates;
+        return this.coordinates;
+    }
+
+    public Coordinate getHunterStartingCoordinate() {
+        return this.hunterStartPosition;
+    }
+
+    public Hunter.Trap getStartingTrap() {
+        return this.hunterStartingTrap; 
     }
  
 }
