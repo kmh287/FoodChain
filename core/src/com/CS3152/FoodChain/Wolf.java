@@ -1,8 +1,12 @@
 package com.CS3152.FoodChain;
 
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Texture;
 
 public class Wolf extends Animal{
+    
+    private static final String WOLF_TEX = "assets/wolf.png";
+    private static Texture tex = null;
     
     static final Animal.animalType prey[] = {Animal.animalType.WOLF};
     
@@ -23,9 +27,21 @@ public class Wolf extends Animal{
 
     @Override
     public void loadTexture(AssetManager manager) {
-        // TODO Auto-generated method stub
-        
+        if (tex == null){
+            manager.load(WOLF_TEX, Texture.class);
+            manager.finishLoading();
+            if (manager.isLoaded(WOLF_TEX)){
+                tex = manager.get(WOLF_TEX);
+            }
+        }
     }
 
-
+    @Override
+    /**
+     * It is up to the caller not to use this
+     * before loading the texture.
+     */
+    public Texture getTexture() {
+        return tex;
+    }
 }

@@ -54,7 +54,7 @@ public class LevelOneExporter {
         layout[3][8].type = GameMap.tileType.BUSH;
         layout[4][8].type = GameMap.tileType.BUSH;
         layout[6][8].type = GameMap.tileType.BUSH;
-        
+          
         List<animalType> animals = new ArrayList<animalType>();
         animals.add(animalType.SHEEP);
         animals.add(animalType.WOLF);
@@ -63,7 +63,12 @@ public class LevelOneExporter {
         coords.add(new Coordinate(5,5));
         coords.add(new Coordinate(7,7));
         
-        GameMap gm = new GameMap(layout, animals, coords, null);
+        Coordinate playerStart = new Coordinate(10,10);
+        Hunter.Trap startingTrap = Hunter.Trap.SHEEP_TRAP;
+        
+        GameMap gm = new GameMap(layout, animals, 
+                                coords, playerStart,
+                                startingTrap);
         try {
             MapManager.MapToGson(gm, "level1");
         } catch (IOException e) {

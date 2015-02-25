@@ -17,6 +17,7 @@ public class GameMode implements Screen {
     private GameMap map;
     AssetManager manager;
     List<Animal> animals;
+    private Hunter hunter;
     
     /**
      * Temporary constructor for GameMode until we have 
@@ -42,6 +43,8 @@ public class GameMode implements Screen {
                             map.getAnimalTypeList();
         List<Coordinate> coordinates = map.getCoordinates();
         buildAnimalList(aTypes, coordinates);
+        createHunter(map.getHunterStartingCoordinate(), 
+                    map.getStartingTrap());
 	}
 
 	/**
@@ -62,6 +65,25 @@ public class GameMode implements Screen {
         return map;
 	}
 	
+	private void createHunter(Coordinate startingPos,
+	                         Hunter.Trap startingTrap){
+	    this.hunter = new Hunter(map.mapXToScreen(startingPos.x),
+	                             map.mapYToScreen(startingPos.y),
+	                             startingTrap);
+	    hunter.loadTexture(manager);
+	}
+	
+	/**
+	 * This function builds the animal list and is 
+	 * responsible for calling the load functions for all
+	 * necessary textures.
+	 * 
+	 * The same index i for both input lists refer to the
+	 * same animal!
+	 * 
+	 * @param aTypes The list of animal types
+	 * @param coordinates the coordinates of the animals.
+	 */
 	private void buildAnimalList(List<animalType> aTypes,
 	                             List<Coordinate> coordinates){
 	    if (coordinates.size() != aTypes.size()){
@@ -74,12 +96,20 @@ public class GameMode implements Screen {
 	        animalType currType = aTypesIt.next();
 	        Coordinate coord = coordIt.next();
 
+	        Animal newAnimal;
+	        
 	        switch(currType){
 	            case SHEEP:
-	                animals.add(new Sheep(coord.x, coord.y));
+	                newAnimal = new Sheep(map.mapXToScreen(coord.x), 
+	                                      map.mapYToScreen(coord.y));
+	                newAnimal.loadTexture(manager);
+	                animals.add(newAnimal);
 	                break;
 	            case WOLF:
-	                animals.add(new Wolf(coord.x, coord.y));
+	                newAnimal = new Wolf(map.mapXToScreen(coord.x), 
+                                         map.mapYToScreen(coord.y));
+	                newAnimal.loadTexture(manager);
+	                animals.add(newAnimal);
 	                break;
 	            default:
 	                System.out.println(currType);
@@ -100,10 +130,18 @@ public class GameMode implements Screen {
     }
     
     private void draw(float delta){
+        
+        //Draw the map
         map.draw(canvas);
+        
+        //Draw the animals
         for (Animal animal : animals){
-            animal.draw();
+            animal.draw(map, canvas);
         }
+        
+        //Draw the hunter
+        hunter.draw(canvas);
+        
     }
     
     @Override

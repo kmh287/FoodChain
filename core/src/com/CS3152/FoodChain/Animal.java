@@ -5,7 +5,8 @@ import com.badlogic.gdx.graphics.Texture;
 
 public abstract class Animal {
 	protected enum animalType{
-		SHEEP, WOLF
+		SHEEP, 
+		WOLF
 	}
 	
 	//The type of this animal
@@ -28,7 +29,7 @@ public abstract class Animal {
 	 * @param foodchainVal The food chain value for this animal. 
 	 *                     It is up to the CALLER to ensure this is correct.
 	 */
-	protected Animal(animalType type, float x, float y, animalType[] prey){
+	public Animal(animalType type, float x, float y, animalType[] prey){
 		this.type = type;
 		this.setxPos(x);
 		this.setyPos(y);
@@ -100,11 +101,20 @@ public abstract class Animal {
         return false;
 	}
 	
+	/*
+	 * Load the animal's texture.
+	 * Do not load it again if it has already been loaded
+	 */
 	public abstract void loadTexture(AssetManager manager);
 	
-	public void draw(){
-	    
-	}
+	public abstract Texture getTexture();
+	
+	public void draw(GameMap map, GameCanvas canvas){
+	    Texture tex = getTexture();
+	    canvas.begin();
+	    canvas.draw(tex, this.xPos, this.yPos);
+	    canvas.end();
+    }
 
 
 	
