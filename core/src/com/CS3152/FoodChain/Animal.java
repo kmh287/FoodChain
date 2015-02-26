@@ -45,6 +45,10 @@ public abstract class Animal {
 		this.facing = facing;
 	}
 
+	public direction getFacing(){
+	    return this.facing;
+	}
+	
 	/**
 	 * @return the yPos
 	 */
