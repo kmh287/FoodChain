@@ -16,7 +16,8 @@ public class Wolf extends Animal{
      * @param y Starting y position for this wolf
      */
     public Wolf(float x, float y) {
-        super(Animal.animalType.WOLF, x, y, prey);
+        super(Animal.animalType.WOLF, x, y, 
+              prey, Animal.direction.EAST);
     }
 
     @Override
