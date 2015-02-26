@@ -18,6 +18,7 @@ public class GameMode implements Screen {
     AssetManager manager;
     List<Animal> animals;
     private Hunter hunter;
+    private UIController ui;
     
     /**
      * Temporary constructor for GameMode until we have 
@@ -35,14 +36,19 @@ public class GameMode implements Screen {
         //what level to start on. This code will change
         map = loadMap("level1");
         map.LoadContent(manager);
-        animals = new ArrayList<Animal>();
         
+        this.ui = new UIController();
+        ui.loadTextures(manager);
+        
+        animals = new ArrayList<Animal>();
         //Get the animal types from map
         //but build and keep the actual list here
         List<Animal.animalType> aTypes = 
                             map.getAnimalTypeList();
         List<Coordinate> coordinates = map.getCoordinates();
         buildAnimalList(aTypes, coordinates);
+        
+        //Get the hunter's position and add him to the map
         createHunter(map.getHunterStartingCoordinate(), 
                     map.getStartingTrap());
 	}
@@ -142,13 +148,14 @@ public class GameMode implements Screen {
         //Draw the hunter
         hunter.draw(canvas);
         
+        ui.draw(canvas);
+        
     }
     
     @Override
     public void render(float delta) {
         update(delta);
         draw(delta);
-        
     }
 
     @Override
