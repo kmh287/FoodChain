@@ -4,10 +4,16 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 
 public abstract class Animal {
-	protected enum animalType{
+	public enum animalType{
 		SHEEP, 
 		WOLF
 	}
+	
+	public enum direction{
+	    NORTH, NORTHEAST, EAST, SOUTHEAST, 
+	    SOUTH, SOUTHWEST, WEST, NORTHWEST
+	}
+	
 	
 	//The type of this animal
 	private final animalType type;
@@ -15,6 +21,8 @@ public abstract class Animal {
 	private float xPos;
 	//The current yPosition of this animal
 	private float yPos;
+	//The direction this animal is facing
+	private direction facing;
 	//The animals this animal can eat
 	private final animalType[] prey;
 	
@@ -29,11 +37,12 @@ public abstract class Animal {
 	 * @param foodchainVal The food chain value for this animal. 
 	 *                     It is up to the CALLER to ensure this is correct.
 	 */
-	public Animal(animalType type, float x, float y, animalType[] prey){
+	public Animal(animalType type, float x, float y, 
+	              animalType[] prey, direction facing){
 		this.type = type;
-		this.setxPos(x);
-		this.setyPos(y);
+		this.setPos(x,y);
 		this.prey = prey;
+		this.facing = facing;
 	}
 
 	/**
@@ -44,24 +53,45 @@ public abstract class Animal {
 	}
 
 	/**
-	 * @param yPos the yPos to set
-	 */
-	public void setyPos(float yPos) {
-		this.yPos = yPos;
-	}
-
-	/**
 	 * @return the xPos
 	 */
 	public float getxPos() {
 		return xPos;
 	}
-
-	/**
-	 * @param xPos the xPos to set
-	 */
-	public void setxPos(float xPos) {
-		this.xPos = xPos;
+	
+	public void setPos(float x, float y){
+	    
+	    if (x - xPos == 0 && y - yPos > 0){
+	        this.facing = direction.NORTH;
+	    }
+	    else if (x - xPos > 0 && y - yPos > 0){
+	        this.facing = direction.NORTHEAST;
+	    }
+	    else if (x - xPos > 0 && y - yPos == 0){
+	        this.facing = direction.EAST;
+	    }
+	    else if (x - xPos > 0 && y - yPos < 0){
+	        this.facing = direction.SOUTHEAST;
+	    }
+	    else if (x - xPos == 0 && y - yPos < 0){
+	        this.facing = direction.SOUTH;
+	    }
+	    else if (x - xPos < 0 && y - yPos < 0){
+	        this.facing = direction.SOUTHWEST;
+	    }
+	    else if (x - xPos < 0 && y - yPos == 0){
+	        this.facing = direction.WEST;
+	    }
+	    else if (x - xPos < 0 && y - yPos > 0){
+	        this.facing = direction.NORTHWEST;
+	    }
+	    else{
+	        System.out.println("Bug in setPos");
+	    }
+	    
+	    this.xPos = x; this.yPos = y;
+	    
+	    
 	}
 	
     /**

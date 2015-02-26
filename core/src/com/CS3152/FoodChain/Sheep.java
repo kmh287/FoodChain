@@ -23,7 +23,8 @@ public class Sheep extends Animal {
      * @param y Starting y position for this sheep
      */
     public Sheep(float x, float y) {
-        super(Animal.animalType.SHEEP, x, y, prey);
+        super(Animal.animalType.SHEEP, x, y, 
+              prey, Animal.direction.EAST);
     }
 
     /* (non-Javadoc)
