@@ -19,7 +19,7 @@ import com.CS3152.FoodChain.GameMap.Coordinate;
 public class LevelOneExporter {
 
     public static void main(String[] args) {
-        GameMap.Tile[][] layout = new GameMap.Tile[18][32];
+        GameMap.Tile[][] layout = new GameMap.Tile[16][32];
         for (int i = 0; i < layout.length; ++i){
             for (int j = 0; j < layout[0].length; ++j){
                 GameMap.Tile t = new GameMap.Tile();
