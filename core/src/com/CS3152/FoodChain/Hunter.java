@@ -138,6 +138,7 @@ public class Hunter {
     	boolean movingSouthWest = (controlCode & InputController.SOUTHWEST) != 0;
     	boolean movingSouthEast = (controlCode & InputController.SOUTHEAST) != 0;
     	boolean movingNorthEast = (controlCode & InputController.NORTHEAST) != 0;
+
     	
     	//process moving command 
     	if (movingWest) {
@@ -187,7 +188,6 @@ public class Hunter {
     	
     	
     }
-    
     
     public void draw(GameCanvas canvas){
         canvas.begin();

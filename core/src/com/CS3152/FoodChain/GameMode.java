@@ -42,6 +42,8 @@ public class GameMode implements Screen {
         map.LoadContent(manager);
         animals = new ArrayList<Animal>();
         
+        //size of animal list + the player 
+        controls = new InputController[animals.size() + 1]; 
         controls[0] = new PlayerController();
         tmp = new Vector2();
         
@@ -156,6 +158,8 @@ public class GameMode implements Screen {
     public void render(float delta) {
         update(delta);
         draw(delta);
+        //
+        updateGame();
         
     }
 
@@ -195,17 +199,21 @@ public class GameMode implements Screen {
      * Movement actions are determined, but not committed (e.g. the velocity
 	 * is updated, but not the position). Collisions are not processed. 
 	 */
-	public void update() {
+	public void updateGame() {
 		//if (hunter's turne) {
-			// update the hunter gameplay
-			int action = controls[0].getAction();
+		
+			//get the action from the playerController
+			int action = controls[0].getAction();	
+			//Updates the hunters action (velocity only). 
 			hunter.update(action);	
 			
+			//Uses this velocity to move the hunter. 
 			tmp.set(hunter.getxPos(), hunter.getyPos());
+			System.out.println(tmp);
 			tmp.add(hunter.getVX(), hunter.getVY());
+			//set the position
 			hunter.getPosition().set(tmp);
 
-			//update collisions 
 			
 			
 			
