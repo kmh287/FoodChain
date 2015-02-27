@@ -64,7 +64,7 @@ public class LevelOneExporter {
         coords.add(new Coordinate(7,7));
         
         Coordinate playerStart = new Coordinate(10,10);
-        Hunter.Trap startingTrap = Hunter.Trap.SHEEP_TRAP;
+        Trap startingTrap = new Trap("SHEEP_TRAP");
         
         GameMap gm = new GameMap(layout, animals, 
                                 coords, playerStart,

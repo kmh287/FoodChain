@@ -66,7 +66,7 @@ public class GameMode implements Screen {
 	}
 	
 	private void createHunter(Coordinate startingPos,
-	                         Hunter.Trap startingTrap){
+	                         Trap startingTrap){
 	    this.hunter = new Hunter(map.mapXToScreen(startingPos.x),
 	                             map.mapYToScreen(startingPos.y),
 	                             startingTrap);

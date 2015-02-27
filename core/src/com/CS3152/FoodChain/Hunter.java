@@ -8,11 +8,6 @@ import com.badlogic.gdx.graphics.Texture;
 
 public class Hunter {
     
-    public enum Trap{
-        SHEEP_TRAP,
-        WOLF_TRAP
-    }
-    
     //The player's inventory
     //We want amortized O(1) insert and O(1) lookup
     //Since we will not be shifting elements, 
@@ -25,11 +20,14 @@ public class Hunter {
     private float xPos;
     private float yPos;
     
+    private boolean isSettingTrap;
+    
     public Hunter(float xPos, float yPos, Trap t){
         this.setxPos(xPos);
         this.setyPos(yPos);
         inventory = new ArrayList<Trap>();
         inventory.add(t);
+        
     }
     
     /**
@@ -73,6 +71,37 @@ public class Hunter {
      */
     public void setyPos(float yPos) {
         this.yPos = yPos;
+    }
+    
+    /**
+     * 
+     * @return returns if the player is setting a trap
+     */
+    public boolean getIsSettingTrap() {
+    	return isSettingTrap;
+    }
+    
+    /**
+     * @param value whether the hunter is setting a trap
+     */
+    public void setIsSettingTrap(boolean value) {
+    	isSettingTrap = value;
+    }
+    
+    /**
+     * 
+     * @param trap the trap to add to the inventory
+     */
+    public void addToInventory(Trap trap) {
+    	//inventory.add(trap);
+    }
+    
+    /**
+     * 
+     * @param trap the trap to remove from the inventory
+     */
+    public void removeFromInventory(Trap trap) {
+    	
     }
     
     public void draw(GameCanvas canvas){
