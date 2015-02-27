@@ -9,6 +9,7 @@ import com.CS3152.FoodChain.Animal.animalType;
 import com.CS3152.FoodChain.GameMap.Coordinate;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.math.Vector2;
 
 public class GameMode implements Screen {
 
@@ -18,6 +19,10 @@ public class GameMode implements Screen {
     AssetManager manager;
     List<Animal> animals;
     private Hunter hunter;
+    protected InputController[] controls;
+    
+    /** Cache attribute for calculations */
+	private Vector2 tmp;
     
     /**
      * Temporary constructor for GameMode until we have 
@@ -36,6 +41,9 @@ public class GameMode implements Screen {
         map = loadMap("level1");
         map.LoadContent(manager);
         animals = new ArrayList<Animal>();
+        
+        controls[0] = new PlayerController();
+        tmp = new Vector2();
         
         //Get the animal types from map
         //but build and keep the actual list here
@@ -180,5 +188,31 @@ public class GameMode implements Screen {
         // TODO Auto-generated method stub
         
     }
+    
+    /** 
+	 * Invokes the controller for the character.
+	 *
+     * Movement actions are determined, but not committed (e.g. the velocity
+	 * is updated, but not the position). Collisions are not processed. 
+	 */
+	public void update() {
+		//if (hunter's turne) {
+			// update the hunter gameplay
+			int action = controls[0].getAction();
+			hunter.update(action);	
+			
+			tmp.set(hunter.getxPos(), hunter.getyPos());
+			tmp.add(hunter.getVX(), hunter.getVY());
+			hunter.getPosition().set(tmp);
+
+			//update collisions 
+			
+			
+			
+		/*} else {
+			//hunter.update(InputController.NO_ACTION);
+			}
+			*/ 
+	}	
 
 }
