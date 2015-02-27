@@ -14,6 +14,9 @@ public class GameMap {
     
     protected enum tileType{GRASS, BUSH, TREE}
     
+    //Offset for the UI at the bottom of the screen.
+    private static final int UI_OFFSET = 80;
+    
     public static class Tile{
         public tileType type;
     }
@@ -166,8 +169,9 @@ public class GameMap {
      */
     public int mapYToScreen(int yTileIndex){
         int screenHeight = Gdx.graphics.getHeight();
-        int yIncrement = screenHeight / layout.length;
-        return yTileIndex * yIncrement;
+        int yIncrement = (screenHeight - UI_OFFSET) / layout.length;
+        System.out.println(yTileIndex * yIncrement + UI_OFFSET);
+        return yTileIndex * yIncrement + UI_OFFSET;
     }
     
     /**
