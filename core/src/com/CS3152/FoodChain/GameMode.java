@@ -9,6 +9,7 @@ import com.CS3152.FoodChain.Animal.animalType;
 import com.CS3152.FoodChain.GameMap.Coordinate;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.math.Vector2;
 
 public class GameMode implements Screen {
 
@@ -18,7 +19,14 @@ public class GameMode implements Screen {
     AssetManager manager;
     List<Animal> animals;
     private Hunter hunter;
+<<<<<<< HEAD
     private UIController ui;
+=======
+    protected InputController[] controls;
+    
+    /** Cache attribute for calculations */
+	private Vector2 tmp;
+>>>>>>> origin/Margaret
     
     /**
      * Temporary constructor for GameMode until we have 
@@ -37,10 +45,18 @@ public class GameMode implements Screen {
         map = loadMap("level1");
         map.LoadContent(manager);
         
+<<<<<<< HEAD
         this.ui = new UIController();
         ui.loadTextures(manager);
         
         animals = new ArrayList<Animal>();
+=======
+        //size of animal list + the player 
+        controls = new InputController[animals.size() + 1]; 
+        controls[0] = new PlayerController();
+        tmp = new Vector2();
+        
+>>>>>>> origin/Margaret
         //Get the animal types from map
         //but build and keep the actual list here
         List<Animal.animalType> aTypes = 
@@ -156,6 +172,12 @@ public class GameMode implements Screen {
     public void render(float delta) {
         update(delta);
         draw(delta);
+<<<<<<< HEAD
+=======
+        //
+        updateGame();
+        
+>>>>>>> origin/Margaret
     }
 
     @Override
@@ -187,5 +209,35 @@ public class GameMode implements Screen {
         // TODO Auto-generated method stub
         
     }
+    
+    /** 
+	 * Invokes the controller for the character.
+	 *
+     * Movement actions are determined, but not committed (e.g. the velocity
+	 * is updated, but not the position). Collisions are not processed. 
+	 */
+	public void updateGame() {
+		//if (hunter's turne) {
+		
+			//get the action from the playerController
+			int action = controls[0].getAction();	
+			//Updates the hunters action (velocity only). 
+			hunter.update(action);	
+			
+			//Uses this velocity to move the hunter. 
+			tmp.set(hunter.getxPos(), hunter.getyPos());
+			System.out.println(tmp);
+			tmp.add(hunter.getVX(), hunter.getVY());
+			//set the position
+			hunter.getPosition().set(tmp);
+
+			
+			
+			
+		/*} else {
+			//hunter.update(InputController.NO_ACTION);
+			}
+			*/ 
+	}	
 
 }
