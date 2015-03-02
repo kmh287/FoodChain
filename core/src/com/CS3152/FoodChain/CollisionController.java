@@ -1,12 +1,11 @@
 package com.CS3152.FoodChain;
 
-<<<<<<< HEAD
 import java.util.List;
 import java.util.Random;
-
-=======
 import java.util.Random;
->>>>>>> origin/master
+
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+
 import com.badlogic.gdx.math.*;
 
 /**
@@ -19,7 +18,6 @@ import com.badlogic.gdx.math.*;
  */
 
 public class CollisionController {
-<<<<<<< HEAD
 	
 	/** Reference to the canvas */
 	public GameCanvas canvas;
@@ -60,9 +58,6 @@ public class CollisionController {
 	}
 	
 	private void moveIfPossible(Animal animal) {
-		
+		throw new NotImplementedException();
 	}
-=======
-
->>>>>>> origin/master
 }
