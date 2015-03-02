@@ -14,6 +14,9 @@ public class GameMap {
     
     protected enum tileType{GRASS, BUSH, TREE}
     
+    //Offset for the UI at the bottom of the screen.
+    private static final int UI_OFFSET = 80;
+    
     public static class Tile{
         public tileType type;
     }
@@ -36,7 +39,7 @@ public class GameMap {
     //in the map such as the start position and 
     //starting trap
     private Coordinate hunterStartPosition = null;
-    private Hunter.Trap hunterStartingTrap = null;
+    private Trap hunterStartingTrap = null;
     
     //Should be 16 tiles across, and 9 down.
     //Therefore, layout should be [9][16] to match
@@ -96,7 +99,7 @@ public class GameMap {
                    List<Animal.animalType>animals,
                    List<Coordinate> coordinates,
                    Coordinate hunterStartPosition,
-                   Hunter.Trap hunterStartingTrap){
+                   Trap hunterStartingTrap){
         this.layout = layout;
         this.animals = animals;
         this.coordinates = coordinates;
@@ -166,8 +169,9 @@ public class GameMap {
      */
     public int mapYToScreen(int yTileIndex){
         int screenHeight = Gdx.graphics.getHeight();
-        int yIncrement = screenHeight / layout.length;
-        return yTileIndex * yIncrement;
+        int yIncrement = (screenHeight - UI_OFFSET) / layout.length;
+        //System.out.println(yTileIndex * yIncrement + UI_OFFSET);
+        return yTileIndex * yIncrement + UI_OFFSET;
     }
     
     /**
@@ -219,7 +223,7 @@ public class GameMap {
         return this.hunterStartPosition;
     }
 
-    public Hunter.Trap getStartingTrap() {
+    public Trap getStartingTrap() {
         return this.hunterStartingTrap; 
     }
  
