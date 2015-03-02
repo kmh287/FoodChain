@@ -3,6 +3,9 @@ package com.CS3152.FoodChain;
 import java.util.Random;
 import java.util.List;
 import java.util.Random;
+import java.util.Random;
+
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import com.badlogic.gdx.math.*;
 
@@ -39,6 +42,9 @@ public class CollisionController {
 		tmp = new Vector2();
 	}
 	
+	/**
+	 * Update the Hunter and all Animals, moving them forward.
+	 */
 	public void update() {
 		moveIfPossible(hunter);
 		for(Animal a : animals) {

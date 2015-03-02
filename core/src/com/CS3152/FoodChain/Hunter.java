@@ -21,6 +21,7 @@ public class Hunter {
     private float xPos;
     private float yPos;
     
+<<<<<<< HEAD
     //how far forward the hunter can move in a turn. 
     private static final float MOVE_SPEED = 6.5f;
     //Instance Attributes 
@@ -30,11 +31,25 @@ public class Hunter {
     private boolean isSettingTrap;
 
     //how far forward the hunter can move in a turn. 
+=======
+    // private boolean isSettingTrap;
+    
+    private Trap selectedTrap;
+
+    //how far forward the hunter can move in a turn. 
+    private static final float MOVE_SPEED = 6.5f;
+    /** How far the hunter can lay a trap from itself */
+    private static final float TRAP_RADIUS = 50.0f;
+>>>>>>> master
     //Instance Attributes 
+    /** Hunter position */
+	private Vector2 position;
 	/** hunter velocity */
 	private Vector2 velocity;
 	/** The current angle of orientation (in degrees) */
 	private float angle; 
+	
+	private Vector2 tmp;
     
     public Hunter(float xPos, float yPos, Trap t){
         this.setxPos(xPos);
@@ -44,6 +59,8 @@ public class Hunter {
         
         velocity = new Vector2();
         angle  = 90.0f;
+        selectedTrap = t;
+        tmp = new Vector2();
     }
     
     /**
@@ -91,21 +108,6 @@ public class Hunter {
     
     /**
      * 
-     * @return returns if the player is setting a trap
-     */
-    public boolean getIsSettingTrap() {
-    	return isSettingTrap;
-    }
-    
-    /**
-     * @param value whether the hunter is setting a trap
-     */
-    public void setIsSettingTrap(boolean value) {
-    	isSettingTrap = value;
-    }
-    
-    /**
-     * 
      * @param trap the trap to add to the inventory
      */
     public void addToInventory(Trap trap) {
@@ -129,7 +131,7 @@ public class Hunter {
     	xPos = pos.x;
     	yPos = pos.y;
     }
-    
+
     public float getVX() {
     	return velocity.x; 
     	
@@ -156,6 +158,18 @@ public class Hunter {
 		return angle;
 	}
     
+    public boolean canSetTrap(Vector2 clickPos) {
+    	tmp.set(getPosition().add(20.0f, 20.0f));
+    	tmp.sub(clickPos);
+    	if (Math.abs(tmp.len()) <= TRAP_RADIUS) {
+    		return true;
+    	}
+    	return false;
+    }
+    
+    public void setTrap(Vector2 clickPos) {
+    	selectedTrap.setPosition(clickPos);
+    }
     
     
     /** 
@@ -174,7 +188,7 @@ public class Hunter {
     	boolean movingSouthWest = (controlCode == InputController.SOUTHWEST);
     	boolean movingSouthEast = (controlCode == InputController.SOUTHEAST);
     	boolean movingNorthEast = (controlCode == InputController.NORTHEAST);
-
+    	boolean settingTrap = (controlCode == InputController.CLICK);
     	
     	//process moving command 
     	if (movingWest) {
@@ -224,14 +238,21 @@ public class Hunter {
 		else if (movingNorthWest) {
 			angle = 180.0f;
 			velocity.x = -MOVE_SPEED;
+<<<<<<< HEAD
 			velocity.y = -MOVE_SPEED;
+=======
+
+			velocity.y = MOVE_SPEED;
+>>>>>>> master
 		}
-		 else {
+		else if (settingTrap) {
+			
+		}
+		else {
 			// NOT MOVING, SO STOP MOVING
 			velocity.x = 0;
 			velocity.y = 0;
 		}
-    	
     }
     
     public void draw(GameCanvas canvas){

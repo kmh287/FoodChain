@@ -28,10 +28,9 @@ public class PlayerController implements InputController{
 	*/
     public Vector2 getClickPos() {
     	int x = Gdx.input.getX();
-	    int y = Gdx.input.getY();
+	    int y = Gdx.graphics.getHeight() - Gdx.input.getY();
 	    Vector2 vector = new Vector2((float) x, (float) y);
-	    return vector; 
-	    	
+	    return vector;
 	    }
 
 	/**
@@ -66,8 +65,7 @@ public class PlayerController implements InputController{
 			if (Gdx.input.isKeyPressed(Input.Keys.DOWN) 
 				&& Gdx.input.isKeyPressed(Input.Keys.LEFT)) code = SOUTHWEST; 
 			if (Gdx.input.isKeyPressed(Input.Keys.UP) 
-				&& Gdx.input.isKeyPressed(Input.Keys.LEFT)) code = NORTHWEST;
-	 
+				&& Gdx.input.isKeyPressed(Input.Keys.LEFT)) code = NORTHWEST; 
 		}
 
 			// Cancel out conflicting movements.
@@ -81,11 +79,7 @@ public class PlayerController implements InputController{
 		
 		/*if ((code & WEST) != 0 && (code & EAST) != 0) {
 			code ^= (WEST | EAST);
-		}
-
-		if ((code & NORTH) != 0 && (code & SOUTH) != 0) {
-			code ^= (NORTH | SOUTH);
-		} */
+		}*/
 
 	    return code; 
 	    
