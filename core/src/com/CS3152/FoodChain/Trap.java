@@ -2,6 +2,7 @@ package com.CS3152.FoodChain;
 
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.Vector2;
 
 public class Trap {
 	
@@ -15,10 +16,16 @@ public class Trap {
 	private Texture trapTexture = null;
 	
 	private boolean inInventory;
+	private boolean onMap;
+	private boolean isSelected;
+	private float xPos, yPos;
 	
 	public Trap(String type) {
-		TRAP_FILE = "assets/" + type + ".png";
+		TRAP_FILE = "assets/" + type + ".jpg";
 		inInventory = false;
+		onMap = false;
+		xPos = 0.0f;
+		yPos = 0.0f;
 	}
 
 	/**
@@ -50,5 +57,23 @@ public class Trap {
      */
     public void setInInventory(boolean value) {
     	inInventory = value;
+    }
+    
+    public void setPosition(Vector2 pos) {
+    	xPos = pos.x;
+    	yPos = pos.y;
+    	onMap = true;
+    }
+    
+    public void setOnMap() {
+    	onMap = true;
+    }
+    
+    public void draw(GameCanvas canvas){
+        if (onMap) {
+        	canvas.begin();
+            canvas.draw(trapTexture, xPos - 20.0f, yPos - 20.0f);
+            canvas.end();
+        }	
     }
 }

@@ -38,6 +38,9 @@ public class CollisionController {
 		tmp = new Vector2();
 	}
 	
+	/**
+	 * Update the Hunter and all Animals, moving them forward.
+	 */
 	public void update() {
 		moveIfPossible(hunter);
 		for(Animal a : animals) {

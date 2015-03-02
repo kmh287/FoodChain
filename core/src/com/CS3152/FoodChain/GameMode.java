@@ -17,9 +17,10 @@ public class GameMode implements Screen {
     private GameCanvas canvas;
     private boolean active;
     private GameMap map;
-    AssetManager manager;
-    List<Animal> animals;
+    private AssetManager manager;
+    private List<Animal> animals;
     private Hunter hunter;
+    private List<Trap> traps;
     private UIController ui;
     protected InputController[] controls;
     
@@ -65,6 +66,10 @@ public class GameMode implements Screen {
                     map.getStartingTrap());
         
         collisionController = new CollisionController(canvas, hunter, animals);
+        
+        traps = new ArrayList<Trap>();
+        traps.add(map.getStartingTrap());
+        traps.get(0).loadTexture(manager);
 	}
 
 	/**
@@ -150,9 +155,15 @@ public class GameMode implements Screen {
 		
 		//get the action from the playerController
 		int action = controls[0].getAction();	
-		//Updates the hunters action (velocity only). 
+		//Updates the hunters action
 		hunter.update(action);
-		
+		Vector2 click = controls[0].getClickPos();
+		if (controls[0].getAction() == InputController.CLICK) {
+			System.out.println("Click Position: "+click.x+", "+click.y+"\n");
+		}
+		if (controls[0].getAction() == InputController.CLICK && hunter.canSetTrap(click)) {
+			hunter.setTrap(click);
+		}
 		
 		collisionController.update();
 
@@ -178,6 +189,10 @@ public class GameMode implements Screen {
         
         //Draw the hunter
         hunter.draw(canvas);
+        
+        for (Trap trap : traps) {
+        	trap.draw(canvas);
+        }
         
         ui.draw(canvas);
         
@@ -235,7 +250,7 @@ public class GameMode implements Screen {
 			//get the action from the playerController
 			int action = controls[0].getAction();	
 			//Updates the hunters action (velocity only). 
-			hunter.update(action);	
+			//hunter.update(action);	
 			
 			//Uses this velocity to move the hunter. 
 			tmp.set(hunter.getxPos(), hunter.getyPos());

@@ -15,4 +15,4 @@ public class DesktopLauncher {
 		new LwjglApplication(new GDXRoot(), config);
 	}
 }
-	
+		

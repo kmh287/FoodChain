@@ -28,10 +28,9 @@ public class PlayerController implements InputController{
 	*/
     public Vector2 getClickPos() {
     	int x = Gdx.input.getX();
-	    int y = Gdx.input.getY();
+	    int y = Gdx.graphics.getHeight() - Gdx.input.getY();
 	    Vector2 vector = new Vector2((float) x, (float) y);
-	    return vector; 
-	    	
+	    return vector;
 	    }
 
 	/**
