@@ -2,8 +2,9 @@ package com.CS3152.FoodChain;
 
 import java.util.List;
 import java.util.Random;
-
 import java.util.Random;
+
+import com.CS3152.FoodChain.GameMap.tileType;
 import com.badlogic.gdx.math.*;
 
 /**
@@ -17,6 +18,8 @@ import com.badlogic.gdx.math.*;
 
 public class CollisionController {
 	
+	/** Reference to the GameMap */
+	public GameMap map;
 	/** Reference to the canvas */
 	public GameCanvas canvas;
 	/** Reference to the hunter */
@@ -37,14 +40,15 @@ public class CollisionController {
 	private boolean canMove;
 	/**
 	 * Creates a CollisionController for the given models.
-	 * 
+	 * @param c The canvas
 	 * @param h The hunter
 	 * @param a The list of animals
+	 * @param m The map
 	 */
-	public CollisionController(GameCanvas c, Hunter h, List<Animal> a) {
+	public CollisionController(GameCanvas c, Hunter h, List<Animal> a,GameMap m) {
 		hunter = h;
 		animals = a;
-		
+		map = m;
 		tmp = new Vector2();
 		normal= new Vector2();
 		velocity = new Vector2();
@@ -57,20 +61,42 @@ public class CollisionController {
 		}
 	}
 	
+	/**
+	 * Checks to see if it is possible to move, if not, then move player back. 
+	 * Collision physics are modeled after first programming lab.
+	 * 
+	 * @param hunter the hunter
+	 * 
+	 * TODO have to decide how to handle multiple collisions and which collisions to process first. like animal or tiles
+	 */
 	private void moveIfPossible(Hunter hunter) {
-		tmp.set(hunter.getxPos(), hunter.getyPos());
+		tmp.set(hunter.getPosition());
 		tmp.add(hunter.getVX(), hunter.getVY());		
 		canMove=true;
+		//check player against animals
 		for(Animal a : animals){
 			normal.set(hunter.getxPos()-a.getxPos(), hunter.getyPos()-a.getyPos());
 			distance = normal.len();
 			normal.nor();
 			if (distance<30){
 				canMove=false;
-				tmp.set(normal).scl((1 - distance) / 2);  // normal * (d1 - dist)/2
+				//have to play around with numbers to smooth collisions
+				tmp.set(normal).scl((15 - distance) / 2);  // normal * (d1 - dist)/2
 				hunter.setPosition(hunter.getPosition().sub(tmp));
 			}
 		}
+		//check tiles surrounding player
+		System.out.println(map.screenPosToTile(tmp.x,tmp.y));
+		if (map.screenPosToTile(tmp.x,tmp.y)!=(tileType.GRASS)){
+			canMove=false;
+			normal.set(hunter.getPosition().sub(tmp));
+			distance = normal.len();
+			normal.nor();
+			tmp.set(normal).scl(-4);  // normal * (d1 - dist)/2
+			hunter.setPosition(hunter.getPosition().sub(tmp));
+		}
+
+		
 		if(canMove){
 			hunter.setPosition(tmp);
 		}
