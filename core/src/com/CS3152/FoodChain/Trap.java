@@ -31,6 +31,7 @@ public class Trap {
 	/**
      * Load the texture for the player
      * This must be called before any calls to Player.draw()
+     * 
      * @param manager an AssetManager
      */
     public void loadTexture(AssetManager manager) {
