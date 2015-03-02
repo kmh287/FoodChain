@@ -1,12 +1,9 @@
 package com.CS3152.FoodChain;
 
-<<<<<<< HEAD
 import java.util.Random;
-=======
 import java.util.List;
 import java.util.Random;
 
->>>>>>> origin/Christian
 import com.badlogic.gdx.math.*;
 
 /**
@@ -19,10 +16,7 @@ import com.badlogic.gdx.math.*;
  */
 
 public class CollisionController {
-<<<<<<< HEAD
 
-=======
-	
 	/** Reference to the canvas */
 	public GameCanvas canvas;
 	/** Reference to the hunter */
@@ -61,5 +55,4 @@ public class CollisionController {
 	private void moveIfPossible(Animal animal) {
 		
 	}
->>>>>>> origin/Christian
 }

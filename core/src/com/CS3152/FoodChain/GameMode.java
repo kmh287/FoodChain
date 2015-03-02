@@ -20,10 +20,8 @@ public class GameMode implements Screen {
     AssetManager manager;
     List<Animal> animals;
     private Hunter hunter;
-<<<<<<< HEAD
-=======
+
     private UIController ui;
->>>>>>> origin/Christian
     protected InputController[] controls;
     
     /** Cache attribute for calculations */
@@ -190,14 +188,12 @@ public class GameMode implements Screen {
     public void render(float delta) {
         update(delta);
         draw(delta);
-<<<<<<< HEAD
+
         //
         updateGame();
-=======
 
         //
         update(delta);
->>>>>>> origin/Christian
         
     }
 
@@ -238,11 +234,7 @@ public class GameMode implements Screen {
 	 * is updated, but not the position). Collisions are not processed. 
 	 */
 	public void updateGame() {
-<<<<<<< HEAD
-		//if (hunter's turne) {
-=======
 		//if (hunter's turn) {
->>>>>>> origin/Christian
 		
 			//get the action from the playerController
 			int action = controls[0].getAction();	
@@ -251,13 +243,13 @@ public class GameMode implements Screen {
 			
 			//Uses this velocity to move the hunter. 
 			tmp.set(hunter.getxPos(), hunter.getyPos());
-<<<<<<< HEAD
-			System.out.println(tmp);
-=======
->>>>>>> origin/Christian
+
 			tmp.add(hunter.getVX(), hunter.getVY());
 			//set the position
-			hunter.getPosition().set(tmp);
+			//make sure not out of bounds 
+			if (!(map.screenYToMap(tmp.y) == TREE)) {
+				hunter.getPosition().set(tmp);
+			}
 
 			
 			

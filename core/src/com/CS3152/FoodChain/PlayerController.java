@@ -48,13 +48,10 @@ public class PlayerController implements InputController{
 			// Directional controls
 
 		if (keyboard && mouse) {
-<<<<<<< HEAD
 			if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) code = WEST; 
 			if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) code = EAST; 
-=======
 			if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) code = EAST; 
 			if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) code = WEST; 
->>>>>>> origin/Christian
 			if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) code = SOUTH; 
 			if (Gdx.input.isKeyPressed(Input.Keys.UP)) code = NORTH; 
 				
@@ -74,15 +71,14 @@ public class PlayerController implements InputController{
 		}
 
 			// Cancel out conflicting movements.
-<<<<<<< HEAD
-		if ((code & WEST) != 0 && (code & EAST) != 0) {
+		/* if ((code & WEST) != 0 && (code & EAST) != 0) {
 			code = (WEST | EAST);
 		}
 
 		if ((code & NORTH) != 0 && (code & SOUTH) != 0) {
 			code = (NORTH | SOUTH);
 		} 
-=======
+		
 		/*if ((code & WEST) != 0 && (code & EAST) != 0) {
 			code ^= (WEST | EAST);
 		}
@@ -90,7 +86,6 @@ public class PlayerController implements InputController{
 		if ((code & NORTH) != 0 && (code & SOUTH) != 0) {
 			code ^= (NORTH | SOUTH);
 		} */
->>>>>>> origin/Christian
 
 	    return code; 
 	    

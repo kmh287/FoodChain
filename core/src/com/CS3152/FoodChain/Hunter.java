@@ -21,19 +21,16 @@ public class Hunter {
     private float xPos;
     private float yPos;
     
-<<<<<<< HEAD
     //how far forward the hunter can move in a turn. 
     private static final float MOVE_SPEED = 6.5f;
     //Instance Attributes 
     /** Hunter position */
 	private Vector2 position;
-=======
+	
     private boolean isSettingTrap;
 
     //how far forward the hunter can move in a turn. 
-    private static final float MOVE_SPEED = 6.5f;
     //Instance Attributes 
->>>>>>> origin/Christian
 	/** hunter velocity */
 	private Vector2 velocity;
 	/** The current angle of orientation (in degrees) */
@@ -44,10 +41,7 @@ public class Hunter {
         this.setyPos(yPos);
         inventory = new ArrayList<Trap>();
         inventory.add(t);
-<<<<<<< HEAD
         
-=======
->>>>>>> origin/Christian
         velocity = new Vector2();
         angle  = 90.0f;
     }
@@ -95,9 +89,6 @@ public class Hunter {
         this.yPos = yPos;
     }
     
-<<<<<<< HEAD
-    public Vector2 getPosition(){
-=======
     /**
      * 
      * @return returns if the player is setting a trap
@@ -130,19 +121,15 @@ public class Hunter {
     }
     
     public Vector2 getPosition() {
->>>>>>> origin/Christian
     	Vector2 pos = new Vector2(getxPos(), getyPos());
     	return pos; 
     }
     
-<<<<<<< HEAD
-=======
     public void setPosition(Vector2 pos) {
     	xPos = pos.x;
     	yPos = pos.y;
     }
     
->>>>>>> origin/Christian
     public float getVX() {
     	return velocity.x; 
     	
@@ -179,16 +166,6 @@ public class Hunter {
     public void update(int controlCode) {
     	
     	// Determine how we are moving.
-<<<<<<< HEAD
-    	boolean movingEast  = (controlCode & InputController.EAST) != 0;
-   		boolean movingWest = (controlCode & InputController.WEST) != 0;
-    	boolean movingNorth    = (controlCode & InputController.NORTH) != 0;
-    	boolean movingSouth = (controlCode & InputController.SOUTH) != 0;
-    	boolean movingNorthWest = (controlCode & InputController.NORTHWEST) != 0;
-    	boolean movingSouthWest = (controlCode & InputController.SOUTHWEST) != 0;
-    	boolean movingSouthEast = (controlCode & InputController.SOUTHEAST) != 0;
-    	boolean movingNorthEast = (controlCode & InputController.NORTHEAST) != 0;
-=======
     	boolean movingEast  = (controlCode == InputController.EAST);
    		boolean movingWest = (controlCode == InputController.WEST);
     	boolean movingNorth = (controlCode == InputController.NORTH);
@@ -197,7 +174,6 @@ public class Hunter {
     	boolean movingSouthWest = (controlCode == InputController.SOUTHWEST);
     	boolean movingSouthEast = (controlCode == InputController.SOUTHEAST);
     	boolean movingNorthEast = (controlCode == InputController.NORTHEAST);
->>>>>>> origin/Christian
 
     	
     	//process moving command 
@@ -212,58 +188,43 @@ public class Hunter {
 		}
 		else if (movingNorth) {
 			angle = 90.0f;
-<<<<<<< HEAD
-			velocity.y = -MOVE_SPEED;
-=======
 			velocity.y = MOVE_SPEED;
->>>>>>> origin/Christian
 			velocity.x = 0;
 		}
 		else if (movingSouth) {
 			angle = 270.0f;
 			velocity.x = 0;
-<<<<<<< HEAD
-			velocity.y = MOVE_SPEED;
+			velocity.y = -MOVE_SPEED;
 		}
 		else if (movingSouthWest) {
 			angle = 180.0f;
 			velocity.x = - MOVE_SPEED;
-			velocity.y = MOVE_SPEED;
-=======
 			velocity.y = -MOVE_SPEED;
 		}
 		else if (movingSouthWest) {
 			angle = 180.0f;
 			velocity.x = -MOVE_SPEED;
 			velocity.y = -MOVE_SPEED;
->>>>>>> origin/Christian
 		}
 		else if (movingSouthEast) {
 			angle = 180.0f;
 			velocity.x = MOVE_SPEED;
-<<<<<<< HEAD
 			velocity.y = MOVE_SPEED;
 		}
 		else if (movingNorthEast) {
 			angle = 180.0f;
 			velocity.x = -MOVE_SPEED;
-=======
 			velocity.y = -MOVE_SPEED;
 		}
 		else if (movingNorthEast) {
 			angle = 180.0f;
 			velocity.x = MOVE_SPEED;
->>>>>>> origin/Christian
 			velocity.y = MOVE_SPEED;
 		}
 		else if (movingNorthWest) {
 			angle = 180.0f;
 			velocity.x = -MOVE_SPEED;
-<<<<<<< HEAD
 			velocity.y = -MOVE_SPEED;
-=======
-			velocity.y = MOVE_SPEED;
->>>>>>> origin/Christian
 		}
 		 else {
 			// NOT MOVING, SO STOP MOVING
@@ -271,10 +232,6 @@ public class Hunter {
 			velocity.y = 0;
 		}
     	
-<<<<<<< HEAD
-    	
-=======
->>>>>>> origin/Christian
     }
     
     public void draw(GameCanvas canvas){
