@@ -21,7 +21,6 @@ public class Hunter {
     private float xPos;
     private float yPos;
     
-<<<<<<< HEAD
     // private boolean isSettingTrap;
     
     private Trap selectedTrap;
@@ -31,38 +30,24 @@ public class Hunter {
     /** How far the hunter can lay a trap from itself */
     private static final float TRAP_RADIUS = 50.0f;
     //Instance Attributes 
-=======
-    //how far forward the hunter can move in a turn. 
-    private static final float MOVE_SPEED = 6.5f;
-    //Instance Attributes 
     /** Hunter position */
 	private Vector2 position;
->>>>>>> origin/master
 	/** hunter velocity */
 	private Vector2 velocity;
 	/** The current angle of orientation (in degrees) */
 	private float angle; 
-<<<<<<< HEAD
 	
 	private Vector2 tmp;
-=======
->>>>>>> origin/master
     
     public Hunter(float xPos, float yPos, Trap t){
         this.setxPos(xPos);
         this.setyPos(yPos);
         inventory = new ArrayList<Trap>();
         inventory.add(t);
-<<<<<<< HEAD
         velocity = new Vector2();
         angle  = 90.0f;
         selectedTrap = t;
         tmp = new Vector2();
-=======
-        
-        velocity = new Vector2();
-        angle  = 90.0f;
->>>>>>> origin/master
     }
     
     /**
@@ -108,7 +93,6 @@ public class Hunter {
         this.yPos = yPos;
     }
     
-<<<<<<< HEAD
     /**
      * 
      * @param trap the trap to add to the inventory
@@ -126,21 +110,15 @@ public class Hunter {
     }
     
     public Vector2 getPosition() {
-=======
-    public Vector2 getPosition(){
->>>>>>> origin/master
     	Vector2 pos = new Vector2(getxPos(), getyPos());
     	return pos; 
     }
     
-<<<<<<< HEAD
     public void setPosition(Vector2 pos) {
     	xPos = pos.x;
     	yPos = pos.y;
     }
-    
-=======
->>>>>>> origin/master
+
     public float getVX() {
     	return velocity.x; 
     	
@@ -167,7 +145,6 @@ public class Hunter {
 		return angle;
 	}
     
-<<<<<<< HEAD
     public boolean canSetTrap(Vector2 clickPos) {
     	tmp.set(getPosition().add(20.0f, 20.0f));
     	tmp.sub(clickPos);
@@ -180,8 +157,6 @@ public class Hunter {
     public void setTrap(Vector2 clickPos) {
     	selectedTrap.setPosition(clickPos);
     }
-=======
->>>>>>> origin/master
     
     
     /** 
@@ -192,7 +167,6 @@ public class Hunter {
     public void update(int controlCode) {
     	
     	// Determine how we are moving.
-<<<<<<< HEAD
     	boolean movingEast  = (controlCode == InputController.EAST);
    		boolean movingWest = (controlCode == InputController.WEST);
     	boolean movingNorth = (controlCode == InputController.NORTH);
@@ -202,17 +176,6 @@ public class Hunter {
     	boolean movingSouthEast = (controlCode == InputController.SOUTHEAST);
     	boolean movingNorthEast = (controlCode == InputController.NORTHEAST);
     	boolean settingTrap = (controlCode == InputController.CLICK);
-=======
-    	boolean movingEast  = (controlCode & InputController.EAST) != 0;
-   		boolean movingWest = (controlCode & InputController.WEST) != 0;
-    	boolean movingNorth    = (controlCode & InputController.NORTH) != 0;
-    	boolean movingSouth = (controlCode & InputController.SOUTH) != 0;
-    	boolean movingNorthWest = (controlCode & InputController.NORTHWEST) != 0;
-    	boolean movingSouthWest = (controlCode & InputController.SOUTHWEST) != 0;
-    	boolean movingSouthEast = (controlCode & InputController.SOUTHEAST) != 0;
-    	boolean movingNorthEast = (controlCode & InputController.NORTHEAST) != 0;
->>>>>>> origin/master
-
     	
     	//process moving command 
     	if (movingWest) {
@@ -226,74 +189,43 @@ public class Hunter {
 		}
 		else if (movingNorth) {
 			angle = 90.0f;
-<<<<<<< HEAD
 			velocity.y = MOVE_SPEED;
-=======
-			velocity.y = -MOVE_SPEED;
->>>>>>> origin/master
 			velocity.x = 0;
 		}
 		else if (movingSouth) {
 			angle = 270.0f;
 			velocity.x = 0;
-<<<<<<< HEAD
 			velocity.y = -MOVE_SPEED;
 		}
 		else if (movingSouthWest) {
 			angle = 180.0f;
 			velocity.x = -MOVE_SPEED;
 			velocity.y = -MOVE_SPEED;
-=======
-			velocity.y = MOVE_SPEED;
-		}
-		else if (movingSouthWest) {
-			angle = 180.0f;
-			velocity.x = - MOVE_SPEED;
-			velocity.y = MOVE_SPEED;
->>>>>>> origin/master
 		}
 		else if (movingSouthEast) {
 			angle = 180.0f;
 			velocity.x = MOVE_SPEED;
-<<<<<<< HEAD
 			velocity.y = -MOVE_SPEED;
 		}
 		else if (movingNorthEast) {
 			angle = 180.0f;
 			velocity.x = MOVE_SPEED;
-=======
-			velocity.y = MOVE_SPEED;
-		}
-		else if (movingNorthEast) {
-			angle = 180.0f;
-			velocity.x = -MOVE_SPEED;
->>>>>>> origin/master
 			velocity.y = MOVE_SPEED;
 		}
 		else if (movingNorthWest) {
 			angle = 180.0f;
 			velocity.x = -MOVE_SPEED;
-<<<<<<< HEAD
+
 			velocity.y = MOVE_SPEED;
 		}
 		else if (settingTrap) {
 			
 		}
 		else {
-=======
-			velocity.y = -MOVE_SPEED;
-		}
-		 else {
->>>>>>> origin/master
 			// NOT MOVING, SO STOP MOVING
 			velocity.x = 0;
 			velocity.y = 0;
 		}
-    	
-<<<<<<< HEAD
-=======
-    	
->>>>>>> origin/master
     }
     
     public void draw(GameCanvas canvas){

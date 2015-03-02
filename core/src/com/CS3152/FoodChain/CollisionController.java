@@ -58,6 +58,6 @@ public class CollisionController {
 	}
 	
 	private void moveIfPossible(Animal animal) {
-		throw new NotImplementedException();
+		
 	}
 }

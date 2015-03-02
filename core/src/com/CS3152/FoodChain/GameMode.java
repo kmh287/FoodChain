@@ -20,11 +20,9 @@ public class GameMode implements Screen {
     private AssetManager manager;
     private List<Animal> animals;
     private Hunter hunter;
-<<<<<<< HEAD
     private List<Trap> traps;
     private UIController ui;
-=======
->>>>>>> origin/master
+
     protected InputController[] controls;
     
     /** Cache attribute for calculations */
@@ -46,6 +44,8 @@ public class GameMode implements Screen {
         //what level to start on. This code will change
         map = loadMap("level1");
         map.LoadContent(manager);
+        ui = new UIController();
+        ui.loadTextures(manager);
         animals = new ArrayList<Animal>();
         
         //size of animal list + the player 
@@ -53,16 +53,13 @@ public class GameMode implements Screen {
         controls[0] = new PlayerController();
         tmp = new Vector2();
         
-<<<<<<< HEAD
         animals = new ArrayList<Animal>();
         
         //size of animal list + the player 
         controls = new InputController[animals.size() + 1]; 
         controls[0] = new PlayerController();
         tmp = new Vector2();
-        
-=======
->>>>>>> origin/master
+
         //Get the animal types from map
         //but build and keep the actual list here
         List<Animal.animalType> aTypes = 
@@ -197,29 +194,19 @@ public class GameMode implements Screen {
         //Draw the hunter
         hunter.draw(canvas);
         
-<<<<<<< HEAD
         for (Trap trap : traps) {
         	trap.draw(canvas);
         }
         
         ui.draw(canvas);
-        
-=======
->>>>>>> origin/master
     }
     
     @Override
     public void render(float delta) {
         update(delta);
         draw(delta);
-<<<<<<< HEAD
 
-        //
-        update(delta);
-=======
-        //
-        updateGame();
->>>>>>> origin/master
+        //update(delta);
         
     }
 
@@ -256,34 +243,19 @@ public class GameMode implements Screen {
     /** 
 	 * Invokes the controller for the character.
 	 *
-<<<<<<< HEAD
      * Movement actions are determined, but not committed (e.g. the velocity
 	 * is updated, but not the position). Collisions are not processed. 
 	 */
 	public void updateGame() {
 		//if (hunter's turn) {
-=======
-     * Movement actions are determined and committed. Collisions are not processed. 
-	 */
-	public void updateGame() {
-		//if (hunter's turne) {
->>>>>>> origin/master
 		
 			//get the action from the playerController
 			int action = controls[0].getAction();	
 			//Updates the hunters action (velocity only). 
-<<<<<<< HEAD
 			//hunter.update(action);	
 			
 			//Uses this velocity to move the hunter. 
 			tmp.set(hunter.getxPos(), hunter.getyPos());
-=======
-			hunter.update(action);	
-			
-			//Uses this velocity to move the hunter.Tmp is just a var for calculation.
-			tmp.set(hunter.getxPos(), hunter.getyPos());
-			System.out.println(tmp);
->>>>>>> origin/master
 			tmp.add(hunter.getVX(), hunter.getVY());
 			//set the position
 			hunter.getPosition().set(tmp);
