@@ -7,6 +7,7 @@ import java.util.List;
 
 import com.CS3152.FoodChain.Animal.animalType;
 import com.CS3152.FoodChain.GameMap.Coordinate;
+import com.CS3152.FoodChain.GameMap.tileType;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.math.Vector2;
@@ -247,8 +248,12 @@ public class GameMode implements Screen {
 			tmp.add(hunter.getVX(), hunter.getVY());
 			//set the position
 			//make sure not out of bounds 
-			if (!(map.screenYToMap(tmp.y) == TREE)) {
+			if (!(map.screenPosToTile(tmp.x, tmp.y).type == tileType.TREE)) {
+				//System.out.println("In loop" + tmp.x);
 				hunter.getPosition().set(tmp);
+			}
+			else {
+				
 			}
 
 			
