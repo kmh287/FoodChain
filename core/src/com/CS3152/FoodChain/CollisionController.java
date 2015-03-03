@@ -6,6 +6,7 @@ import java.util.Random;
 
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+import com.CS3152.FoodChain.GameMap.tileType;
 import com.badlogic.gdx.math.*;
 
 /**
@@ -19,48 +20,119 @@ import com.badlogic.gdx.math.*;
 
 public class CollisionController {
 	
+	/** Reference to the GameMap */
+	public GameMap map;
 	/** Reference to the canvas */
 	public GameCanvas canvas;
 	/** Reference to the hunter */
 	public Hunter hunter;
 	/** Reference to the animals */
 	public List<Animal> animals;
+	/** Reference to the traps */
+	public List<Trap> traps;
 	
 	private Vector2 tmp;
 	
+	/** Caching object for computing normal */
+	private Vector2 normal;
+
+	/** Caching object for computing net velocity */
+	private Vector2 velocity;
+	
+	private float distance;
+	
+	private boolean canMove;
 	/**
 	 * Creates a CollisionController for the given models.
-	 * 
+	 * @param c The canvas
 	 * @param h The hunter
 	 * @param a The list of animals
+	 * @param m The map
 	 */
-	public CollisionController(GameCanvas c, Hunter h, List<Animal> a) {
+	public CollisionController(GameCanvas c, Hunter h, List<Animal> a,GameMap m, List<Trap> t) {
 		hunter = h;
 		animals = a;
-		
+		map = m;
 		tmp = new Vector2();
+		normal= new Vector2();
+		velocity = new Vector2();
+		traps = t;
 	}
 	
-	/**
-	 * Update the Hunter and all Animals, moving them forward.
-	 */
 	public void update() {
 		moveIfPossible(hunter);
 		for(Animal a : animals) {
 			moveIfPossible(a);
 		}
+		checkTrapped();
+		
 	}
 	
+	/**
+	 * Checks to see if it is possible to move, if not, then move player back. 
+	 * Collision physics are modeled after first programming lab.
+	 * 
+	 * @param hunter the hunter
+	 * 
+	 * TODO have to decide how to handle multiple collisions and which collisions to process first. like animal or tiles
+	 */
 	private void moveIfPossible(Hunter hunter) {
-		tmp.set(hunter.getxPos(), hunter.getyPos());
+		tmp.set(hunter.getCenter());
+		tmp.add(hunter.getVX(), hunter.getVY());		
+		canMove=true;
+		//check player against animals
+		for(Animal a : animals){
+			normal.set(hunter.getCenter().sub(a.getCenter()));
+			distance = normal.len();
+			normal.nor();
+			if (distance<20){
+				canMove=false;
+				tmp.set(normal).scl((hunter.getXDiamter()-distance)/2);
+				//have to play around with numbers to smooth collisions
+				hunter.setCenter(hunter.getCenter().add(tmp));
+			}
+		}
+		tmp.set(hunter.getCenter());
 		tmp.add(hunter.getVX(), hunter.getVY());
-		hunter.setPosition(tmp);
+		//check tiles surrounding player
+//		System.out.println(map.screenPosToTile(tmp.x,tmp.y));
+		if (map.screenPosToTile(tmp.x,tmp.y).type!=(tileType.GRASS)){
+			canMove=false;
+			normal.set(hunter.getCenter().sub(tmp));
+			distance = normal.len();
+			normal.nor();
+			tmp.set(normal).scl(-4);
+			hunter.setCenter(hunter.getCenter().sub(tmp));
+		}
+		if(canMove){
+			hunter.setCenter(tmp);
+		}
 	}
 	
 	private void moveIfPossible(Animal animal) {
-		tmp.set(animal.getxPos(), animal.getyPos());
+		tmp.set(animal.getCenter());
 		tmp.add(animal.getVX(), animal.getVY());
 		//System.out.println("vx: " + animal.getVX() + " vy: " + animal.getVY());
-		animal.setPosition(tmp);
+		if (!animal.getTrapped()) {
+			animal.setCenter(tmp);
+		}
+	}
+	
+	private void checkTrapped() {
+		for (Animal a : animals) {
+			for (Trap t : traps) {
+				if (t.getOnMap()) {
+					boolean withinX = (a.getCenter().x - t.getPosition().x) <= a.getTexWidth()/2 &&
+									  (a.getCenter().x - t.getPosition().x) >= -a.getTexWidth()/2;
+					boolean withinY = (a.getCenter().y - t.getPosition().y) <= a.getTexHeight()/2 &&
+							 		  (a.getCenter().y - t.getPosition().y) >= -a.getTexHeight()/2;
+					if (withinX && withinY) {
+						a.setTrapped(true);
+					} else {
+						a.setTrapped(false);
+					}
+				}
+			}
+		}
 	}
 }

@@ -34,6 +34,8 @@ public class Wolf extends Animal{
             if (manager.isLoaded(WOLF_TEX)){
                 tex = manager.get(WOLF_TEX);
             }
+            super.setTexHeight((float) tex.getHeight());
+            super.setTexWidth((float) tex.getWidth());
         }
     }
 

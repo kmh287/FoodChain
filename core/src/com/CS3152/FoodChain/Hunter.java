@@ -23,7 +23,7 @@ public class Hunter extends Actor {
     private Trap selectedTrap;
 
     //how far forward the hunter can move in a turn. 
-    private static final float MOVE_SPEED = 6.5f;
+    private static final float MOVE_SPEED = 3.0f;
     /** How far the hunter can lay a trap from itself */
     private static final float TRAP_RADIUS = 50.0f;
     //Instance Attributes 
@@ -60,6 +60,73 @@ public class Hunter extends Actor {
             }
         }
     }
+    /**
+     * @return the bottom LeftxPos
+     */
+    public float getxPos() {
+        return xPos;
+    }
+    
+    /**
+     * @return the center of the hunter
+     */
+    public Vector2 getCenter() {
+    	Vector2 pos = new Vector2(getxPos()+(float)this.tex.getWidth()/2, getyPos()+(float)this.tex.getHeight()/2);
+        return pos;
+    }
+    
+    /**
+     * @return the bottom right of the hunter
+     */
+    public Vector2 getBottomRight() {
+    	Vector2 pos = new Vector2(getxPos()+(float)this.tex.getWidth(), getyPos());
+        return pos;
+    }
+    
+    /**
+     * @return the top right of the hunter
+     */
+    public Vector2 getTopRight() {
+    	Vector2 pos = new Vector2(getxPos()+(float)this.tex.getWidth(), getyPos()+(float)this.tex.getHeight());
+        return pos;
+    }
+    /**
+     * @return the top left of the hunter
+     */
+    public Vector2 getTopLeft() { 
+    	Vector2 pos = new Vector2(getxPos()+(float)this.tex.getWidth(), +(float)this.tex.getHeight());
+        return pos;
+    }
+    
+    /**
+     *	Set center of hunter position
+     */
+    public void setCenter(Vector2 pos) {
+    	this.yPos=pos.y-(float)this.tex.getHeight()/2;
+    	this.xPos=pos.x-(float)this.tex.getWidth()/2;
+    }
+
+    /**
+     * @param  the bottom left xPos to set
+     */
+    public void setxPos(float xPos) {
+        this.xPos = xPos;
+    }
+
+    /**
+     * @return the yPos
+     */
+    public float getyPos() {
+        return yPos;
+    }
+
+    /**
+     * @param yPos the yPos to set
+     */
+    public void setyPos(float yPos) {
+        this.yPos = yPos;
+    }
+
     
     /**
      * 
@@ -125,6 +192,12 @@ public class Hunter extends Actor {
     		selectedTrap.setPosition(clickPos);
     }
     
+    /**
+     * @return the bottom LeftxPos
+     */
+    public float getXDiamter() {
+        return tex.getWidth();
+    }
     
     /** 
     * Updates the hunter's position according to the controlCode. 

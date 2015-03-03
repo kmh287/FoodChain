@@ -47,6 +47,8 @@ public class Sheep extends Animal {
             if (manager.isLoaded(SHEEP_TEX)){
                 tex = manager.get(SHEEP_TEX);
             }
+            super.setTexHeight((float) tex.getHeight());
+            super.setTexWidth((float) tex.getWidth());
         }
     }
 

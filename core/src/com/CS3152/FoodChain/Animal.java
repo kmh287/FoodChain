@@ -14,17 +14,26 @@ public abstract class Animal extends Actor {
 	private final animalType type;
 	//The animals this animal can eat
 	private final animalType[] prey;
+
+	//Whether the animal is caught in a trap
+	private boolean trapped = false;
+
+	//texture used in getCenter adn setCenter
+	private float texWidth;
+	private float texHeight;
+	
 	//Animal's velocity
 	private Vector2 velocity;
 	//how far forward the hunter can move in a turn. 
     private static final float MOVE_SPEED = 6.5f;
+
 	
 	/** Protected constructor for the animal type. 
 	 * 
 	 * This constructor should never be called directly
 	 * Animals should be instantiated as specific animals
 	 * 
-	 * @param type The type of animal. Checl the animalType enum for values
+	 * @param type The type of animal. Check the animalType enum for values
 	 * @param x	STARTING x-position on the map for the animal
 	 * @param y STARTING y-position on the map for the animal
 	 * @param foodchainVal The food chain value for this animal. 
@@ -101,13 +110,67 @@ public abstract class Animal extends Actor {
 	public abstract String getTypeNameString();
 	
 	/**
-	 * Standard toString method
+	 * returns width of texture
+	 * @return Vector
+	 */
+	public float getTexWidth(){
+		return this.texWidth;
+	}
+	/**
+	 * returns height of texture
+	 * @return String representing the name of this type
+	 */
+	public float getTexHeight(){
+		return this.texHeight;
+	}
+	
+	protected void setTexHeight(float texHeight){
+		this.texHeight = texHeight;
+	}
+	
+	protected void setTexWidth(float texWidth){
+		this.texWidth = texWidth;
+	}
+	
+	
+	/**
+	 * returns center of animal
+	 * @return String representing the name of this type
+	 */
+	public Vector2 getCenter(){
+		Vector2 pos = new Vector2(getxPos()+getTexWidth()/2, getyPos()+getTexHeight()/2);
+        return pos;
+	}
+	
+	public void setCenter(Vector2 pos){
+		this.xPos = pos.x-getTexWidth()/2;
+		this.yPos = pos.y-getTexHeight()/2;
+	}
+	
+	/**
+	 * Standard toString methoH
 	 * @return A string representation of this animal's type and position
 	 */
 	public String toString(){
 		String type = getTypeNameString();
 		
 		return type + "at x: " + getxPos() + " y: " + getyPos();
+	}
+	
+	/**
+	 * Used to check to see if an animal is caught in a trap.
+	 * @return A boolean value of whether the animal is trapped or not
+	 */
+	public boolean getTrapped() {
+		return trapped;
+	}
+	
+	/**
+	 * Used to set that an animal is trapped or not.
+	 * @param val A boolean value of whether the animal is trapped or not
+	 */
+	public void setTrapped(boolean val) {
+		trapped = val;
 	}
 	
 	/**
