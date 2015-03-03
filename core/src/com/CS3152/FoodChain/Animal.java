@@ -138,6 +138,7 @@ public abstract class Animal extends Actor {
 	    canvas.draw(tex, this.xPos, this.yPos);
 	    canvas.end();
     }
+<<<<<<< HEAD
 
 	/** 
 	    * Updates the hunter's position according to the controlCode. 
@@ -212,4 +213,6 @@ public abstract class Animal extends Actor {
 			}
 	    }
 	
+=======
+>>>>>>> 98ad66e29ef71793ac13e246325c44f77d86eda0
 }

@@ -15,7 +15,7 @@ public class GameMode implements Screen {
 
 	private CollisionController collisionController;
     private GameCanvas canvas;
-    private boolean active;
+   // private boolean active;
     private GameMap map;
     private AssetManager manager;
     private List<Animal> animals;
@@ -37,7 +37,7 @@ public class GameMode implements Screen {
      */
 	public GameMode(GameCanvas canvas) {
 		this.canvas = canvas;
-        active = false;
+        //active = false;
         manager = new AssetManager();
         //For now we will hard code the level to load
         //When we implement a UI that may ask players
@@ -52,12 +52,16 @@ public class GameMode implements Screen {
         controls = new InputController[animals.size() + 1]; 
         controls[0] = new PlayerController();
         tmp = new Vector2();
+<<<<<<< HEAD
 
         animals = new ArrayList<Animal>();
         */
         //size of animal list + the player 
         
 
+=======
+        
+>>>>>>> 98ad66e29ef71793ac13e246325c44f77d86eda0
         //Get the animal types from map
         //but build and keep the actual list here
         List<Animal.animalType> aTypes = 
@@ -229,7 +233,7 @@ public class GameMode implements Screen {
         hunter.draw(canvas);
         
         for (Trap trap : traps) {
-        	trap.draw(canvas);
+        		trap.draw(canvas);
         }
         
         ui.draw(canvas);
@@ -280,27 +284,27 @@ public class GameMode implements Screen {
      * Movement actions are determined, but not committed (e.g. the velocity
 	 * is updated, but not the position). Collisions are not processed. 
 	 */
-	public void updateGame() {
-		//if (hunter's turn) {
-		
-			//get the action from the playerController
-			int action = controls[0].getAction();	
-			//Updates the hunters action (velocity only). 
-			//hunter.update(action);	
-			
-			//Uses this velocity to move the hunter. 
-			tmp.set(hunter.getxPos(), hunter.getyPos());
-			tmp.add(hunter.getVX(), hunter.getVY());
-			//set the position
-			hunter.getPosition().set(tmp);
-
-			
-			
-			
-		/*} else {
-			//hunter.update(InputController.NO_ACTION);
-			}
-			*/ 
-	}	
+//	public void updateGame() {
+//		//if (hunter's turn) {
+//		
+//			//get the action from the playerController
+//			int action = controls[0].getAction();	
+//			//Updates the hunters action (velocity only). 
+//			//hunter.update(action);	
+//			
+//			//Uses this velocity to move the hunter. 
+//			tmp.set(hunter.getxPos(), hunter.getyPos());
+//			tmp.add(hunter.getVX(), hunter.getVY());
+//			//set the position
+//			hunter.getPosition().set(tmp);
+//
+//			
+//			
+//			
+//		/*} else {
+//			//hunter.update(InputController.NO_ACTION);
+//			}
+//			*/ 
+//	}	
 
 }

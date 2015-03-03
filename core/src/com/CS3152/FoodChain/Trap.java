@@ -48,7 +48,7 @@ public class Trap {
      * @return inInventory whether the trap is in the player's inventory
      */
     public boolean getInInventory() {
-    	return inInventory;
+    		return inInventory;
     }
     
     /**
@@ -56,17 +56,17 @@ public class Trap {
      * @param value whether the trap is in the player's inventory.
      */
     public void setInInventory(boolean value) {
-    	inInventory = value;
+    		inInventory = value;
     }
     
     public void setPosition(Vector2 pos) {
-    	xPos = pos.x;
-    	yPos = pos.y;
-    	onMap = true;
+	    	xPos = pos.x;
+	    	yPos = pos.y;
+	    	onMap = true;
     }
     
     public void setOnMap() {
-    	onMap = true;
+    		onMap = true;
     }
     
     public void draw(GameCanvas canvas){

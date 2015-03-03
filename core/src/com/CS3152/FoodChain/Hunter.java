@@ -66,7 +66,7 @@ public class Hunter extends Actor {
      * @param trap the trap to add to the inventory
      */
     public void addToInventory(Trap trap) {
-    	//inventory.add(trap);
+    		//inventory.add(trap);
     }
     
     /**
@@ -74,33 +74,40 @@ public class Hunter extends Actor {
      * @param trap the trap to remove from the inventory
      */
     public void removeFromInventory(Trap trap) {
-    	
+    	//TODO
     }
     
     public Vector2 getPosition() {
-    	Vector2 pos = new Vector2(getxPos(), getyPos());
-    	return pos; 
+    		Vector2 pos = new Vector2(getxPos(), getyPos());
+    		return pos; 
     }
+<<<<<<< HEAD
+=======
+    
+    public void setPosition(Vector2 pos) {
+    		xPos = pos.x;
+    		yPos = pos.y;
+    }
+>>>>>>> 98ad66e29ef71793ac13e246325c44f77d86eda0
 
     public float getVX() {
-    	return velocity.x; 
-    	
+    		return velocity.x; 
     }
     
     public void setVX(float value) {
-    	velocity.x = value; 
+    		velocity.x = value; 
     }
     
     public void setVY(float value) {
-    	velocity.y = value; 
+    		velocity.y = value; 
     }
     
     public float getVY() {
-    	return velocity.y; 
+    		return velocity.y; 
     }
     
     public Vector2 getVelocity() {
-    	return velocity; 
+    		return velocity; 
     }
     
     /* Get current facing angle of the hunter*/
@@ -109,16 +116,16 @@ public class Hunter extends Actor {
 	}
     
     public boolean canSetTrap(Vector2 clickPos) {
-    	tmp.set(getPosition().add(20.0f, 20.0f));
-    	tmp.sub(clickPos);
-    	if (Math.abs(tmp.len()) <= TRAP_RADIUS) {
-    		return true;
-    	}
-    	return false;
+		tmp.set(getPosition().add(20.0f, 20.0f));
+		tmp.sub(clickPos);
+		if (Math.abs(tmp.len()) <= TRAP_RADIUS) {
+			return true;
+		}
+		return false;
     }
     
     public void setTrap(Vector2 clickPos) {
-    	selectedTrap.setPosition(clickPos);
+    		selectedTrap.setPosition(clickPos);
     }
     
     
@@ -129,67 +136,67 @@ public class Hunter extends Actor {
     */
     public void update(int controlCode) {
     	
-    	// Determine how we are moving.
-    	boolean movingEast  = (controlCode == InputController.EAST);
-   		boolean movingWest = (controlCode == InputController.WEST);
-    	boolean movingNorth = (controlCode == InputController.NORTH);
-    	boolean movingSouth = (controlCode == InputController.SOUTH);
-    	boolean movingNorthWest = (controlCode == InputController.NORTHWEST);
-    	boolean movingSouthWest = (controlCode == InputController.SOUTHWEST);
-    	boolean movingSouthEast = (controlCode == InputController.SOUTHEAST);
-    	boolean movingNorthEast = (controlCode == InputController.NORTHEAST);
-    	boolean settingTrap = (controlCode == InputController.CLICK);
-    	
-    	//process moving command 
-    	if (movingWest) {
-			angle = 0.0f;
-			velocity.x = -MOVE_SPEED;
-			velocity.y = 0;
-		} else if (movingEast) {
-			angle = 180.0f;
-			velocity.x = MOVE_SPEED;
-			velocity.y = 0;
-		}
-		else if (movingNorth) {
-			angle = 90.0f;
-			velocity.y = MOVE_SPEED;
-			velocity.x = 0;
-		}
-		else if (movingSouth) {
-			angle = 270.0f;
-			velocity.x = 0;
-			velocity.y = -MOVE_SPEED;
-		}
-		else if (movingSouthWest) {
-			angle = 180.0f;
-			velocity.x = -MOVE_SPEED;
-			velocity.y = -MOVE_SPEED;
-		}
-		else if (movingSouthEast) {
-			angle = 180.0f;
-			velocity.x = MOVE_SPEED;
-			velocity.y = -MOVE_SPEED;
-		}
-		else if (movingNorthEast) {
-			angle = 180.0f;
-			velocity.x = MOVE_SPEED;
-			velocity.y = MOVE_SPEED;
-		}
-		else if (movingNorthWest) {
-			angle = 180.0f;
-			velocity.x = -MOVE_SPEED;
-
-			velocity.y = MOVE_SPEED;
-		}
-		else if (settingTrap) {
-			
-		}
-		else {
-			// NOT MOVING, SO STOP MOVING
-			velocity.x = 0;
-			velocity.y = 0;
-		}
-    }
+	    	// Determine how we are moving.
+	    	boolean movingEast  = (controlCode == InputController.EAST);
+	   	boolean movingWest = (controlCode == InputController.WEST);
+	    	boolean movingNorth = (controlCode == InputController.NORTH);
+	    	boolean movingSouth = (controlCode == InputController.SOUTH);
+	    	boolean movingNorthWest = (controlCode == InputController.NORTHWEST);
+	    	boolean movingSouthWest = (controlCode == InputController.SOUTHWEST);
+	    	boolean movingSouthEast = (controlCode == InputController.SOUTHEAST);
+	    	boolean movingNorthEast = (controlCode == InputController.NORTHEAST);
+	    	boolean settingTrap = (controlCode == InputController.CLICK);
+	    	
+	    	//process moving command 
+	    	if (movingWest) {
+				angle = 0.0f;
+				velocity.x = -MOVE_SPEED;
+				velocity.y = 0;
+			} else if (movingEast) {
+				angle = 180.0f;
+				velocity.x = MOVE_SPEED;
+				velocity.y = 0;
+			}
+			else if (movingNorth) {
+				angle = 90.0f;
+				velocity.y = MOVE_SPEED;
+				velocity.x = 0;
+			}
+			else if (movingSouth) {
+				angle = 270.0f;
+				velocity.x = 0;
+				velocity.y = -MOVE_SPEED;
+			}
+			else if (movingSouthWest) {
+				angle = 180.0f;
+				velocity.x = -MOVE_SPEED;
+				velocity.y = -MOVE_SPEED;
+			}
+			else if (movingSouthEast) {
+				angle = 180.0f;
+				velocity.x = MOVE_SPEED;
+				velocity.y = -MOVE_SPEED;
+			}
+			else if (movingNorthEast) {
+				angle = 180.0f;
+				velocity.x = MOVE_SPEED;
+				velocity.y = MOVE_SPEED;
+			}
+			else if (movingNorthWest) {
+				angle = 180.0f;
+				velocity.x = -MOVE_SPEED;
+	
+				velocity.y = MOVE_SPEED;
+			}
+			else if (settingTrap) {
+				
+			}
+			else {
+				// NOT MOVING, SO STOP MOVING
+				velocity.x = 0;
+				velocity.y = 0;
+			}
+	    }
     
     public void draw(GameCanvas canvas){
         canvas.begin();

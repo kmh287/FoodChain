@@ -193,7 +193,15 @@ public class GameMap {
     public int screenYToMap(float yPos){
         int screenHeight = Gdx.graphics.getHeight();
         int yIncrement = (screenHeight - UI_OFFSET) / layout.length;
+<<<<<<< HEAD
         return (int) ((yPos -UI_OFFSET) / yIncrement);
+=======
+        return (int) ((yPos - UI_OFFSET) / yIncrement);
+    }
+    
+    public Tile screenPosToTile(float xPos, float yPos){
+    		return layout[screenYToMap(yPos)][screenXToMap(xPos)];
+>>>>>>> 98ad66e29ef71793ac13e246325c44f77d86eda0
     }
     
     /**
