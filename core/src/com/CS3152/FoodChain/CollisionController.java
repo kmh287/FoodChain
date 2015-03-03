@@ -57,4 +57,8 @@ public class CollisionController {
 	private void moveIfPossible(Animal animal) {
 		
 	}
+	
+	private void checkForCollision(Animal animal, Trap trap) {
+		
+	}
 }
