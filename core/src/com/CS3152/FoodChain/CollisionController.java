@@ -80,18 +80,13 @@ public class CollisionController {
 			normal.set(hunter.getCenter().sub(a.getCenter()));
 			distance = normal.len();
 			normal.nor();
-			if (distance<30){
+			if (distance<20){
 				canMove=false;
+				tmp.set(normal).scl((hunter.getXDiamter()-distance)/2);
 				//have to play around with numbers to smooth collisions
-				tmp.set(normal).scl((15 - distance) / 2);  // normal * (d1 - dist)/2
-				hunter.setCenter(hunter.getPosition().sub(tmp));
+				hunter.setCenter(hunter.getCenter().add(tmp));
 			}
 		}
-		
-//		for(Animal a : animals){
-//			System.out.println(a);
-//			System.out.println(a.getCenter());
-//		}
 		tmp.set(hunter.getCenter());
 		tmp.add(hunter.getVX(), hunter.getVY());
 		//check tiles surrounding player
@@ -101,17 +96,18 @@ public class CollisionController {
 			normal.set(hunter.getCenter().sub(tmp));
 			distance = normal.len();
 			normal.nor();
-			tmp.set(normal).scl(-4);  // normal * (d1 - dist)/2
+			tmp.set(normal).scl(-4);
 			hunter.setCenter(hunter.getCenter().sub(tmp));
 		}
-
-		
 		if(canMove){
 			hunter.setCenter(tmp);
 		}
 	}
 	
 	private void moveIfPossible(Animal animal) {
-		
+		tmp.set(animal.getCenter());
+		tmp.add(animal.getVX(), animal.getVY());
+		//System.out.println("vx: " + animal.getVX() + " vy: " + animal.getVY());
+		animal.setCenter(tmp);
 	}
 }
