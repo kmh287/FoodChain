@@ -7,7 +7,7 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 
-public class Hunter {
+public class Hunter extends Actor {
     
     //The player's inventory
     //We want amortized O(1) insert and O(1) lookup
@@ -17,9 +17,6 @@ public class Hunter {
     
     private static final String PLAYER_TEX = "assets/player.png";
     private static Texture tex = null;
-    
-    private float xPos;
-    private float yPos;
     
     // private boolean isSettingTrap;
     
@@ -40,8 +37,7 @@ public class Hunter {
 	private Vector2 tmp;
     
     public Hunter(float xPos, float yPos, Trap t){
-        this.setxPos(xPos);
-        this.setyPos(yPos);
+    	super(xPos, yPos);
         inventory = new ArrayList<Trap>();
         inventory.add(t);
         velocity = new Vector2();
@@ -64,34 +60,6 @@ public class Hunter {
             }
         }
     }
-
-    /**
-     * @return the xPos
-     */
-    public float getxPos() {
-        return xPos;
-    }
-
-    /**
-     * @param xPos the xPos to set
-     */
-    public void setxPos(float xPos) {
-        this.xPos = xPos;
-    }
-
-    /**
-     * @return the yPos
-     */
-    public float getyPos() {
-        return yPos;
-    }
-
-    /**
-     * @param yPos the yPos to set
-     */
-    public void setyPos(float yPos) {
-        this.yPos = yPos;
-    }
     
     /**
      * 
@@ -112,11 +80,6 @@ public class Hunter {
     public Vector2 getPosition() {
     	Vector2 pos = new Vector2(getxPos(), getyPos());
     	return pos; 
-    }
-    
-    public void setPosition(Vector2 pos) {
-    	xPos = pos.x;
-    	yPos = pos.y;
     }
 
     public float getVX() {

@@ -48,17 +48,15 @@ public class GameMode implements Screen {
         ui.loadTextures(manager);
         animals = new ArrayList<Animal>();
         
-        //size of animal list + the player 
+        /*size of animal list + the player 
         controls = new InputController[animals.size() + 1]; 
         controls[0] = new PlayerController();
         tmp = new Vector2();
-        
+
         animals = new ArrayList<Animal>();
-        
+        */
         //size of animal list + the player 
-        controls = new InputController[animals.size() + 1]; 
-        controls[0] = new PlayerController();
-        tmp = new Vector2();
+        
 
         //Get the animal types from map
         //but build and keep the actual list here
@@ -66,8 +64,35 @@ public class GameMode implements Screen {
                             map.getAnimalTypeList();
         List<Coordinate> coordinates = map.getCoordinates();
         buildAnimalList(aTypes, coordinates);
+        
+        controls = new InputController[animals.size() + 1]; 
+        controls[0] = new PlayerController();
+        tmp = new Vector2();
+        
         createHunter(map.getHunterStartingCoordinate(), 
-                    map.getStartingTrap());
+                map.getStartingTrap());
+    
+        
+        List<Actor> actors = new ArrayList<Actor>();
+        actors.add(hunter);
+        for (int i = 0; i < animals.size(); i++) {
+        	actors.add(animals.get(i));
+        }
+        if (animals.get(0).getType() == Animal.animalType.SHEEP) {
+        	controls[1] = new SheepController(animals.get(0),
+        									  map, actors);
+            controls[2] = new WolfController(animals.get(1),
+            								 map, actors);
+        }
+        else {
+        	controls[1] = new WolfController(animals.get(0),
+        									 map, actors);
+            controls[2] = new SheepController(animals.get(1),
+            								  map, actors);
+        }
+        
+        
+        
         
         collisionController = new CollisionController(canvas, hunter, animals);
         
@@ -167,6 +192,15 @@ public class GameMode implements Screen {
 		}
 		if (controls[0].getAction() == InputController.CLICK && hunter.canSetTrap(click)) {
 			hunter.setTrap(click);
+		}
+		
+		//Updates the animals' actions
+		//i is the index of each animal AI in controls
+		int i = 1;
+		for (Animal an : animals) {
+			action = controls[i].getAction();
+			an.update(action);
+			i++;
 		}
 		
 		collisionController.update();
