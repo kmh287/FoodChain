@@ -88,7 +88,9 @@ public class CollisionController {
 			}
 		}
 		//check tiles surrounding player
-		System.out.println(map.screenPosToTile(tmp.x,tmp.y));
+		tmp.set(hunter.getPosition());
+		tmp.add(hunter.getVX(), hunter.getVY());
+		//System.out.println(map.screenPosToTile(tmp.x,tmp.y));
 		if (map.screenPosToTile(tmp.x,tmp.y).type!=(tileType.GRASS)){
 			canMove=false;
 			normal.set(hunter.getPosition().sub(tmp));

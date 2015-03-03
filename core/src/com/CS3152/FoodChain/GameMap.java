@@ -197,6 +197,10 @@ public class GameMap {
     }
     
     public Tile screenPosToTile(float xPos, float yPos){
+    		System.out.println("xPos: " + xPos + "\n");
+    		System.out.println("yPos: " + yPos + "\n");
+    		System.out.println("xPos Screen to Map: " + screenXToMap(xPos) + "\n");
+    		System.out.println("yPos Screen to Map: " + screenYToMap(yPos) + "\n");
     		return layout[screenYToMap(yPos)][screenXToMap(xPos)];
     }
     
