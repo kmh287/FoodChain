@@ -30,6 +30,8 @@ public class Hunter {
     /** How far the hunter can lay a trap from itself */
     private static final float TRAP_RADIUS = 50.0f;
     //Instance Attributes 
+    /** Hunter position */
+	private Vector2 position;
 	/** hunter velocity */
 	private Vector2 velocity;
 	/** The current angle of orientation (in degrees) */
@@ -116,7 +118,7 @@ public class Hunter {
     	xPos = pos.x;
     	yPos = pos.y;
     }
-    
+
     public float getVX() {
     	return velocity.x; 
     	
@@ -174,7 +176,6 @@ public class Hunter {
     	boolean movingSouthEast = (controlCode == InputController.SOUTHEAST);
     	boolean movingNorthEast = (controlCode == InputController.NORTHEAST);
     	boolean settingTrap = (controlCode == InputController.CLICK);
-
     	
     	//process moving command 
     	if (movingWest) {
@@ -214,6 +215,7 @@ public class Hunter {
 		else if (movingNorthWest) {
 			angle = 180.0f;
 			velocity.x = -MOVE_SPEED;
+
 			velocity.y = MOVE_SPEED;
 		}
 		else if (settingTrap) {
@@ -224,7 +226,6 @@ public class Hunter {
 			velocity.x = 0;
 			velocity.y = 0;
 		}
-    	
     }
     
     public void draw(GameCanvas canvas){

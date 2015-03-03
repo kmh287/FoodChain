@@ -24,9 +24,9 @@ public interface InputController {
 	//Field to manage click events 
 	public static final int CLICK = 0x08;
 
-	// deal with exit, etc. 
+	// deal with exit, etc.  
 
-	/**
+	/*
 	* Return the action of this character (but do not process) 
 	* The value returned must be some bitmasked combination of the static
 	* ints in this class. For example if the character moves diagonally to the 

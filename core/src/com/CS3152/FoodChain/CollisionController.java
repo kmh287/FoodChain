@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Random;
 import java.util.Random;
 
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+
 import com.CS3152.FoodChain.GameMap.tileType;
 import com.badlogic.gdx.math.*;
 
@@ -87,7 +89,7 @@ public class CollisionController {
 		}
 		//check tiles surrounding player
 		System.out.println(map.screenPosToTile(tmp.x,tmp.y));
-		if (map.screenPosToTile(tmp.x,tmp.y)!=(tileType.GRASS)){
+		if (map.screenPosToTile(tmp.x,tmp.y).type!=(tileType.GRASS)){
 			canMove=false;
 			normal.set(hunter.getPosition().sub(tmp));
 			distance = normal.len();
