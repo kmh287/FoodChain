@@ -196,6 +196,10 @@ public class GameMap {
         return (int) (yPos % yIncrement);
     }
     
+    public Tile screenPosToTile(float xPos, float yPos){
+    		return layout[screenYToMap(yPos)][screenXToMap(xPos)];
+    }
+    
     /**
      * Function to draw the entire game board
      * @param canvas an instance of GameCanvas

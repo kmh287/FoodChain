@@ -15,13 +15,14 @@ public class GameMode implements Screen {
 
 	private CollisionController collisionController;
     private GameCanvas canvas;
-    private boolean active;
+   // private boolean active;
     private GameMap map;
     private AssetManager manager;
     private List<Animal> animals;
     private Hunter hunter;
     private List<Trap> traps;
     private UIController ui;
+
     protected InputController[] controls;
     
     /** Cache attribute for calculations */
@@ -36,17 +37,15 @@ public class GameMode implements Screen {
      */
 	public GameMode(GameCanvas canvas) {
 		this.canvas = canvas;
-        active = false;
+        //active = false;
         manager = new AssetManager();
         //For now we will hard code the level to load
         //When we implement a UI that may ask players
         //what level to start on. This code will change
         map = loadMap("level1");
         map.LoadContent(manager);
-        
-        this.ui = new UIController();
+        ui = new UIController();
         ui.loadTextures(manager);
-        
         animals = new ArrayList<Animal>();
         
         //size of animal list + the player 
@@ -54,14 +53,19 @@ public class GameMode implements Screen {
         controls[0] = new PlayerController();
         tmp = new Vector2();
         
+        animals = new ArrayList<Animal>();
+        
+        //size of animal list + the player 
+        controls = new InputController[animals.size() + 1]; 
+        controls[0] = new PlayerController();
+        tmp = new Vector2();
+
         //Get the animal types from map
         //but build and keep the actual list here
         List<Animal.animalType> aTypes = 
                             map.getAnimalTypeList();
         List<Coordinate> coordinates = map.getCoordinates();
         buildAnimalList(aTypes, coordinates);
-        
-        //Get the hunter's position and add him to the map
         createHunter(map.getHunterStartingCoordinate(), 
                     map.getStartingTrap());
         
@@ -195,7 +199,6 @@ public class GameMode implements Screen {
         }
         
         ui.draw(canvas);
-        
     }
     
     @Override
@@ -203,8 +206,7 @@ public class GameMode implements Screen {
         update(delta);
         draw(delta);
 
-        //
-        update(delta);
+        //update(delta);
         
     }
 

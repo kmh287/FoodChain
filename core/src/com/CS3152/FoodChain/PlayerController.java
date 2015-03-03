@@ -63,18 +63,13 @@ public class PlayerController implements InputController{
 			if (Gdx.input.isKeyPressed(Input.Keys.DOWN) 
 				&& Gdx.input.isKeyPressed(Input.Keys.LEFT)) code = SOUTHWEST; 
 			if (Gdx.input.isKeyPressed(Input.Keys.UP) 
-				&& Gdx.input.isKeyPressed(Input.Keys.LEFT)) code = NORTHWEST;
-	 
+				&& Gdx.input.isKeyPressed(Input.Keys.LEFT)) code = NORTHWEST; 
 		}
 
 			// Cancel out conflicting movements.
 		/*if ((code & WEST) != 0 && (code & EAST) != 0) {
 			code ^= (WEST | EAST);
-		}
-
-		if ((code & NORTH) != 0 && (code & SOUTH) != 0) {
-			code ^= (NORTH | SOUTH);
-		} */
+		}*/
 
 	    return code; 
 	    
