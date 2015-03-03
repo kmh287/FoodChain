@@ -28,6 +28,8 @@ public class CollisionController {
 	public Hunter hunter;
 	/** Reference to the animals */
 	public List<Animal> animals;
+	/** Reference to the traps */
+	public List<Trap> traps;
 	
 	private Vector2 tmp;
 	
@@ -47,13 +49,14 @@ public class CollisionController {
 	 * @param a The list of animals
 	 * @param m The map
 	 */
-	public CollisionController(GameCanvas c, Hunter h, List<Animal> a,GameMap m) {
+	public CollisionController(GameCanvas c, Hunter h, List<Animal> a,GameMap m, List<Trap> t) {
 		hunter = h;
 		animals = a;
 		map = m;
 		tmp = new Vector2();
 		normal= new Vector2();
 		velocity = new Vector2();
+		traps = t;
 	}
 	
 	public void update() {
@@ -61,6 +64,8 @@ public class CollisionController {
 		for(Animal a : animals) {
 			moveIfPossible(a);
 		}
+		checkTrapped();
+		
 	}
 	
 	/**
@@ -108,6 +113,26 @@ public class CollisionController {
 		tmp.set(animal.getCenter());
 		tmp.add(animal.getVX(), animal.getVY());
 		//System.out.println("vx: " + animal.getVX() + " vy: " + animal.getVY());
-		animal.setCenter(tmp);
+		if (!animal.getTrapped()) {
+			animal.setCenter(tmp);
+		}
+	}
+	
+	private void checkTrapped() {
+		for (Animal a : animals) {
+			for (Trap t : traps) {
+				if (t.getOnMap()) {
+					boolean withinX = (a.getCenter().x - t.getPosition().x) <= a.getTexWidth()/2 &&
+									  (a.getCenter().x - t.getPosition().x) >= -a.getTexWidth()/2;
+					boolean withinY = (a.getCenter().y - t.getPosition().y) <= a.getTexHeight()/2 &&
+							 		  (a.getCenter().y - t.getPosition().y) >= -a.getTexHeight()/2;
+					if (withinX && withinY) {
+						a.setTrapped(true);
+					} else {
+						a.setTrapped(false);
+					}
+				}
+			}
+		}
 	}
 }

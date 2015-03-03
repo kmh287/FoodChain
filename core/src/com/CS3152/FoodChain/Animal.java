@@ -14,6 +14,10 @@ public abstract class Animal extends Actor {
 	private final animalType type;
 	//The animals this animal can eat
 	private final animalType[] prey;
+
+	//Whether the animal is caught in a trap
+	private boolean trapped = false;
+
 	//texture used in getCenter adn setCenter
 	private float texWidth;
 	private float texHeight;
@@ -22,13 +26,14 @@ public abstract class Animal extends Actor {
 	private Vector2 velocity;
 	//how far forward the hunter can move in a turn. 
     private static final float MOVE_SPEED = 6.5f;
+
 	
 	/** Protected constructor for the animal type. 
 	 * 
 	 * This constructor should never be called directly
 	 * Animals should be instantiated as specific animals
 	 * 
-	 * @param type The type of animal. Checl the animalType enum for values
+	 * @param type The type of animal. Check the animalType enum for values
 	 * @param x	STARTING x-position on the map for the animal
 	 * @param y STARTING y-position on the map for the animal
 	 * @param foodchainVal The food chain value for this animal. 
@@ -150,6 +155,22 @@ public abstract class Animal extends Actor {
 		String type = getTypeNameString();
 		
 		return type + "at x: " + getxPos() + " y: " + getyPos();
+	}
+	
+	/**
+	 * Used to check to see if an animal is caught in a trap.
+	 * @return A boolean value of whether the animal is trapped or not
+	 */
+	public boolean getTrapped() {
+		return trapped;
+	}
+	
+	/**
+	 * Used to set that an animal is trapped or not.
+	 * @param val A boolean value of whether the animal is trapped or not
+	 */
+	public void setTrapped(boolean val) {
+		trapped = val;
 	}
 	
 	/**
