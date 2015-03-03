@@ -2,6 +2,7 @@ package com.CS3152.FoodChain;
 
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.Vector2;
 
 public abstract class Animal {
 	public enum animalType{
@@ -25,6 +26,10 @@ public abstract class Animal {
 	private direction facing;
 	//The animals this animal can eat
 	private final animalType[] prey;
+	//texture used in getCenter adn setCenter
+	private float texWidth;
+	private float texHeight;
+	
 	
 	/** Protected constructor for the animal type. 
 	 * 
@@ -112,7 +117,40 @@ public abstract class Animal {
 	public abstract String getTypeNameString();
 	
 	/**
-	 * Standard toString method
+	 * returns width of texture
+	 * @return Vector
+	 */
+	public float getTexWidth(){
+		return this.texWidth;
+	}
+	/**
+	 * returns height of texture
+	 * @return String representing the name of this type
+	 */
+	public float getTexHeight(){
+		return this.texHeight;
+	}
+	
+	protected void setTexHeight(float texHeight){
+		this.texHeight = texHeight;
+	}
+	
+	protected void setTexWidth(float texWidth){
+		this.texWidth = texWidth;
+	}
+	
+	
+	/**
+	 * returns center of animal
+	 * @return String representing the name of this type
+	 */
+	public Vector2 getCenter(){
+		Vector2 pos = new Vector2(getxPos()+getTexWidth()/2, getyPos()+getTexHeight()/2);
+        return pos;
+	}
+	
+	/**
+	 * Standard toString methoH
 	 * @return A string representation of this animal's type and position
 	 */
 	public String toString(){
