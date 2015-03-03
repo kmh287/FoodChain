@@ -90,7 +90,7 @@ public class GameMode implements Screen {
         
         
         
-        collisionController = new CollisionController(canvas, hunter, animals);
+        collisionController = new CollisionController(canvas, hunter, animals,map);
         
         traps = new ArrayList<Trap>();
         traps.add(map.getStartingTrap());

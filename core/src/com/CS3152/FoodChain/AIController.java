@@ -130,7 +130,7 @@ public abstract class AIController implements InputController {
         if (ticks % 10 == 0 && state != State.DEAD) {
             // Process the State
             changeStateIfApplicable();
-            System.out.println("state:" + this.state);
+            //System.out.println("state:" + this.state);
             
             // Pathfinding
             markGoal();
@@ -204,7 +204,7 @@ public abstract class AIController implements InputController {
     public int getNextMoveToGoal() {
     	
     	System.out.println("goalx:" + goal.x + "goaly:" + goal.y);
-    	System.out.println("locx:" + getLoc().x + "locy:" + getLoc().y);
+    	//System.out.println("locx:" + getLoc().x + "locy:" + getLoc().y);
     	
         if (goal.x - getLoc().x == 0 && goal.y - getLoc().y > 0) {
             return NORTH;

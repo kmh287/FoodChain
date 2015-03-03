@@ -14,6 +14,10 @@ public abstract class Animal extends Actor {
 	private final animalType type;
 	//The animals this animal can eat
 	private final animalType[] prey;
+	//texture used in getCenter adn setCenter
+	private float texWidth;
+	private float texHeight;
+	
 	//Animal's velocity
 	private Vector2 velocity;
 	//how far forward the hunter can move in a turn. 
@@ -101,7 +105,45 @@ public abstract class Animal extends Actor {
 	public abstract String getTypeNameString();
 	
 	/**
-	 * Standard toString method
+	 * returns width of texture
+	 * @return Vector
+	 */
+	public float getTexWidth(){
+		return this.texWidth;
+	}
+	/**
+	 * returns height of texture
+	 * @return String representing the name of this type
+	 */
+	public float getTexHeight(){
+		return this.texHeight;
+	}
+	
+	protected void setTexHeight(float texHeight){
+		this.texHeight = texHeight;
+	}
+	
+	protected void setTexWidth(float texWidth){
+		this.texWidth = texWidth;
+	}
+	
+	
+	/**
+	 * returns center of animal
+	 * @return String representing the name of this type
+	 */
+	public Vector2 getCenter(){
+		Vector2 pos = new Vector2(getxPos()+getTexWidth()/2, getyPos()+getTexHeight()/2);
+        return pos;
+	}
+	
+	public void setCenter(Vector2 pos){
+		this.xPos = pos.x-getTexWidth()/2;
+		this.yPos = pos.y-getTexHeight()/2;
+	}
+	
+	/**
+	 * Standard toString methoH
 	 * @return A string representation of this animal's type and position
 	 */
 	public String toString(){
