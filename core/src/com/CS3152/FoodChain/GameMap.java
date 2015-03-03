@@ -192,7 +192,7 @@ public class GameMap {
      */
     public int screenYToMap(float yPos){
         int screenHeight = Gdx.graphics.getHeight();
-        int yIncrement = screenHeight / layout.length;
+        int yIncrement = (screenHeight - UI_OFFSET) / layout.length;
         return (int) ((yPos - UI_OFFSET) / yIncrement);
     }
     
