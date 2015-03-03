@@ -81,14 +81,11 @@ public class Hunter extends Actor {
     		Vector2 pos = new Vector2(getxPos(), getyPos());
     		return pos; 
     }
-<<<<<<< HEAD
-=======
     
     public void setPosition(Vector2 pos) {
     		xPos = pos.x;
     		yPos = pos.y;
     }
->>>>>>> 98ad66e29ef71793ac13e246325c44f77d86eda0
 
     public float getVX() {
     		return velocity.x; 

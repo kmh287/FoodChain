@@ -52,16 +52,8 @@ public class GameMode implements Screen {
         controls = new InputController[animals.size() + 1]; 
         controls[0] = new PlayerController();
         tmp = new Vector2();
-<<<<<<< HEAD
-
-        animals = new ArrayList<Animal>();
-        */
-        //size of animal list + the player 
+		*/
         
-
-=======
-        
->>>>>>> 98ad66e29ef71793ac13e246325c44f77d86eda0
         //Get the animal types from map
         //but build and keep the actual list here
         List<Animal.animalType> aTypes = 
