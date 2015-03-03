@@ -15,7 +15,7 @@ public class GameMode implements Screen {
 
 	private CollisionController collisionController;
     private GameCanvas canvas;
-    private boolean active;
+   // private boolean active;
     private GameMap map;
     private AssetManager manager;
     private List<Animal> animals;
@@ -37,7 +37,7 @@ public class GameMode implements Screen {
      */
 	public GameMode(GameCanvas canvas) {
 		this.canvas = canvas;
-        active = false;
+        //active = false;
         manager = new AssetManager();
         //For now we will hard code the level to load
         //When we implement a UI that may ask players
