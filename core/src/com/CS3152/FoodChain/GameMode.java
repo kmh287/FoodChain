@@ -186,6 +186,10 @@ public class GameMode implements Screen {
         //Draw the map
         map.draw(canvas);
         
+        for (Trap trap : traps) {
+        	trap.draw(canvas);
+        }
+        
         //Draw the animals
         for (Animal animal : animals){
             animal.draw(map, canvas);
@@ -193,10 +197,6 @@ public class GameMode implements Screen {
         
         //Draw the hunter
         hunter.draw(canvas);
-        
-        for (Trap trap : traps) {
-        	trap.draw(canvas);
-        }
         
         ui.draw(canvas);
     }
