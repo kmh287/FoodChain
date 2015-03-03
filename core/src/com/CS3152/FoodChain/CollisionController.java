@@ -19,8 +19,6 @@ import com.badlogic.gdx.math.*;
 
 public class CollisionController {
 	
-	/** Reference to the canvas */
-	public GameCanvas canvas;
 	/** Reference to the hunter */
 	public Hunter hunter;
 	/** Reference to the animals */
@@ -34,7 +32,7 @@ public class CollisionController {
 	 * @param h The hunter
 	 * @param a The list of animals
 	 */
-	public CollisionController(GameCanvas c, Hunter h, List<Animal> a) {
+	public CollisionController(Hunter h, List<Animal> a) {
 		hunter = h;
 		animals = a;
 		

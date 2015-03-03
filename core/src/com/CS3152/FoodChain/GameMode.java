@@ -69,7 +69,7 @@ public class GameMode implements Screen {
         createHunter(map.getHunterStartingCoordinate(), 
                     map.getStartingTrap());
         
-        collisionController = new CollisionController(canvas, hunter, animals);
+        collisionController = new CollisionController(hunter, animals);
         
         traps = new ArrayList<Trap>();
         traps.add(map.getStartingTrap());
