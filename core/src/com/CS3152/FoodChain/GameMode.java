@@ -48,26 +48,47 @@ public class GameMode implements Screen {
         ui.loadTextures(manager);
         animals = new ArrayList<Animal>();
         
-        //size of animal list + the player 
+        /*size of animal list + the player 
         controls = new InputController[animals.size() + 1]; 
         controls[0] = new PlayerController();
         tmp = new Vector2();
+		*/
         
-        animals = new ArrayList<Animal>();
-        
-        //size of animal list + the player 
-        controls = new InputController[animals.size() + 1]; 
-        controls[0] = new PlayerController();
-        tmp = new Vector2();
-
         //Get the animal types from map
         //but build and keep the actual list here
         List<Animal.animalType> aTypes = 
                             map.getAnimalTypeList();
         List<Coordinate> coordinates = map.getCoordinates();
         buildAnimalList(aTypes, coordinates);
+        
+        controls = new InputController[animals.size() + 1]; 
+        controls[0] = new PlayerController();
+        tmp = new Vector2();
+        
         createHunter(map.getHunterStartingCoordinate(), 
-                    map.getStartingTrap());
+                map.getStartingTrap());
+    
+        
+        List<Actor> actors = new ArrayList<Actor>();
+        actors.add(hunter);
+        for (int i = 0; i < animals.size(); i++) {
+        	actors.add(animals.get(i));
+        }
+        if (animals.get(0).getType() == Animal.animalType.SHEEP) {
+        	controls[1] = new SheepController(animals.get(0),
+        									  map, actors);
+            controls[2] = new WolfController(animals.get(1),
+            								 map, actors);
+        }
+        else {
+        	controls[1] = new WolfController(animals.get(0),
+        									 map, actors);
+            controls[2] = new SheepController(animals.get(1),
+            								  map, actors);
+        }
+        
+        
+        
         
         collisionController = new CollisionController(canvas, hunter, animals,map);
         
@@ -169,6 +190,15 @@ public class GameMode implements Screen {
 			hunter.setTrap(click);
 		}
 		
+		//Updates the animals' actions
+		//i is the index of each animal AI in controls
+		int i = 1;
+		for (Animal an : animals) {
+			action = controls[i].getAction();
+			an.update(action);
+			i++;
+		}
+		
 		collisionController.update();
 
 		
@@ -198,6 +228,13 @@ public class GameMode implements Screen {
         //Draw the hunter
         hunter.draw(canvas);
         
+<<<<<<< HEAD
+=======
+        for (Trap trap : traps) {
+        		trap.draw(canvas);
+        }
+        
+>>>>>>> master
         ui.draw(canvas);
     }
     
@@ -246,27 +283,27 @@ public class GameMode implements Screen {
      * Movement actions are determined, but not committed (e.g. the velocity
 	 * is updated, but not the position). Collisions are not processed. 
 	 */
-	public void updateGame() {
-		//if (hunter's turn) {
-		
-			//get the action from the playerController
-			int action = controls[0].getAction();	
-			//Updates the hunters action (velocity only). 
-			//hunter.update(action);	
-			
-			//Uses this velocity to move the hunter. 
-			tmp.set(hunter.getxPos(), hunter.getyPos());
-			tmp.add(hunter.getVX(), hunter.getVY());
-			//set the position
-			hunter.getPosition().set(tmp);
-
-			
-			
-			
-		/*} else {
-			//hunter.update(InputController.NO_ACTION);
-			}
-			*/ 
-	}	
+//	public void updateGame() {
+//		//if (hunter's turn) {
+//		
+//			//get the action from the playerController
+//			int action = controls[0].getAction();	
+//			//Updates the hunters action (velocity only). 
+//			//hunter.update(action);	
+//			
+//			//Uses this velocity to move the hunter. 
+//			tmp.set(hunter.getxPos(), hunter.getyPos());
+//			tmp.add(hunter.getVX(), hunter.getVY());
+//			//set the position
+//			hunter.getPosition().set(tmp);
+//
+//			
+//			
+//			
+//		/*} else {
+//			//hunter.update(InputController.NO_ACTION);
+//			}
+//			*/ 
+//	}	
 
 }

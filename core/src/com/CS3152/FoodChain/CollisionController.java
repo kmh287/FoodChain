@@ -72,42 +72,49 @@ public class CollisionController {
 	 * TODO have to decide how to handle multiple collisions and which collisions to process first. like animal or tiles
 	 */
 	private void moveIfPossible(Hunter hunter) {
-		tmp.set(hunter.getPosition());
+		tmp.set(hunter.getCenter());
 		tmp.add(hunter.getVX(), hunter.getVY());		
 		canMove=true;
 		//check player against animals
 		for(Animal a : animals){
-			normal.set(hunter.getxPos()-a.getxPos(), hunter.getyPos()-a.getyPos());
+			normal.set(hunter.getCenter().sub(a.getCenter()));
 			distance = normal.len();
 			normal.nor();
-			if (distance<30){
+			if (distance<20){
 				canMove=false;
+				tmp.set(normal).scl((hunter.getXDiamter()-distance)/2);
 				//have to play around with numbers to smooth collisions
-				tmp.set(normal).scl((15 - distance) / 2);  // normal * (d1 - dist)/2
-				hunter.setPosition(hunter.getPosition().sub(tmp));
+				hunter.setCenter(hunter.getCenter().add(tmp));
 			}
 		}
+		tmp.set(hunter.getCenter());
+		tmp.add(hunter.getVX(), hunter.getVY());
 		//check tiles surrounding player
+<<<<<<< HEAD
 		tmp.set(hunter.getPosition());
 		tmp.add(hunter.getVX(), hunter.getVY());
 		//System.out.println(map.screenPosToTile(tmp.x,tmp.y));
+=======
+//		System.out.println(map.screenPosToTile(tmp.x,tmp.y));
+>>>>>>> master
 		if (map.screenPosToTile(tmp.x,tmp.y).type!=(tileType.GRASS)){
 			canMove=false;
-			normal.set(hunter.getPosition().sub(tmp));
+			normal.set(hunter.getCenter().sub(tmp));
 			distance = normal.len();
 			normal.nor();
-			tmp.set(normal).scl(-4);  // normal * (d1 - dist)/2
-			hunter.setPosition(hunter.getPosition().sub(tmp));
+			tmp.set(normal).scl(-4);
+			hunter.setCenter(hunter.getCenter().sub(tmp));
 		}
-
-		
 		if(canMove){
-			hunter.setPosition(tmp);
+			hunter.setCenter(tmp);
 		}
 	}
 	
 	private void moveIfPossible(Animal animal) {
-		
+		tmp.set(animal.getCenter());
+		tmp.add(animal.getVX(), animal.getVY());
+		//System.out.println("vx: " + animal.getVX() + " vy: " + animal.getVY());
+		animal.setCenter(tmp);
 	}
 	
 	private void checkForCollision(Animal animal, Trap trap) {
