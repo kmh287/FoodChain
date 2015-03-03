@@ -149,7 +149,4 @@ public abstract class Animal {
 	    canvas.draw(tex, this.xPos, this.yPos);
 	    canvas.end();
     }
-
-
-	
 }
