@@ -21,7 +21,7 @@ public class Trap {
 	private float xPos, yPos;
 	
 	public Trap(String type) {
-		TRAP_FILE = "assets/" + type + ".jpg";
+		TRAP_FILE = "assets/" + type + ".png";
 		inInventory = false;
 		onMap = false;
 		xPos = 0.0f;
@@ -56,17 +56,17 @@ public class Trap {
      * @param value whether the trap is in the player's inventory.
      */
     public void setInInventory(boolean value) {
-    	inInventory = value;
+    		inInventory = value;
     }
     
     public void setPosition(Vector2 pos) {
-    	xPos = pos.x;
-    	yPos = pos.y;
-    	onMap = true;
+	    	xPos = pos.x;
+	    	yPos = pos.y;
+	    	onMap = true;
     }
     
     public void setOnMap() {
-    	onMap = true;
+    		onMap = true;
     }
     
     public void draw(GameCanvas canvas){
