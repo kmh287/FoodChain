@@ -48,7 +48,7 @@ public class Trap {
      * @return inInventory whether the trap is in the player's inventory
      */
     public boolean getInInventory() {
-    	return inInventory;
+    		return inInventory;
     }
     
     /**

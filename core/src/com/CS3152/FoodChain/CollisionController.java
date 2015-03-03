@@ -58,6 +58,9 @@ public class CollisionController {
 	}
 	
 	private void moveIfPossible(Animal animal) {
-		
+		tmp.set(animal.getxPos(), animal.getyPos());
+		tmp.add(animal.getVX(), animal.getVY());
+		//System.out.println("vx: " + animal.getVX() + " vy: " + animal.getVY());
+		animal.setPosition(tmp);
 	}
 }
