@@ -14,10 +14,10 @@ public abstract class Animal extends Actor {
 	private final animalType type;
 	//The animals this animal can eat
 	private final animalType[] prey;
-<<<<<<< HEAD
+
 	//Whether the animal is caught in a trap
 	private boolean trapped = false;
-=======
+
 	//texture used in getCenter adn setCenter
 	private float texWidth;
 	private float texHeight;
@@ -26,7 +26,7 @@ public abstract class Animal extends Actor {
 	private Vector2 velocity;
 	//how far forward the hunter can move in a turn. 
     private static final float MOVE_SPEED = 6.5f;
->>>>>>> master
+
 	
 	/** Protected constructor for the animal type. 
 	 * 

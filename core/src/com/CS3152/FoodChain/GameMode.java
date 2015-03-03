@@ -87,14 +87,10 @@ public class GameMode implements Screen {
             								  map, actors);
         }
         
-        
-        
-        
-        collisionController = new CollisionController(canvas, hunter, animals,map);
-        
         traps = new ArrayList<Trap>();
         traps.add(map.getStartingTrap());
         traps.get(0).loadTexture(manager);
+        collisionController = new CollisionController(canvas, hunter, animals, map, traps);
 	}
 
 	/**
@@ -220,6 +216,10 @@ public class GameMode implements Screen {
         	trap.draw(canvas);
         }
         
+        for (Trap trap : traps) {
+    		trap.draw(canvas);
+        }
+        
         //Draw the animals
         for (Animal animal : animals){
             animal.draw(map, canvas);
@@ -228,13 +228,6 @@ public class GameMode implements Screen {
         //Draw the hunter
         hunter.draw(canvas);
         
-<<<<<<< HEAD
-=======
-        for (Trap trap : traps) {
-        		trap.draw(canvas);
-        }
-        
->>>>>>> master
         ui.draw(canvas);
     }
     

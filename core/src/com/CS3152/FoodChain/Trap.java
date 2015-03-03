@@ -18,12 +18,14 @@ public class Trap {
 	private boolean inInventory;
 	private boolean onMap;
 	private boolean isSelected;
+	private Vector2 pos;
 	private float xPos, yPos;
 	
 	public Trap(String type) {
 		TRAP_FILE = "assets/" + type + ".png";
 		inInventory = false;
 		onMap = false;
+		pos = new Vector2();
 		xPos = 0.0f;
 		yPos = 0.0f;
 	}
@@ -61,19 +63,28 @@ public class Trap {
     }
     
     public void setPosition(Vector2 pos) {
-	    	xPos = pos.x;
-	    	yPos = pos.y;
+    		this.pos = pos;
+    		//xPos = pos.x;
+	    	//yPos = pos.y;
 	    	onMap = true;
+    }
+    
+    public Vector2 getPosition() {
+    		return pos;
     }
     
     public void setOnMap() {
     		onMap = true;
     }
     
+    public boolean getOnMap() {
+    	return onMap;
+    }
+    
     public void draw(GameCanvas canvas){
         if (onMap) {
         	canvas.begin();
-            canvas.draw(trapTexture, xPos - 20.0f, yPos - 20.0f);
+            canvas.draw(trapTexture, pos.x - 20.0f, pos.y - 20.0f);
             canvas.end();
         }	
     }
