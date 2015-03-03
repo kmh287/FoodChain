@@ -21,7 +21,7 @@ public class Trap {
 	private float xPos, yPos;
 	
 	public Trap(String type) {
-		TRAP_FILE = "assets/" + type + ".jpg";
+		TRAP_FILE = "assets/" + type + ".png";
 		inInventory = false;
 		onMap = false;
 		xPos = 0.0f;
