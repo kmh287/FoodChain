@@ -2,6 +2,7 @@ package com.CS3152.FoodChain;
 
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class Wolf extends Animal{
     
@@ -16,7 +17,7 @@ public class Wolf extends Animal{
      * @param y Starting y position for this wolf
      */
     public Wolf(float x, float y) {
-        super(Animal.animalType.WOLF, x, y, 
+        super(new TextureRegion(tex), Animal.animalType.WOLF, x, y, 
               prey, Animal.direction.EAST);
     }
 
@@ -26,25 +27,13 @@ public class Wolf extends Animal{
         return "Wolf";
     }
 
-    @Override
-    public void loadTexture(AssetManager manager) {
+    public static void loadTexture(AssetManager manager) {
         if (tex == null){
             manager.load(WOLF_TEX, Texture.class);
             manager.finishLoading();
             if (manager.isLoaded(WOLF_TEX)){
                 tex = manager.get(WOLF_TEX);
             }
-            super.setTexHeight((float) tex.getHeight());
-            super.setTexWidth((float) tex.getWidth());
         }
-    }
-
-    @Override
-    /**
-     * It is up to the caller not to use this
-     * before loading the texture.
-     */
-    public Texture getTexture() {
-        return tex;
     }
 }

@@ -203,7 +203,7 @@ public abstract class AIController implements InputController {
      */
     public int getNextMoveToGoal() {
     	
-    	System.out.println("goalx:" + goal.x + "goaly:" + goal.y);
+    	//System.out.println("goalx:" + goal.x + "goaly:" + goal.y);
     	//System.out.println("locx:" + getLoc().x + "locy:" + getLoc().y);
     	
         if (goal.x - getLoc().x == 0 && goal.y - getLoc().y > 0) {
