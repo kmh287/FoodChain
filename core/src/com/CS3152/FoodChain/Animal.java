@@ -203,75 +203,82 @@ public abstract class Animal extends Actor {
     }
 
 	/** 
-	    * Updates the hunter's position according to the controlCode. 
-	    * 
-	    * @param controlCode The movement controlCode (from InputController).
-	    */
-	    public void update(int controlCode) {
-	    	
-	    	// Determine how we are moving.
-	    	boolean movingEast  = (controlCode == InputController.EAST);
-	   		boolean movingWest = (controlCode == InputController.WEST);
-	    	boolean movingNorth = (controlCode == InputController.NORTH);
-	    	boolean movingSouth = (controlCode == InputController.SOUTH);
-	    	boolean movingNorthWest = (controlCode == InputController.NORTHWEST);
-	    	boolean movingSouthWest = (controlCode == InputController.SOUTHWEST);
-	    	boolean movingSouthEast = (controlCode == InputController.SOUTHEAST);
-	    	boolean movingNorthEast = (controlCode == InputController.NORTHEAST);
-	    	
-	    	//process moving command 
-	    	if (movingWest) {
+    * Updates the hunter's position according to the controlCode. 
+	* 
+	* @param controlCode The movement controlCode (from InputController).
+	*/
+	public void update(int controlCode) {
+    	
+    	// Determine how we are moving.
+    	boolean movingEast  = (controlCode == InputController.EAST);
+   		boolean movingWest = (controlCode == InputController.WEST);
+    	boolean movingNorth = (controlCode == InputController.NORTH);
+    	boolean movingSouth = (controlCode == InputController.SOUTH);
+    	boolean movingNorthWest = (controlCode == InputController.NORTHWEST);
+    	boolean movingSouthWest = (controlCode == InputController.SOUTHWEST);
+    	boolean movingSouthEast = (controlCode == InputController.SOUTHEAST);
+    	boolean movingNorthEast = (controlCode == InputController.NORTHEAST);
+    	
+    	//process moving command 
+    	if (movingWest) {
 //	    		System.out.println("W");
-				facing = direction.WEST;
-				velocity.x = -MOVE_SPEED;
-				velocity.y = 0;
-			} else if (movingEast) {
+			facing = direction.WEST;
+			velocity.x = -MOVE_SPEED;
+			velocity.y = 0;
+		} else if (movingEast) {
 //	    		System.out.println("E");
-				facing = direction.EAST;
-				velocity.x = MOVE_SPEED;
-				velocity.y = 0;
-			}
-			else if (movingNorth) {
+			facing = direction.EAST;
+			velocity.x = MOVE_SPEED;
+			velocity.y = 0;
+		}
+		else if (movingNorth) {
 //	    		System.out.println("N");
-				facing = direction.NORTH;
-				velocity.y = MOVE_SPEED;
-				velocity.x = 0;
-			}
-			else if (movingSouth) {
+			facing = direction.NORTH;
+			velocity.y = MOVE_SPEED;
+			velocity.x = 0;
+		}
+		else if (movingSouth) {
 //	    		System.out.println("S");
-				facing = direction.SOUTH;
-				velocity.x = 0;
-				velocity.y = -MOVE_SPEED;
-			}
-			else if (movingSouthWest) {
+			facing = direction.SOUTH;
+			velocity.x = 0;
+			velocity.y = -MOVE_SPEED;
+		}
+		else if (movingSouthWest) {
 //	    		System.out.println("SW");
-				facing = direction.SOUTHWEST;
-				velocity.x = -MOVE_SPEED;
-				velocity.y = -MOVE_SPEED;
-			}
-			else if (movingSouthEast) {
+			facing = direction.SOUTHWEST;
+			velocity.x = -MOVE_SPEED;
+			velocity.y = -MOVE_SPEED;
+		}
+		else if (movingSouthEast) {
 //	    		System.out.println("SE");
-				facing = direction.SOUTHEAST;
-				velocity.x = MOVE_SPEED;
-				velocity.y = -MOVE_SPEED;
-			}
-			else if (movingNorthEast) {
+			facing = direction.SOUTHEAST;
+			velocity.x = MOVE_SPEED;
+			velocity.y = -MOVE_SPEED;
+		}
+		else if (movingNorthEast) {
 //	    		System.out.println("NE");
-				facing = direction.NORTHEAST;
-				velocity.x = MOVE_SPEED;
-				velocity.y = MOVE_SPEED;
-			}
-			else if (movingNorthWest) {
+			facing = direction.NORTHEAST;
+			velocity.x = MOVE_SPEED;
+			velocity.y = MOVE_SPEED;
+		}
+		else if (movingNorthWest) {
 //	    		System.out.println("NW");
-				velocity.x = -MOVE_SPEED;
-				facing = direction.NORTHWEST;
-				velocity.y = MOVE_SPEED;
-			}
-			else {
-				// NOT MOVING, SO STOP MOVING
+			velocity.x = -MOVE_SPEED;
+			facing = direction.NORTHWEST;
+			velocity.y = MOVE_SPEED;
+		}
+		else {
+			// NOT MOVING, SO STOP MOVING
 //				System.out.println("nothin");
-				velocity.x = 0;
-				velocity.y = 0;
-			}
-	    }
+			velocity.x = 0;
+			velocity.y = 0;
+		}
+    }
+	    
+	/**
+	 * @return the bottom LeftxPos
+	 */
+	public float getXDiamter() {
+	    return texWidth;
+    }
 }

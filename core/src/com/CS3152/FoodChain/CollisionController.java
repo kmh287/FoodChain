@@ -113,7 +113,38 @@ public class CollisionController {
 		tmp.set(animal.getCenter());
 		tmp.add(animal.getVX(), animal.getVY());
 		//System.out.println("vx: " + animal.getVX() + " vy: " + animal.getVY());
-		if (!animal.getTrapped()) {
+		
+		for(Animal a : animals){
+			if (a == animal) {
+				continue;
+			}
+			else {
+				normal.set(animal.getCenter().sub(a.getCenter()));
+				distance = normal.len();
+				normal.nor();
+				if (distance<20){
+					canMove=false;
+					tmp.set(normal).scl((animal.getXDiamter()-distance)/2);
+					//have to play around with numbers to smooth collisions
+					animal.setCenter(animal.getCenter().add(tmp));
+					break;
+				}
+			}
+		}
+		tmp.set(animal.getCenter());
+		tmp.add(animal.getVX(), animal.getVY());
+		//check tiles surrounding player
+//		System.out.println(map.screenPosToTile(tmp.x,tmp.y));
+		if (map.screenPosToTile(tmp.x,tmp.y).type!=(tileType.GRASS)){
+			canMove=false;
+			normal.set(animal.getCenter().sub(tmp));
+			distance = normal.len();
+			normal.nor();
+			tmp.set(normal).scl(-4);
+			animal.setCenter(animal.getCenter().sub(tmp));
+		}
+		
+		if (canMove && !animal.getTrapped()) {
 			animal.setCenter(tmp);
 		}
 	}

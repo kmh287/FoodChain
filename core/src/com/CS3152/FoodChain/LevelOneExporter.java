@@ -60,7 +60,7 @@ public class LevelOneExporter {
         animals.add(animalType.WOLF);
         
         List<Coordinate> coords = new ArrayList<Coordinate>();
-        coords.add(new Coordinate(5,5));
+        coords.add(new Coordinate(7,5));
         coords.add(new Coordinate(7,7));
         
         Coordinate playerStart = new Coordinate(10,10);
