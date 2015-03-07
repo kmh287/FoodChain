@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
 public class Hunter extends Actor {
@@ -37,7 +38,7 @@ public class Hunter extends Actor {
 	private Vector2 tmp;
     
     public Hunter(float xPos, float yPos, Trap t){
-    	super(xPos, yPos);
+    		super(new TextureRegion(tex), xPos, yPos, tex.getWidth(), tex.getHeight());
         inventory = new ArrayList<Trap>();
         inventory.add(t);
         velocity = new Vector2();
@@ -51,7 +52,7 @@ public class Hunter extends Actor {
      * This must be called before any calls to Player.draw()
      * @param manager an AssetManager
      */
-    public void loadTexture(AssetManager manager) {
+    public static void loadTexture(AssetManager manager) {
         if (tex == null){
             manager.load(PLAYER_TEX, Texture.class);
             manager.finishLoading();
@@ -87,14 +88,14 @@ public class Hunter extends Actor {
      * @return the top right of the hunter
      */
     public Vector2 getTopRight() {
-    	Vector2 pos = new Vector2(getxPos()+(float)this.tex.getWidth(), getyPos()+(float)this.tex.getHeight());
+    	Vector2 pos = new Vector2(getxPos()+(float)tex.getWidth(), getyPos()+(float)tex.getHeight());
         return pos;
     }
     /**
      * @return the top left of the hunter
      */
     public Vector2 getTopLeft() { 
-    	Vector2 pos = new Vector2(getxPos()+(float)this.tex.getWidth(), +(float)this.tex.getHeight());
+    	Vector2 pos = new Vector2(getxPos()+(float)tex.getWidth(), +(float)tex.getHeight());
         return pos;
     }
     
@@ -102,8 +103,9 @@ public class Hunter extends Actor {
      *	Set center of hunter position
      */
     public void setCenter(Vector2 pos) {
-    	this.yPos=pos.y-(float)this.tex.getHeight()/2;
-    	this.xPos=pos.x-(float)this.tex.getWidth()/2;
+	    	this.yPos=pos.y-(float)tex.getHeight()/2;
+	    	this.xPos=pos.x-(float)tex.getWidth()/2;
+    		super.setPosition(xPos, yPos);
     }
 
     /**
@@ -111,6 +113,7 @@ public class Hunter extends Actor {
      */
     public void setxPos(float xPos) {
         this.xPos = xPos;
+        super.setPosition(xPos, yPos);
     }
 
     /**
@@ -125,6 +128,7 @@ public class Hunter extends Actor {
      */
     public void setyPos(float yPos) {
         this.yPos = yPos;
+        super.setPosition(xPos, yPos);
     }
 
     
@@ -152,6 +156,7 @@ public class Hunter extends Actor {
     public void setPosition(Vector2 pos) {
     		xPos = pos.x;
     		yPos = pos.y;
+        super.setPosition(xPos, yPos);
     }
 
     public float getVX() {

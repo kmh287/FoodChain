@@ -10,6 +10,7 @@ import com.CS3152.FoodChain.GameMap.Coordinate;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.BodyDef;
 
 public class GameMode implements Screen {
 
@@ -25,8 +26,9 @@ public class GameMode implements Screen {
 
     protected InputController[] controls;
     
-    /** Cache attribute for calculations */
-	private Vector2 tmp;
+//    /** Cache attribute for calculations */
+//	private Vector2 tmp;
+	private static final float DEFAULT_DENSITY = 1.0f;
     
     /**
      * Temporary constructor for GameMode until we have 
@@ -54,6 +56,8 @@ public class GameMode implements Screen {
         tmp = new Vector2();
 		*/
         
+        collisionController = new CollisionController();
+        
         //Get the animal types from map
         //but build and keep the actual list here
         List<Animal.animalType> aTypes = 
@@ -61,9 +65,11 @@ public class GameMode implements Screen {
         List<Coordinate> coordinates = map.getCoordinates();
         buildAnimalList(aTypes, coordinates);
         
+        //All the animals, plus the Hunter
+        //The hunter is always first in this array
         controls = new InputController[animals.size() + 1]; 
         controls[0] = new PlayerController();
-        tmp = new Vector2();
+        //tmp = new Vector2();
         
         createHunter(map.getHunterStartingCoordinate(), 
                 map.getStartingTrap());
@@ -75,22 +81,21 @@ public class GameMode implements Screen {
         	actors.add(animals.get(i));
         }
         if (animals.get(0).getType() == Animal.animalType.SHEEP) {
-        	controls[1] = new SheepController(animals.get(0),
-        									  map, actors);
-            controls[2] = new WolfController(animals.get(1),
-            								 map, actors);
+	        	controls[1] = new SheepController(animals.get(0),
+	        									  map, actors);
+	        controls[2] = new WolfController(animals.get(1),
+	            								 map, actors);
         }
         else {
-        	controls[1] = new WolfController(animals.get(0),
-        									 map, actors);
-            controls[2] = new SheepController(animals.get(1),
-            								  map, actors);
+	        	controls[1] = new WolfController(animals.get(0),
+	        									 map, actors);
+	        controls[2] = new SheepController(animals.get(1),
+	            								  map, actors);
         }
         
         traps = new ArrayList<Trap>();
         traps.add(map.getStartingTrap());
         traps.get(0).loadTexture(manager);
-        collisionController = new CollisionController(canvas, hunter, animals, map, traps);
 	}
 
 	/**
@@ -113,10 +118,14 @@ public class GameMode implements Screen {
 	
 	private void createHunter(Coordinate startingPos,
 	                         Trap startingTrap){
+		Hunter.loadTexture(manager);
 	    this.hunter = new Hunter(map.mapXToScreen(startingPos.x),
 	                             map.mapYToScreen(startingPos.y),
 	                             startingTrap);
-	    hunter.loadTexture(manager);
+	    hunter.setDensity(DEFAULT_DENSITY);
+	    hunter.setAwake(true);
+	    hunter.setBodyType(BodyDef.BodyType.DynamicBody);
+	    collisionController.addObject(hunter);
 	}
 	
 	/**
@@ -146,21 +155,24 @@ public class GameMode implements Screen {
 	        
 	        switch(currType){
 	            case SHEEP:
+	            		Sheep.loadTexture(manager);
 	                newAnimal = new Sheep(map.mapXToScreen(coord.x), 
 	                                      map.mapYToScreen(coord.y));
-	                newAnimal.loadTexture(manager);
 	                animals.add(newAnimal);
 	                break;
 	            case WOLF:
+	            		Wolf.loadTexture(manager);
 	                newAnimal = new Wolf(map.mapXToScreen(coord.x), 
                                          map.mapYToScreen(coord.y));
-	                newAnimal.loadTexture(manager);
 	                animals.add(newAnimal);
 	                break;
 	            default:
 	                System.out.println(currType);
 	                throw new IllegalArgumentException("Unexpected animal type");
 	        }
+	        newAnimal.setDensity(DEFAULT_DENSITY);
+	        newAnimal.setBodyType(BodyDef.BodyType.DynamicBody);
+	        collisionController.addObject(newAnimal);
 	    }
 	    
 	}
@@ -179,9 +191,6 @@ public class GameMode implements Screen {
 		//Updates the hunters action
 		hunter.update(action);
 		Vector2 click = controls[0].getClickPos();
-		if (controls[0].getAction() == InputController.CLICK) {
-			System.out.println("Click Position: "+click.x+", "+click.y+"\n");
-		}
 		if (controls[0].getAction() == InputController.CLICK && hunter.canSetTrap(click)) {
 			hunter.setTrap(click);
 		}
