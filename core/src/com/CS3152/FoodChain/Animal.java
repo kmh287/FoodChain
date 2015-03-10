@@ -6,15 +6,6 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
 public abstract class Animal extends Actor {
-	public enum animalType{
-		SHEEP, 
-		WOLF
-	}
-	
-	//The type of this animal
-	private final animalType type;
-	//The animals this animal can eat
-	private final animalType[] prey;
 
 	//Whether the animal is caught in a trap
 	private boolean trapped = false;
@@ -40,12 +31,10 @@ public abstract class Animal extends Actor {
 	 * @param foodchainVal The food chain value for this animal. 
 	 *                     It is up to the CALLER to ensure this is correct.
 	 */
-	public Animal(TextureRegion tr, animalType type, float x, float y, 
-	              animalType[] prey, direction facing){
-		super(tr, x, y, tr.getRegionWidth(), tr.getRegionHeight());
-		this.type = type;
+	public Animal(TextureRegion tr, actorType type, float x, float y, 
+	              actorType[] prey, direction facing){
+		super(tr, type, x, y, tr.getRegionWidth(), tr.getRegionHeight(), prey);
 		this.setPos(x,y);
-		this.prey = prey;
 		this.facing = facing;
 		this.velocity = new Vector2();
 		setTexWidth(tr.getRegionWidth());
@@ -87,33 +76,6 @@ public abstract class Animal extends Actor {
         super.setPosition(xPos, yPos);
 	}
 	
-    /**
-     * @return the type
-     */
-    public animalType getType() {
-        return type;
-    }
-	
-    /*
-     * @return its x velocity
-     */
-    public float getVX() {
-    	return this.velocity.x;
-    }
-    
-    /*
-     * @return its y velocity
-     */
-    public float getVY() {
-    	return this.velocity.y;
-    }
-    
-	/**
-	 * The name of this animal type, e.g. "Sheep"
-	 * @return String representing the name of this type
-	 */
-	public abstract String getTypeNameString();
-	
 	/**
 	 * returns width of texture
 	 * @return Vector
@@ -143,7 +105,7 @@ public abstract class Animal extends Actor {
 	 * @return String representing the name of this type
 	 */
 	public Vector2 getCenter(){
-		Vector2 pos = new Vector2(getxPos()+getTexWidth()/2, getyPos()+getTexHeight()/2);
+		Vector2 pos = new Vector2(getX()+getTexWidth()/2, getY()+getTexHeight()/2);
         return pos;
 	}
 	
@@ -160,7 +122,7 @@ public abstract class Animal extends Actor {
 	public String toString(){
 		String type = getTypeNameString();
 		
-		return type + "at x: " + getxPos() + " y: " + getyPos();
+		return type + "at x: " + getX() + " y: " + getY();
 	}
 	
 	/**
@@ -177,20 +139,6 @@ public abstract class Animal extends Actor {
 	 */
 	public void setTrapped(boolean val) {
 		trapped = val;
-	}
-	
-	/**
-	 * Return true if this animal can eat ani, false otherwise
-	 * @param ani Another animal
-	 * @return boolean, whether or not this animal can eat ani
-	 */
-	public boolean canEat(Animal ani){
-	    for (animalType t : prey){
-	        if (ani.getType() == t){
-	            return true;
-	        }
-	    }
-        return false;
 	}
 	
 	public void draw(GameMap map, GameCanvas canvas){

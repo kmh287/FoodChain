@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import com.CS3152.FoodChain.Animal.animalType;
+import com.CS3152.FoodChain.Actor.actorType;
 import com.CS3152.FoodChain.GameMap.Coordinate;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
@@ -60,8 +60,8 @@ public class GameMode implements Screen {
         
         //Get the animal types from map
         //but build and keep the actual list here
-        List<Animal.animalType> aTypes = 
-                            map.getAnimalTypeList();
+        List<Actor.actorType> aTypes = 
+                            map.getActorTypeList();
         List<Coordinate> coordinates = map.getCoordinates();
         buildAnimalList(aTypes, coordinates);
         
@@ -80,7 +80,7 @@ public class GameMode implements Screen {
         for (int i = 0; i < animals.size(); i++) {
         	actors.add(animals.get(i));
         }
-        if (animals.get(0).getType() == Animal.animalType.SHEEP) {
+        if (animals.get(0).getType() == Actor.actorType.SHEEP) {
 	        	controls[1] = new SheepController(animals.get(0),
 	        									  map, actors);
 	        controls[2] = new WolfController(animals.get(1),
@@ -139,16 +139,16 @@ public class GameMode implements Screen {
 	 * @param aTypes The list of animal types
 	 * @param coordinates the coordinates of the animals.
 	 */
-	private void buildAnimalList(List<animalType> aTypes,
+	private void buildAnimalList(List<actorType> aTypes,
 	                             List<Coordinate> coordinates){
 	    if (coordinates.size() != aTypes.size()){
 	        throw new IllegalArgumentException("Lists of unequal size");
 	    }
 	    
-	    Iterator<animalType> aTypesIt = aTypes.iterator();
+	    Iterator<actorType> aTypesIt = aTypes.iterator();
 	    Iterator<Coordinate> coordIt = coordinates.iterator();
 	    while (aTypesIt.hasNext() && coordIt.hasNext()){
-	        animalType currType = aTypesIt.next();
+	        actorType currType = aTypesIt.next();
 	        Coordinate coord = coordIt.next();
 
 	        Animal newAnimal;

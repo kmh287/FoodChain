@@ -38,7 +38,8 @@ public class Hunter extends Actor {
 	private Vector2 tmp;
     
     public Hunter(float xPos, float yPos, Trap t){
-    		super(new TextureRegion(tex), xPos, yPos, tex.getWidth(), tex.getHeight());
+    	super(new TextureRegion(tex), actorType.HUNTER, xPos, yPos, tex.getWidth(),
+    		  tex.getHeight(), new actorType[]{actorType.SHEEP});
         inventory = new ArrayList<Trap>();
         inventory.add(t);
         velocity = new Vector2();
@@ -279,4 +280,7 @@ public class Hunter extends Actor {
         canvas.end();
     }
     
+    public String getTypeNameString() {
+    	return "Hunter";
+    }
 }

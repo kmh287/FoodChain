@@ -3,6 +3,7 @@ package com.CS3152.FoodChain;
 import java.util.*;
 
 import com.badlogic.gdx.math.*;
+import com.badlogic.gdx.physics.box2d.World;
 
 /**
  * InputController corresponding to AI control.
@@ -30,16 +31,20 @@ public abstract class AIController implements InputController {
     // Instance Attributes
     // The animal controlled by this AIController
     protected Animal animal;
+    // The world
+    protected World world;
     // The game board; used for pathfinding
     protected GameMap map;
     // The animal's current state
     protected State state;
+    // Whether or not the animal should flee
+    protected boolean scared;
     // The animal's target (assigned when an animal crosses
     // this animal's line of sight) (null if this animal is a sheep)
     protected Actor target;
     // The animal that this animal is fleeing
     protected Actor attacker;
-    // All animals on the map
+    // All actors on the map
     protected List<Actor> actors;
     
     /* Although Vector2 stores floats, we are using their int values to specify the
@@ -66,8 +71,8 @@ public abstract class AIController implements InputController {
         this.map = map;
         this.actors = actors;
         
-        this.loc = new Vector2(map.screenXToMap(animal.getxPos()),
-                               map.screenYToMap(animal.getyPos()));
+        this.loc = new Vector2(map.screenXToMap(animal.getX()),
+                               map.screenYToMap(animal.getY()));
         
         this.state = State.PATROL;//FIND;
         this.goal = new Vector2();
@@ -84,8 +89,8 @@ public abstract class AIController implements InputController {
      * Updates the animal's tile location
      */
     public void updateLoc() {
-        this.loc.set(map.screenXToMap(animal.getxPos()),
-                     map.screenYToMap(animal.getyPos()));
+        this.loc.set(map.screenXToMap(animal.getX()),
+                     map.screenYToMap(animal.getY()));
     }
     
     /*
@@ -129,16 +134,106 @@ public abstract class AIController implements InputController {
         
         if (ticks % 10 == 0 && state != State.DEAD) {
             // Process the State
-            changeStateIfApplicable();
-            //System.out.println("state:" + this.state);
+            //changeStateIfApplicable();
+            
+            checkCone();
+            if (isScared()) {
+            	flee();
+            }
+            else if (hasTarget()) {
+            	chase();
+            }
+            else {
+            	//patrol();
+            }
             
             // Pathfinding
-            markGoal();
+            //markGoal();
             move = getNextMoveToGoal();
         }
         
         //System.out.println(move);
         return move;
+    }
+    
+    // Checks animal's line of sight to see if anything is there and responds
+    // accordingly.
+    public void checkCone() {
+    	for (Actor a : actors) {
+    		if (withinCone(a)) {
+    			VisionCallback vcb = new VisionCallback(this);
+    			world.rayCast(vcb, getAnimal().getPosition(), a.getPosition());
+    		}
+    	}
+    }
+    
+    // Determines whether or not an actor is in the animal's line of sight
+    public boolean withinCone(Actor a) {
+    	
+    }
+    
+    // Determines whether or not the animal should run away
+    public void flee() {
+        // Go to the next tile farthest from attacker
+        float fleex = getAnimal().getX() - attacker.get();
+        float fleey = getAnimal().getY() - attacker.getY();
+        int attackTileX = map.screenXToMap(animal.getX());
+        int attackTileY = map.screenYToMap(animal.getY());
+        // Normalize distance to choose next tile
+        fleex = fleex / (Math.abs(fleex));
+        fleey = fleey / (Math.abs(fleey));
+        // The best goal tile
+        float tileX = getLoc().x + fleex;
+        float tileY = getLoc().y + fleey;
+        // Set best goal if it is safe. Otherwise choose tile farthest from attacker
+        if (map.isSafeAt(tileX, tileY)) {
+        	goal.set(tileX, tileY);
+        	return;
+        }
+        // Find farthest valid tile from attacker
+        float[] dists = new float[7];
+        if (map.isSafeAt(getLoc().x + fleex, tileY)) {
+        	dists[0] = Vector2.dst(getLoc().x + fleex, tileY, attackTileX, attackTileY);
+        }
+        if (map.isSafeAt(tileX, getLoc().y + fleey)) {
+        	dists[1] = Vector2.dst(tileX, getLoc().y + fleey, attackTileX, attackTileY);
+        }
+        if (map.isSafeAt(getLoc().x - fleex, tileY)) {
+        	dists[2] = Vector2.dst(getLoc().x - fleex, tileY, attackTileX, attackTileY);
+        }
+        if (map.isSafeAt(tileX, getLoc().y - fleey)) {
+        	dists[3] = Vector2.dst(tileX, getLoc().y - fleey, attackTileX, attackTileY);
+        }
+        if (map.isSafeAt(getLoc().x - fleex, getLoc().y - fleey)) {
+        	dists[4] = Vector2.dst(getLoc().x - fleex, getLoc().y - fleey,
+					   			   attackTileX, attackTileY);
+        }
+        if (map.isSafeAt(getLoc().x - fleex, getLoc().y + fleey)) {
+        	dists[5] = Vector2.dst(getLoc().x - fleex, getLoc().y + fleey,
+		   			   attackTileX, attackTileY);
+        }            
+        if (map.isSafeAt(getLoc().x + fleex, getLoc().y - fleey)) {
+        	dists[6] = Vector2.dst(getLoc().x + fleex, getLoc().y - fleey,
+		   			   attackTileX, attackTileY);
+        }
+        // biggest distance
+        int biggest = 0;
+        for (int x = 0; x < dists.length; x++) {
+        	if (dists[x] > biggest) {
+        		biggest = dists[x];
+        	}
+        }
+        return;
+    }
+    
+    public void chase() {
+        // Go to the next tile closest to target
+        float chasex = getAnimal().getX() - target.getX();
+        float chasey = getAnimal().getY() - target.getY();
+        // Normalize distance to choose next tile
+        chasex = chasex / (Math.abs(chasex));
+        chasey = chasey / (Math.abs(chasey));
+        goal.set(getLoc().x - chasex, getLoc().y - chasey);
     }
     
     /*
@@ -181,6 +276,10 @@ public abstract class AIController implements InputController {
         this.target = ac;
     }
     
+    public boolean hasTarget() {
+    	return this.target != null;
+    }
+    
     /*
      * Determines whether the animal controlled by this controller is seen by a predator.
      *
@@ -195,6 +294,32 @@ public abstract class AIController implements InputController {
      * false otherwise.
      */
     public abstract boolean seesPrey();
+    
+    /*
+     * Sets whether or not this animal should be scared. If ac is null, then
+     * it should not be scared. Otherwise it should be.
+     */
+    public void setScared(Actor ac) {
+    	if (ac != null) {
+    		this.scared = true;
+    		setAttacker(ac);
+    		return;
+    	}
+    	else {
+    		this.scared = false;
+    		setAttacker(null);
+    		return;
+    	}	
+    }
+    
+    /*
+     * Returns whether or not this animal should run away
+     * 
+     * @return true if the animal saw a predator. False otherwise.
+     */
+    public boolean isScared() {
+    	return this.scared;
+    }
     
     /*
      * Gets the move that will get the animal to its goal the fastest

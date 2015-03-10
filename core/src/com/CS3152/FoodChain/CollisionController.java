@@ -27,7 +27,7 @@ public class CollisionController implements ContactListener {
 	//The game world
 	private World world;
 	/** All the objects in the world. */
-	protected PooledList<PhysicsObject> objects  = new PooledList<PhysicsObject>();
+	protected PooledList<BoxObject> objects  = new PooledList<BoxObject>();
 	//Vector2 cache for calculations
 	private Vector2 tmp;
 	
@@ -42,7 +42,7 @@ public class CollisionController implements ContactListener {
 	 * Add the object to the list of objects maintained in the CollisionController
 	 * @param obj: the object to add
 	 */
-	protected void addObject(PhysicsObject obj) {
+	protected void addObject(BoxObject obj) {
 		objects.add(obj);
 		obj.activatePhysics(world);
 	}
@@ -60,47 +60,13 @@ public class CollisionController implements ContactListener {
 		tmp.add(hunter.getVX(), hunter.getVY());	
 		//System.out.println("vx:" + hunter.getVX() + "vy:" +hunter.getVY());
 		hunter.setCenter(tmp);
-		
 	}
 	
 	private void move(Animal animal) {
 		tmp.set(animal.getCenter());
 		tmp.add(animal.getVX(), animal.getVY());
 		//System.out.println("vx: " + animal.getVX() + " vy: " + animal.getVY());
-		
-		for(Animal a : animals){
-			if (a == animal) {
-				continue;
-			}
-			else {
-				normal.set(animal.getCenter().sub(a.getCenter()));
-				distance = normal.len();
-				normal.nor();
-				if (distance<20){
-					canMove=false;
-					tmp.set(normal).scl((animal.getXDiamter()-distance)/2);
-					//have to play around with numbers to smooth collisions
-					animal.setCenter(animal.getCenter().add(tmp));
-					break;
-				}
-			}
-		}
-		tmp.set(animal.getCenter());
-		tmp.add(animal.getVX(), animal.getVY());
-		//check tiles surrounding player
-//		System.out.println(map.screenPosToTile(tmp.x,tmp.y));
-		if (map.screenPosToTile(tmp.x,tmp.y).type!=(tileType.GRASS)){
-			canMove=false;
-			normal.set(animal.getCenter().sub(tmp));
-			distance = normal.len();
-			normal.nor();
-			tmp.set(normal).scl(-4);
-			animal.setCenter(animal.getCenter().sub(tmp));
-		}
-		
-		if (canMove && !animal.getTrapped()) {
-			animal.setCenter(tmp);
-		}
+		animal.setCenter(tmp);
 	}
 	
 	//Pass the object to the correct handler
