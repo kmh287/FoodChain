@@ -234,11 +234,7 @@ public class Hunter extends Actor {
     	//update inventory
 		tmpTrapType = selectedTrap.getType();
 		//set selectedTrap inventory status to false
-		for (Trap trap : inventory.get(selectedTrap.getType())) {
-    		if(selectedTrap==trap){
-    			trap.setInInventory(false);
-    		}
-        }
+		selectedTrap.setInInventory(false);
 		//set selectedTrap to next available trap inInventory of same type
 		//if no free trap then selectedTrap does not change and player can't put down another
 		for (Trap trap : inventory.get(tmpTrapType)){

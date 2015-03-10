@@ -121,15 +121,12 @@ public class UIController {
         //draw highlighted selected trap
         if(hunter.getSelectedTrap().getInInventory()){
         	if(hunter.getSelectedTrap().getType().toString().equals("REGULAR_TRAP")){
-        		System.out.println("worked");
         		canvas.draw(select_texture, xCoordinate+7, 13);
         	}
         	if(hunter.getSelectedTrap().getType().toString().equals("SHEEP_TRAP")){
-        		System.out.println("worked");
         		canvas.draw(select_texture, xCoordinate+75, 13);
         	}
         	if(hunter.getSelectedTrap().getType().toString().equals("WOLF_TRAP")){
-        		System.out.println("worked");
         		canvas.draw(select_texture, xCoordinate+143, 13);
         	}
         }

@@ -71,7 +71,10 @@ public class LevelOneExporter {
         List<Trap> trap1List = new ArrayList<Trap>();
         List<Trap> trap2List = new ArrayList<Trap>();
         trap0List.add(new Trap("SHEEP_TRAP"));
+        trap0List.add(new Trap("SHEEP_TRAP"));
         trap1List.add(new Trap("WOLF_TRAP"));
+        trap1List.add(new Trap("WOLF_TRAP"));
+        trap2List.add(new Trap("REGULAR_TRAP"));
         trap2List.add(new Trap("REGULAR_TRAP"));
         startingInventory.put("SHEEP_TRAP", trap0List);
         startingInventory.put("WOLF_TRAP", trap1List);
