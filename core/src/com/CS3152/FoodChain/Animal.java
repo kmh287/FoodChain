@@ -53,6 +53,10 @@ public abstract class Animal extends Actor {
 	}
 	
 	public void setPos(float x, float y){
+		
+		float xPos = getX();
+		float yPos = getY();
+		
 	    if (x - xPos == 0 && y - yPos > 0){
 	        this.facing = direction.NORTH;
 	    }
@@ -82,8 +86,6 @@ public abstract class Animal extends Actor {
 	    		//do nothing
 	    		//If this code doesn't change, remove this else
 	    }
-	    
-	    this.xPos = x; this.yPos = y;
         super.setPosition(xPos, yPos);
 	}
 	
@@ -92,20 +94,6 @@ public abstract class Animal extends Actor {
      */
     public animalType getType() {
         return type;
-    }
-	
-    /*
-     * @return its x velocity
-     */
-    public float getVX() {
-    	return this.velocity.x;
-    }
-    
-    /*
-     * @return its y velocity
-     */
-    public float getVY() {
-    	return this.velocity.y;
     }
     
 	/**
@@ -143,13 +131,13 @@ public abstract class Animal extends Actor {
 	 * @return String representing the name of this type
 	 */
 	public Vector2 getCenter(){
-		Vector2 pos = new Vector2(getxPos()+getTexWidth()/2, getyPos()+getTexHeight()/2);
+		Vector2 pos = new Vector2(getX()+getTexWidth()/2, getY()+getTexHeight()/2);
         return pos;
 	}
 	
 	public void setCenter(Vector2 pos){
-		this.xPos = pos.x-getTexWidth()/2;
-		this.yPos = pos.y-getTexHeight()/2;
+		float xPos = pos.x-getTexWidth()/2;
+		float yPos = pos.y-getTexHeight()/2;
         super.setPosition(xPos, yPos);
 	}
 	
@@ -159,8 +147,7 @@ public abstract class Animal extends Actor {
 	 */
 	public String toString(){
 		String type = getTypeNameString();
-		
-		return type + "at x: " + getxPos() + " y: " + getyPos();
+		return type + " at x: " + getX() + " y: " + getY();
 	}
 	
 	/**
@@ -195,7 +182,7 @@ public abstract class Animal extends Actor {
 	
 	public void draw(GameMap map, GameCanvas canvas){
 	    canvas.begin();
-	    canvas.draw(getTexture(), this.xPos, this.yPos);
+	    canvas.draw(getTexture(), getX(), getY());
 	    canvas.end();
     }
 

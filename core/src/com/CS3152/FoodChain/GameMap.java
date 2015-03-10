@@ -4,6 +4,7 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
 import com.google.gson.Gson;
 
 import java.util.*;
@@ -21,24 +22,16 @@ public class GameMap {
         public tileType type;
     }
     
-    public static class Coordinate{
-        public int x;
-        public int y;
-        public Coordinate(int x, int y){
-            this.x = x; this.y = y;
-        }
-    }
-    
     //List of animals and their coordinates
     //The i'th element of animals should be at
     //the i'th coordinate in coordinates.
     private List<Animal.animalType> animals = null;
-    private List<Coordinate> coordinates = null;
+    private List<Vector2> coordinates = null;
     
     //Player information that needs to be stored
     //in the map such as the start position and 
     //starting trap
-    private Coordinate hunterStartPosition = null;
+    private Vector2 hunterStartPosition = null;
     private Trap hunterStartingTrap = null;
     
     //Should be 16 tiles across, and 9 down.
@@ -97,8 +90,8 @@ public class GameMap {
      */
     public GameMap(Tile[][] layout,
                    List<Animal.animalType>animals,
-                   List<Coordinate> coordinates,
-                   Coordinate hunterStartPosition,
+                   List<Vector2> coordinates,
+                   Vector2 hunterStartPosition,
                    Trap hunterStartingTrap){
         this.layout = layout;
         this.animals = animals;
@@ -223,11 +216,11 @@ public class GameMap {
         return this.animals;
     }
     
-    public List<Coordinate> getCoordinates(){
+    public List<Vector2> getCoordinates(){
         return this.coordinates;
     }
 
-    public Coordinate getHunterStartingCoordinate() {
+    public Vector2 getHunterStartingCoordinate() {
         return this.hunterStartPosition;
     }
 

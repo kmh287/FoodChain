@@ -8,6 +8,7 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import com.CS3152.FoodChain.GameMap.tileType;
 import com.badlogic.gdx.math.*;
+import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
@@ -42,9 +43,10 @@ public class CollisionController implements ContactListener {
 	 * Add the object to the list of objects maintained in the CollisionController
 	 * @param obj: the object to add
 	 */
-	protected void addObject(PhysicsObject obj) {
+	protected void addObject(PhysicsObject obj, Animal.animalType type) {
 		objects.add(obj);
 		obj.activatePhysics(world);
+		obj.getBody().setUserData(type);
 	}
 	
 	/**
@@ -56,11 +58,13 @@ public class CollisionController implements ContactListener {
 	 * TODO have to decide how to handle multiple collisions and which collisions to process first. like animal or tiles
 	 */
 	private void move(Hunter hunter) {
-		tmp.set(hunter.getCenter());
-		tmp.add(hunter.getVX(), hunter.getVY());	
-		//System.out.println("vx:" + hunter.getVX() + "vy:" +hunter.getVY());
-		hunter.setCenter(tmp);
-		
+//		tmp.set(hunter.getCenter());
+//		tmp.add(hunter.getVX(), hunter.getVY());	
+//		//System.out.println("vx:" + hunter.getVX() + "vy:" +hunter.getVY());
+//		hunter.setCenter(tmp);
+		hunter.setMass(1);
+		System.out.println(hunter.getVelocity().toString());
+		hunter.setVX(hunter.getVX());
 	}
 	
 	private void move(Animal animal) {
@@ -96,6 +100,9 @@ public class CollisionController implements ContactListener {
 	public void beginContact(Contact contact) {
 		// TODO Auto-generated method stub
 		System.out.println("COLLISION");
+		Body body1 = contact.getFixtureA().getBody();
+		Body body2 = contact.getFixtureB().getBody();
+		System.out.println(body1.getUserData());
 	}
 
 	@Override

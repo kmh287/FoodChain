@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.CS3152.FoodChain.Animal.animalType;
-import com.CS3152.FoodChain.GameMap.Coordinate;
+import com.badlogic.gdx.math.Vector2;
 
 /**
  * This is not part of the final game.
@@ -59,11 +59,11 @@ public class LevelOneExporter {
         animals.add(animalType.SHEEP);
         animals.add(animalType.WOLF);
         
-        List<Coordinate> coords = new ArrayList<Coordinate>();
-        coords.add(new Coordinate(5,5));
-        coords.add(new Coordinate(7,7));
+        List<Vector2> coords = new ArrayList<Vector2>();
+        coords.add(new Vector2(5,5));
+        coords.add(new Vector2(7,7));
         
-        Coordinate playerStart = new Coordinate(10,10);
+        Vector2 playerStart = new Vector2(10,10);
         Trap startingTrap = new Trap("SHEEP_TRAP");
         
         GameMap gm = new GameMap(layout, animals, 

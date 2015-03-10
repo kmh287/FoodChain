@@ -22,8 +22,8 @@ public class SheepController extends AIController {
             for (Actor actr : this.actors) {
                 // What if animal's prey was a hashmap. animal -> boolean
                 // Probably not necessary though
-                int actrX = this.map.screenXToMap(actr.getxPos());
-                int actrY = this.map.screenYToMap(actr.getyPos());
+                int actrX = this.map.screenXToMap(actr.getX());
+                int actrY = this.map.screenYToMap(actr.getY());
                 // If the potential predator's x distance is within 2 tiles to the left
                 if (actrX - getLoc().x <= 0 && actrX - getLoc().x >= -2) {
                     // If the potential predator's y distance is within 1 tile
@@ -41,8 +41,8 @@ public class SheepController extends AIController {
         }
         else if (animal.getFacing() == Actor.direction.EAST) {
             for (Actor actr : this.actors) {
-                int actrX = this.map.screenXToMap(actr.getxPos());
-                int actrY = this.map.screenYToMap(actr.getyPos());
+                int actrX = this.map.screenXToMap(actr.getX());
+                int actrY = this.map.screenYToMap(actr.getY());
                 // If the potential predator's x distance is within 2 tiles to the right
                 if (actrX - getLoc().x >= 0 && actrX - getLoc().x <= 2) {
                     // If the potential predator's y distance is within 1 tile
@@ -60,8 +60,8 @@ public class SheepController extends AIController {
         }
         else if (animal.getFacing() == Actor.direction.NORTH) {
             for (Actor actr : this.actors) {
-                int actrX = this.map.screenXToMap(actr.getxPos());
-                int actrY = this.map.screenYToMap(actr.getyPos());
+                int actrX = this.map.screenXToMap(actr.getX());
+                int actrY = this.map.screenYToMap(actr.getY());
                 // The potential predator's x distance is within 1 tile on either side
                 if (Math.abs(actrX - getLoc().x) <= 1) {
                     // The potential predator's y distance is within 2 tiles above
@@ -79,8 +79,8 @@ public class SheepController extends AIController {
         }
         else if (animal.getFacing() == Actor.direction.SOUTH) {
             for (Actor actr : this.actors) {
-                int actrX = this.map.screenXToMap(actr.getxPos());
-                int actrY = this.map.screenYToMap(actr.getyPos());
+                int actrX = this.map.screenXToMap(actr.getX());
+                int actrY = this.map.screenYToMap(actr.getY());
                 // The potential predator's x distance is within 1 tile on either side
                 if (Math.abs(actrX - getLoc().x) <= 1) {
                     // The potential predator's y distance is within 2 tiles below
@@ -98,8 +98,8 @@ public class SheepController extends AIController {
         }
         else if (animal.getFacing() == Actor.direction.NORTHWEST) {
             for (Actor actr : this.actors) {
-                int actrX = this.map.screenXToMap(actr.getxPos());
-                int actrY = this.map.screenYToMap(actr.getyPos());
+                int actrX = this.map.screenXToMap(actr.getX());
+                int actrY = this.map.screenYToMap(actr.getY());
                 // The potential predator's x distance is within 1 tile on the left
                 if (actrX - getLoc().x <= 0 && actrX - getLoc().x >= -1) {
                     // The potential predator's y distance is within 1 tile above
@@ -129,8 +129,8 @@ public class SheepController extends AIController {
         }
         else if (animal.getFacing() == Actor.direction.NORTHEAST) {
             for (Actor actr : this.actors) {
-                int actrX = this.map.screenXToMap(actr.getxPos());
-                int actrY = this.map.screenYToMap(actr.getyPos());
+                int actrX = this.map.screenXToMap(actr.getX());
+                int actrY = this.map.screenYToMap(actr.getY());
                 // The potential predator's x distance is within 1 tile on the right
                 if (actrX - getLoc().x >= 0 && actrX - getLoc().x <= 1) {
                     // The potential predator's y distance is within 1 tile above
@@ -160,8 +160,8 @@ public class SheepController extends AIController {
         }
         else if (animal.getFacing() == Actor.direction.SOUTHWEST) {
             for (Actor actr : this.actors) {
-                int actrX = this.map.screenXToMap(actr.getxPos());
-                int actrY = this.map.screenYToMap(actr.getyPos());
+                int actrX = this.map.screenXToMap(actr.getX());
+                int actrY = this.map.screenYToMap(actr.getY());
                 // The potential predator's x distance is within 1 tile on the left
                 if (actrX - getLoc().x <= 0 && actrX - getLoc().x >= -1) {
                     // The potential predator's y distance is within 1 tile below
@@ -191,8 +191,8 @@ public class SheepController extends AIController {
         }
         else if (animal.getFacing() == Actor.direction.SOUTHEAST) {
             for (Actor actr : this.actors) {
-                int actrX = this.map.screenXToMap(actr.getxPos());
-                int actrY = this.map.screenYToMap(actr.getyPos());
+                int actrX = this.map.screenXToMap(actr.getX());
+                int actrY = this.map.screenYToMap(actr.getY());
                 // The potential predator's x distance is within 1 tile on the right
                 if (actrX - getLoc().x >= 0 && actrX - getLoc().x <= 1) {
                     // The potential predator's y distance is within 1 tile below
@@ -233,8 +233,8 @@ public class SheepController extends AIController {
             if (actr.getFacing() == Actor.direction.WEST) {
                 // What if animal's prey was a hashmap. animal -> boolean
                 // Probably not necessary though
-                int actrX = this.map.screenXToMap(actr.getxPos());
-                int actrY = this.map.screenYToMap(actr.getyPos());
+                int actrX = this.map.screenXToMap(actr.getX());
+                int actrY = this.map.screenYToMap(actr.getY());
                 // If the potential predator's x distance is within 2 tiles to the left
                 if (getLoc().x - actrX <= 0 && getLoc().x - actrX >= -2) {
                     // If the potential predator's y distance is within 1 tile
@@ -248,8 +248,8 @@ public class SheepController extends AIController {
                 }
             }
             else if (actr.getFacing() == Actor.direction.EAST) {
-                int actrX = this.map.screenXToMap(actr.getxPos());
-                int actrY = this.map.screenYToMap(actr.getyPos());
+                int actrX = this.map.screenXToMap(actr.getX());
+                int actrY = this.map.screenYToMap(actr.getY());
                 // If the potential predator's x distance is within 2 tiles to the right
                 if (getLoc().x - actrX >= 0 && getLoc().x - actrX <= 2) {
                     // If the potential predator's y distance is within 1 tile
@@ -263,8 +263,8 @@ public class SheepController extends AIController {
                 }
             }
             else if (actr.getFacing() == Actor.direction.NORTH) {
-                int actrX = this.map.screenXToMap(actr.getxPos());
-                int actrY = this.map.screenYToMap(actr.getyPos());
+                int actrX = this.map.screenXToMap(actr.getX());
+                int actrY = this.map.screenYToMap(actr.getY());
                 // The potential predator's x distance is within 1 tile on either side
                 if (Math.abs(getLoc().x - actrX) <= 1) {
                     // The potential predator's y distance is within 2 tiles above
@@ -278,8 +278,8 @@ public class SheepController extends AIController {
                 }
             }
             else if (actr.getFacing() == Actor.direction.SOUTH) {
-                int actrX = this.map.screenXToMap(actr.getxPos());
-                int actrY = this.map.screenYToMap(actr.getyPos());
+                int actrX = this.map.screenXToMap(actr.getX());
+                int actrY = this.map.screenYToMap(actr.getY());
                 // The potential predator's x distance is within 1 tile on either side
                 if (Math.abs(getLoc().x - actrX) <= 1) {
                     // The potential predator's y distance is within 2 tiles below
@@ -293,8 +293,8 @@ public class SheepController extends AIController {
                 }
             }
             else if (actr.getFacing() == Actor.direction.NORTHWEST) {
-                int actrX = this.map.screenXToMap(actr.getxPos());
-                int actrY = this.map.screenYToMap(actr.getyPos());
+                int actrX = this.map.screenXToMap(actr.getX());
+                int actrY = this.map.screenYToMap(actr.getY());
                 // The potential predator's x distance is within 1 tile on the left
                 if (getLoc().x - actrX <= 0 && getLoc().x - actrX >= -1) {
                     // The potential predator's y distance is within 1 tile above
@@ -320,8 +320,8 @@ public class SheepController extends AIController {
                 }
             }
             else if (actr.getFacing() == Actor.direction.NORTHEAST) {
-                int actrX = this.map.screenXToMap(actr.getxPos());
-                int actrY = this.map.screenYToMap(actr.getyPos());
+                int actrX = this.map.screenXToMap(actr.getX());
+                int actrY = this.map.screenYToMap(actr.getY());
                 // The potential predator's x distance is within 1 tile on the right
                 if (getLoc().x - actrX >= 0 && getLoc().x - actrX <= 1) {
                     // The potential predator's y distance is within 1 tile above
@@ -347,8 +347,8 @@ public class SheepController extends AIController {
                 }
             }
             else if (actr.getFacing() == Actor.direction.SOUTHWEST) {
-                int actrX = this.map.screenXToMap(actr.getxPos());
-                int actrY = this.map.screenYToMap(actr.getyPos());
+                int actrX = this.map.screenXToMap(actr.getX());
+                int actrY = this.map.screenYToMap(actr.getY());
                 // The potential predator's x distance is within 1 tile on the left
                 if (getLoc().x - actrX <= 0 && getLoc().x - actrX >= -1) {
                     // The potential predator's y distance is within 1 tile below
@@ -374,8 +374,8 @@ public class SheepController extends AIController {
                 }
             }
             else if (actr.getFacing() == Actor.direction.SOUTHEAST) {
-                int actrX = this.map.screenXToMap(actr.getxPos());
-                int actrY = this.map.screenYToMap(actr.getyPos());
+                int actrX = this.map.screenXToMap(actr.getX());
+                int actrY = this.map.screenYToMap(actr.getY());
                 // The potential predator's x distance is within 1 tile on the right
                 if (getLoc().x - actrX >= 0 && getLoc().x - actrX <= 1) {
                     // The potential predator's y distance is within 1 tile below
@@ -473,8 +473,8 @@ public class SheepController extends AIController {
                 // Will never happen
                 break;
             case FLEE:
-                float x = getLoc().x - map.screenXToMap(attacker.getxPos());
-                float y = getLoc().y - map.screenYToMap(attacker.getyPos());
+                float x = getLoc().x - map.screenXToMap(attacker.getX());
+                float y = getLoc().y - map.screenYToMap(attacker.getY());
                 x = x / (Math.abs(x));
                 y = y / (Math.abs(y));
                 goal.set(getLoc().x + x, getLoc().y + y);

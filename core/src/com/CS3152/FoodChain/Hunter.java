@@ -61,77 +61,48 @@ public class Hunter extends Actor {
             }
         }
     }
-    /**
-     * @return the bottom LeftxPos
-     */
-    public float getxPos() {
-        return xPos;
-    }
     
-    /**
-     * @return the center of the hunter
-     */
-    public Vector2 getCenter() {
-    	Vector2 pos = new Vector2(getxPos()+(float)this.tex.getWidth()/2, getyPos()+(float)this.tex.getHeight()/2);
-        return pos;
-    }
-    
-    /**
-     * @return the bottom right of the hunter
-     */
-    public Vector2 getBottomRight() {
-    	Vector2 pos = new Vector2(getxPos()+(float)this.tex.getWidth(), getyPos());
-        return pos;
-    }
-    
-    /**
-     * @return the top right of the hunter
-     */
-    public Vector2 getTopRight() {
-    	Vector2 pos = new Vector2(getxPos()+(float)tex.getWidth(), getyPos()+(float)tex.getHeight());
-        return pos;
-    }
-    /**
-     * @return the top left of the hunter
-     */
-    public Vector2 getTopLeft() { 
-    	Vector2 pos = new Vector2(getxPos()+(float)tex.getWidth(), +(float)tex.getHeight());
-        return pos;
-    }
-    
-    /**
-     *	Set center of hunter position
-     */
-    public void setCenter(Vector2 pos) {
-	    	this.yPos=pos.y-(float)tex.getHeight()/2;
-	    	this.xPos=pos.x-(float)tex.getWidth()/2;
-    		super.setPosition(xPos, yPos);
-    }
+//    /**
+//     * @return the center of the hunter
+//     */
+//    public Vector2 getCenter() {
+//    		Vector2 pos = new Vector2(getX()+(float)this.tex.getWidth()/2, 
+//    								  getY()+(float)this.tex.getHeight()/2);
+//        return pos;
+//    }
+//    
+//    /**
+//     * @return the bottom right of the hunter
+//     */
+//    public Vector2 getBottomRight() {
+//    	Vector2 pos = new Vector2(getxPos()+(float)this.tex.getWidth(), getyPos());
+//        return pos;
+//    }
+//    
+//    /**
+//     * @return the top right of the hunter
+//     */
+//    public Vector2 getTopRight() {
+//    	Vector2 pos = new Vector2(getxPos()+(float)tex.getWidth(), getyPos()+(float)tex.getHeight());
+//        return pos;
+//    }
+//    /**
+//     * @return the top left of the hunter
+//     */
+//    public Vector2 getTopLeft() { 
+//    	Vector2 pos = new Vector2(getxPos()+(float)tex.getWidth(), +(float)tex.getHeight());
+//        return pos;
+//    }
+//    
+//    /**
+//     *	Set center of hunter position
+//     */
+//    public void setCenter(Vector2 pos) {
+//	    	float yPos=pos.y-(float)tex.getHeight()/2;
+//	    	float xPos=pos.x-(float)tex.getWidth()/2;
+//    		super.setPosition(xPos, yPos);
+//    }
 
-    /**
-     * @param  the bottom left xPos to set
-     */
-    public void setxPos(float xPos) {
-        this.xPos = xPos;
-        super.setPosition(xPos, yPos);
-    }
-
-    /**
-     * @return the yPos
-     */
-    public float getyPos() {
-        return yPos;
-    }
-
-    /**
-     * @param yPos the yPos to set
-     */
-    public void setyPos(float yPos) {
-        this.yPos = yPos;
-        super.setPosition(xPos, yPos);
-    }
-
-    
     /**
      * 
      * @param trap the trap to add to the inventory
@@ -149,15 +120,15 @@ public class Hunter extends Actor {
     }
     
     public Vector2 getPosition() {
-    		Vector2 pos = new Vector2(getxPos(), getyPos());
+    		Vector2 pos = new Vector2(getX(), getY());
     		return pos; 
     }
     
-    public void setPosition(Vector2 pos) {
-    		xPos = pos.x;
-    		yPos = pos.y;
-        super.setPosition(xPos, yPos);
-    }
+//    public void setPosition(Vector2 pos) {
+//    		xPos = pos.x;
+//    		yPos = pos.y;
+//        super.setPosition(xPos, yPos);
+//    }
 
     public float getVX() {
     		return velocity.x; 
@@ -260,7 +231,6 @@ public class Hunter extends Actor {
 			else if (movingNorthWest) {
 				angle = 180.0f;
 				velocity.x = -MOVE_SPEED;
-	
 				velocity.y = MOVE_SPEED;
 			}
 			else if (settingTrap) {
@@ -275,8 +245,7 @@ public class Hunter extends Actor {
     
     public void draw(GameCanvas canvas){
         canvas.begin();
-        canvas.draw(tex, this.xPos, this.yPos);
+        canvas.draw(tex, getX(), getY());
         canvas.end();
     }
-    
 }

@@ -66,8 +66,8 @@ public abstract class AIController implements InputController {
         this.map = map;
         this.actors = actors;
         
-        this.loc = new Vector2(map.screenXToMap(animal.getxPos()),
-                               map.screenYToMap(animal.getyPos()));
+        this.loc = new Vector2(map.screenXToMap(animal.getX()),
+                               map.screenYToMap(animal.getY()));
         
         this.state = State.PATROL;//FIND;
         this.goal = new Vector2();
@@ -84,8 +84,8 @@ public abstract class AIController implements InputController {
      * Updates the animal's tile location
      */
     public void updateLoc() {
-        this.loc.set(map.screenXToMap(animal.getxPos()),
-                     map.screenYToMap(animal.getyPos()));
+        this.loc.set(map.screenXToMap(animal.getX()),
+                     map.screenYToMap(animal.getY()));
     }
     
     /*
