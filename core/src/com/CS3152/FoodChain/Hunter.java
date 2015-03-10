@@ -172,6 +172,9 @@ public class Hunter extends Actor {
     	this.selectedTrap=trap;
     }
 
+    public Trap getSelectedTrap(){
+    	return selectedTrap;
+    }
     
     /**
      * 
@@ -269,6 +272,9 @@ public class Hunter extends Actor {
 	    	boolean movingSouthEast = (controlCode == InputController.SOUTHEAST);
 	    	boolean movingNorthEast = (controlCode == InputController.NORTHEAST);
 	    	boolean settingTrap = (controlCode == InputController.CLICK);
+	    	boolean oneSelect = (controlCode == InputController.ONE);
+	    	boolean twoSelect = (controlCode == InputController.TWO);
+	    	boolean threeSelect = (controlCode == InputController.THREE);
 	    	
 	    	//process moving command 
 	    	if (movingWest) {
@@ -319,6 +325,29 @@ public class Hunter extends Actor {
 				velocity.x = 0;
 				velocity.y = 0;
 			}
+	    	
+	    	//process selected trap
+	    	if(oneSelect){
+		        for (Trap trap : inventory.get("REGULAR_TRAP")) {
+		        	if(trap.getInInventory()){
+		        		selectedTrap = trap;
+		        	}
+		        }
+	    	}
+	    	if(twoSelect){
+		        for (Trap trap : inventory.get("SHEEP_TRAP")) {
+		        	if(trap.getInInventory()){
+		        		selectedTrap = trap;
+		        	}
+		        }
+	    	}
+	    	if(threeSelect){
+		        for (Trap trap : inventory.get("WOLF_TRAP")) {
+		        	if(trap.getInInventory()){
+		        		selectedTrap = trap;
+		        	}
+		        }
+	    	}
 	    }
     
     public void draw(GameCanvas canvas){

@@ -51,6 +51,9 @@ public class PlayerController implements InputController{
 			if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) code = WEST; 
 			if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) code = SOUTH; 
 			if (Gdx.input.isKeyPressed(Input.Keys.UP)) code = NORTH; 
+			if (Gdx.input.isKeyPressed(Input.Keys.NUM_1)) code = ONE; 
+			if (Gdx.input.isKeyPressed(Input.Keys.NUM_2)) code = TWO; 
+			if (Gdx.input.isKeyPressed(Input.Keys.NUM_3)) code = THREE; 
 				
 			/* Figure out how to deal with the mouse click */
 			if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) code = CLICK; 

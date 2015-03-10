@@ -17,9 +17,11 @@ public class UIController {
     private static final String TRAP_TWO_TWO = "assets/trap2_2.png";
     private static final String TRAP_THREE_ONE = "assets/trap3_1.png";
     private static final String TRAP_THREE_TWO = "assets/trap3_2.png";
+    private static final String SELECT = "assets/select.png";
+    private static final String BLACK_BAR = "assets/blackbar.png";
     
     private Hunter hunter;
-    private static final String BLACK_BAR = "assets/blackbar.png";
+    
     private static Texture allDeselect = null;
     private static Texture trap_1_1_texture = null;
     private static Texture trap_1_2_texture = null;
@@ -28,6 +30,7 @@ public class UIController {
     private static Texture trap_3_1_texture = null;
     private static Texture trap_3_2_texture = null;
     private static Texture blackBar = null;
+    private static Texture select_texture = null;
     
     private int regularCount = 0;
     private int sheepCount = 0;
@@ -46,6 +49,7 @@ public class UIController {
             manager.load(TRAP_TWO_TWO, Texture.class);
             manager.load(TRAP_THREE_ONE, Texture.class);
             manager.load(TRAP_THREE_TWO, Texture.class);
+            manager.load(SELECT,Texture.class);
             manager.finishLoading();
             if (manager.isLoaded(TRAPS_DESELECT)){
             	allDeselect = manager.get(TRAPS_DESELECT);
@@ -55,6 +59,7 @@ public class UIController {
             	trap_2_2_texture = manager.get(TRAP_TWO_TWO);
             	trap_3_1_texture = manager.get(TRAP_THREE_ONE);
             	trap_3_2_texture = manager.get(TRAP_THREE_TWO);
+            	select_texture = manager.get(SELECT);
             }
         }
         
@@ -111,6 +116,22 @@ public class UIController {
         }
         else if(wolfCount==2){
         	canvas.draw(trap_3_2_texture, xCoordinate+143, 13);
+        }
+        
+        //draw highlighted selected trap
+        if(hunter.getSelectedTrap().getInInventory()){
+        	if(hunter.getSelectedTrap().getType().toString().equals("REGULAR_TRAP")){
+        		System.out.println("worked");
+        		canvas.draw(select_texture, xCoordinate+7, 13);
+        	}
+        	if(hunter.getSelectedTrap().getType().toString().equals("SHEEP_TRAP")){
+        		System.out.println("worked");
+        		canvas.draw(select_texture, xCoordinate+75, 13);
+        	}
+        	if(hunter.getSelectedTrap().getType().toString().equals("WOLF_TRAP")){
+        		System.out.println("worked");
+        		canvas.draw(select_texture, xCoordinate+143, 13);
+        	}
         }
         
         canvas.end();
