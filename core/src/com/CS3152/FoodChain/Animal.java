@@ -2,6 +2,7 @@ package com.CS3152.FoodChain;
 
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
 public abstract class Animal extends Actor {
@@ -18,7 +19,7 @@ public abstract class Animal extends Actor {
 	//Whether the animal is caught in a trap
 	private boolean trapped = false;
 
-	//texture used in getCenter adn setCenter
+	//texture used in getCenter and setCenter
 	private float texWidth;
 	private float texHeight;
 	
@@ -39,18 +40,19 @@ public abstract class Animal extends Actor {
 	 * @param foodchainVal The food chain value for this animal. 
 	 *                     It is up to the CALLER to ensure this is correct.
 	 */
-	public Animal(animalType type, float x, float y, 
+	public Animal(TextureRegion tr, animalType type, float x, float y, 
 	              animalType[] prey, direction facing){
-		super(x, y);
+		super(tr, x, y, tr.getRegionWidth(), tr.getRegionHeight());
 		this.type = type;
 		this.setPos(x,y);
 		this.prey = prey;
 		this.facing = facing;
 		this.velocity = new Vector2();
+		setTexWidth(tr.getRegionWidth());
+		setTexHeight(tr.getRegionHeight());
 	}
 	
 	public void setPos(float x, float y){
-	    
 	    if (x - xPos == 0 && y - yPos > 0){
 	        this.facing = direction.NORTH;
 	    }
@@ -76,10 +78,13 @@ public abstract class Animal extends Actor {
 	        this.facing = direction.NORTHWEST;
 	    }
 	    else{
-	        System.out.println("Bug in setPos");
+	        //Standing still
+	    		//do nothing
+	    		//If this code doesn't change, remove this else
 	    }
 	    
 	    this.xPos = x; this.yPos = y;
+        super.setPosition(xPos, yPos);
 	}
 	
     /**
@@ -145,6 +150,7 @@ public abstract class Animal extends Actor {
 	public void setCenter(Vector2 pos){
 		this.xPos = pos.x-getTexWidth()/2;
 		this.yPos = pos.y-getTexHeight()/2;
+        super.setPosition(xPos, yPos);
 	}
 	
 	/**
@@ -187,18 +193,9 @@ public abstract class Animal extends Actor {
         return false;
 	}
 	
-	/*
-	 * Load the animal's texture.
-	 * Do not load it again if it has already been loaded
-	 */
-	public abstract void loadTexture(AssetManager manager);
-	
-	public abstract Texture getTexture();
-	
 	public void draw(GameMap map, GameCanvas canvas){
-	    Texture tex = getTexture();
 	    canvas.begin();
-	    canvas.draw(tex, this.xPos, this.yPos);
+	    canvas.draw(getTexture(), this.xPos, this.yPos);
 	    canvas.end();
     }
 

@@ -39,7 +39,7 @@ public class GameMap {
     //in the map such as the start position and 
     //starting trap
     private Coordinate hunterStartPosition = null;
-    private Trap hunterStartingTrap = null;
+    private HashMap<String, List<Trap>> hunterStartingInventory = null;
     
     //Should be 16 tiles across, and 9 down.
     //Therefore, layout should be [9][16] to match
@@ -99,12 +99,13 @@ public class GameMap {
                    List<Animal.animalType>animals,
                    List<Coordinate> coordinates,
                    Coordinate hunterStartPosition,
-                   Trap hunterStartingTrap){
+                   HashMap<String, List<Trap>> hunterStartingInventory){
         this.layout = layout;
         this.animals = animals;
         this.coordinates = coordinates;
         this.hunterStartPosition = hunterStartPosition;
-        this.hunterStartingTrap = hunterStartingTrap;
+        this.hunterStartingInventory = hunterStartingInventory;
+        System.out.println("from GameMap"+hunterStartingInventory);
     }
     
     /** Return a string representation of the map
@@ -231,8 +232,8 @@ public class GameMap {
         return this.hunterStartPosition;
     }
 
-    public Trap getStartingTrap() {
-        return this.hunterStartingTrap; 
+    public HashMap<String, List<Trap>> getStartingInventory() {
+        return this.hunterStartingInventory; 
     }
  
 }

@@ -503,7 +503,7 @@ public class WolfController extends AIController {
         switch (state) {
             case FIND:
                 // Complicated
-            	goal.set(getLoc().x, getLoc().y);
+            		goal.set(getLoc().x, getLoc().y);
                 break;
             case PATROL:
                 // If facing right, mark right tile. If left, left one.
