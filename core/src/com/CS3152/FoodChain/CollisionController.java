@@ -80,6 +80,7 @@ public class CollisionController implements ContactListener {
 	}
 
 	public void update() {
+		world.step(1/60f, 3, 3);
 		for(PhysicsObject o : objects) {
 			move(o);
 			//System.out.println(o.getPosition().toString());
