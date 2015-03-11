@@ -43,7 +43,6 @@ public class Hunter extends Actor {
 	private float angle; 
 	
 	private Vector2 tmp;
-
     
     public Hunter(float xPos, float yPos,  HashMap<String, List<Trap>> traps ){
     		super(new TextureRegion(tex), xPos, yPos, tex.getWidth(), tex.getHeight());
