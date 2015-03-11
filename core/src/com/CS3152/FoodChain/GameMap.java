@@ -32,7 +32,7 @@ public class GameMap {
     //List of animals and their coordinates
     //The i'th element of animals should be at
     //the i'th coordinate in coordinates.
-    private List<Animal.animalType> animals = null;
+    private List<Actor.actorType> animals = null;
     private List<Coordinate> coordinates = null;
     
     //Player information that needs to be stored
@@ -93,10 +93,10 @@ public class GameMap {
      * @param coordinates Coordinates of the animals. This should 
      *                    have the *EXACT* same length as animals
      * @param playerStartPosition The coordinate of the player
-     *                            start posiiton
+     *                            start position
      */
     public GameMap(Tile[][] layout,
-                   List<Animal.animalType>animals,
+                   List<Actor.actorType>animals,
                    List<Coordinate> coordinates,
                    Coordinate hunterStartPosition,
                    HashMap<String, List<Trap>> hunterStartingInventory){
@@ -220,7 +220,7 @@ public class GameMap {
         canvas.end();
     }
     
-    public List<Animal.animalType>getAnimalTypeList(){
+    public List<Actor.actorType> getActorTypeList(){
         return this.animals;
     }
     
@@ -235,5 +235,10 @@ public class GameMap {
     public HashMap<String, List<Trap>> getStartingInventory() {
         return this.hunterStartingInventory; 
     }
+
+	public boolean isSafeAt(float tileX, float tileY) {
+		// TODO Auto-generated method stub
+		return true;
+	}
  
 }

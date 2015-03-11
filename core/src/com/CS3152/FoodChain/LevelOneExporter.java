@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import com.CS3152.FoodChain.Animal.animalType;
+import com.CS3152.FoodChain.Actor.actorType;
 import com.CS3152.FoodChain.GameMap.Coordinate;
 
 /**
@@ -56,9 +56,9 @@ public class LevelOneExporter {
         layout[4][8].type = GameMap.tileType.BUSH;
         layout[6][8].type = GameMap.tileType.BUSH;
           
-        List<animalType> animals = new ArrayList<animalType>();
-        animals.add(animalType.SHEEP);
-        animals.add(animalType.WOLF);
+        List<actorType> animals = new ArrayList<actorType>();
+        animals.add(actorType.SHEEP);
+        animals.add(actorType.WOLF);
         
         
         List<Coordinate> coords = new ArrayList<Coordinate>();

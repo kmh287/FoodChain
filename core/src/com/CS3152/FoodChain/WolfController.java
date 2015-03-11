@@ -21,15 +21,15 @@ public class WolfController extends AIController {
             for (Actor actr : this.actors) {
                 // What if animal's prey was a hashmap. animal -> boolean
                 // Probably not necessary though
-                int actrX = this.map.screenXToMap(actr.getxPos());
-                int actrY = this.map.screenYToMap(actr.getyPos());
+                int actrX = this.map.screenXToMap(actr.getX());
+                int actrY = this.map.screenYToMap(actr.getY());
                 // If the potential predator's x distance is within 2 tiles to the left
                 if (actrX - getLoc().x <= 0 && actrX - getLoc().x >= -2) {
                     // If the potential predator's y distance is within 1 tile
                     if (Math.abs(actrY - getLoc().y) <= 1) {
                         // If the nearby animal can eat this animal
                         if (actr == actors.get(0) ||
-                            ((Animal)(actr)).canEat(animal)) {
+                            ((Animal)(actr)).canKill(animal)) {
                             setAttacker(actr);
                             return true;
                         }
@@ -41,15 +41,15 @@ public class WolfController extends AIController {
         }
         else if (animal.getFacing() == Actor.direction.EAST) {
             for (Actor actr : this.actors) {
-                int actrX = this.map.screenXToMap(actr.getxPos());
-                int actrY = this.map.screenYToMap(actr.getyPos());
+                int actrX = this.map.screenXToMap(actr.getX());
+                int actrY = this.map.screenYToMap(actr.getY());
                 // If the potential predator's x distance is within 2 tiles to the right
                 if (actrX - getLoc().x >= 0 && actrX - getLoc().x <= 2) {
                     // If the potential predator's y distance is within 1 tile
                     if (Math.abs(actrY - getLoc().y) <= 1) {
                         // If the nearby animal can eat this animal
                         if (actr == actors.get(0) ||
-                            ((Animal)(actr)).canEat(animal)) {
+                            ((Animal)(actr)).canKill(animal)) {
                             setAttacker(actr);
                             return true;
                         }
@@ -61,15 +61,15 @@ public class WolfController extends AIController {
         }
         else if (animal.getFacing() == Actor.direction.NORTH) {
             for (Actor actr : this.actors) {
-                int actrX = this.map.screenXToMap(actr.getxPos());
-                int actrY = this.map.screenYToMap(actr.getyPos());
+                int actrX = this.map.screenXToMap(actr.getX());
+                int actrY = this.map.screenYToMap(actr.getY());
                 // The potential predator's x distance is within 1 tile on either side
                 if (Math.abs(actrX - getLoc().x) <= 1) {
                     // The potential predator's y distance is within 2 tiles above
                     if (actrY - getLoc().y >= 0 && actrY - getLoc().y <= 2) {
                         // If the nearby animal can eat this animal
                         if (actr == actors.get(0) ||
-                            ((Animal)(actr)).canEat(animal)) {
+                            ((Animal)(actr)).canKill(animal)) {
                             setAttacker(actr);
                             return true;
                         }
@@ -81,15 +81,15 @@ public class WolfController extends AIController {
         }
         else if (animal.getFacing() == Actor.direction.SOUTH) {
             for (Actor actr : this.actors) {
-                int actrX = this.map.screenXToMap(actr.getxPos());
-                int actrY = this.map.screenYToMap(actr.getyPos());
+                int actrX = this.map.screenXToMap(actr.getX());
+                int actrY = this.map.screenYToMap(actr.getY());
                 // The potential predator's x distance is within 1 tile on either side
                 if (Math.abs(actrX - getLoc().x) <= 1) {
                     // The potential predator's y distance is within 2 tiles below
                     if (actrY - getLoc().y <= 0 && actrY - getLoc().y >= -2) {
                         // If the nearby animal can eat this animal
                         if (actr == actors.get(0) ||
-                            ((Animal)(actr)).canEat(animal)) {
+                            ((Animal)(actr)).canKill(animal)) {
                             setAttacker(actr);
                             return true;
                         }
@@ -101,15 +101,15 @@ public class WolfController extends AIController {
         }
         else if (animal.getFacing() == Actor.direction.NORTHWEST) {
             for (Actor actr : this.actors) {
-                int actrX = this.map.screenXToMap(actr.getxPos());
-                int actrY = this.map.screenYToMap(actr.getyPos());
+                int actrX = this.map.screenXToMap(actr.getX());
+                int actrY = this.map.screenYToMap(actr.getY());
                 // The potential predator's x distance is within 1 tile on the left
                 if (actrX - getLoc().x <= 0 && actrX - getLoc().x >= -1) {
                     // The potential predator's y distance is within 1 tile above
                     if (actrY - getLoc().y >= 0 && actrY - getLoc().y <= 1) {
                         // If the nearby animal can eat this animal
                         if (actr == actors.get(0) ||
-                            ((Animal)(actr)).canEat(animal)) {
+                            ((Animal)(actr)).canKill(animal)) {
                             setAttacker(actr);
                             return true;
                         }
@@ -122,7 +122,7 @@ public class WolfController extends AIController {
                     // animal's location
                     if (actrY - (getLoc().y + 1) >= 0 && actrY - (getLoc().y + 1) <= 1) {
                         if (actr == actors.get(0) ||
-                            ((Animal)(actr)).canEat(animal)) {
+                            ((Animal)(actr)).canKill(animal)) {
                             setAttacker(actr);
                             return true;
                         }
@@ -134,15 +134,15 @@ public class WolfController extends AIController {
         }
         else if (animal.getFacing() == Actor.direction.NORTHEAST) {
             for (Actor actr : this.actors) {
-                int actrX = this.map.screenXToMap(actr.getxPos());
-                int actrY = this.map.screenYToMap(actr.getyPos());
+                int actrX = this.map.screenXToMap(actr.getX());
+                int actrY = this.map.screenYToMap(actr.getY());
                 // The potential predator's x distance is within 1 tile on the right
                 if (actrX - getLoc().x >= 0 && actrX - getLoc().x <= 1) {
                     // The potential predator's y distance is within 1 tile above
                     if (actrY - getLoc().y >= 0 && actrY - getLoc().y <= 1) {
                         // If the nearby animal can eat this animal
                         if (actr == actors.get(0) ||
-                            ((Animal)(actr)).canEat(animal)) {
+                            ((Animal)(actr)).canKill(animal)) {
                             setAttacker(actr);
                             return true;
                         }
@@ -155,7 +155,7 @@ public class WolfController extends AIController {
                     // animal's location
                     if (actrY - (getLoc().y + 1) >= 0 && actrY - (getLoc().y + 1) <= 1) {
                         if (actr == actors.get(0) ||
-                            ((Animal)(actr)).canEat(animal)) {
+                            ((Animal)(actr)).canKill(animal)) {
                             setAttacker(actr);
                             return true;
                         }
@@ -167,15 +167,15 @@ public class WolfController extends AIController {
         }
         else if (animal.getFacing() == Actor.direction.SOUTHWEST) {
             for (Actor actr : this.actors) {
-                int actrX = this.map.screenXToMap(actr.getxPos());
-                int actrY = this.map.screenYToMap(actr.getyPos());
+                int actrX = this.map.screenXToMap(actr.getX());
+                int actrY = this.map.screenYToMap(actr.getY());
                 // The potential predator's x distance is within 1 tile on the left
                 if (actrX - getLoc().x <= 0 && actrX - getLoc().x >= -1) {
                     // The potential predator's y distance is within 1 tile below
                     if (actrY - getLoc().y <= 0 && actrY - getLoc().y >= -1) {
                         // If the nearby animal can eat this animal
                         if (actr == actors.get(0) ||
-                            ((Animal)(actr)).canEat(animal)) {
+                            ((Animal)(actr)).canKill(animal)) {
                             setAttacker(actr);
                             return true;
                         }
@@ -188,7 +188,7 @@ public class WolfController extends AIController {
                     // animal's location
                     if (actrY - (getLoc().y - 1) <= 0 && actrY - (getLoc().y - 1) >= -1) {
                         if (actr == actors.get(0) ||
-                            ((Animal)(actr)).canEat(animal)) {
+                            ((Animal)(actr)).canKill(animal)) {
                             setAttacker(actr);
                             return true;
                         }
@@ -200,15 +200,15 @@ public class WolfController extends AIController {
         }
         else if (animal.getFacing() == Actor.direction.SOUTHEAST) {
             for (Actor actr : this.actors) {
-                int actrX = this.map.screenXToMap(actr.getxPos());
-                int actrY = this.map.screenYToMap(actr.getyPos());
+                int actrX = this.map.screenXToMap(actr.getX());
+                int actrY = this.map.screenYToMap(actr.getY());
                 // The potential predator's x distance is within 1 tile on the right
                 if (actrX - getLoc().x >= 0 && actrX - getLoc().x <= 1) {
                     // The potential predator's y distance is within 1 tile below
                     if (actrY - getLoc().y <= 0 && actrY - getLoc().y >= -1) {
                         // If the nearby animal can eat this animal
                         if (actr == actors.get(0) ||
-                            ((Animal)(actr)).canEat(animal)) {
+                            ((Animal)(actr)).canKill(animal)) {
                             setAttacker(actr);
                             return true;
                         }
@@ -221,7 +221,7 @@ public class WolfController extends AIController {
                     // animal's location
                     if (actrY - (getLoc().y - 1) <= 0 && actrY - (getLoc().y - 1) >= -1) {
                         if (actr == actors.get(0) ||
-                            ((Animal)(actr)).canEat(animal)) {
+                            ((Animal)(actr)).canKill(animal)) {
                             setAttacker(actr);
                             return true;
                         }
@@ -252,14 +252,14 @@ public class WolfController extends AIController {
             for (Actor actr : this.actors) {
                 // What if animal's prey was a hashmap. animal -> boolean
                 // Probably not necessary though
-                int actrX = this.map.screenXToMap(actr.getxPos());
-                int actrY = this.map.screenYToMap(actr.getyPos());
+                int actrX = this.map.screenXToMap(actr.getX());
+                int actrY = this.map.screenYToMap(actr.getY());
                 // If the potential predator's x distance is within 2 tiles to the left
                 if (actrX - getLoc().x <= 0 && actrX - getLoc().x >= -2) {
                     // If the potential predator's y distance is within 1 tile
                     if (Math.abs(actrY - getLoc().y) <= 1) {
                         // If the nearby animal can eat this animal
-                        if (actr == actors.get(0) || animal.canEat((Animal)(actr))) {
+                        if (actr == actors.get(0) || animal.canKill((Animal)(actr))) {
                             setTarget(actr);
                             return true;
                         }
@@ -271,14 +271,14 @@ public class WolfController extends AIController {
         }
         else if (animal.getFacing() == Actor.direction.EAST) {
             for (Actor actr : this.actors) {
-                int actrX = this.map.screenXToMap(actr.getxPos());
-                int actrY = this.map.screenYToMap(actr.getyPos());
+                int actrX = this.map.screenXToMap(actr.getX());
+                int actrY = this.map.screenYToMap(actr.getY());
                 // If the potential predator's x distance is within 2 tiles to the right
                 if (actrX - getLoc().x >= 0 && actrX - getLoc().x <= 2) {
                     // If the potential predator's y distance is within 1 tile
                     if (Math.abs(actrY - getLoc().y) <= 1) {
                         // If the nearby animal can eat this animal
-                        if (actr == actors.get(0) || animal.canEat((Animal)(actr))) {
+                        if (actr == actors.get(0) || animal.canKill((Animal)(actr))) {
                             setTarget(actr);
                             return true;
                         }
@@ -290,14 +290,14 @@ public class WolfController extends AIController {
         }
         else if (animal.getFacing() == Actor.direction.NORTH) {
             for (Actor actr : this.actors) {
-                int actrX = this.map.screenXToMap(actr.getxPos());
-                int actrY = this.map.screenYToMap(actr.getyPos());
+                int actrX = this.map.screenXToMap(actr.getX());
+                int actrY = this.map.screenYToMap(actr.getY());
                 // The potential predator's x distance is within 1 tile on either side
                 if (Math.abs(actrX - getLoc().x) <= 1) {
                     // The potential predator's y distance is within 2 tiles above
                     if (actrY - getLoc().y >= 0 && actrY - getLoc().y <= 2) {
                         // If the nearby animal can eat this animal
-                        if (actr == actors.get(0) || animal.canEat((Animal)(actr))) {
+                        if (actr == actors.get(0) || animal.canKill((Animal)(actr))) {
                             setTarget(actr);
                             return true;
                         }
@@ -309,14 +309,14 @@ public class WolfController extends AIController {
         }
         else if (animal.getFacing() == Actor.direction.SOUTH) {
             for (Actor actr : this.actors) {
-                int actrX = this.map.screenXToMap(actr.getxPos());
-                int actrY = this.map.screenYToMap(actr.getyPos());
+                int actrX = this.map.screenXToMap(actr.getX());
+                int actrY = this.map.screenYToMap(actr.getY());
                 // The potential predator's x distance is within 1 tile on either side
                 if (Math.abs(actrX - getLoc().x) <= 1) {
                     // The potential predator's y distance is within 2 tiles below
                     if (actrY - getLoc().y <= 0 && actrY - getLoc().y >= -2) {
                         // If the nearby animal can eat this animal
-                        if (actr == actors.get(0) || animal.canEat((Animal)(actr))) {
+                        if (actr == actors.get(0) || animal.canKill((Animal)(actr))) {
                             setTarget(actr);
                             return true;
                         }
@@ -328,14 +328,14 @@ public class WolfController extends AIController {
         }
         else if (animal.getFacing() == Actor.direction.NORTHWEST) {
             for (Actor actr : this.actors) {
-                int actrX = this.map.screenXToMap(actr.getxPos());
-                int actrY = this.map.screenYToMap(actr.getyPos());
+                int actrX = this.map.screenXToMap(actr.getX());
+                int actrY = this.map.screenYToMap(actr.getY());
                 // The potential predator's x distance is within 1 tile on the left
                 if (actrX - getLoc().x <= 0 && actrX - getLoc().x >= -1) {
                     // The potential predator's y distance is within 1 tile above
                     if (actrY - getLoc().y >= 0 && actrY - getLoc().y <= 1) {
                         // If the nearby animal can eat this animal
-                        if (actr == actors.get(0) || animal.canEat((Animal)(actr))) {
+                        if (actr == actors.get(0) || animal.canKill((Animal)(actr))) {
                             setTarget(actr);
                             return true;
                         }
@@ -347,7 +347,7 @@ public class WolfController extends AIController {
                     // y distance is within 1 tile above the tile northwest of this
                     // animal's location
                     if (actrY - (getLoc().y + 1) >= 0 && actrY - (getLoc().y + 1) <= 1) {
-                        if (actr == actors.get(0) || animal.canEat((Animal)(actr))) {
+                        if (actr == actors.get(0) || animal.canKill((Animal)(actr))) {
                             setTarget(actr);
                             return true;
                         }
@@ -359,14 +359,14 @@ public class WolfController extends AIController {
         }
         else if (animal.getFacing() == Actor.direction.NORTHEAST) {
             for (Actor actr : this.actors) {
-                int actrX = this.map.screenXToMap(actr.getxPos());
-                int actrY = this.map.screenYToMap(actr.getyPos());
+                int actrX = this.map.screenXToMap(actr.getX());
+                int actrY = this.map.screenYToMap(actr.getY());
                 // The potential predator's x distance is within 1 tile on the right
                 if (actrX - getLoc().x >= 0 && actrX - getLoc().x <= 1) {
                     // The potential predator's y distance is within 1 tile above
                     if (actrY - getLoc().y >= 0 && actrY - getLoc().y <= 1) {
                         // If the nearby animal can eat this animal
-                        if (actr == actors.get(0) || animal.canEat((Animal)(actr))) {
+                        if (actr == actors.get(0) || animal.canKill((Animal)(actr))) {
                             setTarget(actr);
                             return true;
                         }
@@ -378,7 +378,7 @@ public class WolfController extends AIController {
                     // y distance is within 1 tile above the tile northeast of this
                     // animal's location
                     if (actrY - (getLoc().y + 1) >= 0 && actrY - (getLoc().y + 1) <= 1) {
-                        if (actr == actors.get(0) || animal.canEat((Animal)(actr))) {
+                        if (actr == actors.get(0) || animal.canKill((Animal)(actr))) {
                             setTarget(actr);
                             return true;
                         }
@@ -390,14 +390,14 @@ public class WolfController extends AIController {
         }
         else if (animal.getFacing() == Actor.direction.SOUTHWEST) {
             for (Actor actr : this.actors) {
-                int actrX = this.map.screenXToMap(actr.getxPos());
-                int actrY = this.map.screenYToMap(actr.getyPos());
+                int actrX = this.map.screenXToMap(actr.getX());
+                int actrY = this.map.screenYToMap(actr.getY());
                 // The potential predator's x distance is within 1 tile on the left
                 if (actrX - getLoc().x <= 0 && actrX - getLoc().x >= -1) {
                     // The potential predator's y distance is within 1 tile below
                     if (actrY - getLoc().y <= 0 && actrY - getLoc().y >= -1) {
                         // If the nearby animal can eat this animal
-                        if (actr == actors.get(0) || animal.canEat((Animal)(actr))) {
+                        if (actr == actors.get(0) || animal.canKill((Animal)(actr))) {
                             setTarget(actr);
                             return true;
                         }
@@ -409,7 +409,7 @@ public class WolfController extends AIController {
                     // y distance is within 1 tile below the tile southwest of this
                     // animal's location
                     if (actrY - (getLoc().y - 1) <= 0 && actrY - (getLoc().y - 1) >= -1) {
-                        if (actr == actors.get(0) || animal.canEat((Animal)(actr))) {
+                        if (actr == actors.get(0) || animal.canKill((Animal)(actr))) {
                             setTarget(actr);
                             return true;
                         }
@@ -421,14 +421,14 @@ public class WolfController extends AIController {
         }
         else if (animal.getFacing() == Actor.direction.SOUTHEAST) {
             for (Actor actr : this.actors) {
-                int actrX = this.map.screenXToMap(actr.getxPos());
-                int actrY = this.map.screenYToMap(actr.getyPos());
+                int actrX = this.map.screenXToMap(actr.getX());
+                int actrY = this.map.screenYToMap(actr.getY());
                 // The potential predator's x distance is within 1 tile on the right
                 if (actrX - getLoc().x >= 0 && actrX - getLoc().x <= 1) {
                     // The potential predator's y distance is within 1 tile below
                     if (actrY - getLoc().y <= 0 && actrY - getLoc().y >= -1) {
                         // If the nearby animal can eat this animal
-                        if (actr == actors.get(0) || animal.canEat((Animal)(actr))) {
+                        if (actr == actors.get(0) || animal.canKill((Animal)(actr))) {
                             setTarget(actr);
                             return true;
                         }
@@ -441,7 +441,7 @@ public class WolfController extends AIController {
                     // animal's location
                     if (actrY - (getLoc().y - 1) <= 0 && actrY - (getLoc().y - 1) >= -1) {
                         if (actr == actors.get(0) ||
-                            animal.canEat((Animal)(actr))) {
+                            animal.canKill((Animal)(actr))) {
                             setTarget(actr);
                             return true;
                         }
@@ -529,8 +529,8 @@ public class WolfController extends AIController {
                 break;
             case CHASE:
                 // Go to the next tile closest to target
-                float chasex = getLoc().x - map.screenXToMap(target.getxPos());
-                float chasey = getLoc().y - map.screenYToMap(target.getyPos());
+                float chasex = getLoc().x - map.screenXToMap(target.getX());
+                float chasey = getLoc().y - map.screenYToMap(target.getY());
                 // Normalize distance to choose next tile
                 chasex = chasex / (Math.abs(chasex));
                 chasey = chasey / (Math.abs(chasey));
@@ -538,8 +538,8 @@ public class WolfController extends AIController {
                 break;
             case FLEE:
                 // Go to the next tile farthest from attacker
-                float fleex = getLoc().x - map.screenXToMap(attacker.getxPos());
-                float fleey = getLoc().y - map.screenYToMap(attacker.getyPos());
+                float fleex = getLoc().x - map.screenXToMap(attacker.getX());
+                float fleey = getLoc().y - map.screenYToMap(attacker.getY());
                 // Normalize distance to choose next tile
                 fleex = fleex / (Math.abs(fleex));
                 fleey = fleey / (Math.abs(fleey));
