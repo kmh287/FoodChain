@@ -234,5 +234,10 @@ public class GameMap {
     public Trap getStartingTrap() {
         return this.hunterStartingTrap; 
     }
+
+	public boolean isSafeAt(float tileX, float tileY) {
+		// TODO Auto-generated method stub
+		return true;
+	}
  
 }

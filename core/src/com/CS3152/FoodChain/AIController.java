@@ -133,23 +133,24 @@ public abstract class AIController implements InputController {
         ticks++;
         
         if (ticks % 10 == 0 && state != State.DEAD) {
-            // Process the State
-            //changeStateIfApplicable();
-            
-            checkCone();
-            if (isScared()) {
-            	flee();
-            }
-            else if (hasTarget()) {
-            	chase();
-            }
-            else {
-            	//patrol();
-            }
-            
-            // Pathfinding
-            //markGoal();
-            move = getNextMoveToGoal();
+        	//comment out for fixing collisions
+//            // Process the State
+//            //changeStateIfApplicable();
+//            
+//            checkCone();
+//            if (isScared()) {
+//            	flee();
+//            }
+//            else if (hasTarget()) {
+//            	chase();
+//            }
+//            else {
+//            	//patrol();
+//            }
+//            
+//            // Pathfinding
+//            //markGoal();
+//            move = getNextMoveToGoal();
         }
         
         //System.out.println(move);
