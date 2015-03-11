@@ -2,6 +2,13 @@ package com.CS3152.FoodChain;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
+
+
+
+
+
 
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
@@ -13,15 +20,15 @@ public class Hunter extends Actor {
     //The player's inventory
     //We want amortized O(1) insert and O(1) lookup
     //Since we will not be shifting elements, 
-    //an arraylist is ideal for this.
-    private List<Trap> inventory;
+    //an arraylist within a hashmap works pretty well
+    private HashMap<String, List<Trap>> inventory;
     
     private static final String PLAYER_TEX = "assets/player.png";
     private static Texture tex = null;
     
     // private boolean isSettingTrap;
     
-    private Trap selectedTrap;
+    private Trap selectedTrap = null;
 
     //how far forward the hunter can move in a turn. 
     private static final float MOVE_SPEED = 150.0f;
@@ -31,13 +38,28 @@ public class Hunter extends Actor {
 	
 	private Vector2 tmp;
     
-    public Hunter(float xPos, float yPos, Trap t){
+    public Hunter(float xPos, float yPos, HashMap<String, List<Trap>> traps){
     	super(new TextureRegion(tex), actorType.HUNTER, xPos, yPos, tex.getWidth(),
     		  tex.getHeight(), new actorType[]{actorType.SHEEP});
-        inventory = new ArrayList<Trap>();
-        inventory.add(t);
-        selectedTrap = t;
+    	inventory= traps;
         tmp = new Vector2();
+        //set selected trap
+        for (Trap trap : traps.get("REGULAR_TRAP")) {
+        	selectedTrap = trap;
+        }
+        if(selectedTrap==null){
+            for (Trap trap : traps.get("SHEEP_TRAP")) {
+            	selectedTrap = trap;
+            }
+        }
+        if(selectedTrap==null){
+            for (Trap trap : traps.get("WOLF_TRAP")) {
+            	selectedTrap = trap;
+            }
+        }
+ 
+        
+
     }
     
     /**
@@ -58,11 +80,23 @@ public class Hunter extends Actor {
 
     
     /**
-     * 
+     * Used when a player traps an animal
      * @param trap the trap to add to the inventory
      */
     public void addToInventory(Trap trap) {
-    		//inventory.add(trap);
+    	inventory.get(trap.getType()).add(trap);
+    }
+    
+    public Map<String,List<Trap>> getInventory() {
+    	return inventory;
+    }
+    
+    public void setSelectedTrap(Trap trap){
+    	this.selectedTrap=trap;
+    }
+
+    public Trap getSelectedTrap(){
+    	return selectedTrap;
     }
     
     /**
@@ -70,21 +104,31 @@ public class Hunter extends Actor {
      * @param trap the trap to remove from the inventory
      */
     public void removeFromInventory(Trap trap) {
-    	//TODO
+    	inventory.get(trap.getType()).remove(trap);
     }
 
     
     public boolean canSetTrap(Vector2 clickPos) {
 		tmp.set(getPosition().add(20.0f, 20.0f));
 		tmp.sub(clickPos);
-		if (Math.abs(tmp.len()) <= TRAP_RADIUS) {
+		if (Math.abs(tmp.len()) <= TRAP_RADIUS && selectedTrap.getInInventory()==true) {
 			return true;
 		}
 		return false;
     }
     
     public void setTrap(Vector2 clickPos) {
-    		selectedTrap.setPosition(clickPos);
+    	selectedTrap.setPosition(clickPos);
+    	//update inventory
+		//set selectedTrap inventory status to false
+		selectedTrap.setInInventory(false);
+		//set selectedTrap to next available trap inInventory of same type
+		//if no free trap then selectedTrap does not change and player can't put down another
+		for (Trap trap : inventory.get(selectedTrap.getType())){
+			if(trap.getInInventory()){
+				selectedTrap = trap;
+			}
+		}
     }
     
     /**
@@ -111,6 +155,9 @@ public class Hunter extends Actor {
 	    	boolean movingSouthEast = (controlCode == InputController.SOUTHEAST);
 	    	boolean movingNorthEast = (controlCode == InputController.NORTHEAST);
 	    	boolean settingTrap = (controlCode == InputController.CLICK);
+	    	boolean oneSelect = (controlCode == InputController.ONE);
+	    	boolean twoSelect = (controlCode == InputController.TWO);
+	    	boolean threeSelect = (controlCode == InputController.THREE);
 	    	
 	    	//process moving command 
 	    	//need to set super commands and set diagonal movement to less
@@ -162,6 +209,29 @@ public class Hunter extends Actor {
 				super.setVX(0);
 				super.setVY(0);
 			}
+	    	
+	    	//process selected trap
+	    	if(oneSelect){
+		        for (Trap trap : inventory.get("REGULAR_TRAP")) {
+		        	if(trap.getInInventory()){
+		        		selectedTrap = trap;
+		        	}
+		        }
+	    	}
+	    	if(twoSelect){
+		        for (Trap trap : inventory.get("SHEEP_TRAP")) {
+		        	if(trap.getInInventory()){
+		        		selectedTrap = trap;
+		        	}
+		        }
+	    	}
+	    	if(threeSelect){
+		        for (Trap trap : inventory.get("WOLF_TRAP")) {
+		        	if(trap.getInInventory()){
+		        		selectedTrap = trap;
+		        	}
+		        }
+	    	}
 	    }
     
     public String getTypeNameString() {
