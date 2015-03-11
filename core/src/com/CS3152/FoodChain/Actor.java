@@ -6,10 +6,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 
 public abstract class Actor extends BoxObject {
-    // The current xPosition of this actor
-    protected float xPos;
-    // The current yPosition of this actor
-    protected float yPos;
     //The direction this actor is facing
     protected direction facing;
     //TextureRegion for this actor's texture
@@ -38,10 +34,7 @@ public abstract class Actor extends BoxObject {
     public Actor(TextureRegion tr, actorType type, float x, float y, float width, 
     		     float height, actorType[] victims) {
     	super(tr,x,y,width,height);
-    	this.tr = tr;
     	this.type = type;
-        this.xPos = x;
-        this.yPos = y;
         this.facing = direction.WEST;
         this.victims = victims;
     }
@@ -57,10 +50,6 @@ public abstract class Actor extends BoxObject {
     	this.facing = dir;
     }
     
-    public void setPosition(Vector2 pos) {
-	    	xPos = pos.x;
-	    	yPos = pos.y;
-    }
     
     /**
      * @return the type
@@ -94,5 +83,10 @@ public abstract class Actor extends BoxObject {
         return false;
 	}
 	
+    public void draw(GameCanvas canvas){
+        canvas.begin();
+        canvas.draw(getTexture(), getBody().getPosition().x, getBody().getPosition().y);
+        canvas.end();
+    }
 	
 }
