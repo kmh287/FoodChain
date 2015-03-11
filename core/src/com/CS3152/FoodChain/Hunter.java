@@ -43,8 +43,7 @@ public class Hunter extends Actor {
 	private float angle; 
 	
 	private Vector2 tmp;
-	
-	private String tmpTrapType;
+
     
     public Hunter(float xPos, float yPos,  HashMap<String, List<Trap>> traps ){
     		super(new TextureRegion(tex), xPos, yPos, tex.getWidth(), tex.getHeight());
@@ -232,12 +231,11 @@ public class Hunter extends Actor {
     public void setTrap(Vector2 clickPos) {
     	selectedTrap.setPosition(clickPos);
     	//update inventory
-		tmpTrapType = selectedTrap.getType();
 		//set selectedTrap inventory status to false
 		selectedTrap.setInInventory(false);
 		//set selectedTrap to next available trap inInventory of same type
 		//if no free trap then selectedTrap does not change and player can't put down another
-		for (Trap trap : inventory.get(tmpTrapType)){
+		for (Trap trap : inventory.get(selectedTrap.getType())){
 			if(trap.getInInventory()){
 				selectedTrap = trap;
 			}
