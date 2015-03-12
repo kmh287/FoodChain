@@ -8,6 +8,11 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import com.CS3152.FoodChain.GameMap.tileType;
 import com.badlogic.gdx.math.*;
+import com.badlogic.gdx.physics.box2d.Contact;
+import com.badlogic.gdx.physics.box2d.ContactImpulse;
+import com.badlogic.gdx.physics.box2d.ContactListener;
+import com.badlogic.gdx.physics.box2d.Manifold;
+import com.badlogic.gdx.physics.box2d.World;
 
 /**
  * Class to handle basic collisions in the game.
@@ -18,54 +23,28 @@ import com.badlogic.gdx.math.*;
  * As a major subcontroller, this class must have a reference to all the models.
  */
 
-public class CollisionController {
-	
-	/** Reference to the GameMap */
-	public GameMap map;
-	/** Reference to the canvas */
-	public GameCanvas canvas;
-	/** Reference to the hunter */
-	public Hunter hunter;
-	/** Reference to the animals */
-	public List<Animal> animals;
-	/** Reference to the traps */
-	public List<Trap> traps;
-	
+public class CollisionController implements ContactListener {
+	//The game world
+	private World world;
+	/** All the objects in the world. */
+	protected PooledList<BoxObject> objects  = new PooledList<BoxObject>();
+	//Vector2 cache for calculations
 	private Vector2 tmp;
 	
-	/** Caching object for computing normal */
-	private Vector2 normal;
-
-	/** Caching object for computing net velocity */
-	private Vector2 velocity;
-	
-	private float distance;
-	
-	private boolean canMove;
-	/**
-	 * Creates a CollisionController for the given models.
-	 * @param c The canvas
-	 * @param h The hunter
-	 * @param a The list of animals
-	 * @param m The map
-	 */
-	public CollisionController(GameCanvas c, Hunter h, List<Animal> a,GameMap m, List<Trap> t) {
-		hunter = h;
-		animals = a;
-		map = m;
-		tmp = new Vector2();
-		normal= new Vector2();
-		velocity = new Vector2();
-		traps = t;
+	public CollisionController(){
+		//no gravity for top down
+		this.world = new World(new Vector2(0,0), false);
+		world.setContactListener(this);
+		this.tmp = new Vector2();
 	}
 	
-	public void update() {
-		moveIfPossible(hunter);
-		for(Animal a : animals) {
-			moveIfPossible(a);
-		}
-		checkTrapped();
-		
+	/**
+	 * Add the object to the list of objects maintained in the CollisionController
+	 * @param obj: the object to add
+	 */
+	protected void addObject(BoxObject obj) {
+		objects.add(obj);
+		obj.activatePhysics(world);
 	}
 	
 	/**
@@ -76,63 +55,72 @@ public class CollisionController {
 	 * 
 	 * TODO have to decide how to handle multiple collisions and which collisions to process first. like animal or tiles
 	 */
-	private void moveIfPossible(Hunter hunter) {
-		tmp.set(hunter.getCenter());
-		tmp.add(hunter.getVX(), hunter.getVY());		
-		canMove=true;
-		//check player against animals
-		for(Animal a : animals){
-			normal.set(hunter.getCenter().sub(a.getCenter()));
-			distance = normal.len();
-			normal.nor();
-			if (distance<20){
-				canMove=false;
-				tmp.set(normal).scl((hunter.getXDiamter()-distance)/2);
-				//have to play around with numbers to smooth collisions
-				hunter.setCenter(hunter.getCenter().add(tmp));
-			}
-		}
-		tmp.set(hunter.getCenter());
-		tmp.add(hunter.getVX(), hunter.getVY());
-		//check tiles surrounding player
-//		System.out.println(map.screenPosToTile(tmp.x,tmp.y));
-		if (map.screenPosToTile(tmp.x,tmp.y).type!=(tileType.GRASS)){
-			canMove=false;
-			normal.set(hunter.getCenter().sub(tmp));
-			distance = normal.len();
-			normal.nor();
-			tmp.set(normal).scl(-4);
-			hunter.setCenter(hunter.getCenter().sub(tmp));
-		}
-		if(canMove){
-			hunter.setCenter(tmp);
-		}
+	private void move(Hunter hunter) {
+		tmp.set(hunter.getPosition());
+		tmp.add(hunter.getVX(), hunter.getVY());	
+//		System.out.println("Y vel : "+hunter.getVY());
+//		System.out.println("X vel : "+hunter.getVX());
+//		System.out.println("Vel : "+hunter.getLinearVelocity());
+//		System.out.println("Position : "+hunter.getPosition());
+		hunter.setLinearVelocity(tmp);
+		//System.out.println("vx:" + hunter.getVX() + "vy:" +hunter.getVY());
+		//hunter.setCenter(tmp);
+		//hunter.getBody().applyForce(tmp.scl(30),hunter.getBody().getPosition(),true);
+		//System.out.println(hunter.getBody().getLinearVelocity());
 	}
 	
-	private void moveIfPossible(Animal animal) {
-		tmp.set(animal.getCenter());
+	private void move(Animal animal) {
+		tmp.set(animal.getPosition());
 		tmp.add(animal.getVX(), animal.getVY());
-		//System.out.println("vx: " + animal.getVX() + " vy: " + animal.getVY());
-		if (!animal.getTrapped()) {
-			animal.setCenter(tmp);
-		}
+//		System.out.println("Y vel : "+animal.getVY());
+//		System.out.println("X vel : "+animal.getVX());
+//		System.out.println("Vel : "+animal.getLinearVelocity());
+//		System.out.println("Position : "+animal.getPosition());
+		animal.setLinearVelocity(tmp);
 	}
 	
-	private void checkTrapped() {
-		for (Animal a : animals) {
-			for (Trap t : traps) {
-				if (t.getOnMap()) {
-					boolean withinX = (a.getCenter().x - t.getPosition().x) <= a.getTexWidth()/2 &&
-									  (a.getCenter().x - t.getPosition().x) >= -a.getTexWidth()/2;
-					boolean withinY = (a.getCenter().y - t.getPosition().y) <= a.getTexHeight()/2 &&
-							 		  (a.getCenter().y - t.getPosition().y) >= -a.getTexHeight()/2;
-					if (withinX && withinY) {
-						a.setTrapped(true);
-					} else {
-						a.setTrapped(false);
-					}
-				}
-			}
+	//Pass the object to the correct handler
+	private void move(PhysicsObject o){
+		if (o instanceof Hunter){
+			move((Hunter)o);
+		}
+		else if (o instanceof Animal){
+			move((Animal)o);
 		}
 	}
+
+	public void update() {
+		world.step(1/60f, 3, 3);
+		for(PhysicsObject o : objects) {
+			move(o);
+			//System.out.println(o.getPosition().toString());
+		}
+		//checkTrapped();
+	}
+	
+	
+	@Override
+	public void beginContact(Contact contact) {
+		// TODO Auto-generated method stub
+		System.out.println("COLLISION");
+	}
+
+	@Override
+	public void endContact(Contact contact) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void preSolve(Contact contact, Manifold oldManifold) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void postSolve(Contact contact, ContactImpulse impulse) {
+		// TODO Auto-generated method stub
+		
+	}
+	
 }

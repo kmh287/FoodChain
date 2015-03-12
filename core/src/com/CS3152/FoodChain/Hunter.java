@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
 public class Hunter extends Actor {
@@ -23,25 +24,18 @@ public class Hunter extends Actor {
     private Trap selectedTrap;
 
     //how far forward the hunter can move in a turn. 
-    private static final float MOVE_SPEED = 3.0f;
+    private static final float MOVE_SPEED = 150.0f;
     /** How far the hunter can lay a trap from itself */
     private static final float TRAP_RADIUS = 50.0f;
-    //Instance Attributes 
-    /** Hunter position */
-	private Vector2 position;
-	/** hunter velocity */
-	private Vector2 velocity;
-	/** The current angle of orientation (in degrees) */
-	private float angle; 
+
 	
 	private Vector2 tmp;
     
     public Hunter(float xPos, float yPos, Trap t){
-    	super(xPos, yPos);
+    	super(new TextureRegion(tex), actorType.HUNTER, xPos, yPos, tex.getWidth(),
+    		  tex.getHeight(), new actorType[]{actorType.SHEEP});
         inventory = new ArrayList<Trap>();
         inventory.add(t);
-        velocity = new Vector2();
-        angle  = 90.0f;
         selectedTrap = t;
         tmp = new Vector2();
     }
@@ -51,7 +45,7 @@ public class Hunter extends Actor {
      * This must be called before any calls to Player.draw()
      * @param manager an AssetManager
      */
-    public void loadTexture(AssetManager manager) {
+    public static void loadTexture(AssetManager manager) {
         if (tex == null){
             manager.load(PLAYER_TEX, Texture.class);
             manager.finishLoading();
@@ -60,72 +54,7 @@ public class Hunter extends Actor {
             }
         }
     }
-    /**
-     * @return the bottom LeftxPos
-     */
-    public float getxPos() {
-        return xPos;
-    }
-    
-    /**
-     * @return the center of the hunter
-     */
-    public Vector2 getCenter() {
-    	Vector2 pos = new Vector2(getxPos()+(float)this.tex.getWidth()/2, getyPos()+(float)this.tex.getHeight()/2);
-        return pos;
-    }
-    
-    /**
-     * @return the bottom right of the hunter
-     */
-    public Vector2 getBottomRight() {
-    	Vector2 pos = new Vector2(getxPos()+(float)this.tex.getWidth(), getyPos());
-        return pos;
-    }
-    
-    /**
-     * @return the top right of the hunter
-     */
-    public Vector2 getTopRight() {
-    	Vector2 pos = new Vector2(getxPos()+(float)this.tex.getWidth(), getyPos()+(float)this.tex.getHeight());
-        return pos;
-    }
-    /**
-     * @return the top left of the hunter
-     */
-    public Vector2 getTopLeft() { 
-    	Vector2 pos = new Vector2(getxPos()+(float)this.tex.getWidth(), +(float)this.tex.getHeight());
-        return pos;
-    }
-    
-    /**
-     *	Set center of hunter position
-     */
-    public void setCenter(Vector2 pos) {
-    	this.yPos=pos.y-(float)this.tex.getHeight()/2;
-    	this.xPos=pos.x-(float)this.tex.getWidth()/2;
-    }
-
-    /**
-     * @param  the bottom left xPos to set
-     */
-    public void setxPos(float xPos) {
-        this.xPos = xPos;
-    }
-
-    /**
-     * @return the yPos
-     */
-    public float getyPos() {
-        return yPos;
-    }
-
-    /**
-     * @param yPos the yPos to set
-     */
-    public void setyPos(float yPos) {
-        this.yPos = yPos;
-    }
+ 
 
     
     /**
@@ -143,41 +72,7 @@ public class Hunter extends Actor {
     public void removeFromInventory(Trap trap) {
     	//TODO
     }
-    
-    public Vector2 getPosition() {
-    		Vector2 pos = new Vector2(getxPos(), getyPos());
-    		return pos; 
-    }
-    
-    public void setPosition(Vector2 pos) {
-    		xPos = pos.x;
-    		yPos = pos.y;
-    }
 
-    public float getVX() {
-    		return velocity.x; 
-    }
-    
-    public void setVX(float value) {
-    		velocity.x = value; 
-    }
-    
-    public void setVY(float value) {
-    		velocity.y = value; 
-    }
-    
-    public float getVY() {
-    		return velocity.y; 
-    }
-    
-    public Vector2 getVelocity() {
-    		return velocity; 
-    }
-    
-    /* Get current facing angle of the hunter*/
-    public float getAngle() {
-		return angle;
-	}
     
     public boolean canSetTrap(Vector2 clickPos) {
 		tmp.set(getPosition().add(20.0f, 20.0f));
@@ -204,8 +99,8 @@ public class Hunter extends Actor {
     * 
     * @param controlCode The movement controlCode (from InputController).
     */
-    public void update(int controlCode) {
-    	
+    public void update(int controlCode,float dt) {
+    	super.update(dt);
 	    	// Determine how we are moving.
 	    	boolean movingEast  = (controlCode == InputController.EAST);
 	   	boolean movingWest = (controlCode == InputController.WEST);
@@ -218,60 +113,58 @@ public class Hunter extends Actor {
 	    	boolean settingTrap = (controlCode == InputController.CLICK);
 	    	
 	    	//process moving command 
+	    	//need to set super commands and set diagonal movement to less
 	    	if (movingWest) {
-				angle = 0.0f;
-				velocity.x = -MOVE_SPEED;
-				velocity.y = 0;
+				super.setAngle(0.0f);
+				super.setVX(-MOVE_SPEED);
+				super.setVY(0);
 			} else if (movingEast) {
-				angle = 180.0f;
-				velocity.x = MOVE_SPEED;
-				velocity.y = 0;
+				super.setAngle(180.0f);
+				super.setVX(MOVE_SPEED);
+				super.setVY(0);
 			}
 			else if (movingNorth) {
-				angle = 90.0f;
-				velocity.y = MOVE_SPEED;
-				velocity.x = 0;
+				super.setAngle(90.0f);
+				super.setVX(0);
+				super.setVY(MOVE_SPEED);
 			}
 			else if (movingSouth) {
-				angle = 270.0f;
-				velocity.x = 0;
-				velocity.y = -MOVE_SPEED;
+				super.setAngle(270.0f);
+				super.setVX(0);
+				super.setVY(-MOVE_SPEED);
 			}
 			else if (movingSouthWest) {
-				angle = 180.0f;
-				velocity.x = -MOVE_SPEED;
-				velocity.y = -MOVE_SPEED;
+				super.setAngle(180.0f);
+				super.setVX(-MOVE_SPEED);
+				super.setVY(-MOVE_SPEED);
 			}
 			else if (movingSouthEast) {
-				angle = 180.0f;
-				velocity.x = MOVE_SPEED;
-				velocity.y = -MOVE_SPEED;
+				super.setAngle(180.0f);
+				super.setVX(MOVE_SPEED);
+				super.setVY(-MOVE_SPEED);
 			}
 			else if (movingNorthEast) {
-				angle = 180.0f;
-				velocity.x = MOVE_SPEED;
-				velocity.y = MOVE_SPEED;
+				super.setAngle(180.0f);
+				super.setVX(MOVE_SPEED);
+				super.setVY(MOVE_SPEED);
 			}
 			else if (movingNorthWest) {
-				angle = 180.0f;
-				velocity.x = -MOVE_SPEED;
-	
-				velocity.y = MOVE_SPEED;
+				super.setAngle(180.0f);
+				super.setVX(-MOVE_SPEED);
+				super.setVY(MOVE_SPEED);
 			}
 			else if (settingTrap) {
-				
+				super.setVX(0);
+				super.setVY(0);
 			}
 			else {
 				// NOT MOVING, SO STOP MOVING
-				velocity.x = 0;
-				velocity.y = 0;
+				super.setVX(0);
+				super.setVY(0);
 			}
 	    }
     
-    public void draw(GameCanvas canvas){
-        canvas.begin();
-        canvas.draw(tex, this.xPos, this.yPos);
-        canvas.end();
+    public String getTypeNameString() {
+    	return "Hunter";
     }
-    
 }

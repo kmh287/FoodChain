@@ -19,7 +19,7 @@ public class MapManager {
      */
     public static GameMap GsonToMap(String filename) throws FileNotFoundException{
         
-        String inPath = "../Levels/" + filename + ".json";
+        String inPath = "../desktop/Levels/" + filename + ".json";
         
         Gson gson = new Gson();
         FileReader fr = new FileReader(inPath);
@@ -34,7 +34,7 @@ public class MapManager {
     public static void MapToGson(GameMap map, String filename) throws IOException,
                                                                FileNotFoundException{
         
-        String outPath = "../Levels/" + filename + ".json";
+        String outPath = "../desktop/Levels/" + filename + ".json";
         
         File file = new File(outPath);
         if (!file.exists()){
