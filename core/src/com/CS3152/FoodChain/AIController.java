@@ -176,7 +176,7 @@ public abstract class AIController implements InputController {
     // Determines whether or not the animal should run away
     public void flee() {
         // Go to the next tile farthest from attacker
-        float fleex = getAnimal().getX() - attacker.get();
+        float fleex = getAnimal().getX() - attacker.getX();
         float fleey = getAnimal().getY() - attacker.getY();
         int attackTileX = map.screenXToMap(animal.getX());
         int attackTileY = map.screenYToMap(animal.getY());
@@ -218,7 +218,7 @@ public abstract class AIController implements InputController {
 		   			   attackTileX, attackTileY);
         }
         // biggest distance
-        int biggest = 0;
+        float biggest = 0.0f;
         for (int x = 0; x < dists.length; x++) {
         	if (dists[x] > biggest) {
         		biggest = dists[x];

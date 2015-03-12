@@ -1,5 +1,6 @@
 package com.CS3152.FoodChain;
 
+import com.CS3152.FoodChain.GameMap.Tile;
 import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
