@@ -2,6 +2,7 @@ package com.CS3152.FoodChain;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
@@ -21,7 +22,7 @@ public class GameMode implements Screen {
     private AssetManager manager;
     private List<Animal> animals;
     private Hunter hunter;
-    private List<Trap> traps;
+    private HashMap<String, List<Trap>> traps;
     private UIController ui;
 
     protected InputController[] controls;
@@ -72,7 +73,8 @@ public class GameMode implements Screen {
         //tmp = new Vector2();
         
         createHunter(map.getHunterStartingCoordinate(), 
-                map.getStartingTrap());
+                map.getStartingInventory());
+	    ui.setHunter(this.hunter);
     
         
         List<Actor> actors = new ArrayList<Actor>();
@@ -92,10 +94,22 @@ public class GameMode implements Screen {
 	        controls[2] = new SheepController(animals.get(1),
 	            								  map, actors);
         }
+        //loadTextures
+        traps = map.getStartingInventory();
+        for (Trap trap : traps.get("WOLF_TRAP")) {
+    		trap.loadTexture(manager);
+    		trap.setInInventory(true);
+        }
         
-        traps = new ArrayList<Trap>();
-        traps.add(map.getStartingTrap());
-        traps.get(0).loadTexture(manager);
+        for (Trap trap : traps.get("REGULAR_TRAP")) {
+        	trap.loadTexture(manager);
+        	trap.setInInventory(true);
+        }
+        
+        for (Trap trap : traps.get("SHEEP_TRAP")) {
+        	trap.loadTexture(manager);
+        	trap.setInInventory(true);
+        }
 	}
 
 	/**
@@ -117,11 +131,11 @@ public class GameMode implements Screen {
 	}
 	
 	private void createHunter(Coordinate startingPos,
-	                         Trap startingTrap){
+			HashMap<String, List<Trap>> startingInventory){
 		Hunter.loadTexture(manager);
 	    this.hunter = new Hunter(map.mapXToScreen(startingPos.x),
 	                             map.mapYToScreen(startingPos.y),
-	                             startingTrap);
+	                             startingInventory);
 	    hunter.setDensity(DEFAULT_DENSITY);
 	    hunter.setAwake(true);
 	    hunter.setBodyType(BodyDef.BodyType.DynamicBody);
@@ -193,6 +207,7 @@ public class GameMode implements Screen {
 		Vector2 click = controls[0].getClickPos();
 		if (controls[0].getAction() == InputController.CLICK && hunter.canSetTrap(click)) {
 			hunter.setTrap(click);
+			ui.draw(canvas);
 		}
 		
 		//Updates the animals' actions
@@ -223,11 +238,15 @@ public class GameMode implements Screen {
         //Draw the map
         map.draw(canvas);
         
-        for (Trap trap : traps) {
-        	trap.draw(canvas);
+        for (Trap trap : traps.get("WOLF_TRAP")) {
+    		trap.draw(canvas);
         }
         
-        for (Trap trap : traps) {
+        for (Trap trap : traps.get("REGULAR_TRAP")) {
+    		trap.draw(canvas);
+        }
+        
+        for (Trap trap : traps.get("SHEEP_TRAP")) {
     		trap.draw(canvas);
         }
         
