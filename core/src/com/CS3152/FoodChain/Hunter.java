@@ -76,9 +76,49 @@ public class Hunter extends Actor {
             }
         }
     }
- 
 
     
+//    /**
+//     * @return the center of the hunter
+//     */
+//    public Vector2 getCenter() {
+//    		Vector2 pos = new Vector2(getX()+(float)this.tex.getWidth()/2, 
+//    								  getY()+(float)this.tex.getHeight()/2);
+//        return pos;
+//    }
+//    
+//    /**
+//     * @return the bottom right of the hunter
+//     */
+//    public Vector2 getBottomRight() {
+//    	Vector2 pos = new Vector2(getxPos()+(float)this.tex.getWidth(), getyPos());
+//        return pos;
+//    }
+//    
+//    /**
+//     * @return the top right of the hunter
+//     */
+//    public Vector2 getTopRight() {
+//    	Vector2 pos = new Vector2(getxPos()+(float)tex.getWidth(), getyPos()+(float)tex.getHeight());
+//        return pos;
+//    }
+//    /**
+//     * @return the top left of the hunter
+//     */
+//    public Vector2 getTopLeft() { 
+//    	Vector2 pos = new Vector2(getxPos()+(float)tex.getWidth(), +(float)tex.getHeight());
+//        return pos;
+//    }
+//    
+//    /**
+//     *	Set center of hunter position
+//     */
+//    public void setCenter(Vector2 pos) {
+//	    	float yPos=pos.y-(float)tex.getHeight()/2;
+//	    	float xPos=pos.x-(float)tex.getWidth()/2;
+//    		super.setPosition(xPos, yPos);
+//    }
+
     /**
      * Used when a player traps an animal
      * @param trap the trap to add to the inventory
@@ -131,6 +171,18 @@ public class Hunter extends Actor {
     	inventory.get(trap.getType()).remove(trap);
     }
 
+    public Vector2 getPosition() {
+    		Vector2 pos = new Vector2(getX(), getY());
+    		return pos; 
+    }
+    
+//    public void setPosition(Vector2 pos) {
+//    		xPos = pos.x;
+//    		yPos = pos.y;
+//        super.setPosition(xPos, yPos);
+//    }
+
+
     
     public boolean canSetTrap(Vector2 clickPos) {
 		tmp.set(getPosition().add(20.0f, 20.0f));
@@ -162,7 +214,8 @@ public class Hunter extends Actor {
         return tex.getWidth();
     }
     
+
     public String getTypeNameString() {
-    	return "Hunter";
+    		return "HUNTER";
     }
 }

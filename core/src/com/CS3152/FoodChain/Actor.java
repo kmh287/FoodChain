@@ -1,9 +1,9 @@
 package com.CS3152.FoodChain;
 
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
+
 
 public abstract class Actor extends BoxObject {
     //The direction this actor is facing
@@ -21,7 +21,7 @@ public abstract class Actor extends BoxObject {
     }
     
     public enum actorType{
-    	HUNTER,
+    		HUNTER,
 		SHEEP, 
 		WOLF
 	}
@@ -33,8 +33,9 @@ public abstract class Actor extends BoxObject {
     
     public Actor(TextureRegion tr, actorType type, float x, float y, float width, 
     		     float height, actorType[] victims) {
-    	super(tr,x,y,width,height);
-    	this.type = type;
+	    	super(tr,x,y,width,height);
+	    	this.type = type;
+	    	this.tr = tr;
         this.facing = direction.WEST;
         this.victims = victims;
     }
@@ -47,7 +48,7 @@ public abstract class Actor extends BoxObject {
     }
     
     public void setFacing(direction dir) {
-    	this.facing = dir;
+    		this.facing = dir;
     }
     
     

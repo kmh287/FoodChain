@@ -6,8 +6,8 @@ import java.util.Random;
 
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
-import com.CS3152.FoodChain.GameMap.tileType;
 import com.badlogic.gdx.math.*;
+import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
@@ -44,9 +44,20 @@ public class CollisionController implements ContactListener {
 	 * Add the object to the list of objects maintained in the CollisionController
 	 * @param obj: the object to add
 	 */
-	protected void addObject(BoxObject obj) {
+	protected void addObject(BoxObject obj, Object data) {
 		objects.add(obj);
 		obj.activatePhysics(world);
+		obj.getBody().setUserData(data.toString());
+		if(obj instanceof Tile){
+			setGrassTileOff((Tile)obj);
+		}
+		System.out.println("body1"+obj.getBody().toString() +" "+  obj.isActive());
+	}
+	
+	private void setGrassTileOff(Tile t){
+		if(t.type==Tile.tileType.GRASS){
+			t.setActive(false);
+		}
 	}
 	
 	/**
@@ -72,7 +83,7 @@ public class CollisionController implements ContactListener {
 		//Updates the animals' actions
 		//i is the index of each animal AI in controls
 		int i = 1;
-		System.out.println(objects.size());
+		//System.out.println(objects.size());
 		for(PhysicsObject o : objects) {
 			
 			if (o instanceof Hunter){
@@ -98,6 +109,11 @@ public class CollisionController implements ContactListener {
 	public void beginContact(Contact contact) {
 		// TODO Auto-generated method stub
 		System.out.println("COLLISION");
+		Body body1 = contact.getFixtureA().getBody();
+		Body body2 = contact.getFixtureB().getBody();
+		System.out.println("body1"+body1.getUserData() +" "+  body1.isActive());
+//		System.out.println(body1.getUserData());
+//		System.out.println(body2.getUserData());
 	}
 
 	@Override

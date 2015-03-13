@@ -7,7 +7,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.CS3152.FoodChain.Actor.actorType;
-import com.CS3152.FoodChain.GameMap.Coordinate;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.math.Vector2;
@@ -59,11 +58,12 @@ public class GameMode implements Screen {
         tmp = new Vector2();
 		*/
         collisionController = new CollisionController();
+        map.addTilesToWorld(collisionController);  
         //Get the animal types from map
         //but build and keep the actual list here
         List<Actor.actorType> aTypes = 
                             map.getActorTypeList();
-        List<Coordinate> coordinates = map.getCoordinates();
+        List<Vector2> coordinates = map.getCoordinates();
         buildAnimalList(aTypes, coordinates);
         
         //All the animals, plus the Hunter
@@ -131,16 +131,17 @@ public class GameMode implements Screen {
         return map;
 	}
 	
-	private void createHunter(Coordinate startingPos,
+	private void createHunter(Vector2 startingPos,
 			HashMap<String, List<Trap>> startingInventory){
 		Hunter.loadTexture(manager);
-	    this.hunter = new Hunter(map.mapXToScreen(startingPos.x),
-	                             map.mapYToScreen(startingPos.y),
+	    this.hunter = new Hunter(map.mapXToScreen((int)startingPos.x),
+	                             map.mapYToScreen((int)startingPos.y),
 	                             startingInventory);
+
 	    hunter.setDensity(DEFAULT_DENSITY);
 	    hunter.setAwake(true);
 	    hunter.setBodyType(BodyDef.BodyType.DynamicBody);
-	    collisionController.addObject(hunter);
+	    collisionController.addObject(hunter, "HUNTER");
 	}
 	
 	/**
@@ -155,30 +156,30 @@ public class GameMode implements Screen {
 	 * @param coordinates the coordinates of the animals.
 	 */
 	private void buildAnimalList(List<actorType> aTypes,
-	                             List<Coordinate> coordinates){
+	                             List<Vector2> coordinates){
 	    if (coordinates.size() != aTypes.size()){
 	        throw new IllegalArgumentException("Lists of unequal size");
 	    }
-	    
 	    Iterator<actorType> aTypesIt = aTypes.iterator();
-	    Iterator<Coordinate> coordIt = coordinates.iterator();
+	    Iterator<Vector2> coordIt = coordinates.iterator();
 	    while (aTypesIt.hasNext() && coordIt.hasNext()){
 	        actorType currType = aTypesIt.next();
-	        Coordinate coord = coordIt.next();
-
+	        Vector2 coord = coordIt.next();
+	        
 	        Animal newAnimal;
 	        
 	        switch(currType){
 	            case SHEEP:
 	            		Sheep.loadTexture(manager);
-	                newAnimal = new Sheep(map.mapXToScreen(coord.x), 
-	                                      map.mapYToScreen(coord.y));
+	                newAnimal = new Sheep(map.mapXToScreen((int)coord.x), 
+	                                      map.mapYToScreen((int)coord.y));
 	                animals.add(newAnimal);
 	                break;
 	            case WOLF:
 	            		Wolf.loadTexture(manager);
-	                newAnimal = new Wolf(map.mapXToScreen(coord.x), 
-                                         map.mapYToScreen(coord.y));
+	                newAnimal = new Wolf(map.mapXToScreen((int)coord.x), 
+                                         map.mapYToScreen((int)coord.y));
+	                //See comment in sheep
 	                animals.add(newAnimal);
 	                break;
 	            default:
@@ -187,7 +188,7 @@ public class GameMode implements Screen {
 	        }
 	        newAnimal.setDensity(DEFAULT_DENSITY);
 	        newAnimal.setBodyType(BodyDef.BodyType.DynamicBody);
-	        collisionController.addObject(newAnimal);
+	        collisionController.addObject(newAnimal, currType);
 	    }
 	    
 	}
