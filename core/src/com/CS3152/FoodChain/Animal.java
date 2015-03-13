@@ -121,16 +121,6 @@ public abstract class Animal extends Actor {
 		trapped = val;
 	}
 
-	/** 
-    * Updates the hunter's position according to the controlCode. 
-	* 
-	* @param controlCode The movement controlCode (from InputController).
-	*/
-	public void update(Vector2 move, float dt) {
-    	super.update(dt);
-    	// Determine how we are moving.
-    	setLinearVelocity(move);
-    }
 	    
 	/**
 	 * @return the bottom LeftxPos
