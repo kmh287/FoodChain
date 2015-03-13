@@ -32,14 +32,14 @@ public class GameMap {
     //List of animals and their coordinates
     //The i'th element of animals should be at
     //the i'th coordinate in coordinates.
-    private List<Animal.animalType> animals = null;
+    private List<Actor.actorType> animals = null;
     private List<Coordinate> coordinates = null;
     
     //Player information that needs to be stored
     //in the map such as the start position and 
     //starting trap
     private Coordinate hunterStartPosition = null;
-    private Trap hunterStartingTrap = null;
+    private HashMap<String, List<Trap>> hunterStartingInventory = null;
     
     //Should be 16 tiles across, and 9 down.
     //Therefore, layout should be [9][16] to match
@@ -93,18 +93,19 @@ public class GameMap {
      * @param coordinates Coordinates of the animals. This should 
      *                    have the *EXACT* same length as animals
      * @param playerStartPosition The coordinate of the player
-     *                            start posiiton
+     *                            start position
      */
     public GameMap(Tile[][] layout,
-                   List<Animal.animalType>animals,
+                   List<Actor.actorType>animals,
                    List<Coordinate> coordinates,
                    Coordinate hunterStartPosition,
-                   Trap hunterStartingTrap){
+                   HashMap<String, List<Trap>> hunterStartingInventory){
         this.layout = layout;
         this.animals = animals;
         this.coordinates = coordinates;
         this.hunterStartPosition = hunterStartPosition;
-        this.hunterStartingTrap = hunterStartingTrap;
+        this.hunterStartingInventory = hunterStartingInventory;
+        System.out.println("from GameMap"+hunterStartingInventory);
     }
     
     /** Return a string representation of the map
@@ -191,6 +192,7 @@ public class GameMap {
      */
     public int screenYToMap(float yPos){
         int screenHeight = Gdx.graphics.getHeight();
+<<<<<<< HEAD
         System.out.println(yPos);
         //Account for ui offset
         yPos-=UI_OFFSET;
@@ -203,6 +205,17 @@ public class GameMap {
     public Tile screenPosToTile(float xPos, float yPos){
     	//System.out.println("Y" + screenYToMap(yPos));
 		//System.out.println("X" + screenXToMap(xPos));
+=======
+        int yIncrement = (screenHeight - UI_OFFSET) / layout.length;
+        return (int) ((yPos - UI_OFFSET) / yIncrement);
+    }
+    
+    public Tile screenPosToTile(float xPos, float yPos){
+    		System.out.println("xPos: " + xPos + "\n");
+    		System.out.println("yPos: " + yPos + "\n");
+    		System.out.println("xPos Screen to Map: " + screenXToMap(xPos) + "\n");
+    		System.out.println("yPos Screen to Map: " + screenYToMap(yPos) + "\n");
+>>>>>>> origin/ashton
     		return layout[screenYToMap(yPos)][screenXToMap(xPos)];
 
     }
@@ -222,7 +235,7 @@ public class GameMap {
         canvas.end();
     }
     
-    public List<Animal.animalType>getAnimalTypeList(){
+    public List<Actor.actorType> getActorTypeList(){
         return this.animals;
     }
     
@@ -234,8 +247,13 @@ public class GameMap {
         return this.hunterStartPosition;
     }
 
-    public Trap getStartingTrap() {
-        return this.hunterStartingTrap; 
+    public HashMap<String, List<Trap>> getStartingInventory() {
+        return this.hunterStartingInventory; 
     }
+
+	public boolean isSafeAt(float tileX, float tileY) {
+		// TODO Auto-generated method stub
+		return true;
+	}
  
 }

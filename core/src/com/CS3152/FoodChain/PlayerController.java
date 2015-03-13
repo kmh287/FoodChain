@@ -10,6 +10,8 @@ public class PlayerController implements InputController{
 	/** Whether to enable keyboard and mouse control */
 	private boolean keyboard;
 	private boolean mouse;
+	
+	private Vector2 PlayerAction;
 		
 	//Field to manage click events 
 	public static final int CLICK = 0x08;
@@ -42,11 +44,12 @@ public class PlayerController implements InputController{
 	* moves diagonally to the south east direction, it returns SOUTHEST 
 	*@return the action of the player 
 	*/
-	public int getAction() {
-		int code = NO_ACTION; 
+	public Vector2 getAction() {
+		PlayerAction = NO_ACTION; 
 			// Directional controls
 
 		if (keyboard && mouse) {
+<<<<<<< HEAD
 			if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) code = WEST; 
 			if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) code = EAST; 
 			if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) code = EAST; 
@@ -56,16 +59,22 @@ public class PlayerController implements InputController{
 				
 			/* Figure out how to deal with the mouse click */
 			if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) code = CLICK; 
+=======
+			if (Gdx.input.isKeyPressed(Input.Keys.D)) PlayerAction = EAST; 
+			if (Gdx.input.isKeyPressed(Input.Keys.A)) PlayerAction = WEST; 
+			if (Gdx.input.isKeyPressed(Input.Keys.S)) PlayerAction = SOUTH; 
+			if (Gdx.input.isKeyPressed(Input.Keys.W)) PlayerAction = NORTH; 
+>>>>>>> origin/ashton
 			
 			/*These diagonals may have to be changed. How will turns work/updating? */
-			if (Gdx.input.isKeyPressed(Input.Keys.UP) 
-				&& Gdx.input.isKeyPressed(Input.Keys.RIGHT)) code = NORTHEAST; 
-			if (Gdx.input.isKeyPressed(Input.Keys.DOWN) 
-				&& Gdx.input.isKeyPressed(Input.Keys.RIGHT)) code = SOUTHEAST; 
-			if (Gdx.input.isKeyPressed(Input.Keys.DOWN) 
-				&& Gdx.input.isKeyPressed(Input.Keys.LEFT)) code = SOUTHWEST; 
-			if (Gdx.input.isKeyPressed(Input.Keys.UP) 
-				&& Gdx.input.isKeyPressed(Input.Keys.LEFT)) code = NORTHWEST; 
+			if (Gdx.input.isKeyPressed(Input.Keys.W) 
+				&& Gdx.input.isKeyPressed(Input.Keys.D)) PlayerAction = NORTHEAST; 
+			if (Gdx.input.isKeyPressed(Input.Keys.S) 
+				&& Gdx.input.isKeyPressed(Input.Keys.D)) PlayerAction = SOUTHEAST; 
+			if (Gdx.input.isKeyPressed(Input.Keys.S) 
+				&& Gdx.input.isKeyPressed(Input.Keys.A)) PlayerAction = SOUTHWEST; 
+			if (Gdx.input.isKeyPressed(Input.Keys.W) 
+				&& Gdx.input.isKeyPressed(Input.Keys.A)) PlayerAction = NORTHWEST; 
 		}
 
 			// Cancel out conflicting movements.
@@ -81,7 +90,20 @@ public class PlayerController implements InputController{
 			code ^= (WEST | EAST);
 		}*/
 
-	    return code; 
+	    return PlayerAction; 
 	    
 	} 
+	
+	public boolean isClicked(){
+		return Gdx.input.isButtonPressed(Input.Buttons.LEFT);
+	}
+	
+	public int getNum(){
+		if (keyboard && mouse) {
+			if (Gdx.input.isKeyPressed(Input.Keys.NUM_1)) return ONE; 
+			if (Gdx.input.isKeyPressed(Input.Keys.NUM_2)) return TWO; 
+			if (Gdx.input.isKeyPressed(Input.Keys.NUM_3)) return THREE; 
+	}
+		return 0;
+	}
 }

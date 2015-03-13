@@ -3,9 +3,10 @@ package com.CS3152.FoodChain;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
-import com.CS3152.FoodChain.Animal.animalType;
+import com.CS3152.FoodChain.Actor.actorType;
 import com.CS3152.FoodChain.GameMap.Coordinate;
 
 /**
@@ -55,20 +56,32 @@ public class LevelOneExporter {
         layout[4][8].type = GameMap.tileType.BUSH;
         layout[6][8].type = GameMap.tileType.BUSH;
           
-        List<animalType> animals = new ArrayList<animalType>();
-        animals.add(animalType.SHEEP);
-        animals.add(animalType.WOLF);
+        List<actorType> animals = new ArrayList<actorType>();
+        animals.add(actorType.SHEEP);
+        animals.add(actorType.WOLF);
+        
         
         List<Coordinate> coords = new ArrayList<Coordinate>();
         coords.add(new Coordinate(5,5));
         coords.add(new Coordinate(7,7));
         
         Coordinate playerStart = new Coordinate(10,10);
-        Trap startingTrap = new Trap("SHEEP_TRAP");
-        
+        HashMap<String, List<Trap>> startingInventory = new HashMap<String, List<Trap>>();
+        List<Trap> trap0List = new ArrayList<Trap>();
+        List<Trap> trap1List = new ArrayList<Trap>();
+        List<Trap> trap2List = new ArrayList<Trap>();
+        trap0List.add(new Trap("SHEEP_TRAP"));
+        trap0List.add(new Trap("SHEEP_TRAP"));
+        trap1List.add(new Trap("WOLF_TRAP"));
+        trap1List.add(new Trap("WOLF_TRAP"));
+        trap2List.add(new Trap("REGULAR_TRAP"));
+        trap2List.add(new Trap("REGULAR_TRAP"));
+        startingInventory.put("SHEEP_TRAP", trap0List);
+        startingInventory.put("WOLF_TRAP", trap1List);
+        startingInventory.put("REGULAR_TRAP", trap2List);
         GameMap gm = new GameMap(layout, animals, 
                                 coords, playerStart,
-                                startingTrap);
+                                startingInventory);
         try {
             MapManager.MapToGson(gm, "level1");
         } catch (IOException e) {
