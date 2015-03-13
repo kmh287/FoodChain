@@ -16,7 +16,7 @@ public class Sheep extends Animal {
     private static final String SHEEP_TEX = "assets/sheep.png";
     private static Texture tex = null;
     
-    static final Animal.animalType prey[] = {};
+    static final Actor.actorType prey[] = {};
     
     /**
      * Public Constructor for a sheep
@@ -24,12 +24,12 @@ public class Sheep extends Animal {
      * @param y Starting y position for this sheep
      */
     public Sheep(float x, float y) {
-        super(new TextureRegion(tex), Animal.animalType.SHEEP, x, y, 
+        super(new TextureRegion(tex), Actor.actorType.SHEEP, x, y, 
               prey, Animal.direction.EAST);
     }
 
     /* (non-Javadoc)
-     * @see com.CS3152.FoodChain.Animal#getTypeNameString()
+     * @see com.CS3152.FoodChain.Actor#getTypeNameString()
      */
     @Override
     public String getTypeNameString() {

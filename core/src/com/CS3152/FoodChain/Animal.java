@@ -6,27 +6,17 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
 public abstract class Animal extends Actor {
-	public enum animalType{
-		SHEEP, 
-		WOLF
-	}
-	
-	//The type of this animal
-	private final animalType type;
-	//The animals this animal can eat
-	private final animalType[] prey;
 
 	//Whether the animal is caught in a trap
 	private boolean trapped = false;
 
+	private actorType type;
+	
 	//texture used in getCenter and setCenter
 	private float texWidth;
 	private float texHeight;
-	
-	//Animal's velocity
-	private Vector2 velocity;
 	//how far forward the hunter can move in a turn. 
-    private static final float MOVE_SPEED = 6.5f;
+    private static final float MOVE_SPEED = 150f;
 
 	
 	/** Protected constructor for the animal type. 
@@ -40,14 +30,12 @@ public abstract class Animal extends Actor {
 	 * @param foodchainVal The food chain value for this animal. 
 	 *                     It is up to the CALLER to ensure this is correct.
 	 */
-	public Animal(TextureRegion tr, animalType type, float x, float y, 
-	              animalType[] prey, direction facing){
-		super(tr, x, y, tr.getRegionWidth(), tr.getRegionHeight());
+	public Animal(TextureRegion tr, actorType type, float x, float y, 
+	              actorType[] prey, direction facing){
+		super(tr, type, x, y, tr.getRegionWidth(), tr.getRegionHeight(), prey);
 		this.type = type;
 		this.setPos(x,y);
-		this.prey = prey;
 		this.facing = facing;
-		this.velocity = new Vector2();
 		setTexWidth(tr.getRegionWidth());
 		setTexHeight(tr.getRegionHeight());
 	}
@@ -57,28 +45,28 @@ public abstract class Animal extends Actor {
 		float xPos = getX();
 		float yPos = getY();
 		
-	    if (x - xPos == 0 && y - yPos > 0){
+	    if (x - getPosition().x == 0 && y - getPosition().y > 0){
 	        this.facing = direction.NORTH;
 	    }
-	    else if (x - xPos > 0 && y - yPos > 0){
+	    else if (x - getPosition().x > 0 && y - getPosition().y > 0){
 	        this.facing = direction.NORTHEAST;
 	    }
-	    else if (x - xPos > 0 && y - yPos == 0){
+	    else if (x - getPosition().x > 0 && y - getPosition().y == 0){
 	        this.facing = direction.EAST;
 	    }
-	    else if (x - xPos > 0 && y - yPos < 0){
+	    else if (x - getPosition().x > 0 && y - getPosition().y < 0){
 	        this.facing = direction.SOUTHEAST;
 	    }
-	    else if (x - xPos == 0 && y - yPos < 0){
+	    else if (x - getPosition().x == 0 && y - getPosition().y < 0){
 	        this.facing = direction.SOUTH;
 	    }
-	    else if (x - xPos < 0 && y - yPos < 0){
+	    else if (x - getPosition().x < 0 && y - getPosition().y < 0){
 	        this.facing = direction.SOUTHWEST;
 	    }
-	    else if (x - xPos < 0 && y - yPos == 0){
+	    else if (x - getPosition().x < 0 && y - getPosition().y == 0){
 	        this.facing = direction.WEST;
 	    }
-	    else if (x - xPos < 0 && y - yPos > 0){
+	    else if (x - getPosition().x < 0 && y - getPosition().y > 0){
 	        this.facing = direction.NORTHWEST;
 	    }
 	    else{
@@ -92,7 +80,7 @@ public abstract class Animal extends Actor {
     /**
      * @return the type
      */
-    public animalType getType() {
+    public actorType getType() {
         return type;
     }
     
@@ -101,7 +89,7 @@ public abstract class Animal extends Actor {
 	 * @return String representing the name of this type
 	 */
 	public abstract String getTypeNameString();
-	
+
 	/**
 	 * returns width of texture
 	 * @return Vector
@@ -127,6 +115,7 @@ public abstract class Animal extends Actor {
 	
 	
 	/**
+<<<<<<< HEAD
 	 * returns center of animal
 	 * @return String representing the name of this type
 	 */
@@ -142,6 +131,8 @@ public abstract class Animal extends Actor {
 	}
 	
 	/**
+=======
+>>>>>>> origin/Kevin
 	 * Standard toString methoH
 	 * @return A string representation of this animal's type and position
 	 */
@@ -165,14 +156,76 @@ public abstract class Animal extends Actor {
 	public void setTrapped(boolean val) {
 		trapped = val;
 	}
-	
+
+	/** 
+    * Updates the hunter's position according to the controlCode. 
+	* 
+	* @param controlCode The movement controlCode (from InputController).
+	*/
+	public void update(int controlCode, float dt) {
+    	super.update(dt);
+    	// Determine how we are moving.
+    	boolean movingEast  = (controlCode == InputController.EAST);
+   		boolean movingWest = (controlCode == InputController.WEST);
+    	boolean movingNorth = (controlCode == InputController.NORTH);
+    	boolean movingSouth = (controlCode == InputController.SOUTH);
+    	boolean movingNorthWest = (controlCode == InputController.NORTHWEST);
+    	boolean movingSouthWest = (controlCode == InputController.SOUTHWEST);
+    	boolean movingSouthEast = (controlCode == InputController.SOUTHEAST);
+    	boolean movingNorthEast = (controlCode == InputController.NORTHEAST);
+    	
+    	//process moving command 
+    	if (movingWest) {
+			super.setAngle(0.0f);
+			super.setVX(-MOVE_SPEED);
+			super.setVY(0);
+		} else if (movingEast) {
+			super.setAngle(180.0f);
+			super.setVX(MOVE_SPEED);
+			super.setVY(0);
+		}
+		else if (movingNorth) {
+			super.setAngle(90.0f);
+			super.setVX(0);
+			super.setVY(MOVE_SPEED);
+		}
+		else if (movingSouth) {
+			super.setAngle(270.0f);
+			super.setVX(0);
+			super.setVY(-MOVE_SPEED);
+		}
+		else if (movingSouthWest) {
+			super.setAngle(180.0f);
+			super.setVX(-MOVE_SPEED);
+			super.setVY(-MOVE_SPEED);
+		}
+		else if (movingSouthEast) {
+			super.setAngle(180.0f);
+			super.setVX(MOVE_SPEED);
+			super.setVY(-MOVE_SPEED);
+		}
+		else if (movingNorthEast) {
+			super.setAngle(180.0f);
+			super.setVX(MOVE_SPEED);
+			super.setVY(MOVE_SPEED);
+		}
+		else if (movingNorthWest) {
+			super.setAngle(180.0f);
+			super.setVX(-MOVE_SPEED);
+			super.setVY(MOVE_SPEED);
+		}
+		else {
+			// NOT MOVING, SO STOP MOVING
+			super.setVX(0);
+			super.setVY(0);
+		}
+    }
+	    
 	/**
-	 * Return true if this animal can eat ani, false otherwise
-	 * @param ani Another animal
-	 * @return boolean, whether or not this animal can eat ani
+	 * @return the bottom LeftxPos
 	 */
 	public boolean canEat(Animal ani){
-	    for (animalType t : prey){
+	    for (actorType t : ani.getPrey()){
 	        if (ani.getType() == t){
 	            return true;
 	        }
@@ -184,78 +237,9 @@ public abstract class Animal extends Actor {
 	    canvas.begin();
 	    canvas.draw(getTexture(), getX(), getY());
 	    canvas.end();
+	}
+	
+	public float getXDiamter() {
+	    return texWidth;
     }
-
-	/** 
-	    * Updates the hunter's position according to the controlCode. 
-	    * 
-	    * @param controlCode The movement controlCode (from InputController).
-	    */
-	    public void update(int controlCode) {
-	    	
-	    	// Determine how we are moving.
-	    	boolean movingEast  = (controlCode == InputController.EAST);
-	   		boolean movingWest = (controlCode == InputController.WEST);
-	    	boolean movingNorth = (controlCode == InputController.NORTH);
-	    	boolean movingSouth = (controlCode == InputController.SOUTH);
-	    	boolean movingNorthWest = (controlCode == InputController.NORTHWEST);
-	    	boolean movingSouthWest = (controlCode == InputController.SOUTHWEST);
-	    	boolean movingSouthEast = (controlCode == InputController.SOUTHEAST);
-	    	boolean movingNorthEast = (controlCode == InputController.NORTHEAST);
-	    	
-	    	//process moving command 
-	    	if (movingWest) {
-//	    		System.out.println("W");
-				facing = direction.WEST;
-				velocity.x = -MOVE_SPEED;
-				velocity.y = 0;
-			} else if (movingEast) {
-//	    		System.out.println("E");
-				facing = direction.EAST;
-				velocity.x = MOVE_SPEED;
-				velocity.y = 0;
-			}
-			else if (movingNorth) {
-//	    		System.out.println("N");
-				facing = direction.NORTH;
-				velocity.y = MOVE_SPEED;
-				velocity.x = 0;
-			}
-			else if (movingSouth) {
-//	    		System.out.println("S");
-				facing = direction.SOUTH;
-				velocity.x = 0;
-				velocity.y = -MOVE_SPEED;
-			}
-			else if (movingSouthWest) {
-//	    		System.out.println("SW");
-				facing = direction.SOUTHWEST;
-				velocity.x = -MOVE_SPEED;
-				velocity.y = -MOVE_SPEED;
-			}
-			else if (movingSouthEast) {
-//	    		System.out.println("SE");
-				facing = direction.SOUTHEAST;
-				velocity.x = MOVE_SPEED;
-				velocity.y = -MOVE_SPEED;
-			}
-			else if (movingNorthEast) {
-//	    		System.out.println("NE");
-				facing = direction.NORTHEAST;
-				velocity.x = MOVE_SPEED;
-				velocity.y = MOVE_SPEED;
-			}
-			else if (movingNorthWest) {
-//	    		System.out.println("NW");
-				velocity.x = -MOVE_SPEED;
-				facing = direction.NORTHWEST;
-				velocity.y = MOVE_SPEED;
-			}
-			else {
-				// NOT MOVING, SO STOP MOVING
-//				System.out.println("nothin");
-				velocity.x = 0;
-				velocity.y = 0;
-			}
-	    }
 }

@@ -9,7 +9,7 @@ public class Wolf extends Animal{
     private static final String WOLF_TEX = "assets/wolf.png";
     private static Texture tex = null;
     
-    static final Animal.animalType prey[] = {Animal.animalType.SHEEP};
+    static final Actor.actorType prey[] = {Actor.actorType.SHEEP};
     
     /**
      * Public Constructor for a wolf
@@ -17,7 +17,7 @@ public class Wolf extends Animal{
      * @param y Starting y position for this wolf
      */
     public Wolf(float x, float y) {
-        super(new TextureRegion(tex), Animal.animalType.WOLF, x, y, 
+        super(new TextureRegion(tex), Actor.actorType.WOLF, x, y, 
               prey, Animal.direction.EAST);
     }
 

@@ -27,7 +27,7 @@ public class CollisionController implements ContactListener {
 	//The game world
 	private World world;
 	/** All the objects in the world. */
-	protected PooledList<PhysicsObject> objects  = new PooledList<PhysicsObject>();
+	protected PooledList<BoxObject> objects  = new PooledList<BoxObject>();
 	//Vector2 cache for calculations
 	private Vector2 tmp;
 	
@@ -42,7 +42,7 @@ public class CollisionController implements ContactListener {
 	 * Add the object to the list of objects maintained in the CollisionController
 	 * @param obj: the object to add
 	 */
-	protected void addObject(PhysicsObject obj, Object data) {
+	protected void addObject(BoxObject obj, Object data) {
 		objects.add(obj);
 		obj.activatePhysics(world);
 		obj.getBody().setUserData(data.toString());
@@ -57,22 +57,27 @@ public class CollisionController implements ContactListener {
 	 * TODO have to decide how to handle multiple collisions and which collisions to process first. like animal or tiles
 	 */
 	private void move(Hunter hunter) {
-//		tmp.set(hunter.getCenter());
-//		tmp.add(hunter.getVX(), hunter.getVY());	
-//		//System.out.println("vx:" + hunter.getVX() + "vy:" +hunter.getVY());
-//		hunter.setCenter(tmp);
-		hunter.setMass(1);
-		System.out.println(hunter.getVelocity().toString());
-		hunter.setVX(hunter.getVX());
+		tmp.set(hunter.getPosition());
+		tmp.add(hunter.getVX(), hunter.getVY());	
+//		System.out.println("Y vel : "+hunter.getVY());
+//		System.out.println("X vel : "+hunter.getVX());
+//		System.out.println("Vel : "+hunter.getLinearVelocity());
+//		System.out.println("Position : "+hunter.getPosition());
+		hunter.setLinearVelocity(tmp);
+		//System.out.println("vx:" + hunter.getVX() + "vy:" +hunter.getVY());
+		//hunter.setCenter(tmp);
+		//hunter.getBody().applyForce(tmp.scl(30),hunter.getBody().getPosition(),true);
+		//System.out.println(hunter.getBody().getLinearVelocity());
 	}
 	
 	private void move(Animal animal) {
-		tmp.set(animal.getCenter());
+		tmp.set(animal.getPosition());
 		tmp.add(animal.getVX(), animal.getVY());
-		//System.out.println("vx: " + animal.getVX() + " vy: " + animal.getVY());
-		if (!animal.getTrapped()) {
-			animal.setCenter(tmp);
-		}
+//		System.out.println("Y vel : "+animal.getVY());
+//		System.out.println("X vel : "+animal.getVX());
+//		System.out.println("Vel : "+animal.getLinearVelocity());
+//		System.out.println("Position : "+animal.getPosition());
+		animal.setLinearVelocity(tmp);
 	}
 	
 	//Pass the object to the correct handler

@@ -22,8 +22,9 @@ public class GameMap {
     //List of animals and their coordinates
     //The i'th element of animals should be at
     //the i'th coordinate in coordinates.
-    private List<Animal.animalType> animals = null;
+    private List<Actor.actorType> animals = null;
     private List<Vector2> coordinates = null;
+
     
     //Player information that needs to be stored
     //in the map such as the start position and 
@@ -83,10 +84,10 @@ public class GameMap {
      * @param coordinates Coordinates of the animals. This should 
      *                    have the *EXACT* same length as animals
      * @param playerStartPosition The coordinate of the player
-     *                            start posiiton
+     *                            start position
      */
     public GameMap(Tile.tileType[][] layout,
-                   List<Animal.animalType>animals,
+                   List<Actor.actorType>animals,
                    List<Vector2> coordinates,
                    Vector2 hunterStartPosition,
                    Trap hunterStartingTrap){
@@ -214,7 +215,7 @@ public class GameMap {
         canvas.end();
     }
     
-    public List<Animal.animalType>getAnimalTypeList(){
+    public List<Actor.actorType> getActorTypeList(){
         return this.animals;
     }
     
@@ -244,5 +245,11 @@ public class GameMap {
 			}
 		}
 	}
- 
+		
+	public boolean isSafeAt(float tileX, float tileY) {
+		return ((tileX >= 0 && 
+				tileY >= 0) &&
+			   tileX <= this.layout[0].length && 
+			   tileY <= this.layout.length);
+	}
 }

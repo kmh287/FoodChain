@@ -29,7 +29,7 @@ public class WolfController extends AIController {
                     if (Math.abs(actrY - getLoc().y) <= 1) {
                         // If the nearby animal can eat this animal
                         if (actr == actors.get(0) ||
-                            ((Animal)(actr)).canEat(animal)) {
+                            ((Animal)(actr)).canKill(animal)) {
                             setAttacker(actr);
                             return true;
                         }
@@ -49,7 +49,7 @@ public class WolfController extends AIController {
                     if (Math.abs(actrY - getLoc().y) <= 1) {
                         // If the nearby animal can eat this animal
                         if (actr == actors.get(0) ||
-                            ((Animal)(actr)).canEat(animal)) {
+                            ((Animal)(actr)).canKill(animal)) {
                             setAttacker(actr);
                             return true;
                         }
@@ -69,7 +69,7 @@ public class WolfController extends AIController {
                     if (actrY - getLoc().y >= 0 && actrY - getLoc().y <= 2) {
                         // If the nearby animal can eat this animal
                         if (actr == actors.get(0) ||
-                            ((Animal)(actr)).canEat(animal)) {
+                            ((Animal)(actr)).canKill(animal)) {
                             setAttacker(actr);
                             return true;
                         }
@@ -89,7 +89,7 @@ public class WolfController extends AIController {
                     if (actrY - getLoc().y <= 0 && actrY - getLoc().y >= -2) {
                         // If the nearby animal can eat this animal
                         if (actr == actors.get(0) ||
-                            ((Animal)(actr)).canEat(animal)) {
+                            ((Animal)(actr)).canKill(animal)) {
                             setAttacker(actr);
                             return true;
                         }
@@ -109,7 +109,7 @@ public class WolfController extends AIController {
                     if (actrY - getLoc().y >= 0 && actrY - getLoc().y <= 1) {
                         // If the nearby animal can eat this animal
                         if (actr == actors.get(0) ||
-                            ((Animal)(actr)).canEat(animal)) {
+                            ((Animal)(actr)).canKill(animal)) {
                             setAttacker(actr);
                             return true;
                         }
@@ -122,7 +122,7 @@ public class WolfController extends AIController {
                     // animal's location
                     if (actrY - (getLoc().y + 1) >= 0 && actrY - (getLoc().y + 1) <= 1) {
                         if (actr == actors.get(0) ||
-                            ((Animal)(actr)).canEat(animal)) {
+                            ((Animal)(actr)).canKill(animal)) {
                             setAttacker(actr);
                             return true;
                         }
@@ -142,7 +142,7 @@ public class WolfController extends AIController {
                     if (actrY - getLoc().y >= 0 && actrY - getLoc().y <= 1) {
                         // If the nearby animal can eat this animal
                         if (actr == actors.get(0) ||
-                            ((Animal)(actr)).canEat(animal)) {
+                            ((Animal)(actr)).canKill(animal)) {
                             setAttacker(actr);
                             return true;
                         }
@@ -155,7 +155,7 @@ public class WolfController extends AIController {
                     // animal's location
                     if (actrY - (getLoc().y + 1) >= 0 && actrY - (getLoc().y + 1) <= 1) {
                         if (actr == actors.get(0) ||
-                            ((Animal)(actr)).canEat(animal)) {
+                            ((Animal)(actr)).canKill(animal)) {
                             setAttacker(actr);
                             return true;
                         }
@@ -175,7 +175,7 @@ public class WolfController extends AIController {
                     if (actrY - getLoc().y <= 0 && actrY - getLoc().y >= -1) {
                         // If the nearby animal can eat this animal
                         if (actr == actors.get(0) ||
-                            ((Animal)(actr)).canEat(animal)) {
+                            ((Animal)(actr)).canKill(animal)) {
                             setAttacker(actr);
                             return true;
                         }
@@ -188,7 +188,7 @@ public class WolfController extends AIController {
                     // animal's location
                     if (actrY - (getLoc().y - 1) <= 0 && actrY - (getLoc().y - 1) >= -1) {
                         if (actr == actors.get(0) ||
-                            ((Animal)(actr)).canEat(animal)) {
+                            ((Animal)(actr)).canKill(animal)) {
                             setAttacker(actr);
                             return true;
                         }
@@ -208,7 +208,7 @@ public class WolfController extends AIController {
                     if (actrY - getLoc().y <= 0 && actrY - getLoc().y >= -1) {
                         // If the nearby animal can eat this animal
                         if (actr == actors.get(0) ||
-                            ((Animal)(actr)).canEat(animal)) {
+                            ((Animal)(actr)).canKill(animal)) {
                             setAttacker(actr);
                             return true;
                         }
@@ -221,7 +221,7 @@ public class WolfController extends AIController {
                     // animal's location
                     if (actrY - (getLoc().y - 1) <= 0 && actrY - (getLoc().y - 1) >= -1) {
                         if (actr == actors.get(0) ||
-                            ((Animal)(actr)).canEat(animal)) {
+                            ((Animal)(actr)).canKill(animal)) {
                             setAttacker(actr);
                             return true;
                         }
@@ -259,7 +259,7 @@ public class WolfController extends AIController {
                     // If the potential predator's y distance is within 1 tile
                     if (Math.abs(actrY - getLoc().y) <= 1) {
                         // If the nearby animal can eat this animal
-                        if (actr == actors.get(0) || animal.canEat((Animal)(actr))) {
+                        if (actr == actors.get(0) || animal.canKill((Animal)(actr))) {
                             setTarget(actr);
                             return true;
                         }
@@ -278,7 +278,7 @@ public class WolfController extends AIController {
                     // If the potential predator's y distance is within 1 tile
                     if (Math.abs(actrY - getLoc().y) <= 1) {
                         // If the nearby animal can eat this animal
-                        if (actr == actors.get(0) || animal.canEat((Animal)(actr))) {
+                        if (actr == actors.get(0) || animal.canKill((Animal)(actr))) {
                             setTarget(actr);
                             return true;
                         }
@@ -297,7 +297,7 @@ public class WolfController extends AIController {
                     // The potential predator's y distance is within 2 tiles above
                     if (actrY - getLoc().y >= 0 && actrY - getLoc().y <= 2) {
                         // If the nearby animal can eat this animal
-                        if (actr == actors.get(0) || animal.canEat((Animal)(actr))) {
+                        if (actr == actors.get(0) || animal.canKill((Animal)(actr))) {
                             setTarget(actr);
                             return true;
                         }
@@ -316,7 +316,7 @@ public class WolfController extends AIController {
                     // The potential predator's y distance is within 2 tiles below
                     if (actrY - getLoc().y <= 0 && actrY - getLoc().y >= -2) {
                         // If the nearby animal can eat this animal
-                        if (actr == actors.get(0) || animal.canEat((Animal)(actr))) {
+                        if (actr == actors.get(0) || animal.canKill((Animal)(actr))) {
                             setTarget(actr);
                             return true;
                         }
@@ -335,7 +335,7 @@ public class WolfController extends AIController {
                     // The potential predator's y distance is within 1 tile above
                     if (actrY - getLoc().y >= 0 && actrY - getLoc().y <= 1) {
                         // If the nearby animal can eat this animal
-                        if (actr == actors.get(0) || animal.canEat((Animal)(actr))) {
+                        if (actr == actors.get(0) || animal.canKill((Animal)(actr))) {
                             setTarget(actr);
                             return true;
                         }
@@ -347,7 +347,7 @@ public class WolfController extends AIController {
                     // y distance is within 1 tile above the tile northwest of this
                     // animal's location
                     if (actrY - (getLoc().y + 1) >= 0 && actrY - (getLoc().y + 1) <= 1) {
-                        if (actr == actors.get(0) || animal.canEat((Animal)(actr))) {
+                        if (actr == actors.get(0) || animal.canKill((Animal)(actr))) {
                             setTarget(actr);
                             return true;
                         }
@@ -366,7 +366,7 @@ public class WolfController extends AIController {
                     // The potential predator's y distance is within 1 tile above
                     if (actrY - getLoc().y >= 0 && actrY - getLoc().y <= 1) {
                         // If the nearby animal can eat this animal
-                        if (actr == actors.get(0) || animal.canEat((Animal)(actr))) {
+                        if (actr == actors.get(0) || animal.canKill((Animal)(actr))) {
                             setTarget(actr);
                             return true;
                         }
@@ -378,7 +378,7 @@ public class WolfController extends AIController {
                     // y distance is within 1 tile above the tile northeast of this
                     // animal's location
                     if (actrY - (getLoc().y + 1) >= 0 && actrY - (getLoc().y + 1) <= 1) {
-                        if (actr == actors.get(0) || animal.canEat((Animal)(actr))) {
+                        if (actr == actors.get(0) || animal.canKill((Animal)(actr))) {
                             setTarget(actr);
                             return true;
                         }
@@ -397,7 +397,7 @@ public class WolfController extends AIController {
                     // The potential predator's y distance is within 1 tile below
                     if (actrY - getLoc().y <= 0 && actrY - getLoc().y >= -1) {
                         // If the nearby animal can eat this animal
-                        if (actr == actors.get(0) || animal.canEat((Animal)(actr))) {
+                        if (actr == actors.get(0) || animal.canKill((Animal)(actr))) {
                             setTarget(actr);
                             return true;
                         }
@@ -409,7 +409,7 @@ public class WolfController extends AIController {
                     // y distance is within 1 tile below the tile southwest of this
                     // animal's location
                     if (actrY - (getLoc().y - 1) <= 0 && actrY - (getLoc().y - 1) >= -1) {
-                        if (actr == actors.get(0) || animal.canEat((Animal)(actr))) {
+                        if (actr == actors.get(0) || animal.canKill((Animal)(actr))) {
                             setTarget(actr);
                             return true;
                         }
@@ -428,7 +428,7 @@ public class WolfController extends AIController {
                     // The potential predator's y distance is within 1 tile below
                     if (actrY - getLoc().y <= 0 && actrY - getLoc().y >= -1) {
                         // If the nearby animal can eat this animal
-                        if (actr == actors.get(0) || animal.canEat((Animal)(actr))) {
+                        if (actr == actors.get(0) || animal.canKill((Animal)(actr))) {
                             setTarget(actr);
                             return true;
                         }
@@ -441,7 +441,7 @@ public class WolfController extends AIController {
                     // animal's location
                     if (actrY - (getLoc().y - 1) <= 0 && actrY - (getLoc().y - 1) >= -1) {
                         if (actr == actors.get(0) ||
-                            animal.canEat((Animal)(actr))) {
+                            animal.canKill((Animal)(actr))) {
                             setTarget(actr);
                             return true;
                         }

@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import com.CS3152.FoodChain.Animal.animalType;
+import com.CS3152.FoodChain.Actor.actorType;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.math.Vector2;
@@ -60,8 +60,8 @@ public class GameMode implements Screen {
         
         //Get the animal types from map
         //but build and keep the actual list here
-        List<Animal.animalType> aTypes = 
-                            map.getAnimalTypeList();
+        List<Actor.actorType> aTypes = 
+                            map.getActorTypeList();
         List<Vector2> coordinates = map.getCoordinates();
         buildAnimalList(aTypes, coordinates);
         
@@ -80,7 +80,7 @@ public class GameMode implements Screen {
         for (int i = 0; i < animals.size(); i++) {
         	actors.add(animals.get(i));
         }
-        if (animals.get(0).getType() == Animal.animalType.SHEEP) {
+        if (animals.get(0).getType() == Actor.actorType.SHEEP) {
 	        	controls[1] = new SheepController(animals.get(0),
 	        									  map, actors);
 	        controls[2] = new WolfController(animals.get(1),
@@ -139,18 +139,17 @@ public class GameMode implements Screen {
 	 * @param aTypes The list of animal types
 	 * @param coordinates the coordinates of the animals.
 	 */
-	private void buildAnimalList(List<animalType> aTypes,
+	private void buildAnimalList(List<actorType> aTypes,
 	                             List<Vector2> coordinates){
 	    if (coordinates.size() != aTypes.size()){
 	        throw new IllegalArgumentException("Lists of unequal size");
 	    }
-	    
-	    Iterator<animalType> aTypesIt = aTypes.iterator();
+	    Iterator<actorType> aTypesIt = aTypes.iterator();
 	    Iterator<Vector2> coordIt = coordinates.iterator();
 	    while (aTypesIt.hasNext() && coordIt.hasNext()){
-	        animalType currType = aTypesIt.next();
+	        actorType currType = aTypesIt.next();
 	        Vector2 coord = coordIt.next();
-
+	        
 	        Animal newAnimal;
 	        
 	        switch(currType){
@@ -190,7 +189,7 @@ public class GameMode implements Screen {
 		//get the action from the playerController
 		int action = controls[0].getAction();	
 		//Updates the hunters action
-		hunter.update(action);
+		hunter.update(action,delta);
 		Vector2 click = controls[0].getClickPos();
 		if (controls[0].getAction() == InputController.CLICK && hunter.canSetTrap(click)) {
 			hunter.setTrap(click);
@@ -201,7 +200,9 @@ public class GameMode implements Screen {
 		int i = 1;
 		for (Animal an : animals) {
 			action = controls[i].getAction();
-			an.update(action);
+			//AI not working so action is hardcoded to nothing
+			action =0x00;
+			an.update(action,delta);
 			i++;
 		}
 		
@@ -232,11 +233,13 @@ public class GameMode implements Screen {
         
         //Draw the animals
         for (Animal animal : animals){
-            animal.draw(map, canvas);
+            animal.draw(canvas);
+            //animal.drawDebug(canvas);
         }
         
         //Draw the hunter
         hunter.draw(canvas);
+        //hunter.drawDebug(canvas);
         
         ui.draw(canvas);
     }

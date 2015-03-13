@@ -29,7 +29,7 @@ public class SheepController extends AIController {
                     // If the potential predator's y distance is within 1 tile
                     if (Math.abs(actrY - getLoc().y) <= 1) {
                         // If the nearby animal can eat this animal
-                        if (actr == actors.get(0) || ((Animal)(actr)).canEat(animal)) {
+                        if (actr == actors.get(0) || ((Animal)(actr)).canKill(animal)) {
                             setAttacker(actr);
                             return true;
                         }
@@ -48,7 +48,7 @@ public class SheepController extends AIController {
                     // If the potential predator's y distance is within 1 tile
                     if (Math.abs(actrY - getLoc().y) <= 1) {
                         // If the nearby animal can eat this animal
-                        if (actr == actors.get(0) || ((Animal)(actr)).canEat(animal)) {
+                        if (actr == actors.get(0) || ((Animal)(actr)).canKill(animal)) {
                             setAttacker(actr);
                             return true;
                         }
@@ -67,7 +67,7 @@ public class SheepController extends AIController {
                     // The potential predator's y distance is within 2 tiles above
                     if (actrY - getLoc().y >= 0 && actrY - getLoc().y <= 2) {
                         // If the nearby animal can eat this animal
-                        if (actr == actors.get(0) || ((Animal)actr).canEat(animal)) {
+                        if (actr == actors.get(0) || ((Animal)actr).canKill(animal)) {
                             setAttacker(actr);
                             return true;
                         }
@@ -86,7 +86,7 @@ public class SheepController extends AIController {
                     // The potential predator's y distance is within 2 tiles below
                     if (actrY - getLoc().y <= 0 && actrY - getLoc().y >= -2) {
                         // If the nearby animal can eat this animal
-                        if (actr == actors.get(0) || ((Animal)actr).canEat(animal)) {
+                        if (actr == actors.get(0) || ((Animal)actr).canKill(animal)) {
                             setAttacker(actr);
                             return true;
                         }
@@ -105,7 +105,7 @@ public class SheepController extends AIController {
                     // The potential predator's y distance is within 1 tile above
                     if (actrY - getLoc().y >= 0 && actrY - getLoc().y <= 1) {
                         // If the nearby animal can eat this animal
-                        if (actr == actors.get(0) || ((Animal)actr).canEat(animal)) {
+                        if (actr == actors.get(0) || ((Animal)actr).canKill(animal)) {
                             setAttacker(actr);
                             return true;
                         }
@@ -117,7 +117,7 @@ public class SheepController extends AIController {
                     // y distance is within 1 tile above the tile northwest of this
                     // animal's location
                     if (actrY - (getLoc().y + 1) >= 0 && actrY - (getLoc().y + 1) <= 1) {
-                        if (actr == actors.get(0) || ((Animal)actr).canEat(animal)) {
+                        if (actr == actors.get(0) || ((Animal)actr).canKill(animal)) {
                             setAttacker(actr);
                             return true;
                         }
@@ -136,7 +136,7 @@ public class SheepController extends AIController {
                     // The potential predator's y distance is within 1 tile above
                     if (actrY - getLoc().y >= 0 && actrY - getLoc().y <= 1) {
                         // If the nearby animal can eat this animal
-                        if (actr == actors.get(0) || ((Animal)actr).canEat(animal)) {
+                        if (actr == actors.get(0) || ((Animal)actr).canKill(animal)) {
                             setAttacker(actr);
                             return true;
                         }
@@ -148,7 +148,7 @@ public class SheepController extends AIController {
                     // y distance is within 1 tile above the tile northeast of this
                     // animal's location
                     if (actrY - (getLoc().y + 1) >= 0 && actrY - (getLoc().y + 1) <= 1) {
-                        if (actr == actors.get(0) || ((Animal)actr).canEat(animal)) {
+                        if (actr == actors.get(0) || ((Animal)actr).canKill(animal)) {
                             setAttacker(actr);
                             return true;
                         }
@@ -167,7 +167,7 @@ public class SheepController extends AIController {
                     // The potential predator's y distance is within 1 tile below
                     if (actrY - getLoc().y <= 0 && actrY - getLoc().y >= -1) {
                         // If the nearby animal can eat this animal
-                        if (actr == actors.get(0) || ((Animal)actr).canEat(animal)) {
+                        if (actr == actors.get(0) || ((Animal)actr).canKill(animal)) {
                             setAttacker(actr);
                             return true;
                         }
@@ -179,7 +179,7 @@ public class SheepController extends AIController {
                     // y distance is within 1 tile below the tile southwest of this
                     // animal's location
                     if (actrY - (getLoc().y - 1) <= 0 && actrY - (getLoc().y - 1) >= -1) {
-                        if (actr == actors.get(0) || ((Animal)actr).canEat(animal)) {
+                        if (actr == actors.get(0) || ((Animal)actr).canKill(animal)) {
                             setAttacker(actr);
                             return true;
                         }
@@ -198,7 +198,7 @@ public class SheepController extends AIController {
                     // The potential predator's y distance is within 1 tile below
                     if (actrY - getLoc().y <= 0 && actrY - getLoc().y >= -1) {
                         // If the nearby animal can eat this animal
-                        if (actr == actors.get(0) || ((Animal)actr).canEat(animal)) {
+                        if (actr == actors.get(0) || ((Animal)actr).canKill(animal)) {
                             setAttacker(actr);
                             return true;
                         }
@@ -210,7 +210,7 @@ public class SheepController extends AIController {
                     // y distance is within 1 tile below the tile southeast of this
                     // animal's location
                     if (actrY - (getLoc().y - 1) <= 0 && actrY - (getLoc().y - 1) >= -1) {
-                        if (actr == actors.get(0) || ((Animal)actr).canEat(animal)) {
+                        if (actr == actors.get(0) || ((Animal)actr).canKill(animal)) {
                             setAttacker(actr);
                             return true;
                         }
@@ -240,7 +240,7 @@ public class SheepController extends AIController {
                     // If the potential predator's y distance is within 1 tile
                     if (Math.abs(getLoc().y - actrY) <= 1) {
                         // If the nearby animal can eat this animal
-                        if (actr == actors.get(0) || ((Animal)actr).canEat(animal)) {
+                        if (actr == actors.get(0) || ((Animal)actr).canKill(animal)) {
                             setAttacker(actr);
                             return true;
                         }
@@ -255,7 +255,7 @@ public class SheepController extends AIController {
                     // If the potential predator's y distance is within 1 tile
                     if (Math.abs(getLoc().y - actrY) <= 1) {
                         // If the nearby animal can eat this animal
-                        if (actr == actors.get(0) || ((Animal)actr).canEat(animal)) {
+                        if (actr == actors.get(0) || ((Animal)actr).canKill(animal)) {
                             setAttacker(actr);
                             return true;
                         }
@@ -270,7 +270,7 @@ public class SheepController extends AIController {
                     // The potential predator's y distance is within 2 tiles above
                     if (getLoc().y - actrY >= 0 && getLoc().y - actrY <= 2) {
                         // If the nearby animal can eat this animal
-                        if (actr == actors.get(0) || ((Animal)actr).canEat(animal)) {
+                        if (actr == actors.get(0) || ((Animal)actr).canKill(animal)) {
                             setAttacker(actr);
                             return true;
                         }
@@ -285,7 +285,7 @@ public class SheepController extends AIController {
                     // The potential predator's y distance is within 2 tiles below
                     if (getLoc().y - actrY <= 0 && getLoc().y - actrY >= -2) {
                         // If the nearby animal can eat this animal
-                        if (actr == actors.get(0) || ((Animal)actr).canEat(animal)) {
+                        if (actr == actors.get(0) || ((Animal)actr).canKill(animal)) {
                             setAttacker(actr);
                             return true;
                         }
@@ -300,7 +300,7 @@ public class SheepController extends AIController {
                     // The potential predator's y distance is within 1 tile above
                     if (getLoc().y - actrY >= 0 && getLoc().y - actrY <= 1) {
                         // If the nearby animal can eat this animal
-                        if (actr == actors.get(0) || ((Animal)actr).canEat(animal)) {
+                        if (actr == actors.get(0) || ((Animal)actr).canKill(animal)) {
                             setAttacker(actr);
                             return true;
                         }
@@ -312,7 +312,7 @@ public class SheepController extends AIController {
                     // y distance is within 1 tile above the tile northwest of this
                     // animal's location
                     if (getLoc().y - (actrY + 1) >= 0 && getLoc().y - (actrY + 1) <= 1) {
-                        if (actr == actors.get(0) || ((Animal)actr).canEat(animal)) {
+                        if (actr == actors.get(0) || ((Animal)actr).canKill(animal)) {
                             setAttacker(actr);
                             return true;
                         }
@@ -327,7 +327,7 @@ public class SheepController extends AIController {
                     // The potential predator's y distance is within 1 tile above
                     if (getLoc().y - actrY >= 0 && getLoc().y - actrY <= 1) {
                         // If the nearby animal can eat this animal
-                        if (actr == actors.get(0) || ((Animal)actr).canEat(animal)) {
+                        if (actr == actors.get(0) || ((Animal)actr).canKill(animal)) {
                             setAttacker(actr);
                             return true;
                         }
@@ -339,7 +339,7 @@ public class SheepController extends AIController {
                     // y distance is within 1 tile above the tile northeast of this
                     // animal's location
                     if (getLoc().y - (actrY + 1) >= 0 && getLoc().y - (actrY + 1) <= 1) {
-                        if (actr == actors.get(0) || ((Animal)actr).canEat(animal)) {
+                        if (actr == actors.get(0) || ((Animal)actr).canKill(animal)) {
                             setAttacker(actr);
                             return true;
                         }
@@ -354,7 +354,7 @@ public class SheepController extends AIController {
                     // The potential predator's y distance is within 1 tile below
                     if (getLoc().y - actrY <= 0 && getLoc().y - actrY >= -1) {
                         // If the nearby animal can eat this animal
-                        if (actr == actors.get(0) || ((Animal)actr).canEat(animal)) {
+                        if (actr == actors.get(0) || ((Animal)actr).canKill(animal)) {
                             setAttacker(actr);
                             return true;
                         }
@@ -366,7 +366,7 @@ public class SheepController extends AIController {
                     // y distance is within 1 tile below the tile southwest of this
                     // animal's location
                     if (getLoc().y - (actrY - 1) <= 0 && getLoc().y - (actrY - 1) >= -1) {
-                        if (actr == actors.get(0) || ((Animal)actr).canEat(animal)) {
+                        if (actr == actors.get(0) || ((Animal)actr).canKill(animal)) {
                             setAttacker(actr);
                             return true;
                         }
@@ -381,7 +381,7 @@ public class SheepController extends AIController {
                     // The potential predator's y distance is within 1 tile below
                     if (getLoc().y - actrY <= 0 && getLoc().y - actrY >= -1) {
                         // If the nearby animal can eat this animal
-                        if (actr == actors.get(0) || ((Animal)actr).canEat(animal)) {
+                        if (actr == actors.get(0) || ((Animal)actr).canKill(animal)) {
                             setAttacker(actr);
                             return true;
                         }
@@ -393,7 +393,7 @@ public class SheepController extends AIController {
                     // y distance is within 1 tile below the tile southeast of this
                     // animal's location
                     if (getLoc().y - (actrY - 1) <= 0 && getLoc().y - (actrY - 1) >= -1) {
-                    	if (actr == actors.get(0) || ((Animal)actr).canEat(animal)) {
+                    	if (actr == actors.get(0) || ((Animal)actr).canKill(animal)) {
                     		setAttacker(actr);
                     		return true;
                         }

@@ -5,8 +5,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.CS3152.FoodChain.Animal.animalType;
 import com.badlogic.gdx.math.Vector2;
+import com.CS3152.FoodChain.Actor.actorType;
 
 /**
  * This is not part of the final game.
@@ -53,9 +53,9 @@ public class LevelOneExporter {
         layout[4][8] = Tile.tileType.BUSH;
         layout[6][8] = Tile.tileType.BUSH;
           
-        List<animalType> animals = new ArrayList<animalType>();
-        animals.add(animalType.SHEEP);
-        animals.add(animalType.WOLF);
+        List<actorType> animals = new ArrayList<actorType>();
+        animals.add(actorType.SHEEP);
+        animals.add(actorType.WOLF);
         
         List<Vector2> coords = new ArrayList<Vector2>();
         coords.add(new Vector2(5,5));
