@@ -30,6 +30,8 @@ public class GameMode implements Screen {
 //    /** Cache attribute for calculations */
 //	private Vector2 tmp;
 	private static final float DEFAULT_DENSITY = 1.0f;
+	
+	private Vector2 action;
     
     /**
      * Temporary constructor for GameMode until we have 
@@ -50,15 +52,13 @@ public class GameMode implements Screen {
         ui = new UIController();
         ui.loadTextures(manager);
         animals = new ArrayList<Animal>();
-        
+        action =  new Vector2();
         /*size of animal list + the player 
         controls = new InputController[animals.size() + 1]; 
         controls[0] = new PlayerController();
         tmp = new Vector2();
 		*/
-        
         collisionController = new CollisionController();
-        
         //Get the animal types from map
         //but build and keep the actual list here
         List<Actor.actorType> aTypes = 
@@ -94,6 +94,7 @@ public class GameMode implements Screen {
 	        controls[2] = new SheepController(animals.get(1),
 	            								  map, actors);
         }
+        collisionController.setControls(controls);
         //loadTextures
         traps = map.getStartingInventory();
         for (Trap trap : traps.get("WOLF_TRAP")) {
@@ -199,14 +200,12 @@ public class GameMode implements Screen {
 
     private void update(float delta){
     	//if (hunter's turn) {
-		
-		//get the action from the playerController
-		int action = controls[0].getAction();	
 		//Updates the hunters action
-		hunter.update(action,delta);
+		hunter.update(delta);
+		hunter.setSelectedTrap(controls[0].getNum());
 		Vector2 click = controls[0].getClickPos();
-		if (controls[0].getAction() == InputController.CLICK && hunter.canSetTrap(click)) {
-			hunter.setTrap(click);
+		if (controls[0].isClicked()  && hunter.canSetTrap(click)) {
+			hunter.setTrapDown(click);
 			ui.draw(canvas);
 		}
 		
@@ -214,10 +213,7 @@ public class GameMode implements Screen {
 		//i is the index of each animal AI in controls
 		int i = 1;
 		for (Animal an : animals) {
-			action = controls[i].getAction();
-			//AI not working so action is hardcoded to nothing
-			action =0x00;
-			an.update(action,delta);
+			an.update(delta);
 			i++;
 		}
 		
@@ -308,27 +304,5 @@ public class GameMode implements Screen {
      * Movement actions are determined, but not committed (e.g. the velocity
 	 * is updated, but not the position). Collisions are not processed. 
 	 */
-//	public void updateGame() {
-//		//if (hunter's turn) {
-//		
-//			//get the action from the playerController
-//			int action = controls[0].getAction();	
-//			//Updates the hunters action (velocity only). 
-//			//hunter.update(action);	
-//			
-//			//Uses this velocity to move the hunter. 
-//			tmp.set(hunter.getxPos(), hunter.getyPos());
-//			tmp.add(hunter.getVX(), hunter.getVY());
-//			//set the position
-//			hunter.getPosition().set(tmp);
-//
-//			
-//			
-//			
-//		/*} else {
-//			//hunter.update(InputController.NO_ACTION);
-//			}
-//			*/ 
-//	}	
 
 }
