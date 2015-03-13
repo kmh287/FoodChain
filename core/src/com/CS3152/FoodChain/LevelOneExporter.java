@@ -3,6 +3,7 @@ package com.CS3152.FoodChain;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import com.badlogic.gdx.math.Vector2;
@@ -57,16 +58,29 @@ public class LevelOneExporter {
         animals.add(actorType.SHEEP);
         animals.add(actorType.WOLF);
         
+
         List<Vector2> coords = new ArrayList<Vector2>();
         coords.add(new Vector2(5,5));
         coords.add(new Vector2(7,7));
         
         Vector2 playerStart = new Vector2(10,10);
-        Trap startingTrap = new Trap("SHEEP_TRAP");
         
+        HashMap<String, List<Trap>> startingInventory = new HashMap<String, List<Trap>>();
+        List<Trap> trap0List = new ArrayList<Trap>();
+        List<Trap> trap1List = new ArrayList<Trap>();
+        List<Trap> trap2List = new ArrayList<Trap>();
+        trap0List.add(new Trap("SHEEP_TRAP"));
+        trap0List.add(new Trap("SHEEP_TRAP"));
+        trap1List.add(new Trap("WOLF_TRAP"));
+        trap1List.add(new Trap("WOLF_TRAP"));
+        trap2List.add(new Trap("REGULAR_TRAP"));
+        trap2List.add(new Trap("REGULAR_TRAP"));
+        startingInventory.put("SHEEP_TRAP", trap0List);
+        startingInventory.put("WOLF_TRAP", trap1List);
+        startingInventory.put("REGULAR_TRAP", trap2List);
         GameMap gm = new GameMap(layout, animals, 
                                 coords, playerStart,
-                                startingTrap);
+                                startingInventory);
         try {
             MapManager.MapToGson(gm, "level1");
         } catch (IOException e) {

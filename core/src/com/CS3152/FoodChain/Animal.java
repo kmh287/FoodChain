@@ -157,69 +157,6 @@ public abstract class Animal extends Actor {
 		trapped = val;
 	}
 
-	/** 
-    * Updates the hunter's position according to the controlCode. 
-	* 
-	* @param controlCode The movement controlCode (from InputController).
-	*/
-	public void update(int controlCode, float dt) {
-    	super.update(dt);
-    	// Determine how we are moving.
-    	boolean movingEast  = (controlCode == InputController.EAST);
-   		boolean movingWest = (controlCode == InputController.WEST);
-    	boolean movingNorth = (controlCode == InputController.NORTH);
-    	boolean movingSouth = (controlCode == InputController.SOUTH);
-    	boolean movingNorthWest = (controlCode == InputController.NORTHWEST);
-    	boolean movingSouthWest = (controlCode == InputController.SOUTHWEST);
-    	boolean movingSouthEast = (controlCode == InputController.SOUTHEAST);
-    	boolean movingNorthEast = (controlCode == InputController.NORTHEAST);
-    	
-    	//process moving command 
-    	if (movingWest) {
-			super.setAngle(0.0f);
-			super.setVX(-MOVE_SPEED);
-			super.setVY(0);
-		} else if (movingEast) {
-			super.setAngle(180.0f);
-			super.setVX(MOVE_SPEED);
-			super.setVY(0);
-		}
-		else if (movingNorth) {
-			super.setAngle(90.0f);
-			super.setVX(0);
-			super.setVY(MOVE_SPEED);
-		}
-		else if (movingSouth) {
-			super.setAngle(270.0f);
-			super.setVX(0);
-			super.setVY(-MOVE_SPEED);
-		}
-		else if (movingSouthWest) {
-			super.setAngle(180.0f);
-			super.setVX(-MOVE_SPEED);
-			super.setVY(-MOVE_SPEED);
-		}
-		else if (movingSouthEast) {
-			super.setAngle(180.0f);
-			super.setVX(MOVE_SPEED);
-			super.setVY(-MOVE_SPEED);
-		}
-		else if (movingNorthEast) {
-			super.setAngle(180.0f);
-			super.setVX(MOVE_SPEED);
-			super.setVY(MOVE_SPEED);
-		}
-		else if (movingNorthWest) {
-			super.setAngle(180.0f);
-			super.setVX(-MOVE_SPEED);
-			super.setVY(MOVE_SPEED);
-		}
-		else {
-			// NOT MOVING, SO STOP MOVING
-			super.setVX(0);
-			super.setVY(0);
-		}
-    }
 	    
 	/**
 	 * @return the bottom LeftxPos

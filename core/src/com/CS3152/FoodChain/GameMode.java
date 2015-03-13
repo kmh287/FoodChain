@@ -2,6 +2,7 @@ package com.CS3152.FoodChain;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
@@ -20,7 +21,7 @@ public class GameMode implements Screen {
     private AssetManager manager;
     private List<Animal> animals;
     private Hunter hunter;
-    private List<Trap> traps;
+    private HashMap<String, List<Trap>> traps;
     private UIController ui;
 
     protected InputController[] controls;
@@ -28,6 +29,8 @@ public class GameMode implements Screen {
 //    /** Cache attribute for calculations */
 //	private Vector2 tmp;
 	private static final float DEFAULT_DENSITY = 1.0f;
+	
+	private Vector2 action;
     
     /**
      * Temporary constructor for GameMode until we have 
@@ -48,16 +51,14 @@ public class GameMode implements Screen {
         ui = new UIController();
         ui.loadTextures(manager);
         animals = new ArrayList<Animal>();
-        
+        action =  new Vector2();
         /*size of animal list + the player 
         controls = new InputController[animals.size() + 1]; 
         controls[0] = new PlayerController();
         tmp = new Vector2();
 		*/
-        
         collisionController = new CollisionController();
-        map.addTilesToWorld(collisionController);
-        
+        map.addTilesToWorld(collisionController);  
         //Get the animal types from map
         //but build and keep the actual list here
         List<Actor.actorType> aTypes = 
@@ -72,7 +73,8 @@ public class GameMode implements Screen {
         //tmp = new Vector2();
         
         createHunter(map.getHunterStartingCoordinate(), 
-                map.getStartingTrap());
+                map.getStartingInventory());
+	    ui.setHunter(this.hunter);
     
         
         List<Actor> actors = new ArrayList<Actor>();
@@ -92,10 +94,23 @@ public class GameMode implements Screen {
 	        controls[2] = new SheepController(animals.get(1),
 	            								  map, actors);
         }
+        collisionController.setControls(controls);
+        //loadTextures
+        traps = map.getStartingInventory();
+        for (Trap trap : traps.get("WOLF_TRAP")) {
+    		trap.loadTexture(manager);
+    		trap.setInInventory(true);
+        }
         
-        traps = new ArrayList<Trap>();
-        traps.add(map.getStartingTrap());
-        traps.get(0).loadTexture(manager);
+        for (Trap trap : traps.get("REGULAR_TRAP")) {
+        	trap.loadTexture(manager);
+        	trap.setInInventory(true);
+        }
+        
+        for (Trap trap : traps.get("SHEEP_TRAP")) {
+        	trap.loadTexture(manager);
+        	trap.setInInventory(true);
+        }
 	}
 
 	/**
@@ -117,11 +132,12 @@ public class GameMode implements Screen {
 	}
 	
 	private void createHunter(Vector2 startingPos,
-	                         Trap startingTrap){
+			HashMap<String, List<Trap>> startingInventory){
 		Hunter.loadTexture(manager);
 	    this.hunter = new Hunter(map.mapXToScreen((int)startingPos.x),
 	                             map.mapYToScreen((int)startingPos.y),
-	                             startingTrap);
+	                             startingInventory);
+
 	    hunter.setDensity(DEFAULT_DENSITY);
 	    hunter.setAwake(true);
 	    hunter.setBodyType(BodyDef.BodyType.DynamicBody);
@@ -185,24 +201,20 @@ public class GameMode implements Screen {
 
     private void update(float delta){
     	//if (hunter's turn) {
-		
-		//get the action from the playerController
-		int action = controls[0].getAction();	
 		//Updates the hunters action
-		hunter.update(action,delta);
+		hunter.update(delta);
+		hunter.setSelectedTrap(controls[0].getNum());
 		Vector2 click = controls[0].getClickPos();
-		if (controls[0].getAction() == InputController.CLICK && hunter.canSetTrap(click)) {
-			hunter.setTrap(click);
+		if (controls[0].isClicked()  && hunter.canSetTrap(click)) {
+			hunter.setTrapDown(click);
+			ui.draw(canvas);
 		}
 		
 		//Updates the animals' actions
 		//i is the index of each animal AI in controls
 		int i = 1;
 		for (Animal an : animals) {
-			action = controls[i].getAction();
-			//AI not working so action is hardcoded to nothing
-			action =0x00;
-			an.update(action,delta);
+			an.update(delta);
 			i++;
 		}
 		
@@ -223,11 +235,15 @@ public class GameMode implements Screen {
         //Draw the map
         map.draw(canvas);
         
-        for (Trap trap : traps) {
-        	trap.draw(canvas);
+        for (Trap trap : traps.get("WOLF_TRAP")) {
+    		trap.draw(canvas);
         }
         
-        for (Trap trap : traps) {
+        for (Trap trap : traps.get("REGULAR_TRAP")) {
+    		trap.draw(canvas);
+        }
+        
+        for (Trap trap : traps.get("SHEEP_TRAP")) {
     		trap.draw(canvas);
         }
         
@@ -289,27 +305,5 @@ public class GameMode implements Screen {
      * Movement actions are determined, but not committed (e.g. the velocity
 	 * is updated, but not the position). Collisions are not processed. 
 	 */
-//	public void updateGame() {
-//		//if (hunter's turn) {
-//		
-//			//get the action from the playerController
-//			int action = controls[0].getAction();	
-//			//Updates the hunters action (velocity only). 
-//			//hunter.update(action);	
-//			
-//			//Uses this velocity to move the hunter. 
-//			tmp.set(hunter.getxPos(), hunter.getyPos());
-//			tmp.add(hunter.getVX(), hunter.getVY());
-//			//set the position
-//			hunter.getPosition().set(tmp);
-//
-//			
-//			
-//			
-//		/*} else {
-//			//hunter.update(InputController.NO_ACTION);
-//			}
-//			*/ 
-//	}	
 
 }

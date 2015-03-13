@@ -29,8 +29,9 @@ public class GameMap {
     //Player information that needs to be stored
     //in the map such as the start position and 
     //starting trap
+
     private Vector2 hunterStartPosition = null;
-    private Trap hunterStartingTrap = null;
+	private HashMap<String, List<Trap>> hunterStartingInventory = null;
     
     //Should be 16 tiles across, and 9 down.
     //Therefore, layout should be [9][16] to match
@@ -90,13 +91,12 @@ public class GameMap {
                    List<Actor.actorType>animals,
                    List<Vector2> coordinates,
                    Vector2 hunterStartPosition,
-                   Trap hunterStartingTrap){
-    	
-    		this.layout = layout;
+                   HashMap<String, List<Trap>> startingInventory){
+    	this.layout = layout;
         this.animals = animals;
         this.coordinates = coordinates;
         this.hunterStartPosition = hunterStartPosition;
-        this.hunterStartingTrap = hunterStartingTrap;
+        this.hunterStartingInventory = startingInventory;
     }
     
     /** Return a string representation of the map
@@ -227,8 +227,8 @@ public class GameMap {
         return this.hunterStartPosition;
     }
 
-    public Trap getStartingTrap() {
-        return this.hunterStartingTrap; 
+    public HashMap<String, List<Trap>> getStartingInventory() {
+        return this.hunterStartingInventory; 
     }
 
 	public void addTilesToWorld(CollisionController collisionController) {
