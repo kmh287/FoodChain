@@ -69,7 +69,11 @@ public class CollisionController implements ContactListener {
 	 * TODO have to decide how to handle multiple collisions and which collisions to process first. like animal or tiles
 	 */
 	private void move(Hunter actor) {
-		actor.setLinearVelocity(controls[0].getAction());
+//		float mult = 10f;
+		tmp.set(controls[0].getAction());
+//		tmp.scl(mult, mult);
+		System.out.println(tmp.toString());
+		actor.setLinearVelocity(tmp);
 	}
 	
 	private void move(Animal actor,int index) {
@@ -87,7 +91,6 @@ public class CollisionController implements ContactListener {
 		for(PhysicsObject o : objects) {
 			
 			if (o instanceof Hunter){
-				
 				move((Hunter)o);
 			}
 			//unsure about order of objects.
