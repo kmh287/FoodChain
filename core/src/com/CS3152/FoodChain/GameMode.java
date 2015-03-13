@@ -56,6 +56,7 @@ public class GameMode implements Screen {
 		*/
         
         collisionController = new CollisionController();
+        map.addTilesToWorld(collisionController);
         
         //Get the animal types from map
         //but build and keep the actual list here
@@ -124,7 +125,7 @@ public class GameMode implements Screen {
 	    hunter.setDensity(DEFAULT_DENSITY);
 	    hunter.setAwake(true);
 	    hunter.setBodyType(BodyDef.BodyType.DynamicBody);
-	    collisionController.addObject(hunter, null);
+	    collisionController.addObject(hunter, "HUNTER");
 	}
 	
 	/**

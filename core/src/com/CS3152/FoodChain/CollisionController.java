@@ -6,7 +6,6 @@ import java.util.Random;
 
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
-import com.CS3152.FoodChain.GameMap.tileType;
 import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Contact;
@@ -43,10 +42,10 @@ public class CollisionController implements ContactListener {
 	 * Add the object to the list of objects maintained in the CollisionController
 	 * @param obj: the object to add
 	 */
-	protected void addObject(PhysicsObject obj, Animal.animalType type) {
+	protected void addObject(PhysicsObject obj, Object data) {
 		objects.add(obj);
 		obj.activatePhysics(world);
-		obj.getBody().setUserData(type);
+		obj.getBody().setUserData(data.toString());
 	}
 	
 	/**
