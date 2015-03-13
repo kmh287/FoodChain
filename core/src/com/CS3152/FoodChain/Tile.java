@@ -1,6 +1,8 @@
 package com.CS3152.FoodChain;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.Contact;
 
 public class Tile extends BoxObject{
 
@@ -13,4 +15,5 @@ public class Tile extends BoxObject{
 		this.type = type;
 		// TODO Auto-generated constructor stub
 	}
+    
 }
