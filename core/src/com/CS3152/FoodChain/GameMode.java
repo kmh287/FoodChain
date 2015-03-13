@@ -30,6 +30,8 @@ public class GameMode implements Screen {
 //    /** Cache attribute for calculations */
 //	private Vector2 tmp;
 	private static final float DEFAULT_DENSITY = 1.0f;
+	
+	private Vector2 action;
     
     /**
      * Temporary constructor for GameMode until we have 
@@ -50,7 +52,7 @@ public class GameMode implements Screen {
         ui = new UIController();
         ui.loadTextures(manager);
         animals = new ArrayList<Animal>();
-        
+        action =  new Vector2();
         /*size of animal list + the player 
         controls = new InputController[animals.size() + 1]; 
         controls[0] = new PlayerController();
@@ -201,12 +203,13 @@ public class GameMode implements Screen {
     	//if (hunter's turn) {
 		
 		//get the action from the playerController
-		int action = controls[0].getAction();	
+		action = controls[0].getAction();	
 		//Updates the hunters action
 		hunter.update(action,delta);
+		hunter.setSelectedTrap(controls[0].getNum());
 		Vector2 click = controls[0].getClickPos();
-		if (controls[0].getAction() == InputController.CLICK && hunter.canSetTrap(click)) {
-			hunter.setTrap(click);
+		if (controls[0].isClicked()  && hunter.canSetTrap(click)) {
+			hunter.setTrapDown(click);
 			ui.draw(canvas);
 		}
 		
@@ -216,7 +219,6 @@ public class GameMode implements Screen {
 		for (Animal an : animals) {
 			action = controls[i].getAction();
 			//AI not working so action is hardcoded to nothing
-			action =0x00;
 			an.update(action,delta);
 			i++;
 		}
