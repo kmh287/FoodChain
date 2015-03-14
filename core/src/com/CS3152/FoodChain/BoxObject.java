@@ -205,7 +205,7 @@ public class BoxObject extends SimplePhysicsObject {
 	@Override
 	public void drawDebug(GameCanvas canvas) {
 		// TODO Auto-generated method stub
-		
+		canvas.drawPhysics(shape,Color.YELLOW,getX(),getY(),getAngle());
 	}
 	
 //	/**
