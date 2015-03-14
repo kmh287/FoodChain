@@ -33,9 +33,11 @@ public abstract class Actor extends BoxObject {
     
     public Actor(TextureRegion tr, actorType type, float x, float y, float width, 
     		     float height, actorType[] victims) {
-	    	super(tr,x,y,width,height);
-	    	this.type = type;
-	    	this.tr = tr;
+	    super(tr,x,y,width,height);
+	    //setDimension(tr.getRegionWidth(),tr.getRegionHeight());
+	    setFixedRotation(true);
+	    this.type = type;
+	    this.tr = tr;
         this.facing = direction.WEST;
         this.victims = victims;
     }

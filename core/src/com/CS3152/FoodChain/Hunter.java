@@ -218,4 +218,8 @@ public class Hunter extends Actor {
     public String getTypeNameString() {
     		return "HUNTER";
     }
+    
+    public float getTrapRadius(){
+    	return TRAP_RADIUS;
+    }
 }

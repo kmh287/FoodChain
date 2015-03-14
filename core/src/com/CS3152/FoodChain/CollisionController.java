@@ -134,4 +134,8 @@ public class CollisionController implements ContactListener {
 		
 	}
 	
+	public PooledList<BoxObject> getObjects(){
+		return objects;
+	}
+	
 }

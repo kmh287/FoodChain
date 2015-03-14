@@ -231,6 +231,7 @@ public abstract class AIController implements InputController {
 //        		biggest = dists[x];
 //        	}
 //        }
+
         return;
     }
     
