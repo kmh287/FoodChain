@@ -174,13 +174,8 @@ public abstract class AIController implements InputController {
     // Determines whether or not an actor is in the animal's line of sight
     //TODO
     public boolean withinCone(Actor a) {
-<<<<<<< HEAD
     		return false;
 
-=======
-    	//TODO
-    	return false;
->>>>>>> ashton
     }
     
     // Determines whether or not the animal should run away
@@ -229,10 +224,7 @@ public abstract class AIController implements InputController {
         }
         // biggest distance
         int biggest = 0;
-<<<<<<< HEAD
-=======
 
->>>>>>> ashton
 //        for (int x = 0; x < dists.length; x++) {
 //        	if (dists[x] > biggest) {
 //        		biggest = dists[x];

@@ -5,17 +5,14 @@ import static com.badlogic.gdx.Gdx.gl20;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
-<<<<<<< HEAD
 import com.badlogic.gdx.graphics.GL20;
-=======
->>>>>>> ashton
+
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Affine2;
-<<<<<<< HEAD
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
@@ -24,12 +21,10 @@ import com.badlogic.gdx.math.Vector3;
 /*import edu.cornell.cs3152.lab2.GameCanvas.BlendState;
 import edu.cornell.cs3152.lab2.GameCanvas.CullState;
 import edu.cornell.cs3152.lab2.GameCanvas.DepthState; */
-=======
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
->>>>>>> ashton
 
 
 @SuppressWarnings("unused")
@@ -44,7 +39,6 @@ public class GameCanvas {
 	/** Track whether or not we are actively drawing (for error checking) */
     private boolean active;
     
-<<<<<<< HEAD
     // For managing the camera and perspective
  	/** Orthographic camera for the SpriteBatch layer */
  	private OrthographicCamera spriteCam;
@@ -87,8 +81,6 @@ public class GameCanvas {
 	
 	private static final Vector3 UP_REVERSED = new Vector3(0,-1,0);
  	
-=======
-    private boolean active = false;
     
     private ShapeRenderer debugRender;
     /** Camera for the underlying SpriteBatch */
@@ -96,12 +88,10 @@ public class GameCanvas {
 	private Vector2 vertex;
 	private boolean debug = false;
     
->>>>>>> ashton
     public GameCanvas(){
         sb = new SpriteBatch();
         holder = new TextureRegion();
         local = new Affine2();
-<<<<<<< HEAD
         active = false; 
         eyepan  = 0.0f;
         
@@ -118,7 +108,6 @@ public class GameCanvas {
 		tmp0 = new Vector3();
 		tmp1 = new Vector3();
 		tmp2d = new Vector2();
-=======
         
         debugRender = new ShapeRenderer();
         // Set the projection matrix (for proper scaling)
@@ -128,7 +117,6 @@ public class GameCanvas {
      	debugRender.setProjectionMatrix(camera.combined);
      	vertex = new Vector2();
      	
->>>>>>> ashton
     }
    
     
@@ -603,27 +591,6 @@ public class GameCanvas {
     	debug = false;
     }
     
-    /**
-	 * Returns the width of this canvas
-	 *
-	 * This currently gets its value from Gdx.graphics.getWidth()
-	 *
-	 * @return the width of this canvas
-	 */
-	public int getWidth() {
-		return Gdx.graphics.getWidth();
-	}
-	
-	/**
-	 * Returns the height of this canvas
-	 *
-	 * This currently gets its value from Gdx.graphics.getHeight()
-	 *
-	 * @return the height of this canvas
-	 */
-	public int getHeight() {
-		return Gdx.graphics.getHeight();
-	}
 	
 	/**
      * Draws the outline of the given shape in the specified color
