@@ -3,10 +3,12 @@ package com.CS3152.FoodChain;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Affine2;
+import com.badlogic.gdx.math.Vector3;
 
 
 @SuppressWarnings("unused")
@@ -20,11 +22,21 @@ public class GameCanvas {
     
     private boolean active = false;
     
+    // For managing the camera and perspective
+ 	/** Orthographic camera for the SpriteBatch layer */
+ 	private OrthographicCamera spriteCam;
+ 	/** Target for Perspective FOV */
+ 	private Vector3 target;
+ 	/** Eye for Perspective FOV */
+ 	private Vector3 eye;
+ 	
+ 	
     public GameCanvas(){
         sb = new SpriteBatch();
         holder = new TextureRegion();
         local = new Affine2();
     }
+   
     
 	/**
 	 * Compute the affine transform (and store it in local) for this image.

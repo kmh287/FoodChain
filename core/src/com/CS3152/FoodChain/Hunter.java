@@ -26,33 +26,26 @@ public class Hunter extends Actor {
     private static final String PLAYER_TEX = "assets/player.png";
     private static Texture tex = null;
     
-<<<<<<< HEAD
     private float xPos;
     private float yPos;
     
-<<<<<<< HEAD
     //how far forward the hunter can move in a turn. 
     private static final float MOVE_SPEED = 6.5f;
     //Instance Attributes 
-    /** Hunter position */
-	private Vector2 position;
-	
+
     private boolean isSettingTrap;
 
     //how far forward the hunter can move in a turn. 
-=======
-=======
->>>>>>> origin/ashton
+
     // private boolean isSettingTrap;
     
     private Trap selectedTrap = null;
 
     //how far forward the hunter can move in a turn. 
-    private static final float MOVE_SPEED = 150.0f;
+   // private static final float MOVE_SPEED = 150.0f;
     /** How far the hunter can lay a trap from itself */
     private static final float TRAP_RADIUS = 50.0f;
-<<<<<<< HEAD
->>>>>>> master
+
     //Instance Attributes 
     /** Hunter position */
 	private Vector2 position;
@@ -62,26 +55,13 @@ public class Hunter extends Actor {
 	private float angle; 
 	
 	private Vector2 tmp;
-    
-    public Hunter(float xPos, float yPos, Trap t){
-        this.setxPos(xPos);
-        this.setyPos(yPos);
-        inventory = new ArrayList<Trap>();
-        inventory.add(t);
-        
-        velocity = new Vector2();
-        angle  = 90.0f;
-        selectedTrap = t;
-=======
+  
 
-	
-	private Vector2 tmp;
-    
+	    
     public Hunter(float xPos, float yPos, HashMap<String, List<Trap>> traps){
     	super(new TextureRegion(tex), actorType.HUNTER, xPos, yPos, tex.getWidth(),
     		  tex.getHeight(), new actorType[]{actorType.SHEEP});
     	inventory= traps;
->>>>>>> origin/ashton
         tmp = new Vector2();
         //set selected trap
         for (Trap trap : traps.get("REGULAR_TRAP")) {
@@ -207,7 +187,6 @@ public class Hunter extends Actor {
     * 
     * @param controlCode The movement controlCode (from InputController).
     */
-<<<<<<< HEAD
     public void update(int controlCode) {
     	
     	// Determine how we are moving.
@@ -269,12 +248,9 @@ public class Hunter extends Actor {
 		else if (movingNorthWest) {
 			angle = 180.0f;
 			velocity.x = -MOVE_SPEED;
-<<<<<<< HEAD
 			velocity.y = -MOVE_SPEED;
-=======
 
 			velocity.y = MOVE_SPEED;
->>>>>>> master
 		}
 		else if (settingTrap) {
 			
@@ -285,12 +261,10 @@ public class Hunter extends Actor {
 			velocity.y = 0;
 		}
     }
-=======
     public void update(Vector2 action,float dt) {
     	super.update(dt);	    	
     	setLinearVelocity(action);
 	    }
->>>>>>> origin/ashton
     
     public String getTypeNameString() {
     	return "Hunter";
