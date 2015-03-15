@@ -49,23 +49,24 @@ public abstract class AIController implements InputController {
     // All actors on the map
     protected List<Actor> actors;
     
-    /* Although Vector2 stores floats, we are using their int values to specify the
-     * tile the animal is on.
-     */
-    // The animal's goal tile
+    // The vector position of the animal's goal
     protected Vector2 goal;
     // The animal's tile location
     protected Vector2 loc;
     // The shortest distance to run to in a situation where the animal can't run
     // directly away
     protected Vector2[] distVctrs;
+    
     // Vector that runs from the center of the animal diagonally leftward some length
     // RELATIVE TO ANIMAL'S POSITION
     protected Vector2 leftSectorLine;
-    
     // Vector that runs from the center of the animal diagonally rightward that length
     // RELATIVE TO ANIMAL'S POSITION
     protected Vector2 rightSectorLine;
+    // Width of line of sight
+    private final float SIGHTWIDTH = 30.0f;
+    // Length of line of sight
+    private final float SIGHTLENGTH = 50.0f;
     
     // How many more turns (1 turn = 10 frames) before the animal can stop running
     protected int turns;
@@ -91,14 +92,16 @@ public abstract class AIController implements InputController {
         this.loc = new Vector2(map.screenXToMap(animal.getX()),
                                map.screenYToMap(animal.getY()));
         
-        this.state = State.PATROL;//FIND;
+        //this.state = State.PATROL;//FIND;
         this.goal = new Vector2();
         // To where it should start moving
-        setGoal((int)getLoc().x - 4, (int)getLoc().y);
         this.move = InputController.WEST;
-        this.ticks = 0;
+        goal.set (getAnimal().getX() + 1, getAnimal().getY());
+        this.leftSectorLine = new Vector2(SIGHTLENGTH, SIGHTWIDTH);
+        this.rightSectorLine = new Vector2(SIGHTLENGTH, -SIGHTWIDTH);
+        //this.ticks = 0;
         
-        this.turns = 0;
+        this.turns = 3;//should be 0 in future;
         
         this.target = null;
         this.attacker = null;
@@ -149,7 +152,7 @@ public abstract class AIController implements InputController {
      */
     public Vector2 getAction() {
         // Increment the number of ticks.
-        ticks++;
+        //ticks++;
         
         //if (ticks % 10 == 0 && state != State.DEAD) {
         	//comment out for fixing collisions
@@ -289,6 +292,23 @@ public abstract class AIController implements InputController {
 	    	goal.set(goalX, goalY);
 	    	return;
 	    }
+	}
+	
+	public void patrol() {
+		float anX = getAnimal().getX();
+		float anY = getAnimal().getY();
+		if (map.isSafeAt(anX + 1, anY)) {
+			goal.set(anX + 1, anY);
+		}
+		else if (map.isSafeAt(anX - 1, anY)) {
+			goal.set(anX - 1, anY);
+		}
+		else if (map.isSafeAt(anX, anY + 1)) {
+			goal.set(anX, anY + 1);
+		}
+		else {
+			goal.set(anX, anY - 1);
+		}
 	}
     
     /*
