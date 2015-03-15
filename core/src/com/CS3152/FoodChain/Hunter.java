@@ -234,12 +234,13 @@ public class Hunter extends Actor {
         return tex.getWidth();
     }
     
-<<<<<<< HEAD
+
     /** 
     * Updates the hunter's position according to the controlCode. 
     * 
     * @param controlCode The movement controlCode (from InputController).
     */
+    /**
     public void update(int controlCode) {
     	
     	// Determine how we are moving.
@@ -318,10 +319,8 @@ public class Hunter extends Actor {
     	super.update(dt);	    	
     	setLinearVelocity(action);
 	    }
-    
-=======
+    */
 
->>>>>>> origin/Kevin
     public String getTypeNameString() {
     		return "HUNTER";
     }
