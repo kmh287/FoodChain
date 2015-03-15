@@ -224,7 +224,6 @@ public abstract class AIController implements InputController {
         }
         // biggest distance
         int biggest = 0;
-
 //        for (int x = 0; x < dists.length; x++) {
 //        	if (dists[x] > biggest) {
 //        		biggest = dists[x];
