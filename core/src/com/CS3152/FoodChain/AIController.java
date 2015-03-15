@@ -63,11 +63,12 @@ public abstract class AIController implements InputController {
     // Vector that runs from the center of the animal diagonally rightward that length
     // RELATIVE TO ANIMAL'S POSITION
     protected Vector2 rightSectorLine;
+   /***************************
     // Width of line of sight
     private final float SIGHTWIDTH = 30.0f;
     // Length of line of sight
     private final float SIGHTLENGTH = 50.0f;
-    
+    ****************************/
     // How many more turns (1 turn = 10 frames) before the animal can stop running
     protected int turns;
     
@@ -97,8 +98,12 @@ public abstract class AIController implements InputController {
         // To where it should start moving
         this.move = InputController.WEST;
         goal.set (getAnimal().getX() + 1, getAnimal().getY());
-        this.leftSectorLine = new Vector2(SIGHTLENGTH, SIGHTWIDTH);
-        this.rightSectorLine = new Vector2(SIGHTLENGTH, -SIGHTWIDTH);
+       
+        this.leftSectorLine = new Vector2((float)(120*Math.cos(getAnimal().getAngle() + 20)),
+        								  (float)(120*Math.sin(getAnimal().getAngle() + 20)));
+        
+        this.rightSectorLine = new Vector2((float)(120*Math.cos(getAnimal().getAngle() - 20)),
+				  						  (float)(120*Math.sin(getAnimal().getAngle() - 20)));
         //this.ticks = 0;
         
         this.turns = 3;//should be 0 in future;
@@ -113,6 +118,12 @@ public abstract class AIController implements InputController {
     public void updateLoc() {
         this.loc.set(map.screenXToMap(animal.getX()),
                      map.screenYToMap(animal.getY()));
+    }
+    
+    public float getAngle() {
+    	// Subtracting the 
+    	return goal.sub(getAnimal().getPosition()).angle() -
+    		   getAnimal().getPosition().angle();
     }
     
     /*
@@ -171,9 +182,9 @@ public abstract class AIController implements InputController {
             else if (hasTarget()) {
             	chase();
             }
-//            else {
-//            	//patrol();
-//            }
+            else {
+            	patrol();
+            }
 //            
 //            // Pathfinding
 //            //markGoal();
