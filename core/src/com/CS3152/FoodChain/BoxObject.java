@@ -23,6 +23,7 @@ import com.badlogic.gdx.physics.box2d.*;
 public class BoxObject extends SimplePhysicsObject {
 	/** Shape information for this box */
 	protected PolygonShape shape;
+	protected PolygonShape shapeScaled;
 	/** The width and height of the box */
 	protected Vector2 drawScale;
 	/** The width and height of the box */
@@ -33,6 +34,7 @@ public class BoxObject extends SimplePhysicsObject {
 	private Fixture geometry;
 	/** Cache of the polygon vertices (for resizing) */
 	private float[] vertices;
+	private float[] verticesScaled;
 	
 	/** 
 	 * Returns the dimensions of this box
@@ -151,6 +153,8 @@ public class BoxObject extends SimplePhysicsObject {
 		drawScale = new Vector2();
 		shape = new PolygonShape();
 		vertices = new float[8];
+		shapeScaled = new PolygonShape();
+		verticesScaled = new float[8];
 		geometry = null;
 		
 		// Initialize
@@ -170,6 +174,15 @@ public class BoxObject extends SimplePhysicsObject {
 		vertices[5] =  height/2.0f;
 		vertices[6] =  width/2.0f;
 		vertices[7] = -height/2.0f;
+		verticesScaled[0] = PhysicsScaler.metersToPixels(-width/2.0f);
+		verticesScaled[1] = PhysicsScaler.metersToPixels(-height/2.0f);
+		verticesScaled[2] = PhysicsScaler.metersToPixels(-width/2.0f);
+		verticesScaled[3] = PhysicsScaler.metersToPixels(height/2.0f);
+		verticesScaled[4] = PhysicsScaler.metersToPixels(width/2.0f);
+		verticesScaled[5] = PhysicsScaler.metersToPixels(height/2.0f);
+		verticesScaled[6] = PhysicsScaler.metersToPixels(width/2.0f);
+		verticesScaled[7] = PhysicsScaler.metersToPixels(-height/2.0f);
+		shapeScaled.set(verticesScaled);
 		shape.set(vertices);
 		drawScale.x = width/texture.getRegionWidth();
 		drawScale.y = height/texture.getRegionHeight();
@@ -205,19 +218,11 @@ public class BoxObject extends SimplePhysicsObject {
 	@Override
 	public void drawDebug(GameCanvas canvas) {
 		// TODO Auto-generated method stub
-		
+		canvas.drawPhysics(shapeScaled,Color.YELLOW,PhysicsScaler.metersToPixels(getBody().getPosition().x), 
+				PhysicsScaler.metersToPixels(getBody().getPosition().y),getAngle());
 	}
 	
-//	/**
-//	 * Draws the outline of the physics body.
-//	 *
-//	 * This method can be helpful for understanding issues with collisions.
-//	 *
-//	 * @param canvas Drawing context
-//	 */
-//	public void drawDebug(GameCanvas canvas) {
-//		canvas.drawPhysics(shape,Color.YELLOW,getX(),getY(),getAngle());
-//	}
+
 
 
 }
