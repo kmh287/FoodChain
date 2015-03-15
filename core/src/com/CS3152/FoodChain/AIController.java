@@ -221,9 +221,6 @@ public abstract class AIController implements InputController {
         // Animal's best option
         float goalX = 2*anX - attackX;
         float goalY = 2*anY - attackY;
-        
-        // Set best goal if it is safe.
-        // Choose valid position farthest from attacker.
         if (map.isSafeAt(goalX, goalY)) {
         	goal.set(goalX, goalY);
         	return;
