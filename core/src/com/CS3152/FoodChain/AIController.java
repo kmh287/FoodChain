@@ -155,9 +155,9 @@ public abstract class AIController implements InputController {
 //       	  checkCone();
         	// RayCasting
         	//Should be at beginning
-        	for (Actor a : actors) {
-    			world.rayCast(vcb, getAnimal().getPosition(), a.getPosition());
-        	}
+        	//for (Actor a : actors) {
+    			//world.rayCast(vcb, getAnimal().getPosition(), a.getPosition());
+        	//}
             if (isScared()) {
             	flee();
             }
@@ -196,7 +196,6 @@ public abstract class AIController implements InputController {
     
     // Determines whether or not the animal should run away
     public void flee() {
-<<<<<<< HEAD
         // Animal's position
     	float anX = getAnimal().getX();
     	float anY = getAnimal().getY();
@@ -255,57 +254,6 @@ public abstract class AIController implements InputController {
         	}
         }
         goal.set(distVctrs[bigIndex].x, distVctrs[bigIndex].y);
-=======
-        // Go to the next tile farthest from attacker
-        float fleex = getAnimal().getX() - attacker.getX();
-        float fleey = getAnimal().getY() - attacker.getY();
-        int attackTileX = map.screenXToMap(animal.getX());
-        int attackTileY = map.screenYToMap(animal.getY());
-        // Normalize distance to choose next tile
-        fleex = fleex / (Math.abs(fleex));
-        fleey = fleey / (Math.abs(fleey));
-        // The best goal tile
-        float tileX = getLoc().x + fleex;
-        float tileY = getLoc().y + fleey;
-        // Set best goal if it is safe. Otherwise choose tile farthest from attacker
-        if (map.isSafeAt(tileX, tileY)) {
-        	goal.set(tileX, tileY);
-        	return;
-        }
-        // Find farthest valid tile from attacker
-        float[] dists = new float[7];
-        if (map.isSafeAt(getLoc().x + fleex, tileY)) {
-        	dists[0] = Vector2.dst(getLoc().x + fleex, tileY, attackTileX, attackTileY);
-        }
-        if (map.isSafeAt(tileX, getLoc().y + fleey)) {
-        	dists[1] = Vector2.dst(tileX, getLoc().y + fleey, attackTileX, attackTileY);
-        }
-        if (map.isSafeAt(getLoc().x - fleex, tileY)) {
-        	dists[2] = Vector2.dst(getLoc().x - fleex, tileY, attackTileX, attackTileY);
-        }
-        if (map.isSafeAt(tileX, getLoc().y - fleey)) {
-        	dists[3] = Vector2.dst(tileX, getLoc().y - fleey, attackTileX, attackTileY);
-        }
-        if (map.isSafeAt(getLoc().x - fleex, getLoc().y - fleey)) {
-        	dists[4] = Vector2.dst(getLoc().x - fleex, getLoc().y - fleey,
-					   			   attackTileX, attackTileY);
-        }
-        if (map.isSafeAt(getLoc().x - fleex, getLoc().y + fleey)) {
-        	dists[5] = Vector2.dst(getLoc().x - fleex, getLoc().y + fleey,
-		   			   attackTileX, attackTileY);
-        }            
-        if (map.isSafeAt(getLoc().x + fleex, getLoc().y - fleey)) {
-        	dists[6] = Vector2.dst(getLoc().x + fleex, getLoc().y - fleey,
-		   			   attackTileX, attackTileY);
-        }
-        // biggest distance
-        int biggest = 0;
-//        for (int x = 0; x < dists.length; x++) {
-//        	if (dists[x] > biggest) {
-//        		biggest = dists[x];
-//        	}
-//        }
->>>>>>> c8a8a8bca0072be36442560d547a351ab0089c10
         return;
     }
     
@@ -418,13 +366,7 @@ public abstract class AIController implements InputController {
      *
      * @return int corresponding to InputController bit-vector
      */
-<<<<<<< HEAD
     public Vector2 getNextMoveToGoal() {
-    	
-=======
-    public int getNextMoveToGoal() {
-    	return 0;
->>>>>>> c8a8a8bca0072be36442560d547a351ab0089c10
     	//System.out.println("goalx:" + goal.x + "goaly:" + goal.y);
     	//System.out.println("locx:" + getLoc().x + "locy:" + getLoc().y);
     	
@@ -455,6 +397,7 @@ public abstract class AIController implements InputController {
 //        else {
 //            return NO_ACTION;
 //        }
+    	return goal.sub(getAnimal().getPosition());
     }
     
     // Should not be here, but need to finish
