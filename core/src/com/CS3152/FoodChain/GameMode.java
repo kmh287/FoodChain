@@ -31,8 +31,6 @@ public class GameMode implements Screen {
 //	private Vector2 tmp;
 	private static final float DEFAULT_DENSITY = 1.0f;
 	
-	private Vector2 action;
-    
     /**
      * Temporary constructor for GameMode until we have 
      * our architecture more hammered-down. For now
@@ -52,7 +50,6 @@ public class GameMode implements Screen {
         ui = new UIController();
         ui.loadTextures(manager);
         animals = new ArrayList<Animal>();
-        action =  new Vector2();
         /*size of animal list + the player 
         controls = new InputController[animals.size() + 1]; 
         controls[0] = new PlayerController();
