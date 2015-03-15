@@ -9,7 +9,7 @@ import com.badlogic.gdx.physics.box2d.World;
  * InputController corresponding to AI control.
  * General controller for all animal AIs
  */
-public abstract class AIController implements InputController {
+public class AIController implements InputController {
     /**
      * Enumeration to encode the states of animals
      */
@@ -57,18 +57,6 @@ public abstract class AIController implements InputController {
     // directly away
     protected Vector2[] distVctrs;
     
-    // Vector that runs from the center of the animal diagonally leftward some length
-    // RELATIVE TO ANIMAL'S POSITION
-    protected Vector2 leftSectorLine;
-    // Vector that runs from the center of the animal diagonally rightward that length
-    // RELATIVE TO ANIMAL'S POSITION
-    protected Vector2 rightSectorLine;
-   /***************************
-    // Width of line of sight
-    private final float SIGHTWIDTH = 30.0f;
-    // Length of line of sight
-    private final float SIGHTLENGTH = 50.0f;
-    ****************************/
     // How many more turns (1 turn = 10 frames) before the animal can stop running
     protected int turns;
     
@@ -98,12 +86,7 @@ public abstract class AIController implements InputController {
         // To where it should start moving
         this.move = InputController.WEST;
         goal.set (getAnimal().getX() + 1, getAnimal().getY());
-       
-        this.leftSectorLine = new Vector2((float)(120*Math.cos(getAnimal().getAngle() + 20)),
-        								  (float)(120*Math.sin(getAnimal().getAngle() + 20)));
         
-        this.rightSectorLine = new Vector2((float)(120*Math.cos(getAnimal().getAngle() - 20)),
-				  						  (float)(120*Math.sin(getAnimal().getAngle() - 20)));
         //this.ticks = 0;
         
         this.turns = 3;//should be 0 in future;
@@ -120,10 +103,11 @@ public abstract class AIController implements InputController {
                      map.screenYToMap(animal.getY()));
     }
     
+    // Determine the new angle the animal wants to face
+    // @return that angle.
     public float getAngle() {
-    	// Subtracting the 
-    	return goal.sub(getAnimal().getPosition()).angle() -
-    		   getAnimal().getPosition().angle();
+    	// Subtracting the animal's current position from the goal it wants to be at
+    	return goal.sub(getAnimal().getPosition()).angle();
     }
     
     /*
@@ -197,8 +181,9 @@ public abstract class AIController implements InputController {
     
     // Determines whether or not an actor is in the animal's line of sight
     public boolean withinCone(Vector2 meToActor) {
-    	return isClockwise(leftSectorLine, meToActor) &&
-    		   !isClockwise(rightSectorLine, meToActor) && withinRadius(meToActor);
+    	return isClockwise(getAnimal().getLeftSectorLine(), meToActor) &&
+    		   !isClockwise(getAnimal().getRightSectorLine(), meToActor) &&
+    		   withinRadius(meToActor);
     }
     
     /* Determines if meToActor is clockwise to sectorLine.
@@ -221,7 +206,7 @@ public abstract class AIController implements InputController {
      * @return true if length is at most as long as one of the vision sector lines.
      */
     public boolean withinRadius(Vector2 length) {
-    	return length.len() <= leftSectorLine.len();
+    	return length.len() <= getAnimal().getSightLength();
     }
     
     // Determines whether or not the animal should run away
@@ -334,19 +319,19 @@ public abstract class AIController implements InputController {
     /*
      * Changes the animal's state depending on what it's doing and what it's seen
      */
-    public abstract void changeStateIfApplicable();
+    //public abstract void changeStateIfApplicable();
     
     /*
      * Marks the goal tile the animal is trying to go to
      */
-    public abstract void markGoal();
+    //public abstract void markGoal();
     
     /*
      * Determines whether or not the animal sees a predator
      *
      * @return true if a predator is in the animal's line of sight. False otherwise
      */
-    public abstract boolean seesPredator();
+    //public abstract boolean seesPredator();
     
     /*
      * Sets the animal that this animal should flee from. Null if it shouldn't flee.
@@ -371,7 +356,7 @@ public abstract class AIController implements InputController {
      *
      * @return true if it is in a predator's line of sight. false otherwise
      */
-    public abstract boolean isSeenByPredator();
+    //public abstract boolean isSeenByPredator();
         
     /*
      * Determines whether the animal sees prey.
@@ -379,7 +364,7 @@ public abstract class AIController implements InputController {
      * @return true if an animal's prey is in the line of sight of the animal.
      * false otherwise.
      */
-    public abstract boolean seesPrey();
+    //public abstract boolean seesPrey();
     
     /*
      * Sets whether or not this animal should be scared. If ac is null, then
@@ -453,6 +438,10 @@ public abstract class AIController implements InputController {
     
     // Should not be here, but need to finish
     public Vector2 getClickPos() {return new Vector2();}
+    
+    public boolean isClicked() {return false;}
+    
+    public int getNum() {return 0;}
 }
 
 

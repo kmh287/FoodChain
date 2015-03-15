@@ -82,18 +82,10 @@ public class GameMode implements Screen {
         for (int i = 0; i < animals.size(); i++) {
         	actors.add(animals.get(i));
         }
-        if (animals.get(0).getType() == Actor.actorType.SHEEP) {
-	        	controls[1] = new SheepController(animals.get(0),
-	        									  map, actors);
-	        controls[2] = new WolfController(animals.get(1),
-	            								 map, actors);
-        }
-        else {
-	        	controls[1] = new WolfController(animals.get(0),
-	        									 map, actors);
-	        controls[2] = new SheepController(animals.get(1),
-	            								  map, actors);
-        }
+        controls[1] = new AIController(animals.get(0), collisionController.getWorld(),
+				    				   map, actors);
+        controls[2] = new AIController(animals.get(1), collisionController.getWorld(),
+				   					   map, actors);
         collisionController.setControls(controls);
         //loadTextures
         traps = map.getStartingInventory();
