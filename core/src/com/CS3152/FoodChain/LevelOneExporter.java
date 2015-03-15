@@ -66,22 +66,25 @@ public class LevelOneExporter {
         coords.add(new Coordinate(7,7));
         
         Coordinate playerStart = new Coordinate(10,10);
+        /*
         HashMap<String, List<Trap>> startingInventory = new HashMap<String, List<Trap>>();
         List<Trap> trap0List = new ArrayList<Trap>();
         List<Trap> trap1List = new ArrayList<Trap>();
         List<Trap> trap2List = new ArrayList<Trap>();
-        trap0List.add(new Trap("SHEEP_TRAP"));
-        trap0List.add(new Trap("SHEEP_TRAP"));
-        trap1List.add(new Trap("WOLF_TRAP"));
-        trap1List.add(new Trap("WOLF_TRAP"));
-        trap2List.add(new Trap("REGULAR_TRAP"));
-        trap2List.add(new Trap("REGULAR_TRAP"));
+        trap0List.add(new SheepTrap());
+        trap0List.add(new SheepTrap());
+        trap1List.add(new WolfTrap());
+        trap1List.add(new WolfTrap());
+        trap2List.add(new RegularTrap());
+        trap2List.add(new RegularTrap());
         startingInventory.put("SHEEP_TRAP", trap0List);
         startingInventory.put("WOLF_TRAP", trap1List);
         startingInventory.put("REGULAR_TRAP", trap2List);
+        */
         GameMap gm = new GameMap(layout, animals, 
-                                coords, playerStart,
-                                startingInventory);
+                                coords, playerStart
+                                //,startingInventory
+                                );
         try {
             MapManager.MapToGson(gm, "level1");
         } catch (IOException e) {

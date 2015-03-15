@@ -98,13 +98,14 @@ public class GameMap {
     public GameMap(Tile[][] layout,
                    List<Actor.actorType>animals,
                    List<Coordinate> coordinates,
-                   Coordinate hunterStartPosition,
-                   HashMap<String, List<Trap>> hunterStartingInventory){
+                   Coordinate hunterStartPosition
+                   //,HashMap<String, List<Trap>> hunterStartingInventory
+                   ){
         this.layout = layout;
         this.animals = animals;
         this.coordinates = coordinates;
         this.hunterStartPosition = hunterStartPosition;
-        this.hunterStartingInventory = hunterStartingInventory;
+        //this.hunterStartingInventory = hunterStartingInventory;
         System.out.println("from GameMap"+hunterStartingInventory);
     }
     
@@ -210,14 +211,12 @@ public class GameMap {
      * @param canvas an instance of GameCanvas
      */
     public void draw(GameCanvas canvas){
-        canvas.begin();
         for (int i = 0; i < layout.length; ++i){
             for (int j = 0; j < layout[0].length; ++j){
                 Texture tex = getTextureFromTile(layout[i][j]);
                 canvas.draw(tex, mapXToScreen(j), mapYToScreen(i));
             }
         }
-        canvas.end();
     }
     
     public List<Actor.actorType> getActorTypeList(){

@@ -38,12 +38,18 @@ public class Hunter extends Actor {
 	
 	private Vector2 tmp;
     
-    public Hunter(float xPos, float yPos, HashMap<String, List<Trap>> traps){
+    public Hunter(float xPos, float yPos
+    		//, HashMap<String, List<Trap>> traps
+    		){
     	super(new TextureRegion(tex), actorType.HUNTER, xPos, yPos, tex.getWidth(),
     		  tex.getHeight(), new actorType[]{actorType.SHEEP});
-    	inventory= traps;
+    	inventory= new HashMap<String, List<Trap>>();
+    	inventory.put("REGULAR_TRAP", new ArrayList<Trap>());
+    	inventory.put("SHEEP_TRAP", new ArrayList<Trap>());
+    	inventory.put("WOLF_TRAP", new ArrayList<Trap>());
         tmp = new Vector2();
         //set selected trap
+        /*
         for (Trap trap : traps.get("REGULAR_TRAP")) {
         	selectedTrap = trap;
         }
@@ -57,6 +63,7 @@ public class Hunter extends Actor {
             	selectedTrap = trap;
             }
         }
+        */
  
         
 
@@ -108,20 +115,86 @@ public class Hunter extends Actor {
     }
 
     
-    public boolean canSetTrap(Vector2 clickPos) {
-		tmp.set(getPosition().add(20.0f, 20.0f));
+    /*public boolean canSetTrap(Vector2 clickPos) {
+		//tmp.set(getPosition().add(20.0f, 20.0f));
+		tmp.set(getPosition());
 		tmp.sub(clickPos);
 		if (Math.abs(tmp.len()) <= TRAP_RADIUS && selectedTrap.getInInventory()==true) {
 			return true;
 		}
 		return false;
-    }
+    }*/
     
-    public void setTrap(Vector2 clickPos) {
+    public boolean canSetTrap() {
+		boolean canSet = false;
+		for (List<Trap> l : inventory.values()) {
+			for (Trap t : l) {
+				if (t.getInInventory()) {
+					canSet = true;
+					break;
+				}
+			}
+			if (canSet) {
+				break;
+			}
+		}
+		
+		return canSet;
+	}
+    
+    /*public void setTrap(Vector2 clickPos) {
     	selectedTrap.setPosition(clickPos);
     	//update inventory
 		//set selectedTrap inventory status to false
 		selectedTrap.setInInventory(false);
+		//set selectedTrap to next available trap inInventory of same type
+		//if no free trap then selectedTrap does not change and player can't put down another
+		for (Trap trap : inventory.get(selectedTrap.getType())){
+			if(trap.getInInventory()){
+				selectedTrap = trap;
+			}
+		}
+    }*/
+    
+    public void setTrap() {
+    	//Determine which direction the hunter is facing
+    	float angle = getAngle();
+    	
+    	if (angle == 0.0f) {
+    		selectedTrap.setPosition(getPosition().x, getPosition().y - 40.0f);
+        	//update inventory
+    		//set selectedTrap inventory status to false
+    		selectedTrap.setInInventory(false);
+    	}
+    	else if (angle == (float) (Math.PI/4.0f)) {
+    		selectedTrap.setPosition(getPosition().x + 40.0f, getPosition().y - 40.0f);
+    		selectedTrap.setInInventory(false);
+    	}
+    	else if (angle == (float) (Math.PI/2.0f)) {
+    		selectedTrap.setPosition(getPosition().x + 40.0f, getPosition().y);
+    		selectedTrap.setInInventory(false);
+    	}
+    	else if (angle == (float) (3.0*Math.PI/4.0)) {
+    		selectedTrap.setPosition(getPosition().x + 40.0f, getPosition().y + 40.0f);
+    		selectedTrap.setInInventory(false);
+    	}
+    	else if (angle == (float) (Math.PI)) {
+    		selectedTrap.setPosition(getPosition().x, getPosition().y + 40.0f);
+    		selectedTrap.setInInventory(false);
+    	}
+    	else if (angle == (float) (5.0*Math.PI/4.0f)) {
+    		selectedTrap.setPosition(getPosition().x - 40.0f, getPosition().y + 40.0f);
+    		selectedTrap.setInInventory(false);
+    	}
+    	else if (angle == (float) (3.0*Math.PI/2.0f)) {
+    		selectedTrap.setPosition(getPosition().x - 40.0f, getPosition().y);
+    		selectedTrap.setInInventory(false);
+    	}
+    	else if (angle == (float) (7.0*Math.PI/4.0f)) {
+    		selectedTrap.setPosition(getPosition().x - 40.0f, getPosition().y - 40.0f);
+    		selectedTrap.setInInventory(false);
+    	}
+
 		//set selectedTrap to next available trap inInventory of same type
 		//if no free trap then selectedTrap does not change and player can't put down another
 		for (Trap trap : inventory.get(selectedTrap.getType())){
@@ -143,11 +216,11 @@ public class Hunter extends Actor {
     * 
     * @param controlCode The movement controlCode (from InputController).
     */
-    public void update(int controlCode,float dt) {
+    public void update(int controlCode, float dt) {
     	super.update(dt);
 	    	// Determine how we are moving.
 	    	boolean movingEast  = (controlCode == InputController.EAST);
-	   	boolean movingWest = (controlCode == InputController.WEST);
+	    	boolean movingWest = (controlCode == InputController.WEST);
 	    	boolean movingNorth = (controlCode == InputController.NORTH);
 	    	boolean movingSouth = (controlCode == InputController.SOUTH);
 	    	boolean movingNorthWest = (controlCode == InputController.NORTHWEST);
@@ -162,41 +235,41 @@ public class Hunter extends Actor {
 	    	//process moving command 
 	    	//need to set super commands and set diagonal movement to less
 	    	if (movingWest) {
-				super.setAngle(0.0f);
+				super.setAngle((float) (-Math.PI/2.0));
 				super.setVX(-MOVE_SPEED);
 				super.setVY(0);
 			} else if (movingEast) {
-				super.setAngle(180.0f);
+				super.setAngle((float) (Math.PI/2.0));
 				super.setVX(MOVE_SPEED);
 				super.setVY(0);
 			}
 			else if (movingNorth) {
-				super.setAngle(90.0f);
+				super.setAngle((float) (Math.PI));
 				super.setVX(0);
 				super.setVY(MOVE_SPEED);
 			}
 			else if (movingSouth) {
-				super.setAngle(270.0f);
+				super.setAngle(0.0f);
 				super.setVX(0);
 				super.setVY(-MOVE_SPEED);
 			}
 			else if (movingSouthWest) {
-				super.setAngle(180.0f);
+				super.setAngle((float) (-Math.PI/4.0));
 				super.setVX(-MOVE_SPEED);
 				super.setVY(-MOVE_SPEED);
 			}
 			else if (movingSouthEast) {
-				super.setAngle(180.0f);
+				super.setAngle((float) (Math.PI/4.0));
 				super.setVX(MOVE_SPEED);
 				super.setVY(-MOVE_SPEED);
 			}
 			else if (movingNorthEast) {
-				super.setAngle(180.0f);
+				super.setAngle((float) (3.0*Math.PI/4.0));
 				super.setVX(MOVE_SPEED);
 				super.setVY(MOVE_SPEED);
 			}
 			else if (movingNorthWest) {
-				super.setAngle(180.0f);
+				super.setAngle((float) (-3.0*Math.PI/4.0));
 				super.setVX(-MOVE_SPEED);
 				super.setVY(MOVE_SPEED);
 			}
