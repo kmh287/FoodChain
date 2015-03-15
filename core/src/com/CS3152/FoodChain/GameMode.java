@@ -259,11 +259,11 @@ public class GameMode implements Screen {
         //hunter.drawDebug(canvas);
         
         ui.draw(canvas);
-		canvas.beginDebug();
-		for(PhysicsObject obj : collisionController.getObjects()) {
-			obj.drawDebug(canvas);
-		}
-		canvas.endDebug();
+//		canvas.beginDebug();
+//		for(PhysicsObject obj : collisionController.getObjects()) {
+//			obj.drawDebug(canvas);
+//		}
+//		canvas.endDebug();
     }
     
     @Override
