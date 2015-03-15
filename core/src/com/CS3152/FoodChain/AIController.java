@@ -58,7 +58,7 @@ public abstract class AIController implements InputController {
     protected Vector2 loc;
     // The shortest distance to run to in a situation where the animal can't run
     // directly away
-    protected Vector2[] dists;
+    protected Vector2[] distVctrs;
     // Vector that runs from the center of the animal diagonally leftward some length
     // RELATIVE TO ANIMAL'S POSITION
     protected Vector2 leftSectorLine;
@@ -87,7 +87,7 @@ public abstract class AIController implements InputController {
         this.vcb = new VisionCallback(this);
         this.map = map;
         this.actors = actors;
-        this.dists = new Vector2[8];
+        this.distVctrs = new Vector2[8];
         this.loc = new Vector2(map.screenXToMap(animal.getX()),
                                map.screenYToMap(animal.getY()));
         
@@ -212,71 +212,84 @@ public abstract class AIController implements InputController {
     
     // Determines whether or not the animal should run away
     public void flee() {
-        // Move directly away from attacker
-    	float anX = getAnimal().getX();
-    	float anY = getAnimal().getY();
-        float goalX = 2*anX - attacker.getX();
-        float goalY = 2*anY - attacker.getY();
-        // Set best goal if it is safe. Otherwise choose tile farthest from attacker
-        if (map.isSafeAt(goalX, goalY)) {
-        	goal.set(goalX, goalY);
-        	return;
-        }
-        // Find farthest valid tile from attacker
-        if (map.isSafeAt(anX - 1, anY + 1)) {
-        	
-        }
-        if (map.isSafeAt(anX, anY + 1)) {
-        	dists[1].x = tileX;
-        	dists[1].y = getLoc().y + fleey;
-        }
-        if (map.isSafeAt(anX + 1, anY + 1)) {
-        	dists[2].x = getLoc().x - fleex;
-        	dists[2].y = tileY;
-        }
-        if (map.isSafeAt(anX - 1, anY)) {
-        	dists[3].x = tileX;
-        	dists[3].y = getLoc().y - fleey;
-        }
-        if (map.isSafeAt(anX + 1, anY) {
-        	dists[4].x = getLoc().x - fleex;
-        	dists[4].y = getLoc().y - fleey;
-        }
-        if (map.isSafeAt(anX - 1, anY - 1)) {
-        	dists[5].x = getLoc().x - fleex;
-		   	dists[5].y = getLoc().y + fleey;
-        }            
-        if (map.isSafeAt(anX, anY - 1)) {
-        	dists[6].x = getLoc().x + fleex;
-		   	dists[6].y = getLoc().y - fleey;
-        }
-        if (map.isSafeAt(anX + 1, anY - 1)) {
-        	dists[7].x = getLoc().x + fleex;
-		   	dists[7].y = getLoc().y - fleey;
-        }
-        // biggest distance
-        float biggest = 0;
-        int bigIndex = 0;
-        for (int index = 0; index < dists.length; index++) {
-        	float distance = Vector2.dst(dists[index].x, dists[index].y,
-        			                     attackTileX, attackTileY);
-        	if (distance > biggest) {
-        		biggest = distance;
-        		bigIndex = index;
-        	}
-        }
-        return;
+    	// Animal's position
+		float anX = getAnimal().getX();
+		float anY = getAnimal().getY();
+		// Attacker's position
+		float attackX = attacker.getX();
+	    float attackY = attacker.getY();
+	    // Animal's best option
+	    float goalX = 2*anX - attackX;
+	    float goalY = 2*anY - attackY;
+	    if (map.isSafeAt(goalX, goalY)) {
+	    	goal.set(goalX, goalY);
+	    	return;
+	    }
+	    // Find farthest valid tile from attacker
+	    if (map.isSafeAt(anX - 1, anY + 1)) {
+	    	distVctrs[0].x = anX - 1;
+	    	distVctrs[0].y = anY + 1;
+	    }
+	    if (map.isSafeAt(anX, anY + 1)) {
+	    	distVctrs[1].x = anX;
+	    	distVctrs[1].y = anY + 1;
+	    }
+	    if (map.isSafeAt(anX + 1, anY + 1)) {
+	    	distVctrs[2].x = anX + 1;
+	    	distVctrs[2].y = anY + 1;
+	    }
+	    if (map.isSafeAt(anX - 1, anY)) {
+	    	distVctrs[3].x = anX - 1;
+	    	distVctrs[3].y = anY;
+	    }
+	    if (map.isSafeAt(anX + 1, anY)) {
+	    	distVctrs[4].x = anX + 1;
+	    	distVctrs[4].y = anY;
+	    }
+	    if (map.isSafeAt(anX - 1, anY - 1)) {
+	    	distVctrs[5].x = anX - 1;
+		   	distVctrs[5].y = anY - 1;
+	    }            
+	    if (map.isSafeAt(anX, anY - 1)) {
+	    	distVctrs[6].x = anX;
+		   	distVctrs[6].y = anY - 1;
+	    }
+	    if (map.isSafeAt(anX + 1, anY - 1)) {
+	    	distVctrs[7].x = anX + 1;
+		   	distVctrs[7].y = anY - 1;
+	    }
+	    // biggest distance
+	    float biggest = 0;
+	    int bigIndex = 0;
+	    for (int index = 0; index < distVctrs.length; index++) {
+	    	float distance = Vector2.dst(distVctrs[index].x, distVctrs[index].y,
+	    			                     attackX, attackY);
+	    	if (distance > biggest) {
+	    		biggest = distance;
+	    		bigIndex = index;
+	    	}
+	    }
+	    goal.set(distVctrs[bigIndex].x, distVctrs[bigIndex].y);
     }
-    
-    public void chase() {
-        // Go to the next tile closest to target
-        float chasex = getAnimal().getX() - target.getX();
-        float chasey = getAnimal().getY() - target.getY();
-        // Normalize distance to choose next tile
-        chasex = chasex / (Math.abs(chasex));
-        chasey = chasey / (Math.abs(chasey));
-        goal.set(getLoc().x - chasex, getLoc().y - chasey);
-    }
+
+	public void chase() {
+		// Animal's position
+		float anX = getAnimal().getX();
+		float anY = getAnimal().getY();
+		// Attacker's position
+		float targetX = target.getX();
+	    float targetY = target.getY();
+	    // Animal's best option
+	    float goalX = 2*anX - targetX;
+	    float goalY = 2*anY - targetY;
+	    
+	    // Set best goal if it is safe.
+	    // Choose valid position farthest from attacker.
+	    if (map.isSafeAt(goalX, goalY)) {
+	    	goal.set(goalX, goalY);
+	    	return;
+	    }
+	}
     
     /*
      * The animal this AI controls
