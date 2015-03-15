@@ -71,7 +71,7 @@ public abstract class AIController implements InputController {
     protected int turns;
     
     // The animal's next move; a ControlCode
-    protected int move;
+    protected Vector2 move;
     // Number of ticks since controller started
     protected int ticks;
     
@@ -147,11 +147,11 @@ public abstract class AIController implements InputController {
      *
      * @return the action selected by this InputController
      */
-    public int getAction() {
+    public Vector2 getAction() {
         // Increment the number of ticks.
         ticks++;
         
-        if (ticks % 10 == 0 && state != State.DEAD) {
+        //if (ticks % 10 == 0 && state != State.DEAD) {
         	//comment out for fixing collisions
 //            // Process the State
 //            //changeStateIfApplicable();
@@ -162,12 +162,12 @@ public abstract class AIController implements InputController {
         	for (Actor a : actors) {
     			world.rayCast(vcb, getAnimal().getPosition(), a.getPosition());
         	}
-//            if (isScared()) {
-//            	flee();
-//            }
-//            else if (hasTarget()) {
-//            	chase();
-//            }
+            if (isScared()) {
+            	flee();
+            }
+            else if (hasTarget()) {
+            	chase();
+            }
 //            else {
 //            	//patrol();
 //            }
@@ -175,7 +175,7 @@ public abstract class AIController implements InputController {
 //            // Pathfinding
 //            //markGoal();
 //            move = getNextMoveToGoal();
-        }
+//        }
         
         //System.out.println(move);
         return move;
@@ -385,7 +385,7 @@ public abstract class AIController implements InputController {
      *
      * @return int corresponding to InputController bit-vector
      */
-    public Vector2/*int*/ getNextMoveToGoal() {
+    public Vector2 getNextMoveToGoal() {
     	
     	//System.out.println("goalx:" + goal.x + "goaly:" + goal.y);
     	//System.out.println("locx:" + getLoc().x + "locy:" + getLoc().y);
