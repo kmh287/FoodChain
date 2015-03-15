@@ -71,7 +71,11 @@ public abstract class AIController implements InputController {
     protected int turns;
     
     // The animal's next move; a ControlCode
+<<<<<<< HEAD
     protected int move;
+=======
+    protected Vector2 move;
+>>>>>>> master
     // Number of ticks since controller started
     protected int ticks;
     
@@ -149,9 +153,9 @@ public abstract class AIController implements InputController {
      */
     public int getAction() {
         // Increment the number of ticks.
-        ticks++;
+        //ticks++;
         
-        if (ticks % 10 == 0 && state != State.DEAD) {
+        //if (ticks % 10 == 0 && state != State.DEAD) {
         	//comment out for fixing collisions
 //            // Process the State
 //            //changeStateIfApplicable();
@@ -162,20 +166,29 @@ public abstract class AIController implements InputController {
         	for (Actor a : actors) {
     			world.rayCast(vcb, getAnimal().getPosition(), a.getPosition());
         	}
+<<<<<<< HEAD
 //            if (isScared()) {
 //            	flee();
 //            }
 //            else if (hasTarget()) {
 //            	chase();
 //            }
+=======
+            if (isScared()) {
+            	flee();
+            }
+            else if (hasTarget()) {
+            	chase();
+            }
+>>>>>>> master
 //            else {
 //            	//patrol();
 //            }
 //            
 //            // Pathfinding
 //            //markGoal();
-//            move = getNextMoveToGoal();
-        }
+            move = getNextMoveToGoal();
+//       }
         
         //System.out.println(move);
         return move;
@@ -277,13 +290,22 @@ public abstract class AIController implements InputController {
     }
     
     public void chase() {
-        // Go to the next tile closest to target
-        float chasex = getAnimal().getX() - target.getX();
-        float chasey = getAnimal().getY() - target.getY();
-        // Normalize distance to choose next tile
-        chasex = chasex / (Math.abs(chasex));
-        chasey = chasey / (Math.abs(chasey));
-        goal.set(getLoc().x - chasex, getLoc().y - chasey);
+    	// Animal's position
+    	float anX = getAnimal().getX();
+    	float anY = getAnimal().getY();
+    	// Attacker's position
+    	float targetX = target.getX();
+        float targetY = target.getY();
+        // Animal's best option
+        float goalX = 2*anX - targetX;
+        float goalY = 2*anY - targetY;
+        
+        // Set best goal if it is safe.
+        // Choose valid position farthest from attacker.
+        if (map.isSafeAt(goalX, goalY)) {
+        	goal.set(goalX, goalY);
+        	return;
+        }
     }
     
     /*
@@ -380,7 +402,11 @@ public abstract class AIController implements InputController {
      *
      * @return int corresponding to InputController bit-vector
      */
+<<<<<<< HEAD
     public Vector2/*int*/ getNextMoveToGoal() {
+=======
+    public Vector2 getNextMoveToGoal() {
+>>>>>>> master
     	
     	//System.out.println("goalx:" + goal.x + "goaly:" + goal.y);
     	//System.out.println("locx:" + getLoc().x + "locy:" + getLoc().y);

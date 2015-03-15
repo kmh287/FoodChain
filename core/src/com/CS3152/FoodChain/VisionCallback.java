@@ -9,7 +9,6 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 public class VisionCallback implements RayCastCallback {
 	
 	private AIController source;
-	private boolean visible;
 	
 	public VisionCallback (AIController src) {
 		source = src;
@@ -20,33 +19,45 @@ public class VisionCallback implements RayCastCallback {
 			                      float fraction) {
 		
 		//Commented this out since it seems incomplete
-		throw new NotImplementedException();
-		
-//		//Check if it saw its prey
-//		if (fixture.getUserData().getContained() == Actor) {
-//			if (((Actor)(fixture.getUserData())).canKill(source.getAnimal())) {
-//				source.setScared((Actor)fixture.getUserData());
-//				source.setTarget(null);
-//				return 0.0f;
-//			}
-//			if (source.getAnimal().canKill((Actor)fixture.getUserData())) {
-//				source.setScared(null);
-//				source.setTarget((Actor)fixture.getUserData());
-//				return 1.0f;
-//			}
-//			source.setScared(null);
-//			source.setTarget(null);
-//			return 1.0f;
-//		}
-//		source.setScared(null);
-//		source.setTarget(null);
-//		if ((Tile)fixture.getUserData().getType() == GRASS) {
-//			return -1;
-//		}
-//		return 0;
-	}
-	
-	public boolean isVisible() {
-		return visible;
+		//throw new NotImplementedException();
+		point = point.sub(source.getAnimal().getPosition());
+		if (source.withinCone(point)) {
+			Object contact = fixture.getBody().getUserData();
+			//Check if it saw its prey
+			
+			if (contact instanceof Actor) {
+				if (((Actor)contact).canKill(source.getAnimal())) {
+					source.setScared((Actor)contact);
+					source.setTarget(null);
+					return 0.0f;
+				}
+				if (source.getAnimal().canKill((Actor)contact)) {
+					source.setScared(null);
+					source.setTarget((Actor)contact);
+					return 1.0f;
+				}
+				
+				// Has been three turns since it has been
+				// in a predator's line of sight.
+			    if (source.canSettle()) { 
+			    	source.setScared(null);
+					source.setTarget(null);
+			    }
+				return 1.0f;
+			}
+			else {  //The ray cast ran into a Tile
+				if (source.canSettle()) {
+					source.setScared(null);
+					source.setTarget(null);
+				}
+				if (((Tile)contact).getType() == Tile.tileType.GRASS) {
+					return -1;
+				}
+				return 0.0f;
+			}
+		}
+		else {
+			return 0.0f;
+		}
 	}
 }
