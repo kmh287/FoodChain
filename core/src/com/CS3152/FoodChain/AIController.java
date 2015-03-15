@@ -2,6 +2,8 @@ package com.CS3152.FoodChain;
 
 import java.util.*;
 
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+
 import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.physics.box2d.World;
 
@@ -172,7 +174,7 @@ public abstract class AIController implements InputController {
     // Determines whether or not an actor is in the animal's line of sight
     //TODO
     public boolean withinCone(Actor a) {
-    	return false;
+    		return false;
     }
     
     // Determines whether or not the animal should run away
@@ -221,12 +223,13 @@ public abstract class AIController implements InputController {
         }
         // biggest distance
         int biggest = 0;
-//        for (int x = 0; x < dists.length; x++) {
-//        	if (dists[x] > biggest) {
-//        		biggest = dists[x];
-//        	}
-//        }
-        return;
+        for (int x = 0; x < dists.length; x++) {
+	        	if (dists[x] > biggest) {
+	        		//KEVIN: I had to cast to int. Please make sure this
+	        		//is ok.
+	        		biggest = (int) dists[x];
+	        	}
+        }
     }
     
     public void chase() {

@@ -7,8 +7,8 @@ import java.util.Random;
 
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
-import com.CS3152.FoodChain.GameMap.tileType;
 import com.badlogic.gdx.math.*;
+import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
@@ -43,6 +43,8 @@ public class CollisionController implements ContactListener {
 	//Vector2 cache for calculations
 >>>>>>> origin/ashton
 	private Vector2 tmp;
+	private InputController[] controls;
+	private Vector2 action;
 	
 	public CollisionController(){
 		//no gravity for top down
@@ -55,9 +57,20 @@ public class CollisionController implements ContactListener {
 	 * Add the object to the list of objects maintained in the CollisionController
 	 * @param obj: the object to add
 	 */
-	protected void addObject(BoxObject obj) {
+	protected void addObject(BoxObject obj, Object data) {
 		objects.add(obj);
 		obj.activatePhysics(world);
+		obj.getBody().setUserData(data.toString());
+		if(obj instanceof Tile){
+			setGrassTileOff((Tile)obj);
+		}
+		System.out.println("body1"+obj.getBody().toString() +" "+  obj.isActive());
+	}
+	
+	private void setGrassTileOff(Tile t){
+		if(t.type==Tile.tileType.GRASS){
+			t.setActive(false);
+		}
 	}
 	
 	/**
@@ -68,45 +81,43 @@ public class CollisionController implements ContactListener {
 	 * 
 	 * TODO have to decide how to handle multiple collisions and which collisions to process first. like animal or tiles
 	 */
-	private void move(Hunter hunter) {
-//		System.out.println("Y vel : "+hunter.getVY());
-//		System.out.println("X vel : "+hunter.getVX());
-//		System.out.println("Vel : "+hunter.getLinearVelocity());
-//		System.out.println("Position : "+hunter.getPosition());
-//		hunter.getBody().setLinearVelocity(hunter.getVX(), hunter.getVY());
-		//System.out.println("vx:" + hunter.getVX() + "vy:" +hunter.getVY());
-		//hunter.setCenter(tmp);
-		//hunter.getBody().applyForce(tmp.scl(30),hunter.getBody().getPosition(),true);
-		//System.out.println(hunter.getBody().getLinearVelocity());
+	private void move(Hunter actor) {
+//		float mult = 10f;
+		tmp.set(controls[0].getAction());
+//		tmp.scl(mult, mult);
+		System.out.println(tmp.toString());
+		actor.setLinearVelocity(tmp);
 	}
 	
-	private void move(Animal animal) {
-//		tmp.set(animal.getPosition());
-//		tmp.add(animal.getVX(), animal.getVY());
-//		System.out.println("Y vel : "+animal.getVY());
-//		System.out.println("X vel : "+animal.getVX());
-//		System.out.println("Vel : "+animal.getLinearVelocity());
-//		System.out.println("Position : "+animal.getPosition());
-//		animal.getBody().setLinearVelocity(animal.getVX(), animal.getVY());
+	private void move(Animal actor,int index) {
+		actor.setLinearVelocity(controls[index].getAction());
 	}
-	
-	//Pass the object to the correct handler
-	private void move(PhysicsObject o){
-		if (o instanceof Hunter){
-			move((Hunter)o);
-		}
-		else if (o instanceof Animal){
-			move((Animal)o);
-		}
-	}
+
 
 	public void update() {
 		world.step(1/60f, 3, 3);
+		
+		//Updates the animals' actions
+		//i is the index of each animal AI in controls
+		int i = 1;
+		//System.out.println(objects.size());
 		for(PhysicsObject o : objects) {
-			move(o);
+			
+			if (o instanceof Hunter){
+				move((Hunter)o);
+			}
+			//unsure about order of objects.
+			else if (o instanceof Animal){
+				move((Animal)o,i);
+				i++;
+			}
 			//System.out.println(o.getPosition().toString());
 		}
 		//checkTrapped();
+	}
+	
+	public void setControls(InputController [] controls){
+		this.controls=controls;
 	}
 	
 	
@@ -114,6 +125,11 @@ public class CollisionController implements ContactListener {
 	public void beginContact(Contact contact) {
 		// TODO Auto-generated method stub
 		System.out.println("COLLISION");
+		Body body1 = contact.getFixtureA().getBody();
+		Body body2 = contact.getFixtureB().getBody();
+		System.out.println("body1"+body1.getUserData() +" "+  body1.isActive());
+//		System.out.println(body1.getUserData());
+//		System.out.println(body2.getUserData());
 	}
 
 	@Override
