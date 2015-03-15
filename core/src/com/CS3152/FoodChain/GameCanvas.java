@@ -1,14 +1,24 @@
 package com.CS3152.FoodChain;
 
+import static com.badlogic.gdx.Gdx.gl20;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Affine2;
+import com.badlogic.gdx.math.Interpolation;
+import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+
+/*import edu.cornell.cs3152.lab2.GameCanvas.BlendState;
+import edu.cornell.cs3152.lab2.GameCanvas.CullState;
+import edu.cornell.cs3152.lab2.GameCanvas.DepthState; */
 
 
 @SuppressWarnings("unused")
@@ -19,8 +29,9 @@ public class GameCanvas {
 	private TextureRegion holder;
 	/** Affine cache for current sprite to draw */
 	private Affine2 local;
-    
-    private boolean active = false;
+	
+	/** Track whether or not we are actively drawing (for error checking) */
+    private boolean active;
     
     // For managing the camera and perspective
  	/** Orthographic camera for the SpriteBatch layer */
@@ -30,11 +41,60 @@ public class GameCanvas {
  	/** Eye for Perspective FOV */
  	private Vector3 eye;
  	
+ 	// CACHE OBJECTS
+ 	/** Projection Matrix */
+ 	private Matrix4 proj;
+ 	/** View Matrix */
+ 	private Matrix4 view;
+ 	/** World Matrix */
+ 	private Matrix4 world;
+ 	/** Temporary Matrix (for Calculations) */
+ 	private Matrix4 tmpMat;
+ 	
+ 	/** The panning factor for the eye, used when the game first loads */
+	private float eyepan;
+	
+	/** Distance from the eye to the target */
+	private static final float EYE_DIST  = 400.0f;
+	/** Field of view for the perspective */
+	private static final float FOV = 0.7f;
+	/** Near distance for perspective clipping */
+	private static final float NEAR_DIST = 10.0f;
+	/** Far distance for perspective clipping */
+	private static final float FAR_DIST  = 500.0f;
+	
+	/** Multiplicative factors for initial camera pan */
+	private static final float INIT_TARGET_PAN = 0.1f;
+	private static final float INIT_EYE_PAN = 0.05f;
+	private static final Interpolation.SwingIn SWING_IN = new Interpolation.SwingIn(0.1f);
+	
+	/** Temporary Vectors */
+	private Vector3 tmp0;
+	private Vector3 tmp1;
+	private Vector2 tmp2d;
+	
+	private static final Vector3 UP_REVERSED = new Vector3(0,-1,0);
  	
     public GameCanvas(){
         sb = new SpriteBatch();
         holder = new TextureRegion();
         local = new Affine2();
+        active = false; 
+        eyepan  = 0.0f;
+        
+        spriteCam = new OrthographicCamera(getWidth(),getHeight());
+        spriteCam.setToOrtho(false);
+		sb.setProjectionMatrix(spriteCam.combined);
+        
+        eye = new Vector3();
+		target = new Vector3();
+		world = new Matrix4();
+		view  = new Matrix4();
+		proj  = new Matrix4();
+		
+		tmp0 = new Vector3();
+		tmp1 = new Vector3();
+		tmp2d = new Vector2();
     }
    
     
@@ -55,7 +115,80 @@ public class GameCanvas {
 		local.scale(sx,sy);
 		local.translate(-ox,-oy);
 	}
-    
+	
+	/** Returns whether this canvas is currently fullscreen. */
+	public boolean isFullscreen() {
+		return Gdx.graphics.isFullscreen(); 
+	}
+	
+	/** Return height of this canvas. */
+	public int getHeight() {
+		return Gdx.graphics.getHeight();
+	}
+	
+	/** Return width of this canvas.**/
+	public int getWidth() {
+		return Gdx.graphics.getWidth();
+	}
+	
+	public void setWidth(int width) {
+		if (active) {
+			Gdx.app.error("GameCanvas", "Cannot alter property while drawing active", new IllegalStateException());
+			return;
+		}
+		Gdx.graphics.setDisplayMode(width, getHeight(), isFullscreen());
+		resize();
+	}
+	
+	public void setHeight(int height) {
+		if (active) {
+			Gdx.app.error("GameCanvas", "Cannot alter property while drawing active", new IllegalStateException());
+			return;
+		}
+		Gdx.graphics.setDisplayMode(getWidth(), height, isFullscreen());
+		resize();
+	}
+	
+	/**
+	 * Returns the panning factor for the eye value.
+	 *
+	 * This provides the zoom-in effect at the start of the game.  The eyepan is a
+	 * value between 0 and 1.  When it is 1, the eye is locked into the correct place
+	 * to start a game.
+	 *
+	 * @return The eyepan value in [0,1]
+	 */
+	public float getEyePan() {
+		return eyepan;
+	}
+	
+	/**
+	 * Sets the panning factor for the eye value.
+	 *
+	 * This provides the zoom-in effect at the start of the game.  The eyepan is a
+	 * value between 0 and 1.  When it is 1, the eye is locked into the correct place
+	 * to start a game.
+	 *
+	 * @param value The eyepan value in [0,1]
+	 */
+	public void setEyePan(float value) {
+		eyepan = value;
+	}
+	
+	/**
+	 * Resets the SpriteBatch camera when this canvas is resized.
+	 *
+	 * If you do not call this when the window is resized, you will get
+	 * weird scaling issues.
+	 */
+	public void resize() {
+		// Resizing screws up the spriteBatch projection matrix
+		spriteCam.setToOrtho(false,getWidth(),getHeight());
+		sb.setProjectionMatrix(spriteCam.combined);
+	}
+	
+	
+	
     public void draw(Texture texture, float x, float y){
         sb.draw(texture, x, y);
     }
@@ -304,13 +437,104 @@ public class GameCanvas {
 	}
     
     /**
-     * Function called to begin drawing with canvas
+     * Function called to begin standard drawing with canvas
      */
     public void begin(){
         sb.begin();
         this.active = true;
     }
     
+    /** Begin drawing pass with the camera focused at position (x,y) 
+     * If eyepan is not 1, the camera will interpolate between the goal position and
+     * (x,y). Will draw background.*/
+    
+    public void begin(float x, float y) {
+    	//drawing
+    	this.active = true;
+    	
+    	//draw background?
+    	
+    	//Set eye and target positions
+    	if (eyepan < 1.0f) {
+			tmp0.set(x,y,0);
+			tmp1.set(tmp0).scl(INIT_TARGET_PAN);
+			target.set(tmp1).interpolate(tmp0,eyepan,SWING_IN);
+
+			tmp0.add(0, NEAR_DIST, -EYE_DIST);
+			tmp1.set(tmp0).scl(INIT_EYE_PAN);
+			eye.set(tmp1).interpolate(tmp0,eyepan,SWING_IN);
+		} else {
+			target.set(x, y, 0);
+			eye.set(target).add(0, NEAR_DIST, -EYE_DIST);
+		}
+    	
+    	// Position the camera
+    	view.setToLookAt(eye,target,UP_REVERSED);
+    	setToPerspectiveFOV(proj, FOV, (float)getWidth() / (float)getHeight(), NEAR_DIST, FAR_DIST);
+    	tmpMat.set(view).mulLeft(proj);
+
+    	//setDepthState(DepthState.DEFAULT);
+    	//setBlendState(BlendState.ALPHA_BLEND);
+    	//setCullState(CullState.CLOCKWISE);
+    			
+    }
+    
+    /**
+	 * Sets the given matrix to a FOV perspective.
+	 *
+	 * The field of view matrix is computed as follows:
+	 *
+	 *        /
+	 *       /_
+	 *      /  \  <-  FOV 
+	 * EYE /____|_____
+     *
+	 * Let ys = cot(fov)
+	 * Let xs = ys / aspect
+	 * Let a = zfar / (znear - zfar)
+	 * The matrix is
+	 * | xs  0   0      0     |
+	 * | 0   ys  0      0     |
+	 * | 0   0   a  znear * a |
+	 * | 0   0  -1      0     |
+	 *
+	 * @param out Non-null matrix to store result
+	 * @param fov field of view y-direction in radians from center plane
+	 * @param aspect Width / Height
+	 * @param znear Near clip distance
+	 * @param zfar Far clip distance
+	 *
+	 * @returns Newly created matrix stored in out
+	 */
+	private Matrix4 setToPerspectiveFOV(Matrix4 out, float fov, float aspect, float znear, float zfar) {
+		float ys = (float)(1.0 / Math.tan(fov));
+		float xs = ys / aspect;
+		float a  = zfar / (znear - zfar);
+
+		out.val[0 ] = xs;
+		out.val[4 ] = 0.0f;
+		out.val[8 ] = 0.0f;
+		out.val[12] = 0.0f;
+
+		out.val[1 ] = 0.0f;
+		out.val[5 ] = ys;
+		out.val[9 ] = 0.0f;
+		out.val[13] = 0.0f;
+
+		out.val[2 ] = 0.0f;
+		out.val[6 ] = 0.0f;
+		out.val[10] = a;
+		out.val[14] = znear * a;
+
+		out.val[3 ] = 0.0f;
+		out.val[7 ] = 0.0f;
+		out.val[11] = -1.0f;
+		out.val[15] = 0.0f;
+
+		return out;
+	}
+   
+	
     /**
      * Function called to end drawing with canvas
      */

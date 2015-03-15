@@ -44,27 +44,15 @@ public class PlayerController implements InputController{
 	* moves diagonally to the south east direction, it returns SOUTHEST 
 	*@return the action of the player 
 	*/
-	public Vector2 getAction() {
+    public Vector2 getAction() {
 		PlayerAction = NO_ACTION; 
 			// Directional controls
 
 		if (keyboard && mouse) {
-<<<<<<< HEAD
-			if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) code = WEST; 
-			if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) code = EAST; 
-			if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) code = EAST; 
-			if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) code = WEST; 
-			if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) code = SOUTH; 
-			if (Gdx.input.isKeyPressed(Input.Keys.UP)) code = NORTH; 
-				
-			/* Figure out how to deal with the mouse click */
-			if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) code = CLICK; 
-=======
 			if (Gdx.input.isKeyPressed(Input.Keys.D)) PlayerAction = EAST; 
 			if (Gdx.input.isKeyPressed(Input.Keys.A)) PlayerAction = WEST; 
 			if (Gdx.input.isKeyPressed(Input.Keys.S)) PlayerAction = SOUTH; 
 			if (Gdx.input.isKeyPressed(Input.Keys.W)) PlayerAction = NORTH; 
->>>>>>> origin/ashton
 			
 			/*These diagonals may have to be changed. How will turns work/updating? */
 			if (Gdx.input.isKeyPressed(Input.Keys.W) 
@@ -78,14 +66,6 @@ public class PlayerController implements InputController{
 		}
 
 			// Cancel out conflicting movements.
-		/* if ((code & WEST) != 0 && (code & EAST) != 0) {
-			code = (WEST | EAST);
-		}
-
-		if ((code & NORTH) != 0 && (code & SOUTH) != 0) {
-			code = (NORTH | SOUTH);
-		} 
-		
 		/*if ((code & WEST) != 0 && (code & EAST) != 0) {
 			code ^= (WEST | EAST);
 		}*/

@@ -175,6 +175,7 @@ public abstract class AIController implements InputController {
     //TODO
     public boolean withinCone(Actor a) {
     		return false;
+
     }
     
     // Determines whether or not the animal should run away
@@ -223,13 +224,13 @@ public abstract class AIController implements InputController {
         }
         // biggest distance
         int biggest = 0;
-        for (int x = 0; x < dists.length; x++) {
-	        	if (dists[x] > biggest) {
-	        		//KEVIN: I had to cast to int. Please make sure this
-	        		//is ok.
-	        		biggest = (int) dists[x];
-	        	}
-        }
+
+//        for (int x = 0; x < dists.length; x++) {
+//        	if (dists[x] > biggest) {
+//        		biggest = dists[x];
+//        	}
+//        }
+        return;
     }
     
     public void chase() {

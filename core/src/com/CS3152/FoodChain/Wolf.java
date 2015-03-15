@@ -1,4 +1,4 @@
-ikypackage com.CS3152.FoodChain;
+package com.CS3152.FoodChain;
 
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;

@@ -1,17 +1,13 @@
 package com.CS3152.FoodChain;
 
-import java.io.FileNotFoundException;
+import java.io.FileNotFoundException; 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
 import com.CS3152.FoodChain.Actor.actorType;
-<<<<<<< HEAD
-import com.CS3152.FoodChain.GameMap.Coordinate;
-import com.CS3152.FoodChain.GameMap.tileType;
-=======
->>>>>>> origin/Kevin
+
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.math.Vector2;
@@ -26,15 +22,9 @@ public class GameMode implements Screen {
     private AssetManager manager;
     private List<Animal> animals;
     private Hunter hunter;
-<<<<<<< HEAD
-<<<<<<< HEAD
 
-=======
-    private List<Trap> traps;
->>>>>>> master
-=======
+
     private HashMap<String, List<Trap>> traps;
->>>>>>> origin/ashton
     private UIController ui;
 
     protected InputController[] controls;
@@ -278,16 +268,7 @@ public class GameMode implements Screen {
         update(delta);
         draw(delta);
 
-<<<<<<< HEAD
-        //
-        updateGame();
 
-        //
-        update(delta);
-=======
-        //update(delta);
->>>>>>> master
-        
     }
 
     @Override
@@ -319,70 +300,6 @@ public class GameMode implements Screen {
         // TODO Auto-generated method stub
         
     }
-    
-    /** 
-	 * Invokes the controller for the character.
-	 *
-     * Movement actions are determined, but not committed (e.g. the velocity
-	 * is updated, but not the position). Collisions are not processed. 
-	 */
-<<<<<<< HEAD
-<<<<<<< HEAD
-	public void updateGame() {
-		//if (hunter's turn) {
-		
-			//get the action from the playerController
-			int action = controls[0].getAction();	
-			//Updates the hunters action (velocity only). 
-			//hunter.update(action);	
+   
 			
-			//Uses this velocity to move the hunter. 
-			tmp.set(hunter.getxPos(), hunter.getyPos());
-
-			tmp.add(hunter.getVX(), hunter.getVY());
-			//set the position
-			//make sure not out of bounds 
-			if (!(map.screenPosToTile(tmp.x, tmp.y).type == tileType.TREE)) {
-				//System.out.println("In loop" + tmp.x);
-				hunter.getPosition().set(tmp);
-			}
-			else {
-				
-			}
-
-			
-			
-			
-		/*} else {
-			//hunter.update(InputController.NO_ACTION);
-			}
-			*/ 
-	}	
-=======
-//	public void updateGame() {
-//		//if (hunter's turn) {
-//		
-//			//get the action from the playerController
-//			int action = controls[0].getAction();	
-//			//Updates the hunters action (velocity only). 
-//			//hunter.update(action);	
-//			
-//			//Uses this velocity to move the hunter. 
-//			tmp.set(hunter.getxPos(), hunter.getyPos());
-//			tmp.add(hunter.getVX(), hunter.getVY());
-//			//set the position
-//			hunter.getPosition().set(tmp);
-//
-//			
-//			
-//			
-//		/*} else {
-//			//hunter.update(InputController.NO_ACTION);
-//			}
-//			*/ 
-//	}	
->>>>>>> origin/ashton
-=======
->>>>>>> origin/Kevin
-
 }

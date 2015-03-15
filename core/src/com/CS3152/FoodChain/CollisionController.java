@@ -24,24 +24,13 @@ import com.badlogic.gdx.physics.box2d.World;
  * As a major subcontroller, this class must have a reference to all the models.
  */
 
-<<<<<<< HEAD
-public class CollisionController {
-
-	/** Reference to the canvas */
-	public GameCanvas canvas;
-	/** Reference to the hunter */
-	public Hunter hunter;
-	/** Reference to the animals */
-	public List<Animal> animals;
-	
-=======
 public class CollisionController implements ContactListener {
 	//The game world
 	private World world;
 	/** All the objects in the world. */
 	protected PooledList<BoxObject> objects  = new PooledList<BoxObject>();
 	//Vector2 cache for calculations
->>>>>>> origin/ashton
+
 	private Vector2 tmp;
 	private InputController[] controls;
 	private Vector2 action;
