@@ -10,6 +10,8 @@ public abstract class Animal extends Actor {
 	//Whether the animal is caught in a trap
 	private boolean trapped = false;
 
+	private actorType type;
+	
 	//texture used in getCenter and setCenter
 	private float texWidth;
 	private float texHeight;
@@ -31,6 +33,7 @@ public abstract class Animal extends Actor {
 	public Animal(TextureRegion tr, actorType type, float x, float y, 
 	              actorType[] prey, direction facing){
 		super(tr, type, x, y, tr.getRegionWidth(), tr.getRegionHeight(), prey);
+		this.type = type;
 		this.setPos(x,y);
 		this.facing = facing;
 		setTexWidth(tr.getRegionWidth());
@@ -38,6 +41,10 @@ public abstract class Animal extends Actor {
 	}
 	
 	public void setPos(float x, float y){
+		
+		float xPos = getX();
+		float yPos = getY();
+		
 	    if (x - getPosition().x == 0 && y - getPosition().y > 0){
 	        this.facing = direction.NORTH;
 	    }
@@ -67,10 +74,22 @@ public abstract class Animal extends Actor {
 	    		//do nothing
 	    		//If this code doesn't change, remove this else
 	    }
-	    
-        super.setPosition(x, y);
+        super.setPosition(xPos, yPos);
 	}
 	
+    /**
+     * @return the type
+     */
+    public actorType getType() {
+        return type;
+    }
+    
+	/**
+	 * The name of this animal type, e.g. "Sheep"
+	 * @return String representing the name of this type
+	 */
+	public abstract String getTypeNameString();
+
 	/**
 	 * returns width of texture
 	 * @return Vector
@@ -96,13 +115,30 @@ public abstract class Animal extends Actor {
 	
 	
 	/**
+<<<<<<< HEAD
+	 * returns center of animal
+	 * @return String representing the name of this type
+	 */
+	public Vector2 getCenter(){
+		Vector2 pos = new Vector2(getX()+getTexWidth()/2, getY()+getTexHeight()/2);
+        return pos;
+	}
+	
+	public void setCenter(Vector2 pos){
+		float xPos = pos.x-getTexWidth()/2;
+		float yPos = pos.y-getTexHeight()/2;
+        super.setPosition(xPos, yPos);
+	}
+	
+	/**
+=======
+>>>>>>> origin/Kevin
 	 * Standard toString methoH
 	 * @return A string representation of this animal's type and position
 	 */
 	public String toString(){
 		String type = getTypeNameString();
-		
-		return type + "at x: " + getX() + " y: " + getY();
+		return type + " at x: " + getX() + " y: " + getY();
 	}
 	
 	/**
@@ -121,73 +157,25 @@ public abstract class Animal extends Actor {
 		trapped = val;
 	}
 
-	/** 
-    * Updates the hunter's position according to the controlCode. 
-	* 
-	* @param controlCode The movement controlCode (from InputController).
-	*/
-	public void update(int controlCode, float dt) {
-    	super.update(dt);
-    	// Determine how we are moving.
-    	boolean movingEast  = (controlCode == InputController.EAST);
-   		boolean movingWest = (controlCode == InputController.WEST);
-    	boolean movingNorth = (controlCode == InputController.NORTH);
-    	boolean movingSouth = (controlCode == InputController.SOUTH);
-    	boolean movingNorthWest = (controlCode == InputController.NORTHWEST);
-    	boolean movingSouthWest = (controlCode == InputController.SOUTHWEST);
-    	boolean movingSouthEast = (controlCode == InputController.SOUTHEAST);
-    	boolean movingNorthEast = (controlCode == InputController.NORTHEAST);
-    	
-    	//process moving command 
-    	if (movingWest) {
-			super.setAngle(0.0f);
-			super.setVX(-MOVE_SPEED);
-			super.setVY(0);
-		} else if (movingEast) {
-			super.setAngle(180.0f);
-			super.setVX(MOVE_SPEED);
-			super.setVY(0);
-		}
-		else if (movingNorth) {
-			super.setAngle(90.0f);
-			super.setVX(0);
-			super.setVY(MOVE_SPEED);
-		}
-		else if (movingSouth) {
-			super.setAngle(270.0f);
-			super.setVX(0);
-			super.setVY(-MOVE_SPEED);
-		}
-		else if (movingSouthWest) {
-			super.setAngle(180.0f);
-			super.setVX(-MOVE_SPEED);
-			super.setVY(-MOVE_SPEED);
-		}
-		else if (movingSouthEast) {
-			super.setAngle(180.0f);
-			super.setVX(MOVE_SPEED);
-			super.setVY(-MOVE_SPEED);
-		}
-		else if (movingNorthEast) {
-			super.setAngle(180.0f);
-			super.setVX(MOVE_SPEED);
-			super.setVY(MOVE_SPEED);
-		}
-		else if (movingNorthWest) {
-			super.setAngle(180.0f);
-			super.setVX(-MOVE_SPEED);
-			super.setVY(MOVE_SPEED);
-		}
-		else {
-			// NOT MOVING, SO STOP MOVING
-			super.setVX(0);
-			super.setVY(0);
-		}
-    }
 	    
 	/**
 	 * @return the bottom LeftxPos
 	 */
+	public boolean canEat(Animal ani){
+	    for (actorType t : ani.getPrey()){
+	        if (ani.getType() == t){
+	            return true;
+	        }
+	    }
+        return false;
+	}
+	
+	public void draw(GameMap map, GameCanvas canvas){
+	    canvas.begin();
+	    canvas.draw(getTexture(), getX(), getY());
+	    canvas.end();
+	}
+	
 	public float getXDiamter() {
 	    return texWidth;
     }

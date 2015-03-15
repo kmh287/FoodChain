@@ -83,9 +83,49 @@ public class Hunter extends Actor {
             }
         }
     }
- 
 
     
+//    /**
+//     * @return the center of the hunter
+//     */
+//    public Vector2 getCenter() {
+//    		Vector2 pos = new Vector2(getX()+(float)this.tex.getWidth()/2, 
+//    								  getY()+(float)this.tex.getHeight()/2);
+//        return pos;
+//    }
+//    
+//    /**
+//     * @return the bottom right of the hunter
+//     */
+//    public Vector2 getBottomRight() {
+//    	Vector2 pos = new Vector2(getxPos()+(float)this.tex.getWidth(), getyPos());
+//        return pos;
+//    }
+//    
+//    /**
+//     * @return the top right of the hunter
+//     */
+//    public Vector2 getTopRight() {
+//    	Vector2 pos = new Vector2(getxPos()+(float)tex.getWidth(), getyPos()+(float)tex.getHeight());
+//        return pos;
+//    }
+//    /**
+//     * @return the top left of the hunter
+//     */
+//    public Vector2 getTopLeft() { 
+//    	Vector2 pos = new Vector2(getxPos()+(float)tex.getWidth(), +(float)tex.getHeight());
+//        return pos;
+//    }
+//    
+//    /**
+//     *	Set center of hunter position
+//     */
+//    public void setCenter(Vector2 pos) {
+//	    	float yPos=pos.y-(float)tex.getHeight()/2;
+//	    	float xPos=pos.x-(float)tex.getWidth()/2;
+//    		super.setPosition(xPos, yPos);
+//    }
+
     /**
      * Used when a player traps an animal
      * @param trap the trap to add to the inventory
@@ -98,8 +138,32 @@ public class Hunter extends Actor {
     	return inventory;
     }
     
-    public void setSelectedTrap(Trap trap){
-    	this.selectedTrap=trap;
+    public void setSelectedTrap(int controlcode){
+    	boolean oneSelect = (controlcode == InputController.ONE);
+    	boolean twoSelect = (controlcode == InputController.TWO);
+    	boolean threeSelect = (controlcode == InputController.THREE);
+    	//process selected trap
+    	if(oneSelect){
+	        for (Trap trap : inventory.get("REGULAR_TRAP")) {
+	        	if(trap.getInInventory()){
+	        		selectedTrap = trap;
+	        	}
+	        }
+    	}
+    	if(twoSelect){
+	        for (Trap trap : inventory.get("SHEEP_TRAP")) {
+	        	if(trap.getInInventory()){
+	        		selectedTrap = trap;
+	        	}
+	        }
+    	}
+    	if(threeSelect){
+	        for (Trap trap : inventory.get("WOLF_TRAP")) {
+	        	if(trap.getInInventory()){
+	        		selectedTrap = trap;
+	        	}
+	        }
+    	}
     }
 
     public Trap getSelectedTrap(){
@@ -113,6 +177,18 @@ public class Hunter extends Actor {
     public void removeFromInventory(Trap trap) {
     	inventory.get(trap.getType()).remove(trap);
     }
+
+    public Vector2 getPosition() {
+    		Vector2 pos = new Vector2(getX(), getY());
+    		return pos; 
+    }
+    
+//    public void setPosition(Vector2 pos) {
+//    		xPos = pos.x;
+//    		yPos = pos.y;
+//        super.setPosition(xPos, yPos);
+//    }
+
 
     
     /*public boolean canSetTrap(Vector2 clickPos) {
@@ -142,7 +218,11 @@ public class Hunter extends Actor {
 		return canSet;
 	}
     
+<<<<<<< HEAD
     /*public void setTrap(Vector2 clickPos) {
+=======
+    public void setTrapDown(Vector2 clickPos) {
+>>>>>>> master
     	selectedTrap.setPosition(clickPos);
     	//update inventory
 		//set selectedTrap inventory status to false
@@ -211,6 +291,7 @@ public class Hunter extends Actor {
         return tex.getWidth();
     }
     
+<<<<<<< HEAD
     /** 
     * Updates the hunter's position according to the controlCode. 
     * 
@@ -307,7 +388,10 @@ public class Hunter extends Actor {
 	    	}
 	    }
     
+=======
+
+>>>>>>> master
     public String getTypeNameString() {
-    	return "Hunter";
+    		return "HUNTER";
     }
 }

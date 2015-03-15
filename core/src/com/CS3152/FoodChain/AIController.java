@@ -2,6 +2,8 @@ package com.CS3152.FoodChain;
 
 import java.util.*;
 
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+
 import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.physics.box2d.World;
 
@@ -55,10 +57,11 @@ public abstract class AIController implements InputController {
     // The animal's tile location
     protected Vector2 loc;
     
-    // The animal's next move; a ControlCode
-    protected int move;
+    // The animal's next move;
+    protected Vector2 move;
     // Number of ticks since controller started
     protected int ticks;
+    
     
     /*
      * Creates an AIController for the animal
@@ -78,7 +81,7 @@ public abstract class AIController implements InputController {
         this.goal = new Vector2();
         // To where it should start moving
         setGoal((int)getLoc().x - 4, (int)getLoc().y);
-        this.move = InputController.WEST;
+        this.move = new Vector2(100,0);
         this.ticks = 0;
         
         this.target = null;
@@ -128,7 +131,7 @@ public abstract class AIController implements InputController {
      *
      * @return the action selected by this InputController
      */
-    public int getAction() {
+    public Vector2 getAction() {
         // Increment the number of ticks.
         ticks++;
         
@@ -169,8 +172,9 @@ public abstract class AIController implements InputController {
     }
     
     // Determines whether or not an actor is in the animal's line of sight
+    //TODO
     public boolean withinCone(Actor a) {
-    	
+    	return false;
     }
     
     // Determines whether or not the animal should run away
@@ -218,12 +222,21 @@ public abstract class AIController implements InputController {
 		   			   attackTileX, attackTileY);
         }
         // biggest distance
+<<<<<<< HEAD
         float biggest = 0.0f;
         for (int x = 0; x < dists.length; x++) {
         	if (dists[x] > biggest) {
         		biggest = dists[x];
         	}
         }
+=======
+        int biggest = 0;
+//        for (int x = 0; x < dists.length; x++) {
+//        	if (dists[x] > biggest) {
+//        		biggest = dists[x];
+//        	}
+//        }
+>>>>>>> master
         return;
     }
     
@@ -328,41 +341,45 @@ public abstract class AIController implements InputController {
      * @return int corresponding to InputController bit-vector
      */
     public int getNextMoveToGoal() {
-    	
+    	return 0;
     	//System.out.println("goalx:" + goal.x + "goaly:" + goal.y);
     	//System.out.println("locx:" + getLoc().x + "locy:" + getLoc().y);
     	
-        if (goal.x - getLoc().x == 0 && goal.y - getLoc().y > 0) {
-            return NORTH;
-        }
-        else if (goal.x - getLoc().x > 0 && goal.y - getLoc().y > 0) {
-            return NORTHEAST;
-        }
-        else if (goal.x - getLoc().x > 0 && goal.y - getLoc().y == 0) {
-            return EAST;
-        }
-        else if (goal.x - getLoc().x > 0 && goal.y - getLoc().y < 0) {
-            return SOUTHEAST;
-        }
-        else if (goal.x - getLoc().x == 0 && goal.y - getLoc().y < 0) {
-            return SOUTH;
-        }
-        else if (goal.x - getLoc().x < 0 && goal.y - getLoc().y < 0) {
-            return SOUTHWEST;
-        }
-        else if (goal.x - getLoc().x < 0 && goal.y - getLoc().y == 0) {
-            return WEST;
-        }
-        else if (goal.x - getLoc().x < 0 && goal.y - getLoc().y > 0) {
-            return NORTHWEST;
-        }
-        else {
-            return NO_ACTION;
-        }
+//        if (goal.x - getLoc().x == 0 && goal.y - getLoc().y > 0) {
+//            return NORTH;
+//        }
+//        else if (goal.x - getLoc().x > 0 && goal.y - getLoc().y > 0) {
+//            return NORTHEAST;
+//        }
+//        else if (goal.x - getLoc().x > 0 && goal.y - getLoc().y == 0) {
+//            return EAST;
+//        }
+//        else if (goal.x - getLoc().x > 0 && goal.y - getLoc().y < 0) {
+//            return SOUTHEAST;
+//        }
+//        else if (goal.x - getLoc().x == 0 && goal.y - getLoc().y < 0) {
+//            return SOUTH;
+//        }
+//        else if (goal.x - getLoc().x < 0 && goal.y - getLoc().y < 0) {
+//            return SOUTHWEST;
+//        }
+//        else if (goal.x - getLoc().x < 0 && goal.y - getLoc().y == 0) {
+//            return WEST;
+//        }
+//        else if (goal.x - getLoc().x < 0 && goal.y - getLoc().y > 0) {
+//            return NORTHWEST;
+//        }
+//        else {
+//            return NO_ACTION;
+//        }
     }
     
     // Should not be here, but need to finish
     public Vector2 getClickPos() {return new Vector2();}
+    
+    public boolean isClicked(){return false;}
+    
+    public int getNum(){return 0;}
 }
 
 

@@ -7,7 +7,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.CS3152.FoodChain.Actor.actorType;
-import com.CS3152.FoodChain.GameMap.Coordinate;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.math.Vector2;
@@ -39,6 +38,8 @@ public class GameMode implements Screen {
 //  /** Cache attribute for calculations */
 //	private Vector2 tmp;
 	private static final float DEFAULT_DENSITY = 1.0f;
+	
+	private Vector2 action;
     
 	/** 
 	 * Preloads the assets for this game.
@@ -96,20 +97,19 @@ public class GameMode implements Screen {
         ui = new UIController();
         ui.loadTextures(manager);
         animals = new ArrayList<Animal>();
-        
+        action =  new Vector2();
         /*size of animal list + the player 
         controls = new InputController[animals.size() + 1]; 
         controls[0] = new PlayerController();
         tmp = new Vector2();
 		*/
-        
         collisionController = new CollisionController();
-        
+        map.addTilesToWorld(collisionController);  
         //Get the animal types from map
         //but build and keep the actual list here
         List<Actor.actorType> aTypes = 
                             map.getActorTypeList();
-        List<Coordinate> coordinates = map.getCoordinates();
+        List<Vector2> coordinates = map.getCoordinates();
         buildAnimalList(aTypes, coordinates);
         
         //All the animals, plus the Hunter
@@ -141,7 +141,11 @@ public class GameMode implements Screen {
 	        controls[2] = new SheepController(animals.get(1),
 	            								  map, actors);
         }
+<<<<<<< HEAD
         traps = (HashMap<String, List<Trap>>) hunter.getInventory();
+=======
+        collisionController.setControls(controls);
+>>>>>>> master
         //loadTextures
         /*
         traps = map.getStartingInventory();
@@ -177,6 +181,7 @@ public class GameMode implements Screen {
         return map;
 	}
 	
+<<<<<<< HEAD
 	private void createHunter(Coordinate startingPos
 			//,HashMap<String, List<Trap>> startingInventory
 			){
@@ -210,6 +215,19 @@ public class GameMode implements Screen {
 	    collisionController.addObject(tmp);
 	    hunter.addToInventory(tmp);
 	    
+=======
+	private void createHunter(Vector2 startingPos,
+			HashMap<String, List<Trap>> startingInventory){
+		Hunter.loadTexture(manager);
+	    this.hunter = new Hunter(map.mapXToScreen((int)startingPos.x),
+	                             map.mapYToScreen((int)startingPos.y),
+	                             startingInventory);
+
+	    hunter.setDensity(DEFAULT_DENSITY);
+	    hunter.setAwake(true);
+	    hunter.setBodyType(BodyDef.BodyType.DynamicBody);
+	    collisionController.addObject(hunter, "HUNTER");
+>>>>>>> master
 	}
 	
 	/**
@@ -224,30 +242,30 @@ public class GameMode implements Screen {
 	 * @param coordinates the coordinates of the animals.
 	 */
 	private void buildAnimalList(List<actorType> aTypes,
-	                             List<Coordinate> coordinates){
+	                             List<Vector2> coordinates){
 	    if (coordinates.size() != aTypes.size()){
 	        throw new IllegalArgumentException("Lists of unequal size");
 	    }
-	    
 	    Iterator<actorType> aTypesIt = aTypes.iterator();
-	    Iterator<Coordinate> coordIt = coordinates.iterator();
+	    Iterator<Vector2> coordIt = coordinates.iterator();
 	    while (aTypesIt.hasNext() && coordIt.hasNext()){
 	        actorType currType = aTypesIt.next();
-	        Coordinate coord = coordIt.next();
-
+	        Vector2 coord = coordIt.next();
+	        
 	        Animal newAnimal;
 	        
 	        switch(currType){
 	            case SHEEP:
 	            		Sheep.loadTexture(manager);
-	                newAnimal = new Sheep(map.mapXToScreen(coord.x), 
-	                                      map.mapYToScreen(coord.y));
+	                newAnimal = new Sheep(map.mapXToScreen((int)coord.x), 
+	                                      map.mapYToScreen((int)coord.y));
 	                animals.add(newAnimal);
 	                break;
 	            case WOLF:
 	            		Wolf.loadTexture(manager);
-	                newAnimal = new Wolf(map.mapXToScreen(coord.x), 
-                                         map.mapYToScreen(coord.y));
+	                newAnimal = new Wolf(map.mapXToScreen((int)coord.x), 
+                                         map.mapYToScreen((int)coord.y));
+	                //See comment in sheep
 	                animals.add(newAnimal);
 	                break;
 	            default:
@@ -256,8 +274,12 @@ public class GameMode implements Screen {
 	        }
 	        newAnimal.setDensity(DEFAULT_DENSITY);
 	        newAnimal.setBodyType(BodyDef.BodyType.DynamicBody);
+<<<<<<< HEAD
 	        //collisionController.addObject(newAnimal);
 	        collisionController.addObject(newAnimal);
+=======
+	        collisionController.addObject(newAnimal, currType);
+>>>>>>> master
 	    }
 	    
 	}
@@ -270,23 +292,26 @@ public class GameMode implements Screen {
 
     private void update(float delta){
     	//if (hunter's turn) {
-		
-		//get the action from the playerController
-		int action = controls[0].getAction();	
 		//Updates the hunters action
+<<<<<<< HEAD
 		hunter.update(action,delta);
 		if (controls[0].getAction() == InputController.CLICK && hunter.canSetTrap()) {
 			hunter.setTrap();
+=======
+		hunter.update(delta);
+		hunter.setSelectedTrap(controls[0].getNum());
+		Vector2 click = controls[0].getClickPos();
+		if (controls[0].isClicked()  && hunter.canSetTrap(click)) {
+			hunter.setTrapDown(click);
+			ui.draw(canvas);
+>>>>>>> master
 		}
 		
 		//Updates the animals' actions
 		//i is the index of each animal AI in controls
 		int i = 1;
 		for (Animal an : animals) {
-			action = controls[i].getAction();
-			//AI not working so action is hardcoded to nothing
-			action =0x00;
-			an.update(action,delta);
+			an.update(delta);
 			i++;
 		}
 		
@@ -384,5 +409,15 @@ public class GameMode implements Screen {
         // TODO Auto-generated method stub
         
     }
+<<<<<<< HEAD
+=======
+    
+    /** 
+	 * Invokes the controller for the character.
+	 *
+     * Movement actions are determined, but not committed (e.g. the velocity
+	 * is updated, but not the position). Collisions are not processed. 
+	 */
+>>>>>>> master
 
 }
