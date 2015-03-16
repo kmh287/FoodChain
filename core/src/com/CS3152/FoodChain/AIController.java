@@ -58,7 +58,7 @@ public abstract class AIController implements InputController {
     protected Vector2 loc;
     
     // The animal's next move;
-    protected int move;
+    protected Vector2 move;
     // Number of ticks since controller started
     protected int ticks;
     
@@ -81,7 +81,7 @@ public abstract class AIController implements InputController {
         this.goal = new Vector2();
         // To where it should start moving
         setGoal((int)getLoc().x - 4, (int)getLoc().y);
-        //this.move = new Vector2(100,0);
+        this.move = new Vector2(100,0);
         this.ticks = 0;
         
         this.target = null;
@@ -131,7 +131,7 @@ public abstract class AIController implements InputController {
      *
      * @return the action selected by this InputController
      */
-    public int getAction() {
+    public Vector2 getAction() {
         // Increment the number of ticks.
         ticks++;
         
@@ -222,12 +222,21 @@ public abstract class AIController implements InputController {
 		   			   attackTileX, attackTileY);
         }
         // biggest distance
+<<<<<<< HEAD
         float biggest = 0.0f;
         for (int x = 0; x < dists.length; x++) {
         	if (dists[x] > biggest) {
         		biggest = dists[x];
         	}
         }
+=======
+        int biggest = 0;
+//        for (int x = 0; x < dists.length; x++) {
+//        	if (dists[x] > biggest) {
+//        		biggest = dists[x];
+//        	}
+//        }
+>>>>>>> master
         return;
     }
     

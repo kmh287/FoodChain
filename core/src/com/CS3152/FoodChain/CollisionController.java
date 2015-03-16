@@ -4,8 +4,12 @@ import java.util.List;
 import java.util.Random;
 import java.util.Random;
 
-import com.CS3152.FoodChain.Tile.tileType;
+<<<<<<< HEAD
+import com.CS3152.FoodChain.GameMap.tileType;
+=======
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+>>>>>>> master
 import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Contact;
@@ -45,10 +49,10 @@ public class CollisionController implements ContactListener {
 	 * Add the object to the list of objects maintained in the CollisionController
 	 * @param obj: the object to add
 	 */
-	protected void addObject(BoxObject obj) {
+	protected void addObject(BoxObject obj, Object data) {
 		objects.add(obj);
 		obj.activatePhysics(world);
-		//obj.getBody().setUserData(data.toString());
+		obj.getBody().setUserData(data.toString());
 		if(obj instanceof Tile){
 			setGrassTileOff((Tile)obj);
 		}
@@ -80,29 +84,10 @@ public class CollisionController implements ContactListener {
 	 * TODO have to decide how to handle multiple collisions and which collisions to process first. like animal or tiles
 	 */
 	private void move(Hunter actor) {
-		tmp.set(actor.getPosition());
-		tmp.add(actor.getVX(), actor.getVY());
-		// System.out.println("Y vel : "+hunter.getVY());
-		// System.out.println("X vel : "+hunter.getVX());
-		// System.out.println("Vel : "+hunter.getLinearVelocity());
-		// System.out.println("Position : "+hunter.getPosition());
-		actor.setLinearVelocity(tmp);
-		//System.out.println("vx:" + hunter.getVX() + "vy:" +hunter.getVY());
-		//hunter.setCenter(tmp);
-		//hunter.getBody().applyForce(tmp.scl(30),hunter.getBody().getPosition(),true);
-		//System.out.println(hunter.getBody().getLinearVelocity());
+		actor.setLinearVelocity(controls[0].getAction());
 	}
 	
-	private void move(Animal actor, int index) {
-		tmp.set(actor.getPosition());
-		tmp.add(actor.getVX(), actor.getVY());
-		// System.out.println("Y vel : "+animal.getVY());
-		// System.out.println("X vel : "+animal.getVX());
-		// System.out.println("Vel : "+animal.getLinearVelocity());
-		// System.out.println("Position : "+animal.getPosition());
-		actor.setLinearVelocity(tmp);
-	}
-	
+<<<<<<< HEAD
 	//Pass the object to the correct handler
 	private void move(PhysicsObject o){
 		if (o instanceof Hunter){
@@ -116,16 +101,24 @@ public class CollisionController implements ContactListener {
 				boolean trapped = true;
 			}
 		}
+=======
+	private void move(Animal actor,int index) {
+		actor.setLinearVelocity(controls[index].getAction());
+>>>>>>> master
 	}
 
 
 	public void update() {
+<<<<<<< HEAD
+		world.step(1/60f, 6, 2);
+=======
 		world.step(1/60f, 3, 3);
 		
 		//Updates the animals' actions
 		//i is the index of each animal AI in controls
 		int i = 1;
 		//System.out.println(objects.size());
+>>>>>>> master
 		for(PhysicsObject o : objects) {
 			
 			if (o instanceof Hunter){
@@ -143,6 +136,7 @@ public class CollisionController implements ContactListener {
 		//checkTrapped();
 	}
 	
+<<<<<<< HEAD
     public void postUpdate(float dt) {
     	for (BoxObject o : objects) {
     		if (o.getBody().getUserData() instanceof Animal) {
@@ -153,10 +147,12 @@ public class CollisionController implements ContactListener {
     		}
     	}
     }
-
+=======
 	public void setControls(InputController [] controls){
 		this.controls=controls;
 	}
+	
+>>>>>>> master
 	
 	@Override
 	public void beginContact(Contact contact) {
@@ -197,12 +193,16 @@ public class CollisionController implements ContactListener {
 			//animal.setActive(false);
 		}
 		System.out.println("COLLISION");
-
-		body1 = contact.getFixtureA().getBody();
-		body2 = contact.getFixtureB().getBody();
+<<<<<<< HEAD
+		
+		
+=======
+		Body body1 = contact.getFixtureA().getBody();
+		Body body2 = contact.getFixtureB().getBody();
 		System.out.println("body1"+body1.getUserData() +" "+  body1.isActive());
 //		System.out.println(body1.getUserData());
 //		System.out.println(body2.getUserData());
+>>>>>>> master
 	}
 
 	@Override

@@ -11,7 +11,7 @@ public class PlayerController implements InputController{
 	private boolean keyboard;
 	private boolean mouse;
 	
-	private int PlayerAction;
+	private Vector2 PlayerAction;
 		
 	//Field to manage click events 
 	public static final int CLICK = 0x08;
@@ -44,7 +44,7 @@ public class PlayerController implements InputController{
 	* moves diagonally to the south east direction, it returns SOUTHEST 
 	*@return the action of the player 
 	*/
-	public int getAction() {
+	public Vector2 getAction() {
 		PlayerAction = NO_ACTION; 
 			// Directional controls
 
