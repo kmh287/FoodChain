@@ -39,7 +39,9 @@ public class GameMode implements Screen {
 //	private Vector2 tmp;
 	private static final float DEFAULT_DENSITY = 1.0f;
 	
-	private Vector2 action;
+	private int ticks=0;
+	
+	
     
 	/** 
 	 * Preloads the assets for this game.
@@ -97,7 +99,6 @@ public class GameMode implements Screen {
         ui = new UIController();
         ui.loadTextures(manager);
         animals = new ArrayList<Animal>();
-        action =  new Vector2();
         /*size of animal list + the player 
         controls = new InputController[animals.size() + 1]; 
         controls[0] = new PlayerController();
@@ -280,7 +281,19 @@ public class GameMode implements Screen {
 		hunter.setSelectedTrap(controls[0].getNum());
 		Vector2 click = controls[0].getClickPos();
 		if (controls[0].isClicked()  && hunter.canSetTrap(click)) {
+			//increment hunter frames
 			hunter.setTrapDown(click);
+		}
+		//if WASD pressed, then update frame
+		if(controls[0].getAction()!=InputController.NO_ACTION){
+			ticks++;
+			if(ticks%10==0){
+				hunter.updateWalkFrame();
+			}
+		}
+		else{
+			ticks=0;
+			hunter.setStillFrame();
 		}
 		
 		//Updates the animals' actions
