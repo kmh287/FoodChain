@@ -74,8 +74,11 @@ public class AIController implements InputController {
     // Which direction to patrol
     protected int patrolTurn;
     
+<<<<<<< HEAD
     private Random random;
     
+=======
+>>>>>>> origin/ashton
     
     /*
      * Creates an AIController for the animal
@@ -93,7 +96,11 @@ public class AIController implements InputController {
         for (int id = 0; id < distVctrs.length; id++) {
         	distVctrs[id] = new Vector2();
         }
+<<<<<<< HEAD
 
+=======
+        
+>>>>>>> origin/ashton
         this.loc = new Vector2(map.screenXToMap(animal.getX()),
                                map.screenYToMap(animal.getY()));
         
@@ -109,6 +116,7 @@ public class AIController implements InputController {
         this.tmp = new Vector2();
         this.move = InputController.WEST;
         goal.set (getAnimal().getX() + 1, getAnimal().getY());
+<<<<<<< HEAD
 
         this.turns = 3;//should be 0 in future
         
@@ -117,6 +125,11 @@ public class AIController implements InputController {
         this.vcb = new VisionCallback(this);
         
         this.tmp = new Vector2();
+=======
+        this.turns = 3;//should be 0 in future
+        
+        this.patrolTurn = 1;
+>>>>>>> origin/ashton
         
         this.random = new Random();
     }
@@ -239,12 +252,18 @@ public class AIController implements InputController {
     
     // Determines whether or not the animal should run away
     public void flee() {
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/ashton
     	/*world.rayCast(fcb, attacker.getPosition(), getAnimal().getPosition());
     	if (fcb.getContact() != getAnimal()) {
     		turns--;
     	}*/
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/ashton
         // Animal's position
     	float anX = getAnimal().getX();
     	float anY = getAnimal().getY();
@@ -252,11 +271,17 @@ public class AIController implements InputController {
     	float attackX = attacker.getX();
         float attackY = attacker.getY();
         // Animal's best option
+<<<<<<< HEAD
 
         Vector2 norm = getAnimal().getPosition().sub(attacker.getPosition()).nor();
         if (map.isSafeAt(anX + 100*norm.x, anY + 100*norm.y)) {
         	goal.set(anX + 100*norm.x, anY + 100*norm.y);
 
+=======
+        Vector2 norm = getAnimal().getPosition().sub(attacker.getPosition()).nor();
+        if (map.isSafeAt(anX + 100*norm.x, anY + 100*norm.y)) {
+        	goal.set(anX + 100*norm.x, anY + 100*norm.y);
+>>>>>>> origin/ashton
         	return;
         }
         // Find farthest valid tile from attacker
@@ -315,7 +340,10 @@ public class AIController implements InputController {
     	float targetX = target.getX();
         float targetY = target.getY();
         // Animal's best option
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/ashton
         float goalX = targetX;
         float goalY = targetY;
         
@@ -330,6 +358,7 @@ public class AIController implements InputController {
 	public void patrol() {
 		float anX = getAnimal().getPosition().x;
 		float anY = getAnimal().getPosition().y;
+<<<<<<< HEAD
 		if (patrolTurn == 0) {
 			float rand = random.nextFloat();
 			if (rand < 0.25) {
@@ -353,15 +382,36 @@ public class AIController implements InputController {
 			goal.set(anX - 100, anY);
 			return;
 		}
+=======
+		if (map.isSafeAt(anX + 100, anY)) {
+			if (patrolTurn == 1) {
+				goal.set(anX + 100, anY);
+				return;
+			}
+		}
+		patrolTurn = 2;
+		if (map.isSafeAt(anX - 100, anY)) {
+			if (patrolTurn == 2) {
+				goal.set(anX - 100, anY);
+				return;
+			}
+		}
+		patrolTurn = 1;
+>>>>>>> origin/ashton
 		if (map.isSafeAt(anX, anY + 100) && patrolTurn == 3) {
 			goal.set(anX, anY + 100);
 			return;
 		}
+<<<<<<< HEAD
 		if (map.isSafeAt(anX, anY - 100) && patrolTurn == 4) {
 			goal.set(anX, anY - 100);
 			return;
 		}
 		patrolTurn = 0;
+=======
+		patrolTurn = 1;
+		goal.set(anX, anY - 100);
+>>>>>>> origin/ashton
 		return;
 	}
     
@@ -463,7 +513,10 @@ public class AIController implements InputController {
      *
      * @return int corresponding to InputController bit-vector
      */
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/ashton
     public Vector2 getNextMoveToGoal() {
     	//System.out.println("goalx:" + goal.x + "goaly:" + goal.y);
     	//System.out.println("locx:" + getLoc().x + "locy:" + getLoc().y);
