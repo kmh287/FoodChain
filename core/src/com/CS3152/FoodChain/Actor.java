@@ -7,7 +7,7 @@ import com.badlogic.gdx.physics.box2d.World;
 
 public abstract class Actor extends BoxObject {
     //The direction this actor is facing
-    protected direction facing;
+    protected Vector2 facing;
     //TextureRegion for this actor's texture
     protected TextureRegion tr;
 	//The type of this actor
@@ -36,19 +36,43 @@ public abstract class Actor extends BoxObject {
 	    	super(tr,x,y,width,height);
 	    	this.type = type;
 	    	this.tr = tr;
-        this.facing = direction.WEST;
+        this.facing = new Vector2();
         this.victims = victims;
     }
     
     /*
      * @return the direction this Actor's facing
      */
-    public direction getFacing() {
+    public Vector2 getFacing() {
         return this.facing;
     }
     
-    public void setFacing(direction dir) {
+    public void setFacing(Vector2 dir) {
     		this.facing = dir;
+    		if (dir == InputController.WEST) {
+    			super.setAngle((float) (-Math.PI/2.0));
+    		}
+    		else if (dir == InputController.EAST) {
+    			super.setAngle((float) (Math.PI/2.0));
+    		}
+    		else if (dir == InputController.NORTH) {
+    			super.setAngle((float) (Math.PI));
+    		}
+    		else if (dir == InputController.SOUTH) {
+    			super.setAngle(0.0f);
+    		}
+    		else if (dir == InputController.SOUTHWEST) {
+    			super.setAngle((float) (-Math.PI/4.0));
+    		}
+    		else if (dir == InputController.SOUTHEAST) {
+    			super.setAngle((float) (Math.PI/4.0));
+    		}
+    		else if (dir == InputController.NORTHEAST) {
+    			super.setAngle((float) (3.0*Math.PI/4.0));
+    		}
+    		else if (dir == InputController.NORTHWEST) {
+    			super.setAngle((float) (-3.0*Math.PI/4.0));
+    		}
     }
     
     
