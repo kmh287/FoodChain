@@ -105,7 +105,7 @@ public class CollisionController implements ContactListener {
 		actor.setLinearVelocity(controls[index].getAction());
 		float angle = ((AIController)controls[index]).getAngle();
 		actor.updateLOS(angle);
-		actor.setFacing(controls[index].getAction());
+		actor.setAngle(((AIController)controls[index]).getAngle());
 	}
 
 

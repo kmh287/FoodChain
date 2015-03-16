@@ -59,6 +59,8 @@ public class AIController implements InputController {
     // directly away
     protected Vector2[] distVctrs;
     
+    private Vector2 tmp;
+    
     // How many more turns (1 turn = 10 frames) before the animal can stop running
     protected int turns;
     
@@ -106,6 +108,8 @@ public class AIController implements InputController {
         this.attacker = null;
         
         this.vcb = new VisionCallback(this);
+        
+        this.tmp = new Vector2();
     }
     
     /*
@@ -120,7 +124,8 @@ public class AIController implements InputController {
     // @return that angle.
     public float getAngle() {
     	// Subtracting the animal's current position from the goal it wants to be at
-    	return goal.sub(getAnimal().getPosition()).angle();
+    	tmp.set(goal);
+    	return tmp.sub(getAnimal().getPosition()).angleRad();
     }
     
     /*
@@ -453,7 +458,8 @@ public class AIController implements InputController {
 //        else {
 //            return NO_ACTION;
 //        }
-    	return goal.sub(getAnimal().getPosition());
+    	tmp.set(goal);
+    	return tmp.sub(getAnimal().getPosition());
     }
     
     // Should not be here, but need to finish
