@@ -9,7 +9,8 @@ public class Wolf extends Animal{
     private static final String WOLF_TEX = "assets/wolf.png";
     private static Texture tex = null;
     
-    static final Actor.actorType prey[] = {Actor.actorType.SHEEP};
+    static final Actor.actorType prey[] = {Actor.actorType.SHEEP,
+    									   Actor.actorType.HUNTER};
     
     /**
      * Public Constructor for a wolf

@@ -28,11 +28,13 @@ public class VisionCallback implements RayCastCallback {
 			if (contact instanceof Actor) {
 				if (((Actor)contact).canKill(source.getAnimal())) {
 					source.setScared((Actor)contact);
+					System.out.println("isscared");
 					source.setTarget(null);
 					return 0.0f;
 				}
 				if (source.getAnimal().canKill((Actor)contact)) {
 					source.setScared(null);
+					System.out.println("isravenous");
 					source.setTarget((Actor)contact);
 					return 1.0f;
 				}

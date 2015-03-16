@@ -47,7 +47,7 @@ public class CollisionController implements ContactListener {
 	protected void addObject(BoxObject obj, Object data) {
 		objects.add(obj);
 		obj.activatePhysics(world);
-		obj.getBody().setUserData(data.toString());
+		//obj.getBody().setUserData(data.toString());
 		if(obj instanceof Tile){
 			setGrassTileOff((Tile)obj);
 		}
