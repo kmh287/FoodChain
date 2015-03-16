@@ -11,7 +11,7 @@ public class Tile extends BoxObject{
     
     public Tile(TextureRegion texture, float x, float y, float width,
 			float height, tileType type) {
-		super(texture, x, y, width, height);
+		super(texture, x + 20.0f, y + 20.0f, width, height);
 		this.type = type;
 		// TODO Auto-generated constructor stub
 	}

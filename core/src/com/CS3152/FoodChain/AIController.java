@@ -302,6 +302,7 @@ public class AIController implements InputController {
     }
 	
 	public void patrol() {
+		System.out.println("patrol");
 		float anX = getAnimal().getX();
 		float anY = getAnimal().getY();
 		if (map.isSafeAt(anX - 1, anY)) {
