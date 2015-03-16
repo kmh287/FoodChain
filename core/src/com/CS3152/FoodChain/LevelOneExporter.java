@@ -60,8 +60,8 @@ public class LevelOneExporter {
         
 
         List<Vector2> coords = new ArrayList<Vector2>();
-        coords.add(new Vector2(7,9));
         coords.add(new Vector2(15,9));
+        coords.add(new Vector2(7,4));
         
         Vector2 playerStart = new Vector2(15,3);
         
