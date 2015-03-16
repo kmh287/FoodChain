@@ -53,7 +53,7 @@ public class CollisionController implements ContactListener {
 		if(obj instanceof Tile){
 			setGrassTileOff((Tile)obj);
 		}
-		System.out.println("body1"+obj.getBody().toString() +" "+  obj.isActive());
+		//System.out.println("body1"+obj.getBody().toString() +" "+  obj.isActive());
 	}
 	
 	private void setGrassTileOff(Tile t){
@@ -188,11 +188,11 @@ public class CollisionController implements ContactListener {
 			animal.setTrapped(true);
 			//animal.setActive(false);
 		}
-		System.out.println("COLLISION");
+		//System.out.println("COLLISION");
 
 		body1 = contact.getFixtureA().getBody();
 		body2 = contact.getFixtureB().getBody();
-		System.out.println("body1"+body1.getUserData() +" "+  body1.isActive());
+		//System.out.println("body1"+body1.getUserData() +" "+  body1.isActive());
 //		System.out.println(body1.getUserData());
 //		System.out.println(body2.getUserData());
 	}
