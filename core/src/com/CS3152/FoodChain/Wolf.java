@@ -19,7 +19,7 @@ public class Wolf extends Animal{
      */
     public Wolf(float x, float y) {
         super(new TextureRegion(tex), Actor.actorType.WOLF, x, y, 
-              prey, Animal.direction.EAST);
+              prey, InputController.EAST);
     }
 
     @Override

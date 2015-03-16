@@ -507,4 +507,13 @@ public class GameCanvas {
     	debugRender.circle(x, y, shape.getRadius());
     }
     
+    public void drawLine(Color color, Vector2 v1, Vector2 v2) {
+    	if (active != debug) {
+    		Gdx.app.error("GameCanvas", "Cannot draw without active beginDebug()", new IllegalStateException());
+    		return;
+    	}
+    	
+    	debugRender.setColor(color);
+    	debugRender.line(v1.x, v1.y, v2.x, v2.y);
+    }
 }

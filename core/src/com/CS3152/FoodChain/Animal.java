@@ -1,6 +1,7 @@
 package com.CS3152.FoodChain;
 
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
@@ -39,7 +40,7 @@ public abstract class Animal extends Actor {
 	 *                     It is up to the CALLER to ensure this is correct.
 	 */
 	public Animal(TextureRegion tr, actorType type, float x, float y, 
-	              actorType[] prey, direction facing){
+	              actorType[] prey, Vector2 facing){
 		super(tr, type, x, y, tr.getRegionWidth(), tr.getRegionHeight(), prey);
 		this.type = type;
 		this.setPos(x,y);
@@ -57,28 +58,28 @@ public abstract class Animal extends Actor {
 		float yPos = getY();
 		
 	    if (x - getPosition().x == 0 && y - getPosition().y > 0){
-	        this.facing = direction.NORTH;
+	        this.facing = InputController.NORTH;
 	    }
 	    else if (x - getPosition().x > 0 && y - getPosition().y > 0){
-	        this.facing = direction.NORTHEAST;
+	        this.facing = InputController.NORTHEAST;
 	    }
 	    else if (x - getPosition().x > 0 && y - getPosition().y == 0){
-	        this.facing = direction.EAST;
+	        this.facing = InputController.EAST;
 	    }
 	    else if (x - getPosition().x > 0 && y - getPosition().y < 0){
-	        this.facing = direction.SOUTHEAST;
+	        this.facing = InputController.SOUTHEAST;
 	    }
 	    else if (x - getPosition().x == 0 && y - getPosition().y < 0){
-	        this.facing = direction.SOUTH;
+	        this.facing = InputController.SOUTH;
 	    }
 	    else if (x - getPosition().x < 0 && y - getPosition().y < 0){
-	        this.facing = direction.SOUTHWEST;
+	        this.facing = InputController.SOUTHWEST;
 	    }
 	    else if (x - getPosition().x < 0 && y - getPosition().y == 0){
-	        this.facing = direction.WEST;
+	        this.facing = InputController.WEST;
 	    }
 	    else if (x - getPosition().x < 0 && y - getPosition().y > 0){
-	        this.facing = direction.NORTHWEST;
+	        this.facing = InputController.NORTHWEST;
 	    }
 	    else{
 	        //Standing still
@@ -206,5 +207,10 @@ public abstract class Animal extends Actor {
 	
 	public Vector2 getRightSectorLine() {
 		return this.rightSectorLine;
+	}
+	
+	public void drawSight(GameCanvas canvas) {
+		canvas.drawLine(Color.YELLOW, getPosition(), getLeftSectorLine());
+		canvas.drawLine(Color.YELLOW, getPosition(), getRightSectorLine());
 	}
 }

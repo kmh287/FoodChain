@@ -82,6 +82,7 @@ public class CollisionController implements ContactListener {
 	 */
 	private void move(Hunter actor) {
 		actor.setLinearVelocity(controls[0].getAction());
+		actor.setFacing(controls[0].getAction());
 	}
 	
 
@@ -104,6 +105,7 @@ public class CollisionController implements ContactListener {
 		actor.setLinearVelocity(controls[index].getAction());
 		float angle = ((AIController)controls[index]).getAngle();
 		actor.updateLOS(angle);
+		actor.setFacing(controls[index].getAction());
 	}
 
 
