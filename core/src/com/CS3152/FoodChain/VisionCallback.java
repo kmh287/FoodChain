@@ -72,7 +72,6 @@ public class VisionCallback implements RayCastCallback {
 				if (((Tile)contact).getType() == Tile.tileType.GRASS) {
 					return -1;
 				}
-				System.out.println("Shouldnt see");
 				return 0;
 			}
 			else {// Ray cast ran into Trap

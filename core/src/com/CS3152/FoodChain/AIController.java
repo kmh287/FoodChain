@@ -64,7 +64,7 @@ public class AIController implements InputController {
     
     // How many more turns (1 turn = 10 frames) before the animal can stop running
     protected int turns;
- 
+    
     // The animal's next move; a ControlCode
     protected Vector2 move;
 
@@ -287,7 +287,7 @@ public class AIController implements InputController {
         for (int index = 0; index < distVctrs.length; index++) {
         	float distance = Vector2.dst(distVctrs[index].x, distVctrs[index].y,
         			                     attackX, attackY);
-        	if (distance >= biggest) {
+        	if (distance > biggest) {
         		biggest = distance;
         		bigIndex = index;
         	}
