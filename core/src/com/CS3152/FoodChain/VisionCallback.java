@@ -47,7 +47,7 @@ public class VisionCallback implements RayCastCallback {
 			    }
 				return 1.0f;
 			}
-			else {  //The ray cast ran into a Tile
+			else if (contact instanceof Tile) {
 				if (source.canSettle()) {
 					source.setScared(null);
 					source.setTarget(null);
@@ -56,6 +56,9 @@ public class VisionCallback implements RayCastCallback {
 					return -1;
 				}
 				return 0.0f;
+			}
+			else {// Ray cast ran into Trap
+				return -1;
 			}
 		}
 		else {
