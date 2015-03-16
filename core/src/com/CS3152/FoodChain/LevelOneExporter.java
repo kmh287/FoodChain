@@ -65,11 +65,7 @@ public class LevelOneExporter {
         
         Vector2 playerStart = new Vector2(10,10);
         
-<<<<<<< HEAD
-        Coordinate playerStart = new Coordinate(10,10);
         /*
-=======
->>>>>>> master
         HashMap<String, List<Trap>> startingInventory = new HashMap<String, List<Trap>>();
         List<Trap> trap0List = new ArrayList<Trap>();
         List<Trap> trap1List = new ArrayList<Trap>();

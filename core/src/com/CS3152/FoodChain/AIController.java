@@ -222,21 +222,12 @@ public abstract class AIController implements InputController {
 		   			   attackTileX, attackTileY);
         }
         // biggest distance
-<<<<<<< HEAD
         float biggest = 0.0f;
         for (int x = 0; x < dists.length; x++) {
         	if (dists[x] > biggest) {
         		biggest = dists[x];
         	}
         }
-=======
-        int biggest = 0;
-//        for (int x = 0; x < dists.length; x++) {
-//        	if (dists[x] > biggest) {
-//        		biggest = dists[x];
-//        	}
-//        }
->>>>>>> master
         return;
     }
     

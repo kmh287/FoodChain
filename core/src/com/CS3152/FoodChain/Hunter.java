@@ -138,10 +138,10 @@ public class Hunter extends Actor {
     	return inventory;
     }
     
-    public void setSelectedTrap(int controlcode){
-    	boolean oneSelect = (controlcode == InputController.ONE);
-    	boolean twoSelect = (controlcode == InputController.TWO);
-    	boolean threeSelect = (controlcode == InputController.THREE);
+    public void setSelectedTrap(Trap tmp2){
+    	boolean oneSelect = (tmp2 == InputController.ONE);
+    	boolean twoSelect = (tmp2 == InputController.TWO);
+    	boolean threeSelect = (tmp2 == InputController.THREE);
     	//process selected trap
     	if(oneSelect){
 	        for (Trap trap : inventory.get("REGULAR_TRAP")) {
@@ -218,11 +218,7 @@ public class Hunter extends Actor {
 		return canSet;
 	}
     
-<<<<<<< HEAD
     /*public void setTrap(Vector2 clickPos) {
-=======
-    public void setTrapDown(Vector2 clickPos) {
->>>>>>> master
     	selectedTrap.setPosition(clickPos);
     	//update inventory
 		//set selectedTrap inventory status to false
@@ -291,27 +287,26 @@ public class Hunter extends Actor {
         return tex.getWidth();
     }
     
-<<<<<<< HEAD
     /** 
     * Updates the hunter's position according to the controlCode. 
     * 
-    * @param controlCode The movement controlCode (from InputController).
+    * @param action The movement controlCode (from InputController).
     */
-    public void update(int controlCode, float dt) {
+    public void update(Vector2 action, float dt) {
     	super.update(dt);
 	    	// Determine how we are moving.
-	    	boolean movingEast  = (controlCode == InputController.EAST);
-	    	boolean movingWest = (controlCode == InputController.WEST);
-	    	boolean movingNorth = (controlCode == InputController.NORTH);
-	    	boolean movingSouth = (controlCode == InputController.SOUTH);
-	    	boolean movingNorthWest = (controlCode == InputController.NORTHWEST);
-	    	boolean movingSouthWest = (controlCode == InputController.SOUTHWEST);
-	    	boolean movingSouthEast = (controlCode == InputController.SOUTHEAST);
-	    	boolean movingNorthEast = (controlCode == InputController.NORTHEAST);
-	    	boolean settingTrap = (controlCode == InputController.CLICK);
-	    	boolean oneSelect = (controlCode == InputController.ONE);
-	    	boolean twoSelect = (controlCode == InputController.TWO);
-	    	boolean threeSelect = (controlCode == InputController.THREE);
+	    	boolean movingEast  = (action == InputController.EAST);
+	    	boolean movingWest = (action == InputController.WEST);
+	    	boolean movingNorth = (action == InputController.NORTH);
+	    	boolean movingSouth = (action == InputController.SOUTH);
+	    	boolean movingNorthWest = (action == InputController.NORTHWEST);
+	    	boolean movingSouthWest = (action == InputController.SOUTHWEST);
+	    	boolean movingSouthEast = (action == InputController.SOUTHEAST);
+	    	boolean movingNorthEast = (action == InputController.NORTHEAST);
+	    	boolean settingTrap = (action == InputController.CLICK);
+	    	boolean oneSelect = (action == InputController.ONE);
+	    	boolean twoSelect = (action == InputController.TWO);
+	    	boolean threeSelect = (action == InputController.THREE);
 	    	
 	    	//process moving command 
 	    	//need to set super commands and set diagonal movement to less
@@ -388,9 +383,7 @@ public class Hunter extends Actor {
 	    	}
 	    }
     
-=======
 
->>>>>>> master
     public String getTypeNameString() {
     		return "HUNTER";
     }
