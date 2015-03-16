@@ -317,7 +317,9 @@ public class GameMode implements Screen {
         
         //Draw the animals
         for (Animal animal : animals){
-            animal.draw(canvas);
+            if (!animal.getTrapped()) {
+            	animal.draw(canvas);
+            }
             //animal.drawDebug(canvas);
         }
         
