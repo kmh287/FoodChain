@@ -247,8 +247,8 @@ public class GameMap {
 	}
 		
 	public boolean isSafeAt(float xPos, float yPos) {
-		return ((xPos >= 0 && 
-				yPos >= 0) &&
+		return (xPos >= 0 && 
+				yPos >= UI_OFFSET &&
 			   xPos <= Gdx.graphics.getWidth() && 
 			   yPos <= Gdx.graphics.getHeight() &&
 			   screenPosToTileType(xPos, yPos) == Tile.tileType.GRASS);
