@@ -119,9 +119,11 @@ public class GameMode implements Screen {
         //tmp = new Vector2();
         
         createHunter(map.getHunterStartingCoordinate() 
-                //,map.getStartingInventory()
+                ,map.getStartingInventory()
         		);
 	    ui.setHunter(this.hunter);
+	    
+	    traps = (HashMap<String, List<Trap>>) hunter.getInventory();
     
         
         List<Actor> actors = new ArrayList<Actor>();
@@ -141,11 +143,8 @@ public class GameMode implements Screen {
 	        controls[2] = new SheepController(animals.get(1),
 	            								  map, actors);
         }
-<<<<<<< HEAD
-        traps = (HashMap<String, List<Trap>>) hunter.getInventory();
-=======
+
         collisionController.setControls(controls);
->>>>>>> master
         //loadTextures
         /*
         traps = map.getStartingInventory();
@@ -181,53 +180,39 @@ public class GameMode implements Screen {
         return map;
 	}
 	
-<<<<<<< HEAD
-	private void createHunter(Coordinate startingPos
-			//,HashMap<String, List<Trap>> startingInventory
-			){
-		Hunter.loadTexture(manager);
-	    this.hunter = new Hunter(map.mapXToScreen(startingPos.x),
-	                             map.mapYToScreen(startingPos.y)
-	                             //,startingInventory
-	                             );
-	    hunter.setDensity(DEFAULT_DENSITY);
-	    hunter.setAwake(true);
-	    hunter.setBodyType(BodyDef.BodyType.DynamicBody);
-	    //collisionController.addObject(hunter);
-	    collisionController.addObject(hunter);
-	    Trap tmp = new RegularTrap();
-	    tmp.setSensor(true);
-	    tmp.setBodyType(BodyDef.BodyType.StaticBody);
-	    //collisionController.addObject(tmp);
-	    collisionController.addObject(tmp);
-	    hunter.addToInventory(tmp);
-	    hunter.setSelectedTrap(tmp);
-	    tmp = new SheepTrap();
-	    tmp.setSensor(true);
-	    tmp.setBodyType(BodyDef.BodyType.StaticBody);
-	    //collisionController.addObject(tmp);
-	    collisionController.addObject(tmp);
-	    hunter.addToInventory(tmp);
-	    tmp = new WolfTrap();
-	    tmp.setSensor(true);
-	    tmp.setBodyType(BodyDef.BodyType.StaticBody);
-	    //collisionController.addObject(tmp);
-	    collisionController.addObject(tmp);
-	    hunter.addToInventory(tmp);
-	    
-=======
+
 	private void createHunter(Vector2 startingPos,
 			HashMap<String, List<Trap>> startingInventory){
 		Hunter.loadTexture(manager);
 	    this.hunter = new Hunter(map.mapXToScreen((int)startingPos.x),
-	                             map.mapYToScreen((int)startingPos.y),
-	                             startingInventory);
+	                             map.mapYToScreen((int)startingPos.y)
+	                             //,startingInventory
+	                             );
 
 	    hunter.setDensity(DEFAULT_DENSITY);
 	    hunter.setAwake(true);
 	    hunter.setBodyType(BodyDef.BodyType.DynamicBody);
 	    collisionController.addObject(hunter, "HUNTER");
->>>>>>> master
+	    
+	    Trap tmp = new RegularTrap();
+	    tmp.setSensor(true);
+	    tmp.setBodyType(BodyDef.BodyType.StaticBody);
+	    //collisionController.addObject(tmp);
+	    collisionController.addObject(tmp, "REGULAR_TRAP");
+	    hunter.addToInventory(tmp);
+	    hunter.setSelectedTrap(InputController.ONE);
+	    tmp = new SheepTrap();
+	    tmp.setSensor(true);
+	    tmp.setBodyType(BodyDef.BodyType.StaticBody);
+	    //collisionController.addObject(tmp);
+	    collisionController.addObject(tmp, "SHEEP_TRAP");
+	    hunter.addToInventory(tmp);
+	    tmp = new WolfTrap();
+	    tmp.setSensor(true);
+	    tmp.setBodyType(BodyDef.BodyType.StaticBody);
+	    //collisionController.addObject(tmp);
+	    collisionController.addObject(tmp, "WOLF_TRAP");
+	    hunter.addToInventory(tmp);
 	}
 	
 	/**
@@ -274,12 +259,7 @@ public class GameMode implements Screen {
 	        }
 	        newAnimal.setDensity(DEFAULT_DENSITY);
 	        newAnimal.setBodyType(BodyDef.BodyType.DynamicBody);
-<<<<<<< HEAD
-	        //collisionController.addObject(newAnimal);
-	        collisionController.addObject(newAnimal);
-=======
 	        collisionController.addObject(newAnimal, currType);
->>>>>>> master
 	    }
 	    
 	}
@@ -293,18 +273,12 @@ public class GameMode implements Screen {
     private void update(float delta){
     	//if (hunter's turn) {
 		//Updates the hunters action
-<<<<<<< HEAD
-		hunter.update(action,delta);
-		if (controls[0].getAction() == InputController.CLICK && hunter.canSetTrap()) {
-			hunter.setTrap();
-=======
+
 		hunter.update(delta);
 		hunter.setSelectedTrap(controls[0].getNum());
 		Vector2 click = controls[0].getClickPos();
 		if (controls[0].isClicked()  && hunter.canSetTrap(click)) {
 			hunter.setTrapDown(click);
-			ui.draw(canvas);
->>>>>>> master
 		}
 		
 		//Updates the animals' actions
@@ -409,8 +383,7 @@ public class GameMode implements Screen {
         // TODO Auto-generated method stub
         
     }
-<<<<<<< HEAD
-=======
+
     
     /** 
 	 * Invokes the controller for the character.
@@ -418,6 +391,5 @@ public class GameMode implements Screen {
      * Movement actions are determined, but not committed (e.g. the velocity
 	 * is updated, but not the position). Collisions are not processed. 
 	 */
->>>>>>> master
 
 }

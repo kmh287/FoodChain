@@ -89,27 +89,15 @@ public class GameMap {
      */
     public GameMap(Tile.tileType[][] layout,
                    List<Actor.actorType>animals,
-<<<<<<< HEAD
-                   List<Coordinate> coordinates,
-                   Coordinate hunterStartPosition
-                   //,HashMap<String, List<Trap>> hunterStartingInventory
-                   ){
-        this.layout = layout;
-        this.animals = animals;
-        this.coordinates = coordinates;
-        this.hunterStartPosition = hunterStartPosition;
-        //this.hunterStartingInventory = hunterStartingInventory;
-        System.out.println("from GameMap"+hunterStartingInventory);
-=======
                    List<Vector2> coordinates,
-                   Vector2 hunterStartPosition,
-                   HashMap<String, List<Trap>> startingInventory){
+                   Vector2 hunterStartPosition
+                   //,HashMap<String, List<Trap>> startingInventory
+                   ){
     	this.layout = layout;
         this.animals = animals;
         this.coordinates = coordinates;
         this.hunterStartPosition = hunterStartPosition;
-        this.hunterStartingInventory = startingInventory;
->>>>>>> master
+        //this.hunterStartingInventory = startingInventory;
     }
     
     /** Return a string representation of the map

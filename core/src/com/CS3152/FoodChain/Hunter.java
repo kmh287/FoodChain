@@ -201,24 +201,16 @@ public class Hunter extends Actor {
 		return false;
     }*/
     
-    public boolean canSetTrap() {
-		boolean canSet = false;
-		for (List<Trap> l : inventory.values()) {
-			for (Trap t : l) {
-				if (t.getInInventory()) {
-					canSet = true;
-					break;
-				}
-			}
-			if (canSet) {
-				break;
-			}
-		}
-		
-		return canSet;
-	}
+    public boolean canSetTrap(Vector2 clickPos) {
+    	tmp.set(getPosition().add(20.0f, 20.0f));
+    	tmp.sub(clickPos);
+    	if (Math.abs(tmp.len()) <= TRAP_RADIUS && selectedTrap.getInInventory()==true) {
+    		return true;
+    	}
+    	return false;
+    }
     
-<<<<<<< HEAD
+
     /*public void setTrap(Vector2 clickPos) {
 =======
     public void setTrapDown(Vector2 clickPos) {
@@ -284,113 +276,27 @@ public class Hunter extends Actor {
 		}
     }
     
+    public void setTrapDown(Vector2 clickPos) {
+	    selectedTrap.setPosition(clickPos);
+	    //update inventory
+	    //set selectedTrap inventory status to false
+	    selectedTrap.setInInventory(false);
+	    //set selectedTrap to next available trap inInventory of same type
+	    //if no free trap then selectedTrap does not change and player can't put down another
+	    for (Trap trap : inventory.get(selectedTrap.getType())){
+	    	if(trap.getInInventory()){
+	    		selectedTrap = trap;
+	    	}
+    	}
+    }
+    
     /**
      * @return the bottom LeftxPos
      */
     public float getXDiamter() {
         return tex.getWidth();
     }
-    
-<<<<<<< HEAD
-    /** 
-    * Updates the hunter's position according to the controlCode. 
-    * 
-    * @param controlCode The movement controlCode (from InputController).
-    */
-    public void update(int controlCode, float dt) {
-    	super.update(dt);
-	    	// Determine how we are moving.
-	    	boolean movingEast  = (controlCode == InputController.EAST);
-	    	boolean movingWest = (controlCode == InputController.WEST);
-	    	boolean movingNorth = (controlCode == InputController.NORTH);
-	    	boolean movingSouth = (controlCode == InputController.SOUTH);
-	    	boolean movingNorthWest = (controlCode == InputController.NORTHWEST);
-	    	boolean movingSouthWest = (controlCode == InputController.SOUTHWEST);
-	    	boolean movingSouthEast = (controlCode == InputController.SOUTHEAST);
-	    	boolean movingNorthEast = (controlCode == InputController.NORTHEAST);
-	    	boolean settingTrap = (controlCode == InputController.CLICK);
-	    	boolean oneSelect = (controlCode == InputController.ONE);
-	    	boolean twoSelect = (controlCode == InputController.TWO);
-	    	boolean threeSelect = (controlCode == InputController.THREE);
-	    	
-	    	//process moving command 
-	    	//need to set super commands and set diagonal movement to less
-	    	if (movingWest) {
-				super.setAngle((float) (-Math.PI/2.0));
-				super.setVX(-MOVE_SPEED);
-				super.setVY(0);
-			} else if (movingEast) {
-				super.setAngle((float) (Math.PI/2.0));
-				super.setVX(MOVE_SPEED);
-				super.setVY(0);
-			}
-			else if (movingNorth) {
-				super.setAngle((float) (Math.PI));
-				super.setVX(0);
-				super.setVY(MOVE_SPEED);
-			}
-			else if (movingSouth) {
-				super.setAngle(0.0f);
-				super.setVX(0);
-				super.setVY(-MOVE_SPEED);
-			}
-			else if (movingSouthWest) {
-				super.setAngle((float) (-Math.PI/4.0));
-				super.setVX(-MOVE_SPEED);
-				super.setVY(-MOVE_SPEED);
-			}
-			else if (movingSouthEast) {
-				super.setAngle((float) (Math.PI/4.0));
-				super.setVX(MOVE_SPEED);
-				super.setVY(-MOVE_SPEED);
-			}
-			else if (movingNorthEast) {
-				super.setAngle((float) (3.0*Math.PI/4.0));
-				super.setVX(MOVE_SPEED);
-				super.setVY(MOVE_SPEED);
-			}
-			else if (movingNorthWest) {
-				super.setAngle((float) (-3.0*Math.PI/4.0));
-				super.setVX(-MOVE_SPEED);
-				super.setVY(MOVE_SPEED);
-			}
-			else if (settingTrap) {
-				super.setVX(0);
-				super.setVY(0);
-			}
-			else {
-				// NOT MOVING, SO STOP MOVING
-				super.setVX(0);
-				super.setVY(0);
-			}
-	    	
-	    	//process selected trap
-	    	if(oneSelect){
-		        for (Trap trap : inventory.get("REGULAR_TRAP")) {
-		        	if(trap.getInInventory()){
-		        		selectedTrap = trap;
-		        	}
-		        }
-	    	}
-	    	if(twoSelect){
-		        for (Trap trap : inventory.get("SHEEP_TRAP")) {
-		        	if(trap.getInInventory()){
-		        		selectedTrap = trap;
-		        	}
-		        }
-	    	}
-	    	if(threeSelect){
-		        for (Trap trap : inventory.get("WOLF_TRAP")) {
-		        	if(trap.getInInventory()){
-		        		selectedTrap = trap;
-		        	}
-		        }
-	    	}
-	    }
-    
-=======
 
->>>>>>> master
     public String getTypeNameString() {
     		return "HUNTER";
     }

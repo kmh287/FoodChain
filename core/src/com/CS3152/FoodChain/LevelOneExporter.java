@@ -65,11 +65,7 @@ public class LevelOneExporter {
         
         Vector2 playerStart = new Vector2(10,10);
         
-<<<<<<< HEAD
-        Coordinate playerStart = new Coordinate(10,10);
         /*
-=======
->>>>>>> master
         HashMap<String, List<Trap>> startingInventory = new HashMap<String, List<Trap>>();
         List<Trap> trap0List = new ArrayList<Trap>();
         List<Trap> trap1List = new ArrayList<Trap>();
@@ -84,6 +80,7 @@ public class LevelOneExporter {
         startingInventory.put("WOLF_TRAP", trap1List);
         startingInventory.put("REGULAR_TRAP", trap2List);
         */
+        
         GameMap gm = new GameMap(layout, animals, 
                                 coords, playerStart
                                 //,startingInventory
