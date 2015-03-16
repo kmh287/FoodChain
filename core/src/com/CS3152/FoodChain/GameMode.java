@@ -94,7 +94,7 @@ public class GameMode implements Screen {
         //For now we will hard code the level to load
         //When we implement a UI that may ask players
         //what level to start on. This code will change
-        map = loadMap("level1");
+        map = loadMap("level2");
         map.LoadContent(manager);
         ui = new UIController();
         ui.loadTextures(manager);
@@ -132,19 +132,10 @@ public class GameMode implements Screen {
         for (int i = 0; i < animals.size(); i++) {
         	actors.add(animals.get(i));
         }
-        if (animals.get(0).getType() == Actor.actorType.SHEEP) {
-	        	controls[1] = new SheepController(animals.get(0),
-	        									  map, actors);
-	        controls[2] = new WolfController(animals.get(1),
-	            								 map, actors);
-        }
-        else {
-	        	controls[1] = new WolfController(animals.get(0),
-	        									 map, actors);
-	        controls[2] = new SheepController(animals.get(1),
-	            								  map, actors);
-        }
-
+        controls[1] = new AIController(animals.get(0), collisionController.getWorld(),
+				    				   map, actors);
+        controls[2] = new AIController(animals.get(1), collisionController.getWorld(),
+				   					   map, actors);
         collisionController.setControls(controls);
         //loadTextures
         /*
@@ -204,12 +195,14 @@ public class GameMode implements Screen {
 	    hunter.addToInventory(tmp);
 	    hunter.setSelectedTrap(InputController.ONE);
 	    tmp = new SheepTrap();
+	    tmp.setInInventory(false);
 	    tmp.setSensor(true);
 	    tmp.setBodyType(BodyDef.BodyType.StaticBody);
 	    collisionController.addObject(tmp);
 	    //collisionController.addObject(tmp, "SHEEP_TRAP");
 	    hunter.addToInventory(tmp);
 	    tmp = new WolfTrap();
+	    tmp.setInInventory(false);
 	    tmp.setSensor(true);
 	    tmp.setBodyType(BodyDef.BodyType.StaticBody);
 	    collisionController.addObject(tmp);
@@ -348,7 +341,9 @@ public class GameMode implements Screen {
         
         //Draw the animals
         for (Animal animal : animals){
-            animal.draw(canvas);
+            if (!animal.getTrapped()) {
+            	animal.draw(canvas);
+            }
             //animal.drawDebug(canvas);
         }
         
@@ -363,7 +358,13 @@ public class GameMode implements Screen {
         canvas.beginDebug();
         PooledList<BoxObject> objects = collisionController.getObjects();
 		for(PhysicsObject obj : objects) {
-			obj.drawDebug(canvas);
+			//obj.drawDebug(canvas);
+			if (obj instanceof Animal) {
+				Animal a = (Animal) obj;
+				if (!a.getTrapped()) {
+					((Animal) obj).drawSight(canvas);
+				}
+			}
 		}
 		canvas.endDebug();
     }

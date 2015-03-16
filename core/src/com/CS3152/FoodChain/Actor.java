@@ -28,7 +28,13 @@ public abstract class Actor extends BoxObject {
     
 	public boolean activatePhysics(World world) {
 		// create the box from our superclass
-		return super.activatePhysics(world);
+		if (!super.activatePhysics(world)) {
+			return false;
+		}
+		
+		body.setAngularDamping(Float.MAX_VALUE);
+		
+		return true;
 	}
     
     public Actor(TextureRegion tr, actorType type, float x, float y, float width, 
@@ -49,28 +55,28 @@ public abstract class Actor extends BoxObject {
     
     public void setFacing(Vector2 dir) {
     		this.facing = dir;
-    		if (dir == InputController.WEST) {
+    		if (dir.x < 0 && dir.y == 0) {
     			super.setAngle((float) (-Math.PI/2.0));
     		}
-    		else if (dir == InputController.EAST) {
+    		else if (dir.x > 0 && dir.y == 0) {
     			super.setAngle((float) (Math.PI/2.0));
     		}
-    		else if (dir == InputController.NORTH) {
+    		else if (dir.x == 0 && dir.y > 0) {
     			super.setAngle((float) (Math.PI));
     		}
-    		else if (dir == InputController.SOUTH) {
+    		else if (dir.x == 0 && dir.y < 0) {
     			super.setAngle(0.0f);
     		}
-    		else if (dir == InputController.SOUTHWEST) {
+    		else if (dir.x < 0 && dir.y < 0) {
     			super.setAngle((float) (-Math.PI/4.0));
     		}
-    		else if (dir == InputController.SOUTHEAST) {
+    		else if (dir.x > 0 && dir.y < 0) {
     			super.setAngle((float) (Math.PI/4.0));
     		}
-    		else if (dir == InputController.NORTHEAST) {
+    		else if (dir.x > 0 && dir.y > 0) {
     			super.setAngle((float) (3.0*Math.PI/4.0));
     		}
-    		else if (dir == InputController.NORTHWEST) {
+    		else if (dir.x < 0  && dir.y > 0) {
     			super.setAngle((float) (-3.0*Math.PI/4.0));
     		}
     }
