@@ -80,11 +80,27 @@ public class CollisionController implements ContactListener {
 	 * TODO have to decide how to handle multiple collisions and which collisions to process first. like animal or tiles
 	 */
 	private void move(Hunter actor) {
-		actor.setLinearVelocity(controls[0].getAction());
+		tmp.set(actor.getPosition());
+		tmp.add(actor.getVX(), actor.getVY());
+		// System.out.println("Y vel : "+hunter.getVY());
+		// System.out.println("X vel : "+hunter.getVX());
+		// System.out.println("Vel : "+hunter.getLinearVelocity());
+		// System.out.println("Position : "+hunter.getPosition());
+		actor.setLinearVelocity(tmp);
+		//System.out.println("vx:" + hunter.getVX() + "vy:" +hunter.getVY());
+		//hunter.setCenter(tmp);
+		//hunter.getBody().applyForce(tmp.scl(30),hunter.getBody().getPosition(),true);
+		//System.out.println(hunter.getBody().getLinearVelocity());
 	}
 	
 	private void move(Animal actor, int index) {
-		actor.setLinearVelocity(controls[index].getAction());
+		tmp.set(actor.getPosition());
+		tmp.add(actor.getVX(), actor.getVY());
+		// System.out.println("Y vel : "+animal.getVY());
+		// System.out.println("X vel : "+animal.getVX());
+		// System.out.println("Vel : "+animal.getLinearVelocity());
+		// System.out.println("Position : "+animal.getPosition());
+		actor.setLinearVelocity(tmp);
 	}
 	
 	//Pass the object to the correct handler

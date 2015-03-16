@@ -11,8 +11,9 @@ import com.badlogic.gdx.math.Vector2;
 
 public interface InputController {
 	//Fields to manage movement
-	public static final int NO_ACTION = 0x00; 
-	public static final int NORTH = 0x09; 
+	public static final int PLAYER_SPEED = 300;
+	public static final int NO_ACTION = 0x00;
+	public static final int NORTH = 0x09;
 	public static final int NORTHEAST = 0x01;
 	public static final int NORTHWEST = 0x02;
 	public static final int SOUTH = 0x03;
@@ -23,6 +24,11 @@ public interface InputController {
 	
 	//Field to manage click events 
 	public static final int CLICK = 0x08;
+	
+	//Fields to manage trap selection
+	public static final int ONE = 0x10;
+	public static final int TWO = 0x11;
+	public static final int THREE = 0x12;
 
 	// deal with exit, etc.  
 
@@ -36,5 +42,9 @@ public interface InputController {
 	*/
 	public int getAction();
 	
+	public boolean isClicked();
+	
 	public Vector2 getClickPos();
+	
+	public int getNum();
 }

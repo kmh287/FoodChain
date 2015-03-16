@@ -2,9 +2,17 @@ package com.CS3152.FoodChain;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
+
+
+
+
+
 
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
 public class Hunter extends Actor {
@@ -12,38 +20,53 @@ public class Hunter extends Actor {
     //The player's inventory
     //We want amortized O(1) insert and O(1) lookup
     //Since we will not be shifting elements, 
-    //an arraylist is ideal for this.
-    private List<Trap> inventory;
+    //an arraylist within a hashmap works pretty well
+    private HashMap<String, List<Trap>> inventory;
     
     private static final String PLAYER_TEX = "assets/player.png";
     private static Texture tex = null;
     
     // private boolean isSettingTrap;
     
-    private Trap selectedTrap;
+    private Trap selectedTrap = null;
 
     //how far forward the hunter can move in a turn. 
-    private static final float MOVE_SPEED = 3.0f;
+    private static final float MOVE_SPEED = 150.0f;
     /** How far the hunter can lay a trap from itself */
     private static final float TRAP_RADIUS = 50.0f;
-    //Instance Attributes 
-    /** Hunter position */
-	private Vector2 position;
-	/** hunter velocity */
-	private Vector2 velocity;
-	/** The current angle of orientation (in degrees) */
-	private float angle; 
+
 	
 	private Vector2 tmp;
     
-    public Hunter(float xPos, float yPos, Trap t){
-    	super(xPos, yPos);
-        inventory = new ArrayList<Trap>();
-        inventory.add(t);
-        velocity = new Vector2();
-        angle  = 90.0f;
-        selectedTrap = t;
+    public Hunter(float xPos, float yPos
+    		//, HashMap<String, List<Trap>> traps
+    		){
+    	super(new TextureRegion(tex), actorType.HUNTER, xPos, yPos, tex.getWidth(),
+    		  tex.getHeight(), new actorType[]{actorType.SHEEP});
+    	inventory= new HashMap<String, List<Trap>>();
+    	inventory.put("REGULAR_TRAP", new ArrayList<Trap>());
+    	inventory.put("SHEEP_TRAP", new ArrayList<Trap>());
+    	inventory.put("WOLF_TRAP", new ArrayList<Trap>());
         tmp = new Vector2();
+        //set selected trap
+        /*
+        for (Trap trap : traps.get("REGULAR_TRAP")) {
+        	selectedTrap = trap;
+        }
+        if(selectedTrap==null){
+            for (Trap trap : traps.get("SHEEP_TRAP")) {
+            	selectedTrap = trap;
+            }
+        }
+        if(selectedTrap==null){
+            for (Trap trap : traps.get("WOLF_TRAP")) {
+            	selectedTrap = trap;
+            }
+        }
+        */
+ 
+        
+
     }
     
     /**
@@ -51,7 +74,7 @@ public class Hunter extends Actor {
      * This must be called before any calls to Player.draw()
      * @param manager an AssetManager
      */
-    public void loadTexture(AssetManager manager) {
+    public static void loadTexture(AssetManager manager) {
         if (tex == null){
             manager.load(PLAYER_TEX, Texture.class);
             manager.finishLoading();
@@ -60,80 +83,91 @@ public class Hunter extends Actor {
             }
         }
     }
-    /**
-     * @return the bottom LeftxPos
-     */
-    public float getxPos() {
-        return xPos;
-    }
-    
-    /**
-     * @return the center of the hunter
-     */
-    public Vector2 getCenter() {
-    	Vector2 pos = new Vector2(getxPos()+(float)this.tex.getWidth()/2, getyPos()+(float)this.tex.getHeight()/2);
-        return pos;
-    }
-    
-    /**
-     * @return the bottom right of the hunter
-     */
-    public Vector2 getBottomRight() {
-    	Vector2 pos = new Vector2(getxPos()+(float)this.tex.getWidth(), getyPos());
-        return pos;
-    }
-    
-    /**
-     * @return the top right of the hunter
-     */
-    public Vector2 getTopRight() {
-    	Vector2 pos = new Vector2(getxPos()+(float)this.tex.getWidth(), getyPos()+(float)this.tex.getHeight());
-        return pos;
-    }
-    /**
-     * @return the top left of the hunter
-     */
-    public Vector2 getTopLeft() { 
-    	Vector2 pos = new Vector2(getxPos()+(float)this.tex.getWidth(), +(float)this.tex.getHeight());
-        return pos;
-    }
-    
-    /**
-     *	Set center of hunter position
-     */
-    public void setCenter(Vector2 pos) {
-    	this.yPos=pos.y-(float)this.tex.getHeight()/2;
-    	this.xPos=pos.x-(float)this.tex.getWidth()/2;
-    }
-
-    /**
-     * @param  the bottom left xPos to set
-     */
-    public void setxPos(float xPos) {
-        this.xPos = xPos;
-    }
-
-    /**
-     * @return the yPos
-     */
-    public float getyPos() {
-        return yPos;
-    }
-
-    /**
-     * @param yPos the yPos to set
-     */
-    public void setyPos(float yPos) {
-        this.yPos = yPos;
-    }
 
     
+//    /**
+//     * @return the center of the hunter
+//     */
+//    public Vector2 getCenter() {
+//    		Vector2 pos = new Vector2(getX()+(float)this.tex.getWidth()/2, 
+//    								  getY()+(float)this.tex.getHeight()/2);
+//        return pos;
+//    }
+//    
+//    /**
+//     * @return the bottom right of the hunter
+//     */
+//    public Vector2 getBottomRight() {
+//    	Vector2 pos = new Vector2(getxPos()+(float)this.tex.getWidth(), getyPos());
+//        return pos;
+//    }
+//    
+//    /**
+//     * @return the top right of the hunter
+//     */
+//    public Vector2 getTopRight() {
+//    	Vector2 pos = new Vector2(getxPos()+(float)tex.getWidth(), getyPos()+(float)tex.getHeight());
+//        return pos;
+//    }
+//    /**
+//     * @return the top left of the hunter
+//     */
+//    public Vector2 getTopLeft() { 
+//    	Vector2 pos = new Vector2(getxPos()+(float)tex.getWidth(), +(float)tex.getHeight());
+//        return pos;
+//    }
+//    
+//    /**
+//     *	Set center of hunter position
+//     */
+//    public void setCenter(Vector2 pos) {
+//	    	float yPos=pos.y-(float)tex.getHeight()/2;
+//	    	float xPos=pos.x-(float)tex.getWidth()/2;
+//    		super.setPosition(xPos, yPos);
+//    }
+
     /**
-     * 
+     * Used when a player traps an animal
      * @param trap the trap to add to the inventory
      */
     public void addToInventory(Trap trap) {
-    		//inventory.add(trap);
+    	inventory.get(trap.getType()).add(trap);
+    }
+    
+    public Map<String,List<Trap>> getInventory() {
+    	return inventory;
+    }
+    
+    public void setSelectedTrap(int tmp2){
+    	boolean oneSelect = (tmp2 == InputController.ONE);
+    	boolean twoSelect = (tmp2 == InputController.TWO);
+    	boolean threeSelect = (tmp2 == InputController.THREE);
+    	//process selected trap
+    	if(oneSelect){
+	        for (Trap trap : inventory.get("REGULAR_TRAP")) {
+	        	if(trap.getInInventory()){
+	        		selectedTrap = trap;
+	        	}
+	        }
+    	}
+    	if(twoSelect){
+	        for (Trap trap : inventory.get("SHEEP_TRAP")) {
+	        	if(trap.getInInventory()){
+	        		selectedTrap = trap;
+	        	}
+	        }
+    	}
+    	if(threeSelect){
+	        for (Trap trap : inventory.get("WOLF_TRAP")) {
+	        	if(trap.getInInventory()){
+	        		selectedTrap = trap;
+	        	}
+	        }
+    	}
+    }
+
+    public Trap getSelectedTrap(){
+    	return selectedTrap;
     }
     
     /**
@@ -141,55 +175,109 @@ public class Hunter extends Actor {
      * @param trap the trap to remove from the inventory
      */
     public void removeFromInventory(Trap trap) {
-    	//TODO
+    	inventory.get(trap.getType()).remove(trap);
     }
-    
+
     public Vector2 getPosition() {
-    		Vector2 pos = new Vector2(getxPos(), getyPos());
+    		Vector2 pos = new Vector2(getX(), getY());
     		return pos; 
     }
     
-    public void setPosition(Vector2 pos) {
-    		xPos = pos.x;
-    		yPos = pos.y;
-    }
+//    public void setPosition(Vector2 pos) {
+//    		xPos = pos.x;
+//    		yPos = pos.y;
+//        super.setPosition(xPos, yPos);
+//    }
 
-    public float getVX() {
-    		return velocity.x; 
-    }
+
     
-    public void setVX(float value) {
-    		velocity.x = value; 
-    }
-    
-    public void setVY(float value) {
-    		velocity.y = value; 
-    }
-    
-    public float getVY() {
-    		return velocity.y; 
-    }
-    
-    public Vector2 getVelocity() {
-    		return velocity; 
-    }
-    
-    /* Get current facing angle of the hunter*/
-    public float getAngle() {
-		return angle;
-	}
-    
-    public boolean canSetTrap(Vector2 clickPos) {
-		tmp.set(getPosition().add(20.0f, 20.0f));
+    /*public boolean canSetTrap(Vector2 clickPos) {
+		//tmp.set(getPosition().add(20.0f, 20.0f));
+		tmp.set(getPosition());
 		tmp.sub(clickPos);
-		if (Math.abs(tmp.len()) <= TRAP_RADIUS) {
+		if (Math.abs(tmp.len()) <= TRAP_RADIUS && selectedTrap.getInInventory()==true) {
 			return true;
 		}
 		return false;
-    }
+    }*/
     
-    public void setTrap(Vector2 clickPos) {
-    		selectedTrap.setPosition(clickPos);
+    public boolean canSetTrap() {
+		boolean canSet = false;
+		for (List<Trap> l : inventory.values()) {
+			for (Trap t : l) {
+				if (t.getInInventory()) {
+					canSet = true;
+					break;
+				}
+			}
+			if (canSet) {
+				break;
+			}
+		}
+		
+		return canSet;
+	}
+    
+    /*public void setTrap(Vector2 clickPos) {
+    	selectedTrap.setPosition(clickPos);
+    	//update inventory
+		//set selectedTrap inventory status to false
+		selectedTrap.setInInventory(false);
+		//set selectedTrap to next available trap inInventory of same type
+		//if no free trap then selectedTrap does not change and player can't put down another
+		for (Trap trap : inventory.get(selectedTrap.getType())){
+			if(trap.getInInventory()){
+				selectedTrap = trap;
+			}
+		}
+    }*/
+    
+    public void setTrap() {
+    	//Determine which direction the hunter is facing
+    	float angle = getAngle();
+    	
+    	if (angle == 0.0f) {
+    		selectedTrap.setPosition(getPosition().x, getPosition().y - 40.0f);
+        	//update inventory
+    		//set selectedTrap inventory status to false
+    		selectedTrap.setInInventory(false);
+    	}
+    	else if (angle == (float) (Math.PI/4.0f)) {
+    		selectedTrap.setPosition(getPosition().x + 40.0f, getPosition().y - 40.0f);
+    		selectedTrap.setInInventory(false);
+    	}
+    	else if (angle == (float) (Math.PI/2.0f)) {
+    		selectedTrap.setPosition(getPosition().x + 40.0f, getPosition().y);
+    		selectedTrap.setInInventory(false);
+    	}
+    	else if (angle == (float) (3.0*Math.PI/4.0)) {
+    		selectedTrap.setPosition(getPosition().x + 40.0f, getPosition().y + 40.0f);
+    		selectedTrap.setInInventory(false);
+    	}
+    	else if (angle == (float) (Math.PI)) {
+    		selectedTrap.setPosition(getPosition().x, getPosition().y + 40.0f);
+    		selectedTrap.setInInventory(false);
+    	}
+    	else if (angle == (float) (5.0*Math.PI/4.0f)) {
+    		selectedTrap.setPosition(getPosition().x - 40.0f, getPosition().y + 40.0f);
+    		selectedTrap.setInInventory(false);
+    	}
+    	else if (angle == (float) (3.0*Math.PI/2.0f)) {
+    		selectedTrap.setPosition(getPosition().x - 40.0f, getPosition().y);
+    		selectedTrap.setInInventory(false);
+    	}
+    	else if (angle == (float) (7.0*Math.PI/4.0f)) {
+    		selectedTrap.setPosition(getPosition().x - 40.0f, getPosition().y - 40.0f);
+    		selectedTrap.setInInventory(false);
+    	}
+
+		//set selectedTrap to next available trap inInventory of same type
+		//if no free trap then selectedTrap does not change and player can't put down another
+		for (Trap trap : inventory.get(selectedTrap.getType())){
+			if(trap.getInInventory()){
+				selectedTrap = trap;
+			}
+		}
     }
     
     /**
@@ -202,76 +290,101 @@ public class Hunter extends Actor {
     /** 
     * Updates the hunter's position according to the controlCode. 
     * 
-    * @param controlCode The movement controlCode (from InputController).
+    * @param action The movement controlCode (from InputController).
     */
-    public void update(int controlCode) {
-    	
+    public void update(int action, float dt) {
+    	super.update(dt);
 	    	// Determine how we are moving.
-	    	boolean movingEast  = (controlCode == InputController.EAST);
-	   	boolean movingWest = (controlCode == InputController.WEST);
-	    	boolean movingNorth = (controlCode == InputController.NORTH);
-	    	boolean movingSouth = (controlCode == InputController.SOUTH);
-	    	boolean movingNorthWest = (controlCode == InputController.NORTHWEST);
-	    	boolean movingSouthWest = (controlCode == InputController.SOUTHWEST);
-	    	boolean movingSouthEast = (controlCode == InputController.SOUTHEAST);
-	    	boolean movingNorthEast = (controlCode == InputController.NORTHEAST);
-	    	boolean settingTrap = (controlCode == InputController.CLICK);
+	    	boolean movingEast  = (action == InputController.EAST);
+	    	boolean movingWest = (action == InputController.WEST);
+	    	boolean movingNorth = (action == InputController.NORTH);
+	    	boolean movingSouth = (action == InputController.SOUTH);
+	    	boolean movingNorthWest = (action == InputController.NORTHWEST);
+	    	boolean movingSouthWest = (action == InputController.SOUTHWEST);
+	    	boolean movingSouthEast = (action == InputController.SOUTHEAST);
+	    	boolean movingNorthEast = (action == InputController.NORTHEAST);
+	    	boolean settingTrap = (action == InputController.CLICK);
+	    	boolean oneSelect = (action == InputController.ONE);
+	    	boolean twoSelect = (action == InputController.TWO);
+	    	boolean threeSelect = (action == InputController.THREE);
 	    	
 	    	//process moving command 
+	    	//need to set super commands and set diagonal movement to less
 	    	if (movingWest) {
-				angle = 0.0f;
-				velocity.x = -MOVE_SPEED;
-				velocity.y = 0;
+				super.setAngle((float) (-Math.PI/2.0));
+				super.setVX(-MOVE_SPEED);
+				super.setVY(0);
 			} else if (movingEast) {
-				angle = 180.0f;
-				velocity.x = MOVE_SPEED;
-				velocity.y = 0;
+				super.setAngle((float) (Math.PI/2.0));
+				super.setVX(MOVE_SPEED);
+				super.setVY(0);
 			}
 			else if (movingNorth) {
-				angle = 90.0f;
-				velocity.y = MOVE_SPEED;
-				velocity.x = 0;
+				super.setAngle((float) (Math.PI));
+				super.setVX(0);
+				super.setVY(MOVE_SPEED);
 			}
 			else if (movingSouth) {
-				angle = 270.0f;
-				velocity.x = 0;
-				velocity.y = -MOVE_SPEED;
+				super.setAngle(0.0f);
+				super.setVX(0);
+				super.setVY(-MOVE_SPEED);
 			}
 			else if (movingSouthWest) {
-				angle = 180.0f;
-				velocity.x = -MOVE_SPEED;
-				velocity.y = -MOVE_SPEED;
+				super.setAngle((float) (-Math.PI/4.0));
+				super.setVX(-MOVE_SPEED);
+				super.setVY(-MOVE_SPEED);
 			}
 			else if (movingSouthEast) {
-				angle = 180.0f;
-				velocity.x = MOVE_SPEED;
-				velocity.y = -MOVE_SPEED;
+				super.setAngle((float) (Math.PI/4.0));
+				super.setVX(MOVE_SPEED);
+				super.setVY(-MOVE_SPEED);
 			}
 			else if (movingNorthEast) {
-				angle = 180.0f;
-				velocity.x = MOVE_SPEED;
-				velocity.y = MOVE_SPEED;
+				super.setAngle((float) (3.0*Math.PI/4.0));
+				super.setVX(MOVE_SPEED);
+				super.setVY(MOVE_SPEED);
 			}
 			else if (movingNorthWest) {
-				angle = 180.0f;
-				velocity.x = -MOVE_SPEED;
-	
-				velocity.y = MOVE_SPEED;
+				super.setAngle((float) (-3.0*Math.PI/4.0));
+				super.setVX(-MOVE_SPEED);
+				super.setVY(MOVE_SPEED);
 			}
 			else if (settingTrap) {
-				
+				super.setVX(0);
+				super.setVY(0);
 			}
 			else {
 				// NOT MOVING, SO STOP MOVING
-				velocity.x = 0;
-				velocity.y = 0;
+				super.setVX(0);
+				super.setVY(0);
 			}
+	    	
+	    	//process selected trap
+	    	if(oneSelect){
+		        for (Trap trap : inventory.get("REGULAR_TRAP")) {
+		        	if(trap.getInInventory()){
+		        		selectedTrap = trap;
+		        	}
+		        }
+	    	}
+	    	if(twoSelect){
+		        for (Trap trap : inventory.get("SHEEP_TRAP")) {
+		        	if(trap.getInInventory()){
+		        		selectedTrap = trap;
+		        	}
+		        }
+	    	}
+	    	if(threeSelect){
+		        for (Trap trap : inventory.get("WOLF_TRAP")) {
+		        	if(trap.getInInventory()){
+		        		selectedTrap = trap;
+		        	}
+		        }
+	    	}
 	    }
     
-    public void draw(GameCanvas canvas){
-        canvas.begin();
-        canvas.draw(tex, this.xPos, this.yPos);
-        canvas.end();
+
+    public String getTypeNameString() {
+    		return "HUNTER";
     }
-    
 }
