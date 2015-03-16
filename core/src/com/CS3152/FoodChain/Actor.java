@@ -85,9 +85,7 @@ public abstract class Actor extends BoxObject {
 	}
 	
     public void draw(GameCanvas canvas){
-        canvas.begin();
-        canvas.draw(getTexture(), getBody().getPosition().x, getBody().getPosition().y);
-        canvas.end();
+        super.draw(canvas);
     }
 	
 }

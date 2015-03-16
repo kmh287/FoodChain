@@ -73,7 +73,6 @@ public class UIController {
     }
     
     public void draw(GameCanvas canvas){
-        canvas.begin();
         int texWidth = allDeselect.getWidth();
         int screenWidth = Gdx.graphics.getWidth();
         int xCoordinate = (screenWidth/2) - (texWidth/2);
@@ -131,6 +130,5 @@ public class UIController {
         	}
         }
         
-        canvas.end();
     }
 }
