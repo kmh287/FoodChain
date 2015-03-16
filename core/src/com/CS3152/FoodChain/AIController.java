@@ -74,6 +74,8 @@ public class AIController implements InputController {
     // Which direction to patrol
     protected int patrolTurn;
     
+    private Random random;
+    
     
     /*
      * Creates an AIController for the animal
@@ -115,6 +117,8 @@ public class AIController implements InputController {
         this.vcb = new VisionCallback(this);
         
         this.tmp = new Vector2();
+        
+        this.random = new Random();
     }
     
     /*
@@ -326,26 +330,38 @@ public class AIController implements InputController {
 	public void patrol() {
 		float anX = getAnimal().getPosition().x;
 		float anY = getAnimal().getPosition().y;
-		if (map.isSafeAt(anX + 100, anY)) {
-			if (patrolTurn == 1) {
-				goal.set(anX + 100, anY);
-				return;
+		if (patrolTurn == 0) {
+			float rand = random.nextFloat();
+			if (rand < 0.25) {
+				patrolTurn = 1;
+			}
+			else if (rand < 0.5) {
+				patrolTurn = 2;
+			}
+			else if (rand < 0.75) {
+				patrolTurn = 3;
+			}
+			else {
+				patrolTurn = 4;
 			}
 		}
-		patrolTurn = 2;
-		if (map.isSafeAt(anX - 100, anY)) {
-			if (patrolTurn == 2) {
-				goal.set(anX - 100, anY);
-				return;
-			}
+		if (map.isSafeAt(anX + 100, anY) && patrolTurn == 1) {
+			goal.set(anX + 100, anY);
+			return;
 		}
-		patrolTurn = 1;
+		if (map.isSafeAt(anX - 100, anY) && patrolTurn == 2) {
+			goal.set(anX - 100, anY);
+			return;
+		}
 		if (map.isSafeAt(anX, anY + 100) && patrolTurn == 3) {
 			goal.set(anX, anY + 100);
 			return;
 		}
-		patrolTurn = 1;
-		goal.set(anX, anY - 100);
+		if (map.isSafeAt(anX, anY - 100) && patrolTurn == 4) {
+			goal.set(anX, anY - 100);
+			return;
+		}
+		patrolTurn = 0;
 		return;
 	}
     
