@@ -21,11 +21,8 @@ public abstract class Animal extends Actor {
     protected Vector2 rightSectorLine;
     
     private Vector2 tmp;
-<<<<<<< HEAD
-=======
 
->>>>>>> origin/ashton
-	
+    
 	//texture used in getCenter and setCenter
 	private float texWidth;
 	private float texHeight;
@@ -55,13 +52,9 @@ public abstract class Animal extends Actor {
 		setFacing(facing);
 		this.leftSectorLine = new Vector2();
 		this.rightSectorLine = new Vector2();
-<<<<<<< HEAD
 
 		this.tmp = new Vector2();
 
-=======
-		this.tmp = new Vector2();
->>>>>>> origin/ashton
 		updateLOS(0);
 		setTexWidth(tr.getRegionWidth());
 		setTexHeight(tr.getRegionHeight());
