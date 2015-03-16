@@ -195,12 +195,14 @@ public class GameMode implements Screen {
 	    hunter.addToInventory(tmp);
 	    hunter.setSelectedTrap(InputController.ONE);
 	    tmp = new SheepTrap();
+	    tmp.setInInventory(false);
 	    tmp.setSensor(true);
 	    tmp.setBodyType(BodyDef.BodyType.StaticBody);
 	    collisionController.addObject(tmp);
 	    //collisionController.addObject(tmp, "SHEEP_TRAP");
 	    hunter.addToInventory(tmp);
 	    tmp = new WolfTrap();
+	    tmp.setInInventory(false);
 	    tmp.setSensor(true);
 	    tmp.setBodyType(BodyDef.BodyType.StaticBody);
 	    collisionController.addObject(tmp);
@@ -356,9 +358,12 @@ public class GameMode implements Screen {
         canvas.beginDebug();
         PooledList<BoxObject> objects = collisionController.getObjects();
 		for(PhysicsObject obj : objects) {
-			obj.drawDebug(canvas);
+			//obj.drawDebug(canvas);
 			if (obj instanceof Animal) {
-				((Animal) obj).drawSight(canvas);
+				Animal a = (Animal) obj;
+				if (!a.getTrapped()) {
+					((Animal) obj).drawSight(canvas);
+				}
 			}
 		}
 		canvas.endDebug();

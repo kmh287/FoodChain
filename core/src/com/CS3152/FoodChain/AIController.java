@@ -62,11 +62,6 @@ public class AIController implements InputController {
     // directly away
     protected Vector2[] distVctrs;
     
-<<<<<<< HEAD
-    private Vector2 tmp;
-    
-=======
->>>>>>> Justice
     // How many more turns (1 turn = 10 frames) before the animal can stop running
     protected int turns;
     
@@ -91,20 +86,12 @@ public class AIController implements InputController {
         this.world = world;
         this.map = map;
         this.actors = actors;
-<<<<<<< HEAD
-
-=======
         
->>>>>>> Justice
         this.distVctrs = new Vector2[8];
         for (int id = 0; id < distVctrs.length; id++) {
         	distVctrs[id] = new Vector2();
         }
-<<<<<<< HEAD
 
-=======
-        
->>>>>>> Justice
         this.loc = new Vector2(map.screenXToMap(animal.getX()),
                                map.screenYToMap(animal.getY()));
         
@@ -120,19 +107,10 @@ public class AIController implements InputController {
         this.tmp = new Vector2();
         this.move = InputController.WEST;
         goal.set (getAnimal().getX() + 1, getAnimal().getY());
-<<<<<<< HEAD
-        
-        //this.ticks = 0;
-        
-        this.turns = 3;//should be 0 in future;
- 
-        this.target = null;
-        this.attacker = null;
-=======
+
         this.turns = 3;//should be 0 in future
         
         this.patrolTurn = 1;
->>>>>>> Justice
         
         this.vcb = new VisionCallback(this);
         
@@ -257,14 +235,12 @@ public class AIController implements InputController {
     
     // Determines whether or not the animal should run away
     public void flee() {
-<<<<<<< HEAD
 
-=======
     	/*world.rayCast(fcb, attacker.getPosition(), getAnimal().getPosition());
     	if (fcb.getContact() != getAnimal()) {
     		turns--;
     	}*/
->>>>>>> Justice
+
         // Animal's position
     	float anX = getAnimal().getX();
     	float anY = getAnimal().getY();
@@ -272,17 +248,11 @@ public class AIController implements InputController {
     	float attackX = attacker.getX();
         float attackY = attacker.getY();
         // Animal's best option
-<<<<<<< HEAD
-        float goalX = 2*anX - attackX;
-        float goalY = 2*anY - attackY;
 
-        if (map.isSafeAt(goalX, goalY)) {
-        	goal.set(goalX, goalY);
-=======
         Vector2 norm = getAnimal().getPosition().sub(attacker.getPosition()).nor();
         if (map.isSafeAt(anX + 100*norm.x, anY + 100*norm.y)) {
         	goal.set(anX + 100*norm.x, anY + 100*norm.y);
->>>>>>> Justice
+
         	return;
         }
         // Find farthest valid tile from attacker
@@ -341,10 +311,7 @@ public class AIController implements InputController {
     	float targetX = target.getX();
         float targetY = target.getY();
         // Animal's best option
-<<<<<<< HEAD
 
-=======
->>>>>>> Justice
         float goalX = targetX;
         float goalY = targetY;
         
@@ -480,10 +447,7 @@ public class AIController implements InputController {
      *
      * @return int corresponding to InputController bit-vector
      */
-<<<<<<< HEAD
 
-=======
->>>>>>> Justice
     public Vector2 getNextMoveToGoal() {
     	//System.out.println("goalx:" + goal.x + "goaly:" + goal.y);
     	//System.out.println("locx:" + getLoc().x + "locy:" + getLoc().y);

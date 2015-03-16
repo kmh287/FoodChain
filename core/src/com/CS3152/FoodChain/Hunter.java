@@ -209,7 +209,7 @@ public class Hunter extends Actor {
     }*/
     
     public boolean canSetTrap(Vector2 clickPos) {
-    	tmp.set(getPosition().add(20.0f, 20.0f));
+    	tmp.set(getPosition());
     	tmp.sub(clickPos);
     	if (Math.abs(tmp.len()) <= TRAP_RADIUS && selectedTrap.getInInventory()==true) {
     		return true;
