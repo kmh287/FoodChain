@@ -2,32 +2,78 @@ package com.CS3152.FoodChain;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
-import com.CS3152.FoodChain.Animal.animalType;
-import com.CS3152.FoodChain.GameMap.Coordinate;
+import com.CS3152.FoodChain.Actor.actorType;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.Contact;
+import com.badlogic.gdx.physics.box2d.ContactImpulse;
+import com.badlogic.gdx.physics.box2d.ContactListener;
+import com.badlogic.gdx.physics.box2d.Fixture;
+import com.badlogic.gdx.physics.box2d.Manifold;
+import com.badlogic.gdx.physics.box2d.World;
+
 
 public class GameMode implements Screen {
-
+	
 	private CollisionController collisionController;
-    private GameCanvas canvas;
+    
+	private GameCanvas canvas;
    // private boolean active;
     private GameMap map;
     private AssetManager manager;
     private List<Animal> animals;
     private Hunter hunter;
-    private List<Trap> traps;
+    private HashMap<String, List<Trap>> traps;
     private UIController ui;
 
     protected InputController[] controls;
     
-    /** Cache attribute for calculations */
-	private Vector2 tmp;
+//  /** Cache attribute for calculations */
+//	private Vector2 tmp;
+	private static final float DEFAULT_DENSITY = 1.0f;
+	
+	private Vector2 action;
     
+	/** 
+	 * Preloads the assets for this game.
+	 * 
+	 * All instance of the game use the same assets, so this is a static method.  
+	 * This keeps us from loading the assets multiple times.
+	 *
+	 * The asset manager for LibGDX is asynchronous.  That means that you
+	 * tell it what to load and then wait while it loads them.  This is 
+	 * the first step: telling it what to load.
+	 * 
+	 * @param manager Reference to global asset manager.
+	 */
+	public static void PreLoadContent(AssetManager manager) {
+		Trap.PreLoadContent(manager);
+	}
+	
+	/** 
+	 * Loads the assets for this game.
+	 * 
+	 * All instance of the game use the same assets, so this is a static method.  
+	 * This keeps us from loading the assets multiple times.
+	 *
+	 * The asset manager for LibGDX is asynchronous.  That means that you
+	 * tell it what to load and then wait while it loads them.  This is 
+	 * the second step: extracting assets from the manager after it has
+	 * finished loading them.
+	 * 
+	 * @param manager Reference to global asset manager.
+	 */
+	public static void LoadContent(AssetManager manager) {
+		Trap.LoadContent(manager);
+	}
+	
     /**
      * Temporary constructor for GameMode until we have 
      * our architecture more hammered-down. For now
@@ -36,9 +82,13 @@ public class GameMode implements Screen {
      * @param canvas The singular instance of GameCanvas
      */
 	public GameMode(GameCanvas canvas) {
+		
 		this.canvas = canvas;
         //active = false;
         manager = new AssetManager();
+        PreLoadContent(manager);
+        manager.finishLoading();
+        LoadContent(manager);
         //For now we will hard code the level to load
         //When we implement a UI that may ask players
         //what level to start on. This code will change
@@ -47,26 +97,31 @@ public class GameMode implements Screen {
         ui = new UIController();
         ui.loadTextures(manager);
         animals = new ArrayList<Animal>();
-        
+        action =  new Vector2();
         /*size of animal list + the player 
         controls = new InputController[animals.size() + 1]; 
         controls[0] = new PlayerController();
         tmp = new Vector2();
 		*/
-        
+        collisionController = new CollisionController();
+        map.addTilesToWorld(collisionController);  
         //Get the animal types from map
         //but build and keep the actual list here
-        List<Animal.animalType> aTypes = 
-                            map.getAnimalTypeList();
-        List<Coordinate> coordinates = map.getCoordinates();
+        List<Actor.actorType> aTypes = 
+                            map.getActorTypeList();
+        List<Vector2> coordinates = map.getCoordinates();
         buildAnimalList(aTypes, coordinates);
         
+        //All the animals, plus the Hunter
+        //The hunter is always first in this array
         controls = new InputController[animals.size() + 1]; 
         controls[0] = new PlayerController();
-        tmp = new Vector2();
+        //tmp = new Vector2();
         
-        createHunter(map.getHunterStartingCoordinate(), 
-                map.getStartingTrap());
+        createHunter(map.getHunterStartingCoordinate() 
+                //,map.getStartingInventory()
+        		);
+	    ui.setHunter(this.hunter);
     
         
         List<Actor> actors = new ArrayList<Actor>();
@@ -74,23 +129,38 @@ public class GameMode implements Screen {
         for (int i = 0; i < animals.size(); i++) {
         	actors.add(animals.get(i));
         }
-        if (animals.get(0).getType() == Animal.animalType.SHEEP) {
-        	controls[1] = new SheepController(animals.get(0),
-        									  map, actors);
-            controls[2] = new WolfController(animals.get(1),
-            								 map, actors);
+        if (animals.get(0).getType() == Actor.actorType.SHEEP) {
+	        	controls[1] = new SheepController(animals.get(0),
+	        									  map, actors);
+	        controls[2] = new WolfController(animals.get(1),
+	            								 map, actors);
         }
         else {
-        	controls[1] = new WolfController(animals.get(0),
-        									 map, actors);
-            controls[2] = new SheepController(animals.get(1),
-            								  map, actors);
+	        	controls[1] = new WolfController(animals.get(0),
+	        									 map, actors);
+	        controls[2] = new SheepController(animals.get(1),
+	            								  map, actors);
+        }
+
+        traps = (HashMap<String, List<Trap>>) hunter.getInventory();
+
+        collisionController.setControls(controls);
+
+        //loadTextures
+        /*
+        traps = map.getStartingInventory();
+        for (Trap trap : traps.get("WOLF_TRAP")) {
+    		trap.setInInventory(true);
         }
         
-        traps = new ArrayList<Trap>();
-        traps.add(map.getStartingTrap());
-        traps.get(0).loadTexture(manager);
-        collisionController = new CollisionController(canvas, hunter, animals, map, traps);
+        for (Trap trap : traps.get("REGULAR_TRAP")) {
+        	trap.setInInventory(true);
+        }
+        
+        for (Trap trap : traps.get("SHEEP_TRAP")) {
+        	trap.setInInventory(true);
+        }
+        */
 	}
 
 	/**
@@ -111,12 +181,38 @@ public class GameMode implements Screen {
         return map;
 	}
 	
-	private void createHunter(Coordinate startingPos,
-	                         Trap startingTrap){
-	    this.hunter = new Hunter(map.mapXToScreen(startingPos.x),
-	                             map.mapYToScreen(startingPos.y),
-	                             startingTrap);
-	    hunter.loadTexture(manager);
+	private void createHunter(Vector2 startingPos
+			//,HashMap<String, List<Trap>> startingInventory
+			){
+		Hunter.loadTexture(manager);
+	    this.hunter = new Hunter(map.mapXToScreen((int) startingPos.x),
+	                             map.mapYToScreen((int) startingPos.y)
+	                             //,startingInventory
+	                             );
+	    hunter.setDensity(DEFAULT_DENSITY);
+	    hunter.setAwake(true);
+	    hunter.setBodyType(BodyDef.BodyType.DynamicBody);
+	    //collisionController.addObject(hunter);
+	    collisionController.addObject(hunter);
+	    Trap tmp = new RegularTrap();
+	    tmp.setSensor(true);
+	    tmp.setBodyType(BodyDef.BodyType.StaticBody);
+	    //collisionController.addObject(tmp);
+	    collisionController.addObject(tmp);
+	    hunter.addToInventory(tmp);
+	    hunter.setSelectedTrap(tmp);
+	    tmp = new SheepTrap();
+	    tmp.setSensor(true);
+	    tmp.setBodyType(BodyDef.BodyType.StaticBody);
+	    //collisionController.addObject(tmp);
+	    collisionController.addObject(tmp);
+	    hunter.addToInventory(tmp);
+	    tmp = new WolfTrap();
+	    tmp.setSensor(true);
+	    tmp.setBodyType(BodyDef.BodyType.StaticBody);
+	    //collisionController.addObject(tmp);
+	    collisionController.addObject(tmp);
+	    hunter.addToInventory(tmp);
 	}
 	
 	/**
@@ -130,37 +226,41 @@ public class GameMode implements Screen {
 	 * @param aTypes The list of animal types
 	 * @param coordinates the coordinates of the animals.
 	 */
-	private void buildAnimalList(List<animalType> aTypes,
-	                             List<Coordinate> coordinates){
+	private void buildAnimalList(List<actorType> aTypes,
+	                             List<Vector2> coordinates){
 	    if (coordinates.size() != aTypes.size()){
 	        throw new IllegalArgumentException("Lists of unequal size");
 	    }
-	    
-	    Iterator<animalType> aTypesIt = aTypes.iterator();
-	    Iterator<Coordinate> coordIt = coordinates.iterator();
+	    Iterator<actorType> aTypesIt = aTypes.iterator();
+	    Iterator<Vector2> coordIt = coordinates.iterator();
 	    while (aTypesIt.hasNext() && coordIt.hasNext()){
-	        animalType currType = aTypesIt.next();
-	        Coordinate coord = coordIt.next();
-
+	        actorType currType = aTypesIt.next();
+	        Vector2 coord = coordIt.next();
+	        
 	        Animal newAnimal;
 	        
 	        switch(currType){
 	            case SHEEP:
-	                newAnimal = new Sheep(map.mapXToScreen(coord.x), 
-	                                      map.mapYToScreen(coord.y));
-	                newAnimal.loadTexture(manager);
+	            		Sheep.loadTexture(manager);
+	                newAnimal = new Sheep(map.mapXToScreen((int)coord.x), 
+	                                      map.mapYToScreen((int)coord.y));
 	                animals.add(newAnimal);
 	                break;
 	            case WOLF:
-	                newAnimal = new Wolf(map.mapXToScreen(coord.x), 
-                                         map.mapYToScreen(coord.y));
-	                newAnimal.loadTexture(manager);
+	            		Wolf.loadTexture(manager);
+	                newAnimal = new Wolf(map.mapXToScreen((int)coord.x), 
+                                         map.mapYToScreen((int)coord.y));
+	                //See comment in sheep
 	                animals.add(newAnimal);
 	                break;
 	            default:
 	                System.out.println(currType);
 	                throw new IllegalArgumentException("Unexpected animal type");
 	        }
+	        newAnimal.setDensity(DEFAULT_DENSITY);
+	        newAnimal.setBodyType(BodyDef.BodyType.DynamicBody);
+	        //collisionController.addObject(newAnimal);
+	        collisionController.addObject(newAnimal);
 	    }
 	    
 	}
@@ -173,32 +273,21 @@ public class GameMode implements Screen {
 
     private void update(float delta){
     	//if (hunter's turn) {
-		
-		//get the action from the playerController
-		int action = controls[0].getAction();	
 		//Updates the hunters action
-		hunter.update(action);
-		Vector2 click = controls[0].getClickPos();
-		if (controls[0].getAction() == InputController.CLICK) {
-			System.out.println("Click Position: "+click.x+", "+click.y+"\n");
-		}
-		if (controls[0].getAction() == InputController.CLICK && hunter.canSetTrap(click)) {
-			hunter.setTrap(click);
+		hunter.update(action,delta);
+		if (controls[0].getAction() == InputController.CLICK && hunter.canSetTrap()) {
+			hunter.setTrap();
 		}
 		
 		//Updates the animals' actions
 		//i is the index of each animal AI in controls
 		int i = 1;
 		for (Animal an : animals) {
-			action = controls[i].getAction();
-			an.update(action);
+			an.update(delta);
 			i++;
 		}
 		
-		collisionController.update();
-
-		
-		
+		collisionController.update();		
 		
 		/*} else {
 			//hunter.update(InputController.NO_ACTION);
@@ -209,31 +298,54 @@ public class GameMode implements Screen {
     
     private void draw(float delta){
         
+    	canvas.begin();
         //Draw the map
         map.draw(canvas);
         
-        for (Trap trap : traps) {
-        	trap.draw(canvas);
+        for (Trap trap : traps.get("WOLF_TRAP")) {
+    		if (trap != null) {
+    			trap.draw(canvas);
+    		}
         }
         
-        for (Trap trap : traps) {
-    		trap.draw(canvas);
+        for (Trap trap : traps.get("REGULAR_TRAP")) {
+        	if (trap != null) {
+    			trap.draw(canvas);
+    		}
+        }
+        
+        for (Trap trap : traps.get("SHEEP_TRAP")) {
+        	if (trap != null) {
+    			trap.draw(canvas);
+    		}
         }
         
         //Draw the animals
         for (Animal animal : animals){
-            animal.draw(map, canvas);
+            animal.draw(canvas);
+            //animal.drawDebug(canvas);
         }
         
         //Draw the hunter
         hunter.draw(canvas);
+        //hunter.drawDebug(canvas);
         
         ui.draw(canvas);
+        
+        canvas.end();
+        
+        canvas.beginDebug();
+        PooledList<BoxObject> objects = collisionController.getObjects();
+		for(PhysicsObject obj : objects) {
+			obj.drawDebug(canvas);
+		}
+		canvas.endDebug();
     }
     
     @Override
     public void render(float delta) {
         update(delta);
+        collisionController.postUpdate(delta);
         draw(delta);
 
         //update(delta);
@@ -269,34 +381,5 @@ public class GameMode implements Screen {
         // TODO Auto-generated method stub
         
     }
-    
-    /** 
-	 * Invokes the controller for the character.
-	 *
-     * Movement actions are determined, but not committed (e.g. the velocity
-	 * is updated, but not the position). Collisions are not processed. 
-	 */
-//	public void updateGame() {
-//		//if (hunter's turn) {
-//		
-//			//get the action from the playerController
-//			int action = controls[0].getAction();	
-//			//Updates the hunters action (velocity only). 
-//			//hunter.update(action);	
-//			
-//			//Uses this velocity to move the hunter. 
-//			tmp.set(hunter.getxPos(), hunter.getyPos());
-//			tmp.add(hunter.getVX(), hunter.getVY());
-//			//set the position
-//			hunter.getPosition().set(tmp);
-//
-//			
-//			
-//			
-//		/*} else {
-//			//hunter.update(InputController.NO_ACTION);
-//			}
-//			*/ 
-//	}	
 
 }
