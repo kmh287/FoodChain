@@ -5,16 +5,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 
-
-
-
-
-
-
-
-
-
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;

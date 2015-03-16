@@ -125,7 +125,7 @@ public class AIController implements InputController {
     public float getAngle() {
     	// Subtracting the animal's current position from the goal it wants to be at
     	tmp.set(goal);
-    	return tmp.sub(getAnimal().getPosition()).angleRad();
+    	return (tmp.sub(getAnimal().getPosition())).angleRad();
     }
     
     /*

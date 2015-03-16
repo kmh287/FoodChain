@@ -48,7 +48,7 @@ public abstract class Animal extends Actor {
 		super(tr, type, x, y, AnimalWidth, AnimalHeight, prey);
 		this.type = type;
 		this.setPos(x,y);
-		this.facing = facing;
+		setFacing(facing);
 		this.leftSectorLine = new Vector2();
 		this.rightSectorLine = new Vector2();
 

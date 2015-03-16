@@ -30,6 +30,8 @@ public class Sheep extends Animal {
         sprite = new FilmStrip(tex,1,4,4);
         drawScale.x=scaleXDrawSheep;
         drawScale.y=scaleyDrawSheep;
+        //setFacing(InputController.EAST);
+        //setAngle((float) Math.PI/2.0f);
     }
 
     /* (non-Javadoc)

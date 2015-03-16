@@ -28,7 +28,13 @@ public abstract class Actor extends BoxObject {
     
 	public boolean activatePhysics(World world) {
 		// create the box from our superclass
-		return super.activatePhysics(world);
+		if (!super.activatePhysics(world)) {
+			return false;
+		}
+		
+		body.setAngularDamping(Float.MAX_VALUE);
+		
+		return true;
 	}
     
     public Actor(TextureRegion tr, actorType type, float x, float y, float width, 
