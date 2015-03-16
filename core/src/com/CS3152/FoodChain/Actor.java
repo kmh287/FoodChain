@@ -1,43 +1,25 @@
 package com.CS3152.FoodChain;
 
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.World;
 
-
-public abstract class Actor extends BoxObject {
-    //The direction this actor is facing
+public class Actor {
+    // The current xPosition of this actor
+    protected float xPos;
+    // The current yPosition of this actor
+    protected float yPos;
+    //The direction this animal is facing
     protected direction facing;
-    //TextureRegion for this actor's texture
-    protected TextureRegion tr;
-	//The type of this actor
-	private final actorType type;
-	//The actors this actor can kill
-	protected final actorType[] victims;
     
     public static enum direction {
         NORTH, NORTHEAST, EAST, SOUTHEAST,
         SOUTH, SOUTHWEST, WEST, NORTHWEST
     }
     
-    public enum actorType{
-    		HUNTER,
-		SHEEP, 
-		WOLF
-	}
-    
-	public boolean activatePhysics(World world) {
-		// create the box from our superclass
-		return super.activatePhysics(world);
-	}
-    
-    public Actor(TextureRegion tr, actorType type, float x, float y, float width, 
-    		     float height, actorType[] victims) {
-	    	super(tr,x,y,width,height);
-	    	this.type = type;
-	    	this.tr = tr;
+    public Actor(float x, float y)
+    {
+        this.xPos = x;
+        this.yPos = y;
         this.facing = direction.WEST;
-        this.victims = victims;
     }
     
     /*
@@ -48,44 +30,37 @@ public abstract class Actor extends BoxObject {
     }
     
     public void setFacing(direction dir) {
-    		this.facing = dir;
+    	this.facing = dir;
     }
-    
     
     /**
-     * @return the type
+     * @return the yPos
      */
-    public actorType getType() {
-        return type;
+    public float getyPos() {
+        return yPos;
     }
     
-    
-	/**
-	 * The name of this actor type, e.g. "Sheep"
-	 * @return String representing the name of this type
-	 */
-	public abstract String getTypeNameString();
-	
-	public actorType[] getPrey() {
-		return victims;
-	}
-	
-	/**
-	 * Return true if this actor can eat ac, false otherwise
-	 * @param ac Another actor
-	 * @return boolean, whether or not this actor can eat ac
-	 */
-	public boolean canKill(Actor ac){
-	    for (actorType t : victims){
-	        if (ac.getType() == t){
-	            return true;
-	        }
-	    }
-        return false;
-	}
-	
-    public void draw(GameCanvas canvas){
-        super.draw(canvas);
+    /**
+     * @return the xPos
+     */
+    public float getxPos() {
+        return xPos;
     }
-	
+    
+    /** Sets yPos
+     */
+    public float setyPos() {
+        return yPos;
+    }
+    
+    /** Sets xPos
+     */
+    public float setxPos() {
+        return xPos;
+    }
+    
+    public void setPosition(Vector2 pos) {
+    	xPos = pos.x;
+    	yPos = pos.y;
+    }
 }

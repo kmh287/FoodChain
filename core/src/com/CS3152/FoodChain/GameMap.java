@@ -1,13 +1,9 @@
 package com.CS3152.FoodChain;
-import com.CS3152.FoodChain.Tile.tileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.google.gson.Gson;
 
 import java.util.*;
@@ -16,27 +12,39 @@ import java.util.*;
 
 public class GameMap {
     
+    protected enum tileType{GRASS, BUSH, TREE}
+    
     //Offset for the UI at the bottom of the screen.
     private static final int UI_OFFSET = 80;
+    
+    public static class Tile{
+        public tileType type;
+    }
+    
+    public static class Coordinate{
+        public int x;
+        public int y;
+        public Coordinate(int x, int y){
+            this.x = x; this.y = y;
+        }
+    }
     
     //List of animals and their coordinates
     //The i'th element of animals should be at
     //the i'th coordinate in coordinates.
-    private List<Actor.actorType> animals = null;
-    private List<Vector2> coordinates = null;
-
+    private List<Animal.animalType> animals = null;
+    private List<Coordinate> coordinates = null;
     
     //Player information that needs to be stored
     //in the map such as the start position and 
     //starting trap
-
-    private Vector2 hunterStartPosition = null;
-	private HashMap<String, List<Trap>> hunterStartingInventory = null;
+    private Coordinate hunterStartPosition = null;
+    private Trap hunterStartingTrap = null;
     
     //Should be 16 tiles across, and 9 down.
     //Therefore, layout should be [9][16] to match
     //Row-then-column form.
-    private Tile.tileType[][] layout;
+    private Tile[][] layout;
     
     private static final String GRASS_TEX = "assets/grass.png";
     private static final String BUSH_TEX = "assets/bush.png";
@@ -85,21 +93,18 @@ public class GameMap {
      * @param coordinates Coordinates of the animals. This should 
      *                    have the *EXACT* same length as animals
      * @param playerStartPosition The coordinate of the player
-     *                            start position
+     *                            start posiiton
      */
-    public GameMap(Tile.tileType[][] layout,
-                   List<Actor.actorType>animals,
-                   List<Vector2> coordinates,
-                   Vector2 hunterStartPosition
-                   //,HashMap<String, List<Trap>> hunterStartingInventory
-                   ){
+    public GameMap(Tile[][] layout,
+                   List<Animal.animalType>animals,
+                   List<Coordinate> coordinates,
+                   Coordinate hunterStartPosition,
+                   Trap hunterStartingTrap){
         this.layout = layout;
         this.animals = animals;
         this.coordinates = coordinates;
         this.hunterStartPosition = hunterStartPosition;
-        //this.hunterStartingInventory = hunterStartingInventory;
-        System.out.println("from GameMap"+hunterStartingInventory);
-
+        this.hunterStartingTrap = hunterStartingTrap;
     }
     
     /** Return a string representation of the map
@@ -110,11 +115,11 @@ public class GameMap {
         StringBuffer returnString = new StringBuffer();
         for (int i = layout.length - 1; i >= 0 ; --i){
             for (int j = 0; j < layout[0].length; ++j){
-                if (layout[i][j] == tileType.GRASS){
+                if (layout[i][j].type == tileType.GRASS){
                     returnString.append(".");
-                } else if (layout[i][j] == tileType.BUSH){
+                } else if (layout[i][j].type == tileType.BUSH){
                     returnString.append("#");
-                } else if (layout[i][j] == tileType.TREE){
+                } else if (layout[i][j].type == tileType.TREE){
                     returnString.append("T");
                 }
                 //Move to next column
@@ -126,8 +131,13 @@ public class GameMap {
         return returnString.toString();
     }
     
-    public Texture getTextureFromTileType(Tile.tileType t){
-        switch(t){
+    /**
+     * Helper function to get the right texture for a tile 
+     * @param t A tile
+     * @return The appropriate texture for that tile (e.g. grassTexture for GRASS tile)
+     */
+    public Texture getTextureFromTile(Tile t){
+        switch(t.type){
         case GRASS:
             return grassTexture;
         case BUSH:
@@ -137,15 +147,6 @@ public class GameMap {
         default:
             return grassTexture;
         }
-    }
-    
-    /**
-     * Helper function to get the right texture for a tile 
-     * @param t A tile
-     * @return The appropriate texture for that tile (e.g. grassTexture for GRASS tile)
-     */
-    public Texture getTextureFromTile(Tile t){
-    		return getTextureFromTileType(t.type);
     }
     
     /**
@@ -195,11 +196,11 @@ public class GameMap {
         return (int) ((yPos - UI_OFFSET) / yIncrement);
     }
     
-    public Tile.tileType screenPosToTileType(float xPos, float yPos){
-//    		System.out.println("xPos: " + xPos + "\n");
-//    		System.out.println("yPos: " + yPos + "\n");
-//    		System.out.println("xPos Screen to Map: " + screenXToMap(xPos) + "\n");
-//    		System.out.println("yPos Screen to Map: " + screenYToMap(yPos) + "\n");
+    public Tile screenPosToTile(float xPos, float yPos){
+    		System.out.println("xPos: " + xPos + "\n");
+    		System.out.println("yPos: " + yPos + "\n");
+    		System.out.println("xPos Screen to Map: " + screenXToMap(xPos) + "\n");
+    		System.out.println("yPos Screen to Map: " + screenYToMap(yPos) + "\n");
     		return layout[screenYToMap(yPos)][screenXToMap(xPos)];
     }
     
@@ -208,49 +209,30 @@ public class GameMap {
      * @param canvas an instance of GameCanvas
      */
     public void draw(GameCanvas canvas){
+        canvas.begin();
         for (int i = 0; i < layout.length; ++i){
             for (int j = 0; j < layout[0].length; ++j){
-                Texture tex = getTextureFromTileType(layout[i][j]);
+                Texture tex = getTextureFromTile(layout[i][j]);
                 canvas.draw(tex, mapXToScreen(j), mapYToScreen(i));
             }
         }
+        canvas.end();
     }
     
-    public List<Actor.actorType> getActorTypeList(){
+    public List<Animal.animalType>getAnimalTypeList(){
         return this.animals;
     }
     
-    public List<Vector2> getCoordinates(){
+    public List<Coordinate> getCoordinates(){
         return this.coordinates;
     }
 
-    public Vector2 getHunterStartingCoordinate() {
+    public Coordinate getHunterStartingCoordinate() {
         return this.hunterStartPosition;
     }
 
-    public HashMap<String, List<Trap>> getStartingInventory() {
-        return this.hunterStartingInventory; 
+    public Trap getStartingTrap() {
+        return this.hunterStartingTrap; 
     }
-
-	public void addTilesToWorld(CollisionController collisionController) {
-		for (int i = 0; i < this.layout.length; ++i){
-			for (int j = 0; j < this.layout[0].length; ++j){
-        			Tile.tileType curr = layout[i][j];
-        			TextureRegion tr = new TextureRegion(getTextureFromTileType(curr));
-        			Tile t = new Tile(tr, (float)mapXToScreen(j), (float)mapYToScreen(i),
-        										 (float)tr.getRegionWidth(), (float)tr.getRegionHeight(),
-        										 curr);
-        			t.setBodyType(BodyDef.BodyType.StaticBody);
-        			t.setActive(false);
-				collisionController.addObject(t);
-			}
-		}
-	}
-		
-	public boolean isSafeAt(float tileX, float tileY) {
-		return ((tileX >= 0 && 
-				tileY >= 0) &&
-			   tileX <= this.layout[0].length && 
-			   tileY <= this.layout.length);
-	}
+ 
 }

@@ -2,14 +2,13 @@ package com.CS3152.FoodChain;
 
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class Wolf extends Animal{
     
     private static final String WOLF_TEX = "assets/wolf.png";
     private static Texture tex = null;
     
-    static final Actor.actorType prey[] = {Actor.actorType.SHEEP};
+    static final Animal.animalType prey[] = {Animal.animalType.SHEEP};
     
     /**
      * Public Constructor for a wolf
@@ -17,7 +16,7 @@ public class Wolf extends Animal{
      * @param y Starting y position for this wolf
      */
     public Wolf(float x, float y) {
-        super(new TextureRegion(tex), Actor.actorType.WOLF, x, y, 
+        super(Animal.animalType.WOLF, x, y, 
               prey, Animal.direction.EAST);
     }
 
@@ -27,13 +26,25 @@ public class Wolf extends Animal{
         return "Wolf";
     }
 
-    public static void loadTexture(AssetManager manager) {
+    @Override
+    public void loadTexture(AssetManager manager) {
         if (tex == null){
             manager.load(WOLF_TEX, Texture.class);
             manager.finishLoading();
             if (manager.isLoaded(WOLF_TEX)){
                 tex = manager.get(WOLF_TEX);
             }
+            super.setTexHeight((float) tex.getHeight());
+            super.setTexWidth((float) tex.getWidth());
         }
+    }
+
+    @Override
+    /**
+     * It is up to the caller not to use this
+     * before loading the texture.
+     */
+    public Texture getTexture() {
+        return tex;
     }
 }
