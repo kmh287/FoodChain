@@ -25,7 +25,7 @@ public class Sheep extends Animal {
      */
     public Sheep(float x, float y) {
         super(new TextureRegion(tex), Actor.actorType.SHEEP, x, y, 
-              prey, Animal.direction.EAST);
+              prey, InputController.EAST);
     }
 
     /* (non-Javadoc)
