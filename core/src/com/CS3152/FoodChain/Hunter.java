@@ -14,8 +14,10 @@ import java.util.HashMap;
 
 
 
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -42,6 +44,8 @@ public class Hunter extends Actor {
     private static final float MOVE_SPEED = 150.0f;
     /** How far the hunter can lay a trap from itself */
     private static final float TRAP_RADIUS = 50.0f;
+    
+    private static final float hunterDrawScaleX=0.2f;
     
     private FilmStrip sprite;
     
@@ -330,5 +334,10 @@ public class Hunter extends Actor {
     	sprite.flip(false,true);
     	super.setTexture(sprite);
     }
+    
+    
+	public void draw(GameCanvas canvas) {
+		canvas.draw(texture,Color.WHITE,origin.x,origin.y,getX(),getY(),getAngle(),hunterDrawScaleX,drawScale.y);
+	}
 
 }
