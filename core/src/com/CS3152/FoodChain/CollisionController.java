@@ -179,12 +179,18 @@ public class CollisionController implements ContactListener {
 		}
 		if (bd1 instanceof Animal && bd2 instanceof Trap) {
 			Animal animal = (Animal) bd1;
-			animal.setTrapped(true);
+			Trap trap = (Trap) bd2;
+			if (trap.getOnMap()) {
+				animal.setTrapped(true);
+			}
 			//animal.setActive(false);
 		}
 		if (bd1 instanceof Trap && bd2 instanceof Animal) {
 			Animal animal = (Animal) bd2;
-			animal.setTrapped(true);
+			Trap trap = (Trap) bd1;
+			if (trap.getOnMap()) {
+				animal.setTrapped(true);
+			}
 			//animal.setActive(false);
 		}
 		//System.out.println("COLLISION");
