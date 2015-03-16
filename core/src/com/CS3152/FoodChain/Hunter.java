@@ -64,6 +64,7 @@ public class Hunter extends Actor {
     	inventory.put("WOLF_TRAP", new ArrayList<Trap>());
         tmp = new Vector2();
         sprite = new FilmStrip(tex,1,4,4);
+        drawScale.x=hunterDrawScaleX;
         //set selected trap
         /*
         for (Trap trap : traps.get("REGULAR_TRAP")) {
@@ -334,10 +335,6 @@ public class Hunter extends Actor {
     	sprite.flip(false,true);
     	super.setTexture(sprite);
     }
-    
-    
-	public void draw(GameCanvas canvas) {
-		canvas.draw(texture,Color.WHITE,origin.x,origin.y,getX(),getY(),getAngle(),hunterDrawScaleX,drawScale.y);
-	}
+   
 
 }
