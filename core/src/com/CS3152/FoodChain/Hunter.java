@@ -10,10 +10,18 @@ import java.util.HashMap;
 
 
 
+
+
+
+
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+
 
 public class Hunter extends Actor {
     
@@ -23,8 +31,8 @@ public class Hunter extends Actor {
     //an arraylist within a hashmap works pretty well
     private HashMap<String, List<Trap>> inventory;
     
-    private static final String PLAYER_TEX = "assets/player.png";
-    private static Texture tex = null;
+    private static final String PLAYER_TEX = "assets/hunter_walk_cycle.png";
+    protected static Texture tex = null;
     
     // private boolean isSettingTrap;
     
@@ -34,6 +42,9 @@ public class Hunter extends Actor {
     private static final float MOVE_SPEED = 150.0f;
     /** How far the hunter can lay a trap from itself */
     private static final float TRAP_RADIUS = 50.0f;
+    
+    private FilmStrip sprite;
+    
 
 	
 	private Vector2 tmp;
@@ -41,13 +52,14 @@ public class Hunter extends Actor {
     public Hunter(float xPos, float yPos
     		//, HashMap<String, List<Trap>> traps
     		){
-    	super(new TextureRegion(tex), actorType.HUNTER, xPos, yPos, tex.getWidth(),
-    		  tex.getHeight(), new actorType[]{actorType.SHEEP});
+    	super(new TextureRegion(tex), actorType.HUNTER, xPos, yPos, 40,
+    		  40, new actorType[]{actorType.SHEEP});
     	inventory= new HashMap<String, List<Trap>>();
     	inventory.put("REGULAR_TRAP", new ArrayList<Trap>());
     	inventory.put("SHEEP_TRAP", new ArrayList<Trap>());
     	inventory.put("WOLF_TRAP", new ArrayList<Trap>());
         tmp = new Vector2();
+        sprite = new FilmStrip(tex,1,4,4);
         //set selected trap
         /*
         for (Trap trap : traps.get("REGULAR_TRAP")) {
@@ -64,8 +76,8 @@ public class Hunter extends Actor {
             }
         }
         */
- 
         
+
 
     }
     
@@ -212,9 +224,6 @@ public class Hunter extends Actor {
     
 
     /*public void setTrap(Vector2 clickPos) {
-=======
-    public void setTrapDown(Vector2 clickPos) {
->>>>>>> master
     	selectedTrap.setPosition(clickPos);
     	//update inventory
 		//set selectedTrap inventory status to false
@@ -300,4 +309,26 @@ public class Hunter extends Actor {
     public String getTypeNameString() {
     		return "HUNTER";
     }
+  
+    public void updateWalkFrame(){
+    	int frame = sprite.getFrame();
+    	frame++;
+    	if (frame==4){
+    		frame=0;
+    	}
+    	sprite.setFrame(frame);
+    	sprite.flip(false,true);
+    	super.setTexture(sprite);
+    }
+    
+    public FilmStrip Sprite(){
+    	return sprite;
+    }
+    
+    public void setStillFrame(){
+    	sprite.setFrame(0);
+    	sprite.flip(false,true);
+    	super.setTexture(sprite);
+    }
+
 }
