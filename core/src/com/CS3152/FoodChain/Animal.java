@@ -15,6 +15,8 @@ public abstract class Animal extends Actor {
 	//texture used in getCenter and setCenter
 	private float texWidth;
 	private float texHeight;
+	protected static final int AnimalWidth = 40;
+	protected static final int AnimalHeight = 40;
 	//how far forward the hunter can move in a turn. 
     private static final float MOVE_SPEED = 150f;
 
@@ -32,7 +34,7 @@ public abstract class Animal extends Actor {
 	 */
 	public Animal(TextureRegion tr, actorType type, float x, float y, 
 	              actorType[] prey, Vector2 facing){
-		super(tr, type, x, y, tr.getRegionWidth(), tr.getRegionHeight(), prey);
+		super(tr, type, x, y, AnimalWidth, AnimalHeight, prey);
 		this.type = type;
 		this.setPos(x,y);
 		this.facing = facing;
