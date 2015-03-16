@@ -16,4 +16,7 @@ public class Tile extends BoxObject{
 		// TODO Auto-generated constructor stub
 	}
     
+    public tileType getType() {
+    	return type;
+    }
 }

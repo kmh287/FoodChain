@@ -103,8 +103,9 @@ public class CollisionController implements ContactListener {
 
 	private void move(Animal actor,int index) {
 		actor.setLinearVelocity(controls[index].getAction());
+		float angle = ((AIController)controls[index]).getAngle();
+		actor.updateLOS(angle);
 		actor.setFacing(controls[index].getAction());
-
 	}
 
 
@@ -214,4 +215,7 @@ public class CollisionController implements ContactListener {
 		
 	}
 	
+	public World getWorld() {
+		return this.world;
+	}
 }

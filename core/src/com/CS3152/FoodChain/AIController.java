@@ -11,7 +11,7 @@ import com.badlogic.gdx.physics.box2d.World;
  * InputController corresponding to AI control.
  * General controller for all animal AIs
  */
-public abstract class AIController implements InputController {
+public class AIController implements InputController {
     /**
      * Enumeration to encode the states of animals
      */
@@ -49,18 +49,30 @@ public abstract class AIController implements InputController {
     // All actors on the map
     protected List<Actor> actors;
     
-    /* Although Vector2 stores floats, we are using their int values to specify the
-     * tile the animal is on.
-     */
-    // The animal's goal tile
+    protected VisionCallback vcb;
+    //protected FleeCallback fcb;
+    
+    // The vector position of the animal's goal
     protected Vector2 goal;
+    // tmp helper for subtracting from goal
+    protected Vector2 tmp;
     // The animal's tile location
     protected Vector2 loc;
+    // The shortest distance to run to in a situation where the animal can't run
+    // directly away
+    protected Vector2[] distVctrs;
     
-    // The animal's next move;
+    // How many more turns (1 turn = 10 frames) before the animal can stop running
+    protected int turns;
+    
+    // The animal's next move; a ControlCode
     protected Vector2 move;
+
     // Number of ticks since controller started
     protected int ticks;
+    
+    // Which direction to patrol
+    protected int patrolTurn;
     
     
     /*
@@ -69,23 +81,37 @@ public abstract class AIController implements InputController {
      * @param animal The Animal being controlled
      * @param map The game map
      */
-    public AIController(Animal animal, GameMap map, List<Actor> actors) {
+    public AIController(Animal animal, World world, GameMap map, List<Actor> actors) {
         this.animal = animal;
+        this.world = world;
         this.map = map;
         this.actors = actors;
+        
+        this.distVctrs = new Vector2[8];
+        for (int id = 0; id < distVctrs.length; id++) {
+        	distVctrs[id] = new Vector2();
+        }
         
         this.loc = new Vector2(map.screenXToMap(animal.getX()),
                                map.screenYToMap(animal.getY()));
         
-        this.state = State.PATROL;//FIND;
-        this.goal = new Vector2();
-        // To where it should start moving
-        setGoal((int)getLoc().x - 4, (int)getLoc().y);
-        this.move = new Vector2(100,0);
-        this.ticks = 0;
-        
         this.target = null;
         this.attacker = null;
+        
+        vcb = new VisionCallback(this);
+        //fcb = new FleeCallback(this, attacker);
+        
+        //this.state = State.PATROL;//FIND;
+        this.goal = new Vector2();
+        // To where it should start moving
+        this.tmp = new Vector2();
+        this.move = InputController.WEST;
+        goal.set (getAnimal().getX() + 1, getAnimal().getY());
+        this.turns = 3;//should be 0 in future
+        
+        this.patrolTurn = 1;
+        
+        this.vcb = new VisionCallback(this);
     }
     
     /*
@@ -94,6 +120,14 @@ public abstract class AIController implements InputController {
     public void updateLoc() {
         this.loc.set(map.screenXToMap(animal.getX()),
                      map.screenYToMap(animal.getY()));
+    }
+    
+    // Determine the new angle the animal wants to face
+    // @return that angle.
+    public float getAngle() {
+    	// Subtracting the animal's current position from the goal it wants to be at
+    	tmp.set(goal);
+    	return (tmp.sub(getAnimal().getPosition())).angleRad();
     }
     
     /*
@@ -133,114 +167,184 @@ public abstract class AIController implements InputController {
      */
     public Vector2 getAction() {
         // Increment the number of ticks.
-        ticks++;
+        //ticks++;
         
-        if (ticks % 10 == 0 && state != State.DEAD) {
+        //if (ticks % 10 == 0 && state != State.DEAD) {
         	//comment out for fixing collisions
 //            // Process the State
 //            //changeStateIfApplicable();
-//            
-//            checkCone();
-//            if (isScared()) {
-//            	flee();
-//            }
-//            else if (hasTarget()) {
-//            	chase();
-//            }
-//            else {
-//            	//patrol();
-//            }
+//       	  checkCone();
+        	// RayCasting
+        	//Should be at beginning
+        	for (Actor a : actors) {
+        		if (a != getAnimal()) {
+        			world.rayCast(vcb, getAnimal().getPosition(), a.getPosition());
+        			//vcb.getFixture();
+        		}
+        	}
+            if (isScared()) {
+            	flee();
+            }
+            else if (hasTarget()) {
+            	chase();
+            }
+            else {
+            	patrol();
+            }
 //            
 //            // Pathfinding
 //            //markGoal();
-//            move = getNextMoveToGoal();
-        }
+            move = getNextMoveToGoal();
         
         //System.out.println(move);
         return move;
     }
     
-    // Checks animal's line of sight to see if anything is there and responds
-    // accordingly.
-    public void checkCone() {
-    	for (Actor a : actors) {
-    		if (withinCone(a)) {
-    			VisionCallback vcb = new VisionCallback(this);
-    			world.rayCast(vcb, getAnimal().getPosition(), a.getPosition());
-    		}
-    	}
+    // Determines whether or not an actor is in the animal's line of sight
+    public static boolean withinCone(Animal an, Vector2 meToActor) {
+    	return isClockwise(an.getLeftSectorLine(), meToActor) &&
+    		   !isClockwise(an.getRightSectorLine(), meToActor) &&
+    		   withinRadius(an, meToActor);
     }
     
-    // Determines whether or not an actor is in the animal's line of sight
-    //TODO
-    public boolean withinCone(Actor a) {
-    	return false;
+    /* Determines if meToActor is clockwise to sectorLine.
+     * The function computes the dot product between the tangent of sectorLine and
+     * meToActor. If the product is negative, then meToActor is clockwise.
+     * 
+     * @param sectorLine the line that we are measuring with respect to
+     * @param meToActor the line we are testing to be clockwise
+     * 
+     * @return true if meToActor is clockwise to sectorLine. False otherwise.
+     */
+    public static boolean isClockwise(Vector2 sectorLine, Vector2 meToActor) {
+    	return 0 >= -sectorLine.y * meToActor.x + sectorLine.x * meToActor.y;
+    }
+    
+    /* Determines if length is within the length of vision sector
+     * 
+     * @param the vector we are testing
+     * 
+     * @return true if length is at most as long as one of the vision sector lines.
+     */
+    public static boolean withinRadius(Animal an, Vector2 length) {
+    	return length.len() <= an.getSightLength();
     }
     
     // Determines whether or not the animal should run away
     public void flee() {
-        // Go to the next tile farthest from attacker
-        float fleex = getAnimal().getX() - attacker.getX();
-        float fleey = getAnimal().getY() - attacker.getY();
-        int attackTileX = map.screenXToMap(animal.getX());
-        int attackTileY = map.screenYToMap(animal.getY());
-        // Normalize distance to choose next tile
-        fleex = fleex / (Math.abs(fleex));
-        fleey = fleey / (Math.abs(fleey));
-        // The best goal tile
-        float tileX = getLoc().x + fleex;
-        float tileY = getLoc().y + fleey;
-        // Set best goal if it is safe. Otherwise choose tile farthest from attacker
-        if (map.isSafeAt(tileX, tileY)) {
-        	goal.set(tileX, tileY);
+    	/*world.rayCast(fcb, attacker.getPosition(), getAnimal().getPosition());
+    	if (fcb.getContact() != getAnimal()) {
+    		turns--;
+    	}*/
+        // Animal's position
+    	float anX = getAnimal().getX();
+    	float anY = getAnimal().getY();
+    	// Attacker's position
+    	float attackX = attacker.getX();
+        float attackY = attacker.getY();
+        // Animal's best option
+        Vector2 norm = getAnimal().getPosition().sub(attacker.getPosition()).nor();
+        if (map.isSafeAt(anX + 100*norm.x, anY + 100*norm.y)) {
+        	goal.set(anX + 100*norm.x, anY + 100*norm.y);
         	return;
         }
         // Find farthest valid tile from attacker
-        float[] dists = new float[7];
-        if (map.isSafeAt(getLoc().x + fleex, tileY)) {
-        	dists[0] = Vector2.dst(getLoc().x + fleex, tileY, attackTileX, attackTileY);
+        if (map.isSafeAt(anX - 100, anY + 100)) {
+        	distVctrs[0].x = anX - 100;
+        	distVctrs[0].y = anY + 100;
         }
-        if (map.isSafeAt(tileX, getLoc().y + fleey)) {
-        	dists[1] = Vector2.dst(tileX, getLoc().y + fleey, attackTileX, attackTileY);
+        if (map.isSafeAt(anX, anY + 100)) {
+        	distVctrs[1].x = anX;
+        	distVctrs[1].y = anY + 100;
         }
-        if (map.isSafeAt(getLoc().x - fleex, tileY)) {
-        	dists[2] = Vector2.dst(getLoc().x - fleex, tileY, attackTileX, attackTileY);
+        if (map.isSafeAt(anX + 100, anY + 100)) {
+        	distVctrs[2].x = anX + 100;
+        	distVctrs[2].y = anY + 100;
         }
-        if (map.isSafeAt(tileX, getLoc().y - fleey)) {
-        	dists[3] = Vector2.dst(tileX, getLoc().y - fleey, attackTileX, attackTileY);
+        if (map.isSafeAt(anX - 100, anY)) {
+        	distVctrs[3].x = anX - 100;
+        	distVctrs[3].y = anY;
         }
-        if (map.isSafeAt(getLoc().x - fleex, getLoc().y - fleey)) {
-        	dists[4] = Vector2.dst(getLoc().x - fleex, getLoc().y - fleey,
-					   			   attackTileX, attackTileY);
+        if (map.isSafeAt(anX + 100, anY)) {
+        	distVctrs[4].x = anX + 100;
+        	distVctrs[4].y = anY;
         }
-        if (map.isSafeAt(getLoc().x - fleex, getLoc().y + fleey)) {
-        	dists[5] = Vector2.dst(getLoc().x - fleex, getLoc().y + fleey,
-		   			   attackTileX, attackTileY);
-        }            
-        if (map.isSafeAt(getLoc().x + fleex, getLoc().y - fleey)) {
-        	dists[6] = Vector2.dst(getLoc().x + fleex, getLoc().y - fleey,
-		   			   attackTileX, attackTileY);
+        if (map.isSafeAt(anX - 100, anY - 100)) {
+        	distVctrs[5].x = anX - 100;
+		   	distVctrs[5].y = anY - 100;
+	    }            
+	    if (map.isSafeAt(anX, anY - 100)) {
+	    	distVctrs[6].x = anX;
+		   	distVctrs[6].y = anY - 100;
+	    }
+	    if (map.isSafeAt(anX + 100, anY - 100)) {
+	    	distVctrs[7].x = anX + 100;
+		   	distVctrs[7].y = anY - 100;
         }
         // biggest distance
-        int biggest = 0;
-//        for (int x = 0; x < dists.length; x++) {
-//        	if (dists[x] > biggest) {
-//        		biggest = dists[x];
-//        	}
-//        }
+        float biggest = 0;
+        int bigIndex = 0;
+        for (int index = 0; index < distVctrs.length; index++) {
+        	float distance = Vector2.dst(distVctrs[index].x, distVctrs[index].y,
+        			                     attackX, attackY);
+        	if (distance > biggest) {
+        		biggest = distance;
+        		bigIndex = index;
+        	}
+        }
+        goal.set(distVctrs[bigIndex].x, distVctrs[bigIndex].y);
         return;
     }
     
     public void chase() {
-        // Go to the next tile closest to target
-        float chasex = getAnimal().getX() - target.getX();
-        float chasey = getAnimal().getY() - target.getY();
-        // Normalize distance to choose next tile
-        chasex = chasex / (Math.abs(chasex));
-        chasey = chasey / (Math.abs(chasey));
-        goal.set(getLoc().x - chasex, getLoc().y - chasey);
+    	// Animal's position
+    	float anX = getAnimal().getX();
+    	float anY = getAnimal().getY();
+    	// Attacker's position
+    	float targetX = target.getX();
+        float targetY = target.getY();
+        // Animal's best option
+        float goalX = targetX;
+        float goalY = targetY;
+        
+        // Set best goal if it is safe.
+        // Choose valid position farthest from attacker.
+        if (map.isSafeAt(goalX, goalY)) {
+        	goal.set(goalX, goalY);
+        	return;
+        }
     }
+	
+	public void patrol() {
+		float anX = getAnimal().getPosition().x;
+		float anY = getAnimal().getPosition().y;
+		if (map.isSafeAt(anX + 100, anY)) {
+			if (patrolTurn == 1) {
+				goal.set(anX + 100, anY);
+				return;
+			}
+		}
+		patrolTurn = 2;
+		if (map.isSafeAt(anX - 100, anY)) {
+			if (patrolTurn == 2) {
+				goal.set(anX - 100, anY);
+				return;
+			}
+		}
+		patrolTurn = 1;
+		if (map.isSafeAt(anX, anY + 100) && patrolTurn == 3) {
+			goal.set(anX, anY + 100);
+			return;
+		}
+		patrolTurn = 1;
+		goal.set(anX, anY - 100);
+		return;
+	}
     
+	public boolean canSettle() {
+		return this.turns <= 0;
+	}
+	
     /*
      * The animal this AI controls
      *
@@ -253,19 +357,19 @@ public abstract class AIController implements InputController {
     /*
      * Changes the animal's state depending on what it's doing and what it's seen
      */
-    public abstract void changeStateIfApplicable();
+    //public abstract void changeStateIfApplicable();
     
     /*
      * Marks the goal tile the animal is trying to go to
      */
-    public abstract void markGoal();
+    //public abstract void markGoal();
     
     /*
      * Determines whether or not the animal sees a predator
      *
      * @return true if a predator is in the animal's line of sight. False otherwise
      */
-    public abstract boolean seesPredator();
+    //public abstract boolean seesPredator();
     
     /*
      * Sets the animal that this animal should flee from. Null if it shouldn't flee.
@@ -290,7 +394,7 @@ public abstract class AIController implements InputController {
      *
      * @return true if it is in a predator's line of sight. false otherwise
      */
-    public abstract boolean isSeenByPredator();
+    //public abstract boolean isSeenByPredator();
         
     /*
      * Determines whether the animal sees prey.
@@ -298,7 +402,7 @@ public abstract class AIController implements InputController {
      * @return true if an animal's prey is in the line of sight of the animal.
      * false otherwise.
      */
-    public abstract boolean seesPrey();
+    //public abstract boolean seesPrey();
     
     /*
      * Sets whether or not this animal should be scared. If ac is null, then
@@ -326,13 +430,16 @@ public abstract class AIController implements InputController {
     	return this.scared;
     }
     
+    public void setTurns() {
+    	this.turns = 10;
+    }
+    
     /*
      * Gets the move that will get the animal to its goal the fastest
      *
      * @return int corresponding to InputController bit-vector
      */
-    public int getNextMoveToGoal() {
-    	return 0;
+    public Vector2 getNextMoveToGoal() {
     	//System.out.println("goalx:" + goal.x + "goaly:" + goal.y);
     	//System.out.println("locx:" + getLoc().x + "locy:" + getLoc().y);
     	
@@ -363,14 +470,16 @@ public abstract class AIController implements InputController {
 //        else {
 //            return NO_ACTION;
 //        }
+    	tmp.set(goal);
+    	return tmp.sub(getAnimal().getPosition());
     }
     
     // Should not be here, but need to finish
     public Vector2 getClickPos() {return new Vector2();}
     
-    public boolean isClicked(){return false;}
+    public boolean isClicked() {return false;}
     
-    public int getNum(){return 0;}
+    public int getNum() {return 0;}
 }
 
 
