@@ -205,7 +205,7 @@ public class CollisionController implements ContactListener {
 		if (bd1 instanceof Animal && bd2 instanceof Trap) {
 			Animal animal = (Animal) bd1;
 			Trap trap = (Trap) bd2;
-<<<<<<< HEAD
+
 			if (trap.getType() == "REGULAR_TRAP"
 					&& animal.getType() == Actor.actorType.SHEEP) {
 				animal.setTrapped(true);
@@ -222,11 +222,6 @@ public class CollisionController implements ContactListener {
 				trapLocationToAdd = trap.getPosition();
 			}
 				
-=======
-			if (trap.getOnMap()) {
-				animal.setTrapped(true);
-			}
->>>>>>> master
 			//animal.setActive(false);
 		}
 		if (bd1 instanceof Trap && bd2 instanceof Animal) {
