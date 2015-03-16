@@ -246,10 +246,11 @@ public class GameMap {
 		}
 	}
 		
-	public boolean isSafeAt(float tileX, float tileY) {
-		return ((tileX >= 0 && 
-				tileY >= 0) &&
-			   tileX <= this.layout[0].length && 
-			   tileY <= this.layout.length);
+	public boolean isSafeAt(float xPos, float yPos) {
+		return ((xPos >= 0 && 
+				yPos >= 0) &&
+			   xPos <= Gdx.graphics.getWidth() && 
+			   yPos <= Gdx.graphics.getHeight() &&
+			   screenPosToTileType(xPos, yPos) == Tile.tileType.GRASS);
 	}
 }

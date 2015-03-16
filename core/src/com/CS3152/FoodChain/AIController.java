@@ -11,7 +11,7 @@ import com.badlogic.gdx.physics.box2d.World;
  * InputController corresponding to AI control.
  * General controller for all animal AIs
  */
-public abstract class AIController implements InputController {
+public class AIController implements InputController {
     /**
      * Enumeration to encode the states of animals
      */
@@ -51,24 +51,13 @@ public abstract class AIController implements InputController {
     
     protected VisionCallback vcb;
     
-    /* Although Vector2 stores floats, we are using their int values to specify the
-     * tile the animal is on.
-     */
-    // The animal's goal tile
+    // The vector position of the animal's goal
     protected Vector2 goal;
     // The animal's tile location
     protected Vector2 loc;
-
     // The shortest distance to run to in a situation where the animal can't run
     // directly away
     protected Vector2[] distVctrs;
-    // Vector that runs from the center of the animal diagonally leftward some length
-    // RELATIVE TO ANIMAL'S POSITION
-    protected Vector2 leftSectorLine;
-    
-    // Vector that runs from the center of the animal diagonally rightward that length
-    // RELATIVE TO ANIMAL'S POSITION
-    protected Vector2 rightSectorLine;
     
     // How many more turns (1 turn = 10 frames) before the animal can stop running
     protected int turns;
@@ -86,26 +75,37 @@ public abstract class AIController implements InputController {
      * @param animal The Animal being controlled
      * @param map The game map
      */
-    public AIController(Animal animal, GameMap map, List<Actor> actors) {
+    public AIController(Animal animal, World world, GameMap map, List<Actor> actors) {
         this.animal = animal;
+        this.world = world;
         this.map = map;
         this.actors = actors;
 
         this.distVctrs = new Vector2[8];
+        for (int id = 0; id < distVctrs.length; id++) {
+        	distVctrs[id] = new Vector2();
+        }
+
         this.loc = new Vector2(map.screenXToMap(animal.getX()),
                                map.screenYToMap(animal.getY()));
         
-        this.state = State.PATROL;//FIND;
+        vcb = new VisionCallback(this);
+        
+        //this.state = State.PATROL;//FIND;
         this.goal = new Vector2();
         // To where it should start moving
-        setGoal((int)getLoc().x - 4, (int)getLoc().y);
-        this.move = new Vector2(100,0);
-        this.ticks = 0;
+
+        this.move = InputController.WEST;
+        goal.set (getAnimal().getX() + 1, getAnimal().getY());
         
+        //this.ticks = 0;
+        
+        this.turns = 3;//should be 0 in future;
+ 
         this.target = null;
         this.attacker = null;
         
-        this.vcb = new VisionCallback();
+        this.vcb = new VisionCallback(this);
     }
     
     /*
@@ -114,6 +114,13 @@ public abstract class AIController implements InputController {
     public void updateLoc() {
         this.loc.set(map.screenXToMap(animal.getX()),
                      map.screenYToMap(animal.getY()));
+    }
+    
+    // Determine the new angle the animal wants to face
+    // @return that angle.
+    public float getAngle() {
+    	// Subtracting the animal's current position from the goal it wants to be at
+    	return goal.sub(getAnimal().getPosition()).angle();
     }
     
     /*
@@ -159,49 +166,62 @@ public abstract class AIController implements InputController {
         	//comment out for fixing collisions
 //            // Process the State
 //            //changeStateIfApplicable();
-//            
 
 //       	  checkCone();
         	// RayCasting
         	//Should be at beginning
         	for (Actor a : actors) {
-    			world.rayCast(vcb, getAnimal().getPosition(), a.getPosition());
+        		if (a != getAnimal()) {
+        			world.rayCast(vcb, getAnimal().getPosition(), a.getPosition());
+        		}
         	}
-
-//            if (isScared()) {
-//            	flee();
-//            }
-//            else if (hasTarget()) {
-//            	chase();
-//            }
-//            else {
-//            	//patrol();
-//            }
+            if (isScared()) {
+            	flee();
+            }
+            else if (hasTarget()) {
+            	System.out.println("eat");
+            	chase();
+            }
+            else {
+            	patrol();
+            }
 //            
 //            // Pathfinding
 //            //markGoal();
             move = getNextMoveToGoal();
-//       }
         
         //System.out.println(move);
         return move;
     }
     
-    // Checks animal's line of sight to see if anything is there and responds
-    // accordingly.
-    public void checkCone() {
-    	for (Actor a : actors) {
-    		if (withinCone(a)) {
-    			VisionCallback vcb = new VisionCallback(this);
-    			world.rayCast(vcb, getAnimal().getPosition(), a.getPosition());
-    		}
-    	}
+    // Determines whether or not an actor is in the animal's line of sight
+    public boolean withinCone(Vector2 meToActor) {
+    	return isClockwise(getAnimal().getLeftSectorLine(), meToActor) &&
+    		   !isClockwise(getAnimal().getRightSectorLine(), meToActor) &&
+    		   withinRadius(meToActor);
     }
     
-    // Determines whether or not an actor is in the animal's line of sight
-    //TODO
-    public boolean withinCone(Actor a) {
-    	return false;
+    /* Determines if meToActor is clockwise to sectorLine.
+     * The function computes the dot product between the tangent of sectorLine and
+     * meToActor. If the product is negative, then meToActor is clockwise.
+     * 
+     * @param sectorLine the line that we are measuring with respect to
+     * @param meToActor the line we are testing to be clockwise
+     * 
+     * @return true if meToActor is clockwise to sectorLine. False otherwise.
+     */
+    public boolean isClockwise(Vector2 sectorLine, Vector2 meToActor) {
+    	return 0 >= -sectorLine.y * meToActor.x + sectorLine.x * meToActor.y;
+    }
+    
+    /* Determines if length is within the length of vision sector
+     * 
+     * @param the vector we are testing
+     * 
+     * @return true if length is at most as long as one of the vision sector lines.
+     */
+    public boolean withinRadius(Vector2 length) {
+    	return length.len() <= getAnimal().getSightLength();
     }
     
     // Determines whether or not the animal should run away
@@ -216,9 +236,7 @@ public abstract class AIController implements InputController {
         // Animal's best option
         float goalX = 2*anX - attackX;
         float goalY = 2*anY - attackY;
-        
-        // Set best goal if it is safe.
-        // Choose valid position farthest from attacker.
+
         if (map.isSafeAt(goalX, goalY)) {
         	goal.set(goalX, goalY);
         	return;
@@ -247,13 +265,13 @@ public abstract class AIController implements InputController {
         if (map.isSafeAt(anX - 1, anY - 1)) {
         	distVctrs[5].x = anX - 1;
 		   	distVctrs[5].y = anY - 1;
-        }            
-        if (map.isSafeAt(anX, anY - 1)) {
-        	distVctrs[6].x = anX;
+	    }            
+	    if (map.isSafeAt(anX, anY - 1)) {
+	    	distVctrs[6].x = anX;
 		   	distVctrs[6].y = anY - 1;
-        }
-        if (map.isSafeAt(anX + 1, anY - 1)) {
-        	distVctrs[7].x = anX + 1;
+	    }
+	    if (map.isSafeAt(anX + 1, anY - 1)) {
+	    	distVctrs[7].x = anX + 1;
 		   	distVctrs[7].y = anY - 1;
         }
         // biggest distance
@@ -279,8 +297,9 @@ public abstract class AIController implements InputController {
     	float targetX = target.getX();
         float targetY = target.getY();
         // Animal's best option
-        float goalX = 2*anX - targetX;
-        float goalY = 2*anY - targetY;
+
+        float goalX = targetX;
+        float goalY = targetY;
         
         // Set best goal if it is safe.
         // Choose valid position farthest from attacker.
@@ -289,7 +308,29 @@ public abstract class AIController implements InputController {
         	return;
         }
     }
+	
+	public void patrol() {
+		System.out.println("patrol");
+		float anX = getAnimal().getX();
+		float anY = getAnimal().getY();
+		if (map.isSafeAt(anX - 1, anY)) {
+			goal.set(anX + 1, anY);
+		}
+		else if (map.isSafeAt(anX - 1, anY)) {
+			goal.set(anX - 1, anY);
+		}
+		else if (map.isSafeAt(anX, anY + 1)) {
+			goal.set(anX, anY + 1);
+		}
+		else {
+			goal.set(anX, anY - 1);
+		}
+	}
     
+	public boolean canSettle() {
+		return this.turns == 0;
+	}
+	
     /*
      * The animal this AI controls
      *
@@ -302,19 +343,19 @@ public abstract class AIController implements InputController {
     /*
      * Changes the animal's state depending on what it's doing and what it's seen
      */
-    public abstract void changeStateIfApplicable();
+    //public abstract void changeStateIfApplicable();
     
     /*
      * Marks the goal tile the animal is trying to go to
      */
-    public abstract void markGoal();
+    //public abstract void markGoal();
     
     /*
      * Determines whether or not the animal sees a predator
      *
      * @return true if a predator is in the animal's line of sight. False otherwise
      */
-    public abstract boolean seesPredator();
+    //public abstract boolean seesPredator();
     
     /*
      * Sets the animal that this animal should flee from. Null if it shouldn't flee.
@@ -339,7 +380,7 @@ public abstract class AIController implements InputController {
      *
      * @return true if it is in a predator's line of sight. false otherwise
      */
-    public abstract boolean isSeenByPredator();
+    //public abstract boolean isSeenByPredator();
         
     /*
      * Determines whether the animal sees prey.
@@ -347,7 +388,7 @@ public abstract class AIController implements InputController {
      * @return true if an animal's prey is in the line of sight of the animal.
      * false otherwise.
      */
-    public abstract boolean seesPrey();
+    //public abstract boolean seesPrey();
     
     /*
      * Sets whether or not this animal should be scared. If ac is null, then
@@ -381,8 +422,7 @@ public abstract class AIController implements InputController {
      * @return int corresponding to InputController bit-vector
      */
 
-    public Vector2/*int*/ getNextMoveToGoal() {
-
+    public Vector2 getNextMoveToGoal() {
     	//System.out.println("goalx:" + goal.x + "goaly:" + goal.y);
     	//System.out.println("locx:" + getLoc().x + "locy:" + getLoc().y);
     	
@@ -419,9 +459,9 @@ public abstract class AIController implements InputController {
     // Should not be here, but need to finish
     public Vector2 getClickPos() {return new Vector2();}
     
-    public boolean isClicked(){return false;}
+    public boolean isClicked() {return false;}
     
-    public int getNum(){return 0;}
+    public int getNum() {return 0;}
 }
 
 

@@ -28,11 +28,13 @@ public class VisionCallback implements RayCastCallback {
 			if (contact instanceof Actor) {
 				if (((Actor)contact).canKill(source.getAnimal())) {
 					source.setScared((Actor)contact);
+					System.out.println("isscared");
 					source.setTarget(null);
 					return 0.0f;
 				}
 				if (source.getAnimal().canKill((Actor)contact)) {
 					source.setScared(null);
+					System.out.println("isravenous");
 					source.setTarget((Actor)contact);
 					return 1.0f;
 				}
@@ -45,7 +47,7 @@ public class VisionCallback implements RayCastCallback {
 			    }
 				return 1.0f;
 			}
-			else {  //The ray cast ran into a Tile
+			else if (contact instanceof Tile) {
 				if (source.canSettle()) {
 					source.setScared(null);
 					source.setTarget(null);
@@ -54,6 +56,9 @@ public class VisionCallback implements RayCastCallback {
 					return -1;
 				}
 				return 0.0f;
+			}
+			else {// Ray cast ran into Trap
+				return -1;
 			}
 		}
 		else {

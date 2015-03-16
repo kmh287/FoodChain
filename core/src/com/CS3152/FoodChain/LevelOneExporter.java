@@ -60,10 +60,10 @@ public class LevelOneExporter {
         
 
         List<Vector2> coords = new ArrayList<Vector2>();
-        coords.add(new Vector2(5,5));
-        coords.add(new Vector2(7,7));
+        coords.add(new Vector2(7,9));
+        coords.add(new Vector2(15,9));
         
-        Vector2 playerStart = new Vector2(10,10);
+        Vector2 playerStart = new Vector2(15,3);
         
         /*
         HashMap<String, List<Trap>> startingInventory = new HashMap<String, List<Trap>>();
