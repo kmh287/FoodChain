@@ -183,26 +183,27 @@ public class GameMode implements Screen {
 	    hunter.setDensity(DEFAULT_DENSITY);
 	    hunter.setAwake(true);
 	    hunter.setBodyType(BodyDef.BodyType.DynamicBody);
-	    collisionController.addObject(hunter, "HUNTER");
+	    collisionController.addObject(hunter);
+	    //collisionController.addObject(hunter, "HUNTER");
 	    
 	    Trap tmp = new RegularTrap();
 	    tmp.setSensor(true);
 	    tmp.setBodyType(BodyDef.BodyType.StaticBody);
-	    //collisionController.addObject(tmp);
-	    collisionController.addObject(tmp, "REGULAR_TRAP");
+	    collisionController.addObject(tmp);
+	    //collisionController.addObject(tmp, "REGULAR_TRAP");
 	    hunter.addToInventory(tmp);
 	    hunter.setSelectedTrap(InputController.ONE);
 	    tmp = new SheepTrap();
 	    tmp.setSensor(true);
 	    tmp.setBodyType(BodyDef.BodyType.StaticBody);
-	    //collisionController.addObject(tmp);
-	    collisionController.addObject(tmp, "SHEEP_TRAP");
+	    collisionController.addObject(tmp);
+	    //collisionController.addObject(tmp, "SHEEP_TRAP");
 	    hunter.addToInventory(tmp);
 	    tmp = new WolfTrap();
 	    tmp.setSensor(true);
 	    tmp.setBodyType(BodyDef.BodyType.StaticBody);
-	    //collisionController.addObject(tmp);
-	    collisionController.addObject(tmp, "WOLF_TRAP");
+	    collisionController.addObject(tmp);
+	    //collisionController.addObject(tmp, "WOLF_TRAP");
 	    hunter.addToInventory(tmp);
 	}
 	
@@ -250,7 +251,8 @@ public class GameMode implements Screen {
 	        }
 	        newAnimal.setDensity(DEFAULT_DENSITY);
 	        newAnimal.setBodyType(BodyDef.BodyType.DynamicBody);
-	        collisionController.addObject(newAnimal, currType);
+	        //collisionController.addObject(newAnimal, currType);
+	        collisionController.addObject(newAnimal);
 	    }
 	    
 	}

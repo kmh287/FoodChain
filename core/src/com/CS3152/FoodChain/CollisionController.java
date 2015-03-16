@@ -45,7 +45,8 @@ public class CollisionController implements ContactListener {
 	 * Add the object to the list of objects maintained in the CollisionController
 	 * @param obj: the object to add
 	 */
-	protected void addObject(BoxObject obj, Object data) {
+	//protected void addObject(BoxObject obj, Object data) {
+	protected void addObject(BoxObject obj) {
 		objects.add(obj);
 		obj.activatePhysics(world);
 		//obj.getBody().setUserData(data.toString());
