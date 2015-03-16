@@ -286,13 +286,11 @@ public class GameMode implements Screen {
 		}
 		//if WASD pressed, then update frame
 		if(controls[0].getAction()!=InputController.NO_ACTION){
-			ticks++;
 			if(ticks%10==0){
 				hunter.updateWalkFrame();
 			}
 		}
 		else{
-			ticks=0;
 			hunter.setStillFrame();
 		}
 		
@@ -301,9 +299,20 @@ public class GameMode implements Screen {
 		int i = 1;
 		for (Animal an : animals) {
 			an.update(delta);
+			//need to update wolf once we have animations
+			if(an instanceof Sheep){
+				if(controls[i].getAction()!=InputController.NO_ACTION){
+					if(ticks%10==0){
+						((Sheep) an).updateWalkFrame();
+					}
+				}
+				else{
+					((Sheep) an).setStillFrame();
+				}
+			}
 			i++;
 		}
-		
+		ticks++;
 		collisionController.update();		
 		
 		/*} else {
