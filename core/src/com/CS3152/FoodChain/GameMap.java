@@ -240,7 +240,8 @@ public class GameMap {
         										 curr);
         			t.setBodyType(BodyDef.BodyType.StaticBody);
         			t.setActive(false);
-				collisionController.addObject(t, curr);
+				//collisionController.addObject(t, curr);
+				collisionController.addObject(t);
 			}
 		}
 	}
