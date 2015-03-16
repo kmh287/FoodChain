@@ -50,6 +50,7 @@ public class AIController implements InputController {
     protected List<Actor> actors;
     
     protected VisionCallback vcb;
+    //protected FleeCallback fcb;
     
     // The vector position of the animal's goal
     protected Vector2 goal;
@@ -69,6 +70,9 @@ public class AIController implements InputController {
 
     // Number of ticks since controller started
     protected int ticks;
+    
+    // Which direction to patrol
+    protected int patrolTurn;
     
     
     /*
@@ -91,7 +95,11 @@ public class AIController implements InputController {
         this.loc = new Vector2(map.screenXToMap(animal.getX()),
                                map.screenYToMap(animal.getY()));
         
+        this.target = null;
+        this.attacker = null;
+        
         vcb = new VisionCallback(this);
+        //fcb = new FleeCallback(this, attacker);
         
         //this.state = State.PATROL;//FIND;
         this.goal = new Vector2();
@@ -99,10 +107,9 @@ public class AIController implements InputController {
         this.tmp = new Vector2();
         this.move = InputController.WEST;
         goal.set (getAnimal().getX() + 1, getAnimal().getY());
-        this.turns = 3;//should be 0 in future;
- 
-        this.target = null;
-        this.attacker = null;
+        this.turns = 3;//should be 0 in future
+        
+        this.patrolTurn = 1;
         
         this.vcb = new VisionCallback(this);
     }
@@ -225,7 +232,10 @@ public class AIController implements InputController {
     
     // Determines whether or not the animal should run away
     public void flee() {
-    	world.rayCast(fcb, attacker().getPosition(), getAnimal().getPosition());
+    	/*world.rayCast(fcb, attacker.getPosition(), getAnimal().getPosition());
+    	if (fcb.getContact() != getAnimal()) {
+    		turns--;
+    	}*/
         // Animal's position
     	float anX = getAnimal().getX();
     	float anY = getAnimal().getY();
@@ -308,22 +318,31 @@ public class AIController implements InputController {
 	public void patrol() {
 		float anX = getAnimal().getPosition().x;
 		float anY = getAnimal().getPosition().y;
-		if (map.isSafeAt(anX + 1, anY)) {
-			goal.set(anX + 1, anY);
+		if (map.isSafeAt(anX + 100, anY)) {
+			if (patrolTurn == 1) {
+				goal.set(anX + 100, anY);
+				return;
+			}
 		}
-		else if (map.isSafeAt(anX - 1, anY)) {
-			goal.set(anX - 1, anY);
+		patrolTurn = 2;
+		if (map.isSafeAt(anX - 100, anY)) {
+			if (patrolTurn == 2) {
+				goal.set(anX - 100, anY);
+				return;
+			}
 		}
-		else if (map.isSafeAt(anX, anY + 1)) {
-			goal.set(anX, anY + 1);
+		patrolTurn = 1;
+		if (map.isSafeAt(anX, anY + 100) && patrolTurn == 3) {
+			goal.set(anX, anY + 100);
+			return;
 		}
-		else {
-			goal.set(anX, anY - 1);
-		}
+		patrolTurn = 1;
+		goal.set(anX, anY - 100);
+		return;
 	}
     
 	public boolean canSettle() {
-		return this.turns == 0;
+		return this.turns <= 0;
 	}
 	
     /*
@@ -409,6 +428,10 @@ public class AIController implements InputController {
      */
     public boolean isScared() {
     	return this.scared;
+    }
+    
+    public void setTurns() {
+    	this.turns = 10;
     }
     
     /*

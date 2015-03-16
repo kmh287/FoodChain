@@ -10,9 +10,10 @@ public class FleeCallback implements RayCastCallback {
 	
 	private AIController source;
 	private Animal attacker;
+	private Object contact;
 	private Vector2 tmp;
 	
-	public FleeCallback (AIController src, Animal attacker) {
+	public FleeCallback (AIController src, Actor attacker) {
 		source = src;
 		attacker = attacker;
 		tmp = new Vector2();
@@ -27,25 +28,26 @@ public class FleeCallback implements RayCastCallback {
 		tmp.set(point);
 		tmp.sub(attacker.getPosition());
 		if (AIController.withinCone(attacker, tmp)) {
-			Object contact = fixture.getBody().getUserData();
+			contact = fixture.getBody().getUserData();
 			//Check if it saw its prey
 			
 			if ((Animal)contact == source.getAnimal()) {
 				return 0;
 			}
-			else if (contact instanceof Tile) {
-				if (((Tile)contact).getType() == Tile.tileType.GRASS) {
-					return -1;
-				}
-				source.setTurn(source.getTurn()-1);
-				return 0;
-			}
-			else {// Ray cast ran into Trap
-				return -1;
+			else {
+				// Arbitrary
+				contact = attacker;
+				return 1;
 			}
 		}
 		else {
-			return 0f;
+			// Arbitrary
+			contact = attacker;
+			return 0;
 		}
+	}
+	
+	public Object getContact() {
+		return contact;
 	}
 }
