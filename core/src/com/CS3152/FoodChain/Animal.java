@@ -19,8 +19,11 @@ public abstract class Animal extends Actor {
     // Vector that runs from the center of the animal diagonally rightward that length
     // RELATIVE TO ANIMAL'S POSITION
     protected Vector2 rightSectorLine;
+<<<<<<< HEAD
+=======
     
     private Vector2 tmp;
+>>>>>>> Christian
 	
 	//texture used in getCenter and setCenter
 	private float texWidth;
@@ -49,7 +52,10 @@ public abstract class Animal extends Actor {
 		this.facing = facing;
 		this.leftSectorLine = new Vector2();
 		this.rightSectorLine = new Vector2();
+<<<<<<< HEAD
+=======
 		this.tmp = new Vector2();
+>>>>>>> Christian
 		updateLOS(0);
 		setTexWidth(tr.getRegionWidth());
 		setTexHeight(tr.getRegionHeight());
@@ -213,9 +219,14 @@ public abstract class Animal extends Actor {
 	}
 	
 	public void drawSight(GameCanvas canvas) {
+<<<<<<< HEAD
+		canvas.drawLine(Color.YELLOW, getPosition(), getLeftSectorLine());
+		canvas.drawLine(Color.YELLOW, getPosition(), getRightSectorLine());
+=======
 		tmp.set(getPosition());
 		canvas.drawLine(Color.YELLOW, getPosition(), tmp.add(getLeftSectorLine()));
 		tmp.set(getPosition());
 		canvas.drawLine(Color.YELLOW, getPosition(), tmp.add(getRightSectorLine()));
+>>>>>>> Christian
 	}
 }

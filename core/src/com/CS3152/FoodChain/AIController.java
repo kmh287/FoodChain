@@ -58,12 +58,19 @@ public class AIController implements InputController {
     // The shortest distance to run to in a situation where the animal can't run
     // directly away
     protected Vector2[] distVctrs;
+<<<<<<< HEAD
     
     private Vector2 tmp;
     
     // How many more turns (1 turn = 10 frames) before the animal can stop running
     protected int turns;
     
+=======
+    
+    // How many more turns (1 turn = 10 frames) before the animal can stop running
+    protected int turns;
+    
+>>>>>>> Christian
     // The animal's next move; a ControlCode
     protected Vector2 move;
 
@@ -82,12 +89,18 @@ public class AIController implements InputController {
         this.world = world;
         this.map = map;
         this.actors = actors;
+<<<<<<< HEAD
+=======
 
+>>>>>>> Christian
         this.distVctrs = new Vector2[8];
         for (int id = 0; id < distVctrs.length; id++) {
         	distVctrs[id] = new Vector2();
         }
+<<<<<<< HEAD
+=======
 
+>>>>>>> Christian
         this.loc = new Vector2(map.screenXToMap(animal.getX()),
                                map.screenYToMap(animal.getY()));
         
@@ -99,9 +112,15 @@ public class AIController implements InputController {
 
         this.move = InputController.WEST;
         goal.set (getAnimal().getX() + 1, getAnimal().getY());
+<<<<<<< HEAD
         
         //this.ticks = 0;
         
+=======
+        
+        //this.ticks = 0;
+        
+>>>>>>> Christian
         this.turns = 3;//should be 0 in future;
  
         this.target = null;
@@ -171,7 +190,10 @@ public class AIController implements InputController {
         	//comment out for fixing collisions
 //            // Process the State
 //            //changeStateIfApplicable();
+<<<<<<< HEAD
+=======
 
+>>>>>>> Christian
 //       	  checkCone();
         	// RayCasting
         	//Should be at beginning
@@ -194,6 +216,10 @@ public class AIController implements InputController {
 //            // Pathfinding
 //            //markGoal();
             move = getNextMoveToGoal();
+<<<<<<< HEAD
+//        }
+=======
+>>>>>>> Christian
         
         //System.out.println(move);
         return move;
@@ -231,7 +257,10 @@ public class AIController implements InputController {
     
     // Determines whether or not the animal should run away
     public void flee() {
+<<<<<<< HEAD
+=======
 
+>>>>>>> Christian
         // Animal's position
     	float anX = getAnimal().getX();
     	float anY = getAnimal().getY();
@@ -241,7 +270,10 @@ public class AIController implements InputController {
         // Animal's best option
         float goalX = 2*anX - attackX;
         float goalY = 2*anY - attackY;
+<<<<<<< HEAD
+=======
 
+>>>>>>> Christian
         if (map.isSafeAt(goalX, goalY)) {
         	goal.set(goalX, goalY);
         	return;
@@ -302,7 +334,10 @@ public class AIController implements InputController {
     	float targetX = target.getX();
         float targetY = target.getY();
         // Animal's best option
+<<<<<<< HEAD
+=======
 
+>>>>>>> Christian
         float goalX = targetX;
         float goalY = targetY;
         
@@ -426,7 +461,10 @@ public class AIController implements InputController {
      *
      * @return int corresponding to InputController bit-vector
      */
+<<<<<<< HEAD
+=======
 
+>>>>>>> Christian
     public Vector2 getNextMoveToGoal() {
     	//System.out.println("goalx:" + goal.x + "goaly:" + goal.y);
     	//System.out.println("locx:" + getLoc().x + "locy:" + getLoc().y);
