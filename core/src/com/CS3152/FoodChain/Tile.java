@@ -11,13 +11,20 @@ public class Tile extends BoxObject{
     
     public Tile(TextureRegion texture, float x, float y, float width,
 			float height, tileType type) {
+<<<<<<< HEAD
 		super(texture, 
 				PhysicsScaler.pixelsToMeters(x), 
 				PhysicsScaler.pixelsToMeters(y), 
 				PhysicsScaler.pixelsToMeters(width), 
 				PhysicsScaler.pixelsToMeters(height));
+=======
+		super(texture, x + 20.0f, y + 20.0f, width, height);
+>>>>>>> origin/Christian
 		this.type = type;
 		// TODO Auto-generated constructor stub
 	}
     
+    public tileType getType() {
+    	return type;
+    }
 }

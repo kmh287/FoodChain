@@ -5,15 +5,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 
-
-
-
-
-
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+
 
 public class Hunter extends Actor {
     
@@ -23,8 +23,8 @@ public class Hunter extends Actor {
     //an arraylist within a hashmap works pretty well
     private HashMap<String, List<Trap>> inventory;
     
-    private static final String PLAYER_TEX = "assets/player.png";
-    private static Texture tex = null;
+    private static final String PLAYER_TEX = "assets/hunter_walk_cycle.png";
+    protected static Texture tex = null;
     
     private float xPos;
     private float yPos;
@@ -45,6 +45,11 @@ public class Hunter extends Actor {
    // private static final float MOVE_SPEED = 150.0f;
     /** How far the hunter can lay a trap from itself */
     private static final float TRAP_RADIUS = 50.0f;
+    
+    private static final float hunterDrawScaleX=0.2f;
+    
+    private FilmStrip sprite;
+    
 
     //Instance Attributes 
     /** Hunter position */
@@ -55,6 +60,7 @@ public class Hunter extends Actor {
 	private float angle; 
 	
 	private Vector2 tmp;
+<<<<<<< HEAD
   
 
 	    
@@ -62,8 +68,23 @@ public class Hunter extends Actor {
     	super(new TextureRegion(tex), actorType.HUNTER, xPos, yPos, tex.getWidth(),
     		  tex.getHeight(), new actorType[]{actorType.SHEEP});
     	inventory= traps;
+=======
+    
+    public Hunter(float xPos, float yPos
+    		//, HashMap<String, List<Trap>> traps
+    		){
+    	super(new TextureRegion(tex), actorType.HUNTER, xPos, yPos, 40,
+    		  40, new actorType[]{actorType.SHEEP});
+    	inventory= new HashMap<String, List<Trap>>();
+    	inventory.put("REGULAR_TRAP", new ArrayList<Trap>());
+    	inventory.put("SHEEP_TRAP", new ArrayList<Trap>());
+    	inventory.put("WOLF_TRAP", new ArrayList<Trap>());
+>>>>>>> origin/Christian
         tmp = new Vector2();
+        sprite = new FilmStrip(tex,1,4,4);
+        drawScale.x=hunterDrawScaleX;
         //set selected trap
+        /*
         for (Trap trap : traps.get("REGULAR_TRAP")) {
         	selectedTrap = trap;
         }
@@ -77,8 +98,9 @@ public class Hunter extends Actor {
             	selectedTrap = trap;
             }
         }
- 
+        */
         
+
 
     }
     
@@ -204,16 +226,27 @@ public class Hunter extends Actor {
 
 
     
-    public boolean canSetTrap(Vector2 clickPos) {
-		tmp.set(getPosition().add(20.0f, 20.0f));
+    /*public boolean canSetTrap(Vector2 clickPos) {
+		//tmp.set(getPosition().add(20.0f, 20.0f));
+		tmp.set(getPosition());
 		tmp.sub(clickPos);
 		if (Math.abs(tmp.len()) <= TRAP_RADIUS && selectedTrap.getInInventory()==true) {
 			return true;
 		}
 		return false;
+    }*/
+    
+    public boolean canSetTrap(Vector2 clickPos) {
+    	tmp.set(getPosition());
+    	tmp.sub(clickPos);
+    	if (Math.abs(tmp.len()) <= TRAP_RADIUS && selectedTrap.getInInventory()==true) {
+    		return true;
+    	}
+    	return false;
     }
     
-    public void setTrapDown(Vector2 clickPos) {
+
+    /*public void setTrap(Vector2 clickPos) {
     	selectedTrap.setPosition(clickPos);
     	//update inventory
 		//set selectedTrap inventory status to false
@@ -225,6 +258,68 @@ public class Hunter extends Actor {
 				selectedTrap = trap;
 			}
 		}
+    }*/
+    
+    public void setTrap() {
+    	//Determine which direction the hunter is facing
+    	float angle = getAngle();
+    	
+    	if (angle == 0.0f) {
+    		selectedTrap.setPosition(getPosition().x, getPosition().y - 40.0f);
+        	//update inventory
+    		//set selectedTrap inventory status to false
+    		selectedTrap.setInInventory(false);
+    	}
+    	else if (angle == (float) (Math.PI/4.0f)) {
+    		selectedTrap.setPosition(getPosition().x + 40.0f, getPosition().y - 40.0f);
+    		selectedTrap.setInInventory(false);
+    	}
+    	else if (angle == (float) (Math.PI/2.0f)) {
+    		selectedTrap.setPosition(getPosition().x + 40.0f, getPosition().y);
+    		selectedTrap.setInInventory(false);
+    	}
+    	else if (angle == (float) (3.0*Math.PI/4.0)) {
+    		selectedTrap.setPosition(getPosition().x + 40.0f, getPosition().y + 40.0f);
+    		selectedTrap.setInInventory(false);
+    	}
+    	else if (angle == (float) (Math.PI)) {
+    		selectedTrap.setPosition(getPosition().x, getPosition().y + 40.0f);
+    		selectedTrap.setInInventory(false);
+    	}
+    	else if (angle == (float) (5.0*Math.PI/4.0f)) {
+    		selectedTrap.setPosition(getPosition().x - 40.0f, getPosition().y + 40.0f);
+    		selectedTrap.setInInventory(false);
+    	}
+    	else if (angle == (float) (3.0*Math.PI/2.0f)) {
+    		selectedTrap.setPosition(getPosition().x - 40.0f, getPosition().y);
+    		selectedTrap.setInInventory(false);
+    	}
+    	else if (angle == (float) (7.0*Math.PI/4.0f)) {
+    		selectedTrap.setPosition(getPosition().x - 40.0f, getPosition().y - 40.0f);
+    		selectedTrap.setInInventory(false);
+    	}
+
+		//set selectedTrap to next available trap inInventory of same type
+		//if no free trap then selectedTrap does not change and player can't put down another
+		for (Trap trap : inventory.get(selectedTrap.getType())){
+			if(trap.getInInventory()){
+				selectedTrap = trap;
+			}
+		}
+    }
+    
+    public void setTrapDown(Vector2 clickPos) {
+	    selectedTrap.setPosition(clickPos);
+	    //update inventory
+	    //set selectedTrap inventory status to false
+	    selectedTrap.setInInventory(false);
+	    //set selectedTrap to next available trap inInventory of same type
+	    //if no free trap then selectedTrap does not change and player can't put down another
+	    for (Trap trap : inventory.get(selectedTrap.getType())){
+	    	if(trap.getInInventory()){
+	    		selectedTrap = trap;
+	    	}
+    	}
     }
     
     /**
@@ -233,7 +328,6 @@ public class Hunter extends Actor {
     public float getXDiamter() {
         return tex.getWidth();
     }
-    
 
     /** 
     * Updates the hunter's position according to the controlCode. 
@@ -324,8 +418,34 @@ public class Hunter extends Actor {
     public String getTypeNameString() {
     		return "HUNTER";
     }
+<<<<<<< HEAD
     
     public float getTrapRadius(){
     	return TRAP_RADIUS;
     }
+=======
+  
+    public void updateWalkFrame(){
+    	int frame = sprite.getFrame();
+    	frame++;
+    	if (frame==4){
+    		frame=0;
+    	}
+    	sprite.setFrame(frame);
+    	sprite.flip(false,true);
+    	super.setTexture(sprite);
+    }
+    
+    public FilmStrip Sprite(){
+    	return sprite;
+    }
+    
+    public void setStillFrame(){
+    	sprite.setFrame(0);
+    	sprite.flip(false,true);
+    	super.setTexture(sprite);
+    }
+   
+
+>>>>>>> origin/Christian
 }
