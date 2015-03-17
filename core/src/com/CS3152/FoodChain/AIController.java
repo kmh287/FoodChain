@@ -215,13 +215,6 @@ public class AIController implements InputController {
     		   withinRadius(an, meToActor);
     }
     
-<<<<<<< HEAD
-    // Determines whether or not an actor is in the animal's line of sight
-    //TODO
-    public boolean withinCone(Actor a) {
-    		return false;
-
-=======
     /* Determines if meToActor is clockwise to sectorLine.
      * The function computes the dot product between the tangent of sectorLine and
      * meToActor. If the product is negative, then meToActor is clockwise.
@@ -243,7 +236,7 @@ public class AIController implements InputController {
      */
     public static boolean withinRadius(Animal an, Vector2 length) {
     	return length.len() <= an.getSightLength();
->>>>>>> origin/Christian
+
     }
     
     // Determines whether or not the animal should run away
@@ -302,15 +295,7 @@ public class AIController implements InputController {
 		   	distVctrs[7].y = anY - 100;
         }
         // biggest distance
-<<<<<<< HEAD
-        int biggest = 0;
 
-//        for (int x = 0; x < dists.length; x++) {
-//        	if (dists[x] > biggest) {
-//        		biggest = dists[x];
-//        	}
-//        }
-=======
         float biggest = 0;
         int bigIndex = 0;
         for (int index = 0; index < distVctrs.length; index++) {
@@ -322,7 +307,6 @@ public class AIController implements InputController {
         	}
         }
         goal.set(distVctrs[bigIndex].x, distVctrs[bigIndex].y);
->>>>>>> origin/Christian
         return;
     }
     

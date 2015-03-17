@@ -20,11 +20,6 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.World;
 
-<<<<<<< HEAD
-
-public class GameMode implements Screen {
-=======
->>>>>>> origin/Christian
 
 public class GameMode implements Screen {
 	
@@ -47,8 +42,6 @@ public class GameMode implements Screen {
 //	private Vector2 tmp;
 	private static final float DEFAULT_DENSITY = 1.0f;
 	
-<<<<<<< HEAD
-=======
 	private int ticks=0;
 	
 	
@@ -86,7 +79,6 @@ public class GameMode implements Screen {
 		Trap.LoadContent(manager);
 	}
 	
->>>>>>> origin/Christian
     /**
      * Temporary constructor for GameMode until we have 
      * our architecture more hammered-down. For now
@@ -328,7 +320,7 @@ public class GameMode implements Screen {
     
     private void draw(float delta){
         
-    	canvas.begin();
+    	canvas.begin(hunter.getPosition().x, hunter.getPosition().y);
         //Draw the map
         map.draw(canvas);
         
@@ -363,13 +355,6 @@ public class GameMode implements Screen {
         //hunter.drawDebug(canvas);
         
         ui.draw(canvas);
-<<<<<<< HEAD
-//		canvas.beginDebug();
-//		for(PhysicsObject obj : collisionController.getObjects()) {
-//			obj.drawDebug(canvas);
-//		}
-//		canvas.endDebug();
-=======
         
         canvas.end();
         
@@ -385,7 +370,6 @@ public class GameMode implements Screen {
 			}
 		}
 		canvas.endDebug();
->>>>>>> origin/Christian
     }
     
     @Override
@@ -426,10 +410,6 @@ public class GameMode implements Screen {
         // TODO Auto-generated method stub
         
     }
-<<<<<<< HEAD
-   
-			
-=======
 
     
     /** 
@@ -439,5 +419,4 @@ public class GameMode implements Screen {
 	 * is updated, but not the position). Collisions are not processed. 
 	 */
 
->>>>>>> origin/Christian
 }

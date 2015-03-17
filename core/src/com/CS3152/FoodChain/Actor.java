@@ -39,22 +39,11 @@ public abstract class Actor extends BoxObject {
     
     public Actor(TextureRegion tr, actorType type, float x, float y, float width, 
     		     float height, actorType[] victims) {
-<<<<<<< HEAD
-	    super(tr,
-	    		PhysicsScaler.pixelsToMeters(x),
-	    		PhysicsScaler.pixelsToMeters(y),
-	    		PhysicsScaler.pixelsToMeters(width),
-	    		PhysicsScaler.pixelsToMeters(height));
-	    this.type = type;
-	    this.tr = tr;
-		setFixedRotation(true);
-        this.facing = direction.WEST;
-=======
+
 	    	super(tr,x,y,width,height);
 	    	this.type = type;
 	    	this.tr = tr;
         this.facing = new Vector2();
->>>>>>> origin/Christian
         this.victims = victims;
     }
     
@@ -127,15 +116,7 @@ public abstract class Actor extends BoxObject {
 	}
 	
     public void draw(GameCanvas canvas){
-<<<<<<< HEAD
-        canvas.begin();
-        canvas.draw(getTexture(), 
-        				PhysicsScaler.metersToPixels(getBody().getPosition().x), 
-        				PhysicsScaler.metersToPixels(getBody().getPosition().y));
-        canvas.end();
-=======
         super.draw(canvas);
->>>>>>> origin/Christian
     }
 	
 }
