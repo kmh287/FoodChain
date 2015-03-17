@@ -391,7 +391,7 @@ public class GameCanvas {
 	 */	
 	public void draw(TextureRegion region, Color tint, float ox, float oy, float x, float y, float width, float height) {	
 		// Unlike Lab 1, we can shortcut without a master drawing method
-    		sb.setColor(tint);
+    	sb.setColor(tint);
 		sb.draw(region, x-ox, y-oy, width, height);
 	}
 
