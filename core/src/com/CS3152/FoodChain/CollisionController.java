@@ -1,6 +1,5 @@
 package com.CS3152.FoodChain;
 
-import java.util.Random;
 import java.util.List;
 import java.util.Random;
 import java.util.Random;
@@ -31,7 +30,6 @@ public class CollisionController implements ContactListener {
 	/** All the objects in the world. */
 	protected PooledList<BoxObject> objects  = new PooledList<BoxObject>();
 	//Vector2 cache for calculations
-
 	private Vector2 tmp;
 	private InputController[] controls;
 	private Vector2 action;
@@ -88,7 +86,6 @@ public class CollisionController implements ContactListener {
 	 * TODO have to decide how to handle multiple collisions and which collisions to process first. like animal or tiles
 	 */
 	private void move(Hunter actor) {
-
 		actor.setLinearVelocity(controls[0].getAction());
 		actor.setFacing(controls[0].getAction());
 	}
@@ -128,6 +125,7 @@ public class CollisionController implements ContactListener {
 		for(PhysicsObject o : objects) {
 			
 			if (o instanceof Hunter){
+				
 				move((Hunter)o);
 			}
 			//unsure about order of objects.

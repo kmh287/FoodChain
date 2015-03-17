@@ -333,7 +333,7 @@ public class GameCanvas {
 	*/
     public void begin(float x, float y) {
     	
-    	camera.position.set(x, y, 0f);
+    	//camera.position.set(x, y, 0f);
     	camera.update();
     	
 		spriteBatch.setProjectionMatrix(camera.combined);
