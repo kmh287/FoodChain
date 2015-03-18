@@ -270,8 +270,6 @@ public class GameMode implements Screen {
     }
 
     private void update(float delta){
-    	//if (hunter's turn) {
-		//Updates the hunters action
 
 		hunter.update(delta);
 		hunter.setSelectedTrap(controls[0].getNum());
@@ -320,8 +318,10 @@ public class GameMode implements Screen {
     
     private void draw(float delta){
         
-    	canvas.begin(hunter.getPosition().x, hunter.getPosition().y);
-        //Draw the map
+    	//canvas.begin();
+    	canvas.beginCam(hunter.getPosition().x, hunter.getPosition().y);
+
+    	//Draw the map
         map.draw(canvas);
         
         for (Trap trap : traps.get("WOLF_TRAP")) {

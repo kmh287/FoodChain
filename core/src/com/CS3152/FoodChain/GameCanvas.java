@@ -23,6 +23,10 @@ import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.graphics.glutils.*;
 import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.utils.viewport.FillViewport;
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 
 /**
  * Primary view class for the game, abstracting the basic graphics calls.
@@ -56,6 +60,9 @@ public class GameCanvas {
 	/** Camera for the underlying SpriteBatch */
 	private OrthographicCamera camera;
 	
+	private Viewport viewport; 
+	private Stage stage;
+	
 	// CACHE OBJECTS
 	/** Affine cache for current sprite to draw */
 	private Affine2 local;
@@ -64,6 +71,8 @@ public class GameCanvas {
 	private Vector2 vertex;
 	/** Cache object to handle raw textures */
 	private TextureRegion holder;
+	
+	protected Hunter hunter; 
 
 	/**
 	 * Creates a new GameCanvas determined by the application configuration.
@@ -80,6 +89,15 @@ public class GameCanvas {
 		// Set the projection matrix (for proper scaling)
 		camera = new OrthographicCamera(getWidth(),getHeight());
 		camera.setToOrtho(false);
+		camera.viewportWidth = (float) (Gdx.graphics.getWidth()/1.3);
+	    camera.viewportHeight = (float) (Gdx.graphics.getHeight()/1.3);
+		//camera.position.set((getWidth())/2, getHeight()/2, 0);
+		//camera.update();
+	    
+	    viewport = new FitViewport((float) (Gdx.graphics.getWidth()/1.3), (float) (Gdx.graphics.getHeight()/1.3), camera);
+	    viewport.apply(); 
+	    stage = new Stage(viewport);
+	
 		spriteBatch.setProjectionMatrix(camera.combined);
 		debugRender.setProjectionMatrix(camera.combined);
 
@@ -237,6 +255,8 @@ public class GameCanvas {
 	 public void resize() {
 		// Resizing screws up the spriteBatch projection matrix
 		spriteBatch.getProjectionMatrix().setToOrtho2D(0, 0, getWidth(), getHeight());
+		//camera.setToOrtho(false,getWidth(),getHeight());
+		//spriteBatch.setProjectionMatrix(camera.combined);
 	}
 	
 	/**
@@ -315,31 +335,38 @@ public class GameCanvas {
 	 * @param sx the amount to scale the x-axis
 	 * @param sy the amount to scale the y-axis */
 	 
-    /*public void begin(float sx, float sy) {
+    public void begin(float sx, float sy) {
 		global.idt();
 		global.scl(sx,sy,1.0f);
     	global.mulLeft(camera.combined);
     	
+    	//global.setTranslation(hunter.getPosition().x, hunter.getPosition().y, 0);
 		spriteBatch.setProjectionMatrix(camera.combined);
-		
     	spriteBatch.begin();
     	active = DrawPass.STANDARD;
-    }*/
+    }
    
 	/**
 	 * Start a standard drawing sequence with camera located at x and y.
 	 *
 	 * Nothing is flushed to the graphics card until the method end() is called.
 	*/
-    public void begin(float x, float y) {
+    public void beginCam(float x, float y) {
     	
-    	//camera.position.set(x, y, 0f);
-    	camera.update();
+    	moveCamera(x,y);
+    	spriteBatch.setProjectionMatrix(camera.combined);
     	
-		spriteBatch.setProjectionMatrix(camera.combined);
     	spriteBatch.begin();
     	active = DrawPass.STANDARD;
     } 
+    
+    public void moveCamera(float x,float y){
+        	//camera.unproject(new Vector3(x, y, 0));
+            camera.position.set(x, y, 0);
+        	global.setTranslation(x, y, 0);
+            camera.update();
+
+    }
     
 	/**
 	 * Start a standard drawing sequence.
@@ -347,8 +374,7 @@ public class GameCanvas {
 	 * Nothing is flushed to the graphics card until the method end() is called.
 	 */
     public void begin() {
-
-		spriteBatch.setProjectionMatrix(camera.combined);
+    	spriteBatch.setProjectionMatrix(camera.combined);
     	spriteBatch.begin();
     	active = DrawPass.STANDARD;
     }
