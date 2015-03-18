@@ -17,7 +17,7 @@ import com.CS3152.FoodChain.Actor.actorType;
  *
  */
 
-public class LevelOneExporter {
+public class LevelTwoExporter {
 
     public static void main(String[] args) {
         Tile.tileType[][] layout = new Tile.tileType[16][32];
@@ -33,26 +33,36 @@ public class LevelOneExporter {
             }
         }
         
-        //Hi in bushes!
-        //H
-        layout[2][2] = Tile.tileType.BUSH;
-        layout[3][2] = Tile.tileType.BUSH;
-        layout[4][2] = Tile.tileType.BUSH;
-        layout[5][2] = Tile.tileType.BUSH;
-        layout[6][2] = Tile.tileType.BUSH;
-        layout[4][3] = Tile.tileType.BUSH;
-        layout[2][4] = Tile.tileType.BUSH;
-        layout[3][4] = Tile.tileType.BUSH;
-        layout[4][4] = Tile.tileType.BUSH;
-        layout[5][4] = Tile.tileType.BUSH;
-        layout[6][4] = Tile.tileType.BUSH;
+
         
-        //i
+
+        layout[10][4] = Tile.tileType.BUSH;
+        layout[10][5] = Tile.tileType.BUSH;
+        layout[10][6] = Tile.tileType.BUSH;
+        layout[10][7] = Tile.tileType.BUSH;
+        layout[10][8] = Tile.tileType.BUSH;
+        layout[10][9] = Tile.tileType.BUSH;
+        layout[11][8] = Tile.tileType.BUSH;
+        layout[12][8] = Tile.tileType.BUSH;
+        layout[10][10] = Tile.tileType.BUSH;
+        layout[10][11] = Tile.tileType.BUSH;
         
-        layout[2][8] = Tile.tileType.BUSH;
-        layout[3][8] = Tile.tileType.BUSH;
-        layout[4][8] = Tile.tileType.BUSH;
-        layout[6][8] = Tile.tileType.BUSH;
+        layout[7][16] = Tile.tileType.BUSH;
+        layout[7][17] = Tile.tileType.BUSH;
+        layout[7][18] = Tile.tileType.BUSH;
+        layout[7][19] = Tile.tileType.BUSH;
+        layout[7][20] = Tile.tileType.BUSH;
+        layout[6][20] = Tile.tileType.BUSH;
+        layout[5][20] = Tile.tileType.BUSH;
+        layout[4][20] = Tile.tileType.BUSH;
+        layout[3][20] = Tile.tileType.BUSH;
+        
+        layout[10][28] = Tile.tileType.BUSH;
+        layout[11][28] = Tile.tileType.BUSH;
+        layout[12][28] = Tile.tileType.BUSH;
+        layout[13][28] = Tile.tileType.BUSH;
+
+        
           
         List<actorType> animals = new ArrayList<actorType>();
         animals.add(actorType.SHEEP);
@@ -60,10 +70,10 @@ public class LevelOneExporter {
         
 
         List<Vector2> coords = new ArrayList<Vector2>();
-        coords.add(new Vector2(15,11));
-        coords.add(new Vector2(7,8));
+        coords.add(new Vector2(16,12));
+        coords.add(new Vector2(7,9));
         
-        Vector2 playerStart = new Vector2(15,3);
+        Vector2 playerStart = new Vector2(23,5);
         
         /*
         HashMap<String, List<Trap>> startingInventory = new HashMap<String, List<Trap>>();
@@ -86,7 +96,7 @@ public class LevelOneExporter {
                                 //,startingInventory
                                 );
         try {
-            MapManager.MapToGson(gm, "level1");
+            MapManager.MapToGson(gm, "level2");
         } catch (IOException e) {
             // TODO Auto-generated catch block
             System.out.println("Failed to generate level JSON");
@@ -96,7 +106,7 @@ public class LevelOneExporter {
         //Test to see if it loads back properly
         GameMap gm2 = null;
         try {
-            gm2 = MapManager.GsonToMap("level1");
+            gm2 = MapManager.GsonToMap("level2");
         } catch (FileNotFoundException e) {
             // TODO Auto-generated catch block
             System.out.println("Failed to recover JSON");

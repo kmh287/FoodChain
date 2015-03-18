@@ -1,6 +1,7 @@
 package com.CS3152.FoodChain;
 
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
@@ -12,12 +13,25 @@ public abstract class Animal extends Actor {
 
 	private actorType type;
 	
+	// Vector that runs from the center of the animal diagonally leftward some length
+    // RELATIVE TO ANIMAL'S POSITION
+    protected Vector2 leftSectorLine;
+    // Vector that runs from the center of the animal diagonally rightward that length
+    // RELATIVE TO ANIMAL'S POSITION
+    protected Vector2 rightSectorLine;
+    
+    private Vector2 tmp;
+
+    
 	//texture used in getCenter and setCenter
 	private float texWidth;
 	private float texHeight;
+	protected static final int AnimalWidth = 40;
+	protected static final int AnimalHeight = 40;
 	//how far forward the hunter can move in a turn. 
     private static final float MOVE_SPEED = 150f;
-
+    private static final double SIGHT_ANGLE = 0.35;
+    private static final float SIGHT_LENGTH = 120;
 	
 	/** Protected constructor for the animal type. 
 	 * 
@@ -31,11 +45,17 @@ public abstract class Animal extends Actor {
 	 *                     It is up to the CALLER to ensure this is correct.
 	 */
 	public Animal(TextureRegion tr, actorType type, float x, float y, 
-	              actorType[] prey, direction facing){
-		super(tr, type, x, y, tr.getRegionWidth(), tr.getRegionHeight(), prey);
+	              actorType[] prey, Vector2 facing){
+		super(tr, type, x, y, AnimalWidth, AnimalHeight, prey);
 		this.type = type;
 		this.setPos(x,y);
-		this.facing = facing;
+		setFacing(facing);
+		this.leftSectorLine = new Vector2();
+		this.rightSectorLine = new Vector2();
+
+		this.tmp = new Vector2();
+
+		updateLOS(0);
 		setTexWidth(tr.getRegionWidth());
 		setTexHeight(tr.getRegionHeight());
 	}
@@ -46,28 +66,28 @@ public abstract class Animal extends Actor {
 		float yPos = getY();
 		
 	    if (x - getPosition().x == 0 && y - getPosition().y > 0){
-	        this.facing = direction.NORTH;
+	        this.facing = InputController.NORTH;
 	    }
 	    else if (x - getPosition().x > 0 && y - getPosition().y > 0){
-	        this.facing = direction.NORTHEAST;
+	        this.facing = InputController.NORTHEAST;
 	    }
 	    else if (x - getPosition().x > 0 && y - getPosition().y == 0){
-	        this.facing = direction.EAST;
+	        this.facing = InputController.EAST;
 	    }
 	    else if (x - getPosition().x > 0 && y - getPosition().y < 0){
-	        this.facing = direction.SOUTHEAST;
+	        this.facing = InputController.SOUTHEAST;
 	    }
 	    else if (x - getPosition().x == 0 && y - getPosition().y < 0){
-	        this.facing = direction.SOUTH;
+	        this.facing = InputController.SOUTH;
 	    }
 	    else if (x - getPosition().x < 0 && y - getPosition().y < 0){
-	        this.facing = direction.SOUTHWEST;
+	        this.facing = InputController.SOUTHWEST;
 	    }
 	    else if (x - getPosition().x < 0 && y - getPosition().y == 0){
-	        this.facing = direction.WEST;
+	        this.facing = InputController.WEST;
 	    }
 	    else if (x - getPosition().x < 0 && y - getPosition().y > 0){
-	        this.facing = direction.NORTHWEST;
+	        this.facing = InputController.NORTHWEST;
 	    }
 	    else{
 	        //Standing still
@@ -75,6 +95,14 @@ public abstract class Animal extends Actor {
 	    		//If this code doesn't change, remove this else
 	    }
         super.setPosition(xPos, yPos);
+	}
+	
+	public void updateLOS(float angle) {
+		this.leftSectorLine.set((float)(SIGHT_LENGTH*Math.cos(angle + SIGHT_ANGLE)),
+								(float)(SIGHT_LENGTH*Math.sin(angle + SIGHT_ANGLE)));
+
+		this.rightSectorLine.set((float)(SIGHT_LENGTH*Math.cos(angle - SIGHT_ANGLE)),
+								 (float)(SIGHT_LENGTH*Math.sin(angle - SIGHT_ANGLE)));
 	}
 	
     /**
@@ -115,7 +143,6 @@ public abstract class Animal extends Actor {
 	
 	
 	/**
-<<<<<<< HEAD
 	 * returns center of animal
 	 * @return String representing the name of this type
 	 */
@@ -131,8 +158,6 @@ public abstract class Animal extends Actor {
 	}
 	
 	/**
-=======
->>>>>>> origin/Kevin
 	 * Standard toString methoH
 	 * @return A string representation of this animal's type and position
 	 */
@@ -179,4 +204,23 @@ public abstract class Animal extends Actor {
 	public float getXDiamter() {
 	    return texWidth;
     }
+	
+	public float getSightLength() {
+		return SIGHT_LENGTH;
+	}
+	
+	public Vector2 getLeftSectorLine() {
+		return this.leftSectorLine;
+	}
+	
+	public Vector2 getRightSectorLine() {
+		return this.rightSectorLine;
+	}
+	
+	public void drawSight(GameCanvas canvas) {
+		tmp.set(getPosition());
+		canvas.drawLine(Color.YELLOW, getPosition(), tmp.add(getLeftSectorLine()));
+		tmp.set(getPosition());
+		canvas.drawLine(Color.YELLOW, getPosition(), tmp.add(getRightSectorLine()));
+	}
 }

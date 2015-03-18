@@ -7,7 +7,7 @@ import com.badlogic.gdx.physics.box2d.World;
 
 public abstract class Actor extends BoxObject {
     //The direction this actor is facing
-    protected direction facing;
+    protected Vector2 facing;
     //TextureRegion for this actor's texture
     protected TextureRegion tr;
 	//The type of this actor
@@ -28,7 +28,13 @@ public abstract class Actor extends BoxObject {
     
 	public boolean activatePhysics(World world) {
 		// create the box from our superclass
-		return super.activatePhysics(world);
+		if (!super.activatePhysics(world)) {
+			return false;
+		}
+		
+		body.setAngularDamping(Float.MAX_VALUE);
+		
+		return true;
 	}
     
     public Actor(TextureRegion tr, actorType type, float x, float y, float width, 
@@ -40,19 +46,43 @@ public abstract class Actor extends BoxObject {
 	    			PhysicsScaler.pixelsToMeters(height));
 	    	this.type = type;
 	    	this.tr = tr;
-        this.facing = direction.WEST;
+        this.facing = new Vector2();
         this.victims = victims;
     }
     
     /*
      * @return the direction this Actor's facing
      */
-    public direction getFacing() {
+    public Vector2 getFacing() {
         return this.facing;
     }
     
-    public void setFacing(direction dir) {
+    public void setFacing(Vector2 dir) {
     		this.facing = dir;
+    		if (dir.x < 0 && dir.y == 0) {
+    			super.setAngle((float) (-Math.PI/2.0));
+    		}
+    		else if (dir.x > 0 && dir.y == 0) {
+    			super.setAngle((float) (Math.PI/2.0));
+    		}
+    		else if (dir.x == 0 && dir.y > 0) {
+    			super.setAngle((float) (Math.PI));
+    		}
+    		else if (dir.x == 0 && dir.y < 0) {
+    			super.setAngle(0.0f);
+    		}
+    		else if (dir.x < 0 && dir.y < 0) {
+    			super.setAngle((float) (-Math.PI/4.0));
+    		}
+    		else if (dir.x > 0 && dir.y < 0) {
+    			super.setAngle((float) (Math.PI/4.0));
+    		}
+    		else if (dir.x > 0 && dir.y > 0) {
+    			super.setAngle((float) (3.0*Math.PI/4.0));
+    		}
+    		else if (dir.x < 0  && dir.y > 0) {
+    			super.setAngle((float) (-3.0*Math.PI/4.0));
+    		}
     }
     
     
@@ -89,11 +119,7 @@ public abstract class Actor extends BoxObject {
 	}
 	
     public void draw(GameCanvas canvas){
-        canvas.begin();
-        canvas.draw(getTexture(), 
-        				PhysicsScaler.metersToPixels(getBody().getPosition().x), 
-        				PhysicsScaler.metersToPixels(getBody().getPosition().y));
-        canvas.end();
+        super.draw(canvas);
     }
 	
 }

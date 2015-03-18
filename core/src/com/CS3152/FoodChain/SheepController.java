@@ -18,7 +18,7 @@ public class SheepController extends AIController {
     	// In the inner most if statement for each case, actors.get(0)
     	// is the Hunter. The other elements are Animals.
         updateLoc();
-        if (animal.getFacing() == Actor.direction.WEST) {
+        if (animal.getFacing() == InputController.WEST) {
             for (Actor actr : this.actors) {
                 // What if animal's prey was a hashmap. animal -> boolean
                 // Probably not necessary though
@@ -39,7 +39,7 @@ public class SheepController extends AIController {
             //setAttacker(animal);
             return false;
         }
-        else if (animal.getFacing() == Actor.direction.EAST) {
+        else if (animal.getFacing() == InputController.EAST) {
             for (Actor actr : this.actors) {
                 int actrX = this.map.screenXToMap(actr.getX());
                 int actrY = this.map.screenYToMap(actr.getY());
@@ -58,7 +58,7 @@ public class SheepController extends AIController {
             //setAttacker(animal);
             return false;
         }
-        else if (animal.getFacing() == Actor.direction.NORTH) {
+        else if (animal.getFacing() == InputController.NORTH) {
             for (Actor actr : this.actors) {
                 int actrX = this.map.screenXToMap(actr.getX());
                 int actrY = this.map.screenYToMap(actr.getY());
@@ -77,7 +77,7 @@ public class SheepController extends AIController {
             //setAttacker(animal);
             return false;
         }
-        else if (animal.getFacing() == Actor.direction.SOUTH) {
+        else if (animal.getFacing() == InputController.SOUTH) {
             for (Actor actr : this.actors) {
                 int actrX = this.map.screenXToMap(actr.getX());
                 int actrY = this.map.screenYToMap(actr.getY());
@@ -96,7 +96,7 @@ public class SheepController extends AIController {
             //setAttacker(animal);
             return false;
         }
-        else if (animal.getFacing() == Actor.direction.NORTHWEST) {
+        else if (animal.getFacing() == InputController.NORTHWEST) {
             for (Actor actr : this.actors) {
                 int actrX = this.map.screenXToMap(actr.getX());
                 int actrY = this.map.screenYToMap(actr.getY());
@@ -127,7 +127,7 @@ public class SheepController extends AIController {
             //setAttacker(animal);
             return false;
         }
-        else if (animal.getFacing() == Actor.direction.NORTHEAST) {
+        else if (animal.getFacing() == InputController.NORTHEAST) {
             for (Actor actr : this.actors) {
                 int actrX = this.map.screenXToMap(actr.getX());
                 int actrY = this.map.screenYToMap(actr.getY());
@@ -158,7 +158,7 @@ public class SheepController extends AIController {
             //setAttacker(animal);
             return false;
         }
-        else if (animal.getFacing() == Actor.direction.SOUTHWEST) {
+        else if (animal.getFacing() == InputController.SOUTHWEST) {
             for (Actor actr : this.actors) {
                 int actrX = this.map.screenXToMap(actr.getX());
                 int actrY = this.map.screenYToMap(actr.getY());
@@ -189,7 +189,7 @@ public class SheepController extends AIController {
             //setAttacker(animal);
             return false;
         }
-        else if (animal.getFacing() == Actor.direction.SOUTHEAST) {
+        else if (animal.getFacing() == InputController.SOUTHEAST) {
             for (Actor actr : this.actors) {
                 int actrX = this.map.screenXToMap(actr.getX());
                 int actrY = this.map.screenYToMap(actr.getY());
@@ -230,7 +230,7 @@ public class SheepController extends AIController {
     public boolean isSeenByPredator() {
         updateLoc();
         for (Actor actr : this.actors) {
-            if (actr.getFacing() == Actor.direction.WEST) {
+            if (actr.getFacing() == InputController.WEST) {
                 // What if animal's prey was a hashmap. animal -> boolean
                 // Probably not necessary though
                 int actrX = this.map.screenXToMap(actr.getX());
@@ -247,7 +247,7 @@ public class SheepController extends AIController {
                     }
                 }
             }
-            else if (actr.getFacing() == Actor.direction.EAST) {
+            else if (actr.getFacing() == InputController.EAST) {
                 int actrX = this.map.screenXToMap(actr.getX());
                 int actrY = this.map.screenYToMap(actr.getY());
                 // If the potential predator's x distance is within 2 tiles to the right
@@ -262,7 +262,7 @@ public class SheepController extends AIController {
                     }
                 }
             }
-            else if (actr.getFacing() == Actor.direction.NORTH) {
+            else if (actr.getFacing() == InputController.NORTH) {
                 int actrX = this.map.screenXToMap(actr.getX());
                 int actrY = this.map.screenYToMap(actr.getY());
                 // The potential predator's x distance is within 1 tile on either side
@@ -277,7 +277,7 @@ public class SheepController extends AIController {
                     }
                 }
             }
-            else if (actr.getFacing() == Actor.direction.SOUTH) {
+            else if (actr.getFacing() == InputController.SOUTH) {
                 int actrX = this.map.screenXToMap(actr.getX());
                 int actrY = this.map.screenYToMap(actr.getY());
                 // The potential predator's x distance is within 1 tile on either side
@@ -292,7 +292,7 @@ public class SheepController extends AIController {
                     }
                 }
             }
-            else if (actr.getFacing() == Actor.direction.NORTHWEST) {
+            else if (actr.getFacing() == InputController.NORTHWEST) {
                 int actrX = this.map.screenXToMap(actr.getX());
                 int actrY = this.map.screenYToMap(actr.getY());
                 // The potential predator's x distance is within 1 tile on the left
@@ -319,7 +319,7 @@ public class SheepController extends AIController {
                     }
                 }
             }
-            else if (actr.getFacing() == Actor.direction.NORTHEAST) {
+            else if (actr.getFacing() == InputController.NORTHEAST) {
                 int actrX = this.map.screenXToMap(actr.getX());
                 int actrY = this.map.screenYToMap(actr.getY());
                 // The potential predator's x distance is within 1 tile on the right
@@ -346,7 +346,7 @@ public class SheepController extends AIController {
                     }
                 }
             }
-            else if (actr.getFacing() == Actor.direction.SOUTHWEST) {
+            else if (actr.getFacing() == InputController.SOUTHWEST) {
                 int actrX = this.map.screenXToMap(actr.getX());
                 int actrY = this.map.screenYToMap(actr.getY());
                 // The potential predator's x distance is within 1 tile on the left
@@ -373,7 +373,7 @@ public class SheepController extends AIController {
                     }
                 }
             }
-            else if (actr.getFacing() == Actor.direction.SOUTHEAST) {
+            else if (actr.getFacing() == InputController.SOUTHEAST) {
                 int actrX = this.map.screenXToMap(actr.getX());
                 int actrY = this.map.screenYToMap(actr.getY());
                 // The potential predator's x distance is within 1 tile on the right
@@ -452,20 +452,20 @@ public class SheepController extends AIController {
                 // Hard coded for now.
                 // Change direction once goal is reached
                 if ((int)getLoc().x <= 1) {
-                    animal.setFacing(Actor.direction.EAST);
+                    animal.setFacing(InputController.EAST);
                 }
                 else if ((int)getLoc().x >= 9) {
-                    animal.setFacing(Actor.direction.WEST);
+                    animal.setFacing(InputController.WEST);
                 }
                 else {
                     // If it is not on a goal tile, then continue to walk in
                     // the same direction
                     break;
                 }
-                if (((Actor)(animal)).getFacing() == Actor.direction.EAST) {
+                if (((Actor)(animal)).getFacing() == InputController.EAST) {
                     goal.set(9,5);
                 }
-                else if (animal.getFacing() == Actor.direction.WEST) {
+                else if (animal.getFacing() == InputController.WEST) {
                     goal.set(1,5);
                 }
                 break;
