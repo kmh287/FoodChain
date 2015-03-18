@@ -130,12 +130,14 @@ public class GameMode implements Screen {
         List<Actor> actors = new ArrayList<Actor>();
         actors.add(hunter);
         for (int i = 0; i < animals.size(); i++) {
-        	actors.add(animals.get(i));
+        		actors.add(animals.get(i));
+        		controls[i+1] = new AIController(animals.get(i), collisionController.getWorld(),
+	    				   					   map, actors);
         }
-        controls[1] = new AIController(animals.get(0), collisionController.getWorld(),
-				    				   map, actors);
-        controls[2] = new AIController(animals.get(1), collisionController.getWorld(),
-				   					   map, actors);
+//        controls[1] = new AIController(animals.get(0), collisionController.getWorld(),
+//				    				   map, actors);
+//        controls[2] = new AIController(animals.get(1), collisionController.getWorld(),
+//				   					   map, actors);
         collisionController.setControls(controls);
         //loadTextures
         /*

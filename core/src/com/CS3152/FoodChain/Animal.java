@@ -195,11 +195,11 @@ public abstract class Animal extends Actor {
         return false;
 	}
 	
-	public void draw(GameMap map, GameCanvas canvas){
-	    canvas.begin();
-	    canvas.draw(getTexture(), getX(), getY());
-	    canvas.end();
-	}
+//	public void draw(GameMap map, GameCanvas canvas){
+//	    canvas.begin();
+//	    canvas.draw(getTexture(), getX(), getY());
+//	    canvas.end();
+//	}
 	
 	public float getXDiamter() {
 	    return texWidth;
