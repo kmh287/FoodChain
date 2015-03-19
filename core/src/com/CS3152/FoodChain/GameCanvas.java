@@ -368,6 +368,10 @@ public class GameCanvas {
 
     }
     
+    public void drawStage(Texture image, float x, float y) {
+		stage.draw();
+    }
+    
 	/**
 	 * Start a standard drawing sequence.
 	 *
