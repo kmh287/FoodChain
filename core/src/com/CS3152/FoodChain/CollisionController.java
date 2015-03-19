@@ -125,7 +125,6 @@ public class CollisionController implements ContactListener {
 		for(PhysicsObject o : objects) {
 			
 			if (o instanceof Hunter){
-				
 				move((Hunter)o);
 			}
 			//unsure about order of objects.

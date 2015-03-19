@@ -130,12 +130,14 @@ public class GameMode implements Screen {
         List<Actor> actors = new ArrayList<Actor>();
         actors.add(hunter);
         for (int i = 0; i < animals.size(); i++) {
-        	actors.add(animals.get(i));
+        		actors.add(animals.get(i));
+        		controls[i+1] = new AIController(animals.get(i), collisionController.getWorld(),
+	    				   					   map, actors);
         }
-        controls[1] = new AIController(animals.get(0), collisionController.getWorld(),
-				    				   map, actors);
-        controls[2] = new AIController(animals.get(1), collisionController.getWorld(),
-				   					   map, actors);
+//        controls[1] = new AIController(animals.get(0), collisionController.getWorld(),
+//				    				   map, actors);
+//        controls[2] = new AIController(animals.get(1), collisionController.getWorld(),
+//				   					   map, actors);
         collisionController.setControls(controls);
         //loadTextures
         /*
@@ -317,36 +319,35 @@ public class GameMode implements Screen {
     
     private void draw(float delta){
         
-    	canvas.begin();
+    		canvas.begin();
         //Draw the map
         map.draw(canvas);
         
         for (Trap trap : traps.get("WOLF_TRAP")) {
-    		if (trap != null) {
-    			trap.draw(canvas);
-    		}
+	    		if (trap != null) {
+	    			trap.draw(canvas);
+	    		}
         }
         
         for (Trap trap : traps.get("REGULAR_TRAP")) {
-        	if (trap != null) {
-    			trap.draw(canvas);
-    		}
+	        	if (trap != null) {
+	    			trap.draw(canvas);
+	    		}
         }
         
         for (Trap trap : traps.get("SHEEP_TRAP")) {
-        	if (trap != null) {
-    			trap.draw(canvas);
-    		}
+	        	if (trap != null) {
+	    			trap.draw(canvas);
+	    		}
         }
         
         //Draw the animals
         for (Animal animal : animals){
             if (!animal.getTrapped()) {
-            	animal.draw(canvas);
+            		animal.draw(canvas);
             }
             //animal.drawDebug(canvas);
         }
-        
         //Draw the hunter
         hunter.draw(canvas);
         //hunter.drawDebug(canvas);

@@ -305,7 +305,6 @@ public class AIController implements InputController {
         	}
         }
         goal.set(distVctrs[bigIndex].x, distVctrs[bigIndex].y);
-        return;
     }
     
     public void chase() {
