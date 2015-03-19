@@ -319,36 +319,35 @@ public class GameMode implements Screen {
     
     private void draw(float delta){
         
-    	canvas.begin();
+    		canvas.begin();
         //Draw the map
         map.draw(canvas);
         
         for (Trap trap : traps.get("WOLF_TRAP")) {
-    		if (trap != null) {
-    			trap.draw(canvas);
-    		}
+	    		if (trap != null) {
+	    			trap.draw(canvas);
+	    		}
         }
         
         for (Trap trap : traps.get("REGULAR_TRAP")) {
-        	if (trap != null) {
-    			trap.draw(canvas);
-    		}
+	        	if (trap != null) {
+	    			trap.draw(canvas);
+	    		}
         }
         
         for (Trap trap : traps.get("SHEEP_TRAP")) {
-        	if (trap != null) {
-    			trap.draw(canvas);
-    		}
+	        	if (trap != null) {
+	    			trap.draw(canvas);
+	    		}
         }
         
         //Draw the animals
         for (Animal animal : animals){
             if (!animal.getTrapped()) {
-            	animal.draw(canvas);
+            		animal.draw(canvas);
             }
             //animal.drawDebug(canvas);
         }
-        
         //Draw the hunter
         hunter.draw(canvas);
         //hunter.drawDebug(canvas);
