@@ -39,9 +39,7 @@ public abstract class Actor extends BoxObject {
     
     public Actor(TextureRegion tr, actorType type, float x, float y, float width, 
     		     float height, actorType[] victims) {
-	    	super(tr,
-	    			PhysicsScaler.pixelsToMeters(x),
-	    			PhysicsScaler.pixelsToMeters(y),
+	    	super(tr,x,y,
 	    			PhysicsScaler.pixelsToMeters(width),
 	    			PhysicsScaler.pixelsToMeters(height));
 	    	this.type = type;
