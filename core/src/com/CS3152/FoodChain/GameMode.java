@@ -327,11 +327,9 @@ public class GameMode implements Screen {
     
     private void draw(float delta){
         
-    	//canvas.begin();
-    	//canvas.beginCam(hunter.getPosition().x, hunter.getPosition().y);
-
     	//Draw the map
-    	canvas.begin();
+    	canvas.beginCam(hunter.getPosition().x, hunter.getPosition().y);
+    	//canvas.begin();
         //Draw the map
         map.draw(canvas);
         
