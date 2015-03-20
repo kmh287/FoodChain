@@ -16,7 +16,7 @@ public class Sheep extends Animal {
     private static final String SHEEP_TEX = "assets/pig_walk_cycle.png";
     private static Texture tex = null;
     private static float scaleXDrawSheep=0.4f;
-    private static float scaleyDrawSheep=0.3f;
+    private static float scaleYDrawSheep=0.3f;
     static final Actor.actorType prey[] = {};
     private FilmStrip sprite;
     /**
@@ -29,7 +29,7 @@ public class Sheep extends Animal {
               prey, InputController.EAST);
         sprite = new FilmStrip(tex,1,4,4);
         drawScale.x=scaleXDrawSheep;
-        drawScale.y=scaleyDrawSheep;
+        drawScale.y=scaleYDrawSheep;
     }
 
     /* (non-Javadoc)

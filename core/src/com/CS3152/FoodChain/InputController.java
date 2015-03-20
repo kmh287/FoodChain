@@ -11,7 +11,7 @@ import com.badlogic.gdx.math.Vector2;
 
 public interface InputController {
 	//Fields to manage movement
-	public static final int PLAYER_SPEED = 2;
+	public static final int PLAYER_SPEED = 200;
 	public static final Vector2 NO_ACTION = new Vector2(0,0); 
 	public static final Vector2 NORTH = new Vector2(0,PLAYER_SPEED); 
 	public static final Vector2 NORTHEAST = new Vector2(PLAYER_SPEED,PLAYER_SPEED);

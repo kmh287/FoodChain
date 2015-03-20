@@ -206,7 +206,7 @@ public class CollisionController implements ContactListener {
 			Animal animal = (Animal) bd1;
 			Trap trap = (Trap) bd2;
 
-			if (trap.getType() == "REGULAR_TRAP"
+			if (trap.getOnMap() && trap.getType() == "REGULAR_TRAP"
 					&& animal.getType() == Actor.actorType.SHEEP) {
 				animal.setTrapped(true);
 				trapToRemove = "REGULAR_TRAP";
@@ -214,7 +214,7 @@ public class CollisionController implements ContactListener {
 				trapLocationToAdd = trap.getPosition();
 				
 			}
-			else if (trap.getType() == "SHEEP_TRAP"
+			else if (trap.getOnMap() && trap.getType() == "SHEEP_TRAP"
 					&& animal.getType() == Actor.actorType.WOLF) {
 				animal.setTrapped(true);
 				trapToRemove = "SHEEP_TRAP";
@@ -227,8 +227,20 @@ public class CollisionController implements ContactListener {
 		if (bd1 instanceof Trap && bd2 instanceof Animal) {
 			Animal animal = (Animal) bd2;
 			Trap trap = (Trap) bd1;
-			if (trap.getOnMap()) {
+			if (trap.getOnMap() && trap.getType() == "REGULAR_TRAP"
+					&& animal.getType() == Actor.actorType.SHEEP) {
 				animal.setTrapped(true);
+				trapToRemove = "REGULAR_TRAP";
+				trapToAdd = "SHEEP_TRAP";
+				trapLocationToAdd = trap.getPosition();
+				
+			}
+			else if (trap.getOnMap() && trap.getType() == "SHEEP_TRAP"
+					&& animal.getType() == Actor.actorType.WOLF) {
+				animal.setTrapped(true);
+				trapToRemove = "SHEEP_TRAP";
+				trapToAdd = "WOLF_TRAP";
+				trapLocationToAdd = trap.getPosition();
 			}
 			//animal.setActive(false);
 		}
