@@ -274,11 +274,18 @@ public class GameMode implements Screen {
     private void update(float delta){
 
 		hunter.update(delta);
+		System.out.println(hunter.getAngle());
 		hunter.setSelectedTrap(controls[0].getNum());
-		Vector2 click = controls[0].getClickPos();
-		if (controls[0].isClicked()  && hunter.canSetTrap(click)) {
+		//Vector2 click = controls[0].getClickPos();
+		Vector2 hunterps = hunter.getPosition(); 
+		//Vector2 trappos = 0;
+		if (controls[0].isClicked()  && hunter.canSetTrap(hunterps)) {
 			//increment hunter frames
-			hunter.setTrapDown(click);
+			//hunter.setTrapDown(click);
+			
+			//set down in front of hunter.
+			hunter.setTrap();
+		
 		}
 		//if WASD pressed, then update frame
 		if(controls[0].getAction()!=InputController.NO_ACTION){

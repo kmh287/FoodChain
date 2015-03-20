@@ -89,14 +89,14 @@ public class GameCanvas {
 		// Set the projection matrix (for proper scaling)
 		camera = new OrthographicCamera(getWidth(),getHeight());
 		camera.setToOrtho(false);
-		camera.viewportWidth = (float) (Gdx.graphics.getWidth()/1.3);
-	    camera.viewportHeight = (float) (Gdx.graphics.getHeight()/1.3);
+		//camera.viewportWidth = (float) (Gdx.graphics.getWidth()/1.3);
+	    //camera.viewportHeight = (float) (Gdx.graphics.getHeight()/1.3);
 		//camera.position.set((getWidth())/2, getHeight()/2, 0);
 		//camera.update();
 	    
-	    viewport = new FitViewport((float) (Gdx.graphics.getWidth()/1.3), (float) (Gdx.graphics.getHeight()/1.3), camera);
-	    viewport.apply(); 
-	    stage = new Stage(viewport);
+	    //viewport = new FitViewport((float) (Gdx.graphics.getWidth()/1.3), (float) (Gdx.graphics.getHeight()/1.3), camera);
+	    //viewport.apply(); 
+	    //stage = new Stage(viewport);
 	
 		spriteBatch.setProjectionMatrix(camera.combined);
 		debugRender.setProjectionMatrix(camera.combined);

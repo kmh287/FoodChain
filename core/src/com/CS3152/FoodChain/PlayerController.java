@@ -75,7 +75,8 @@ public class PlayerController implements InputController{
 	} 
 	
 	public boolean isClicked(){
-		return Gdx.input.isButtonPressed(Input.Buttons.LEFT);
+		//return Gdx.input.isButtonPressed(Input.Buttons.LEFT);
+		return Gdx.input.isKeyJustPressed(Input.Keys.SPACE); 
 	}
 	
 	public int getNum(){
