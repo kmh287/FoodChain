@@ -332,6 +332,7 @@ public class AIController implements InputController {
 		
 		if (patrolTurn == 0) {
 			float rand = random.nextFloat();
+			
 			if (rand < 0.25) {
 				patrolTurn = 1;
 			}
@@ -342,6 +343,7 @@ public class AIController implements InputController {
 				patrolTurn = 3;
 			}
 			else {
+				
 				patrolTurn = 4;
 			}
 		}
@@ -363,6 +365,7 @@ public class AIController implements InputController {
 			goal.set(anX, anY - 100);
 			return;
 		}
+		
 		patrolTurn = 0;
 		return;
 	}

@@ -6,7 +6,9 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
 public class Trap extends BoxObject {
-	
+    private static float scaleXDrawTrap = 1f;
+    private static float scaleYDrawTrap = 1f;
+    
 	public enum TRAP_TYPE {
 		REGULAR_TRAP,
 		SHEEP_TRAP,
@@ -29,6 +31,8 @@ public class Trap extends BoxObject {
 		inInventory = true;
 		onMap = false;
 		this.type=type;
+		drawScale.x = scaleXDrawTrap;
+		drawScale.y = scaleYDrawTrap;
 	}
 	
 	/** 

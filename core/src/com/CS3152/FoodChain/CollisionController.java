@@ -160,6 +160,7 @@ public class CollisionController implements ContactListener {
     				&& o.getBody().getUserData() instanceof Trap) {
     			Trap t = (Trap) o;
     			if (t.getType() == trapToAdd) {
+    				System.out.println(trapToAdd);
     				t.setPosition(trapLocationToAdd);
     				t.setOnMap(true);
     				trapToAdd = null;
