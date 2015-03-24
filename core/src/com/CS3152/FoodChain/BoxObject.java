@@ -145,8 +145,8 @@ public class BoxObject extends SimplePhysicsObject {
 	 * @param height  The box height
 	 */
 	public BoxObject(TextureRegion texture, float x, float y, float width, float height)  {
-		super(texture,x,y);
-		dimension = new Vector2(width,height);
+		super(texture,PhysicsScaler.pixelsToMeters(x),PhysicsScaler.pixelsToMeters(y));
+		dimension = new Vector2(PhysicsScaler.pixelsToMeters(width),PhysicsScaler.pixelsToMeters(height));
 		sizeCache = new Vector2();
 		drawScale = new Vector2();
 		shape = new PolygonShape();
@@ -154,7 +154,7 @@ public class BoxObject extends SimplePhysicsObject {
 		geometry = null;
 		
 		// Initialize
-		resize(width, height);
+		resize(PhysicsScaler.pixelsToMeters(width),PhysicsScaler.pixelsToMeters(height));
 	}
 	
 	/**
@@ -199,7 +199,8 @@ public class BoxObject extends SimplePhysicsObject {
 	 * @param canvas Drawing context
 	 */
 	public void draw(GameCanvas canvas) {
-		canvas.draw(texture,Color.WHITE,origin.x,origin.y,getX(),getY(),getAngle(),drawScale.x,drawScale.y);
+		//System.out.println(" Position X: " + getX() +" Position Y:" +getY()+" originx: "+origin.x+"origin y:"+origin.y);
+		canvas.draw(texture,Color.WHITE,(origin.x),(origin.y),PhysicsScaler.metersToPixels(getX()),PhysicsScaler.metersToPixels(getY()),getAngle(),drawScale.x,drawScale.y);
 	}
 
 	@Override

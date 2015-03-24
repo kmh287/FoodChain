@@ -218,9 +218,9 @@ public abstract class Animal extends Actor {
 	}
 	
 	public void drawSight(GameCanvas canvas) {
-		tmp.set(getPosition());
-		canvas.drawLine(Color.YELLOW, getPosition(), tmp.add(getLeftSectorLine()));
-		tmp.set(getPosition());
-		canvas.drawLine(Color.YELLOW, getPosition(), tmp.add(getRightSectorLine()));
+		tmp.set(getPosition().scl(PhysicsScaler.SCALE));
+		canvas.drawLine(Color.YELLOW, getPosition().scl(PhysicsScaler.SCALE), tmp.add(getLeftSectorLine()));
+		tmp.set(getPosition().scl(PhysicsScaler.SCALE));
+		canvas.drawLine(Color.YELLOW, getPosition().scl(PhysicsScaler.SCALE), tmp.add(getRightSectorLine()));
 	}
 }

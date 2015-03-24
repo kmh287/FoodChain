@@ -211,7 +211,7 @@ public class Hunter extends Actor {
     }*/
     
     public boolean canSetTrap(Vector2 clickPos) {
-    	tmp.set(getPosition());
+    	tmp.set(getPosition().scl(PhysicsScaler.SCALE));
     	tmp.sub(clickPos);
     	if (Math.abs(tmp.len()) <= TRAP_RADIUS && selectedTrap.getInInventory()==true) {
     		return true;
@@ -283,7 +283,7 @@ public class Hunter extends Actor {
     }
     
     public void setTrapDown(Vector2 clickPos) {
-	    selectedTrap.setPosition(clickPos);
+	    selectedTrap.setPosition(clickPos.scl(1f/PhysicsScaler.SCALE));
 	    //update inventory
 	    //set selectedTrap inventory status to false
 	    selectedTrap.setInInventory(false);
