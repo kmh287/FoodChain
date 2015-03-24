@@ -24,6 +24,7 @@ import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.graphics.glutils.*;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -62,6 +63,7 @@ public class GameCanvas {
 	
 	private Viewport viewport; 
 	private Stage stage;
+	private UIControllerStage ui; 
 	
 	// CACHE OBJECTS
 	/** Affine cache for current sprite to draw */
@@ -92,12 +94,14 @@ public class GameCanvas {
 		camera.viewportWidth = (float) (Gdx.graphics.getWidth()/1.3);
 	    camera.viewportHeight = (float) (Gdx.graphics.getHeight()/1.3);
 		//camera.position.set((getWidth())/2, getHeight()/2, 0);
-		//camera.update();
+		//camera.update(); 
 	    
-	    //viewport = new FitViewport((float) (Gdx.graphics.getWidth()/1.3), (float) (Gdx.graphics.getHeight()/1.3), camera);
-	    //viewport.apply(); 
-	    //stage = new Stage(viewport);
-	
+	    viewport = new FitViewport((float) (Gdx.graphics.getWidth()/1.3), (float) (Gdx.graphics.getHeight()/1.3), camera);
+	    viewport.apply(); 
+	    ui = new UIControllerStage(); 
+	    stage = new Stage(new ExtendViewport(100, 100));
+	    stage.getViewport().setCamera(camera);
+	    	
 		spriteBatch.setProjectionMatrix(camera.combined);
 		debugRender.setProjectionMatrix(camera.combined);
 
@@ -255,6 +259,7 @@ public class GameCanvas {
 	 public void resize() {
 		// Resizing screws up the spriteBatch projection matrix
 		spriteBatch.getProjectionMatrix().setToOrtho2D(0, 0, getWidth(), getHeight());
+		 stage.getViewport().update(getWidth(), getHeight(), true);
 		//camera.setToOrtho(false,getWidth(),getHeight());
 		//spriteBatch.setProjectionMatrix(camera.combined);
 	}
@@ -354,22 +359,21 @@ public class GameCanvas {
     public void beginCam(float x, float y) {
     	
     	moveCamera(x,y);
-    	spriteBatch.setProjectionMatrix(camera.combined);
     	
+    	ui.drawStage(stage);
+    	spriteBatch.setProjectionMatrix(camera.combined);
     	spriteBatch.begin();
     	active = DrawPass.STANDARD;
     } 
     
     public void moveCamera(float x,float y){
         	//camera.unproject(new Vector3(x, y, 0));
+    		//stage.getCamera().translate(x, y, 0);
+    		//stage.getCamera().update();
             camera.position.set(x, y, 0);
         	global.setTranslation(x, y, 0);
             camera.update();
 
-    }
-    
-    public void drawStage(Texture image, float x, float y) {
-		stage.draw();
     }
     
 	/**

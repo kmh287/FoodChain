@@ -99,8 +99,8 @@ public class GameMode implements Screen {
         //what level to start on. This code will change
         map = loadMap("level2");
         map.LoadContent(manager);
-        ui = new UIController();
-        ui.loadTextures(manager);
+        //ui = new UIController();
+        //ui.loadTextures(manager);
         animals = new ArrayList<Animal>();
         /*size of animal list + the player 
         controls = new InputController[animals.size() + 1]; 
@@ -125,7 +125,7 @@ public class GameMode implements Screen {
         createHunter(map.getHunterStartingCoordinate() 
                 ,map.getStartingInventory()
         		);
-	    ui.setHunter(this.hunter);
+	    //ui.setHunter(this.hunter);
 	    
 	    traps = (HashMap<String, List<Trap>>) hunter.getInventory();
     
@@ -362,7 +362,7 @@ public class GameMode implements Screen {
         hunter.draw(canvas);
         //hunter.drawDebug(canvas);
         
-        ui.draw(canvas);
+        //ui.draw(canvas);
         
         canvas.end();
         
