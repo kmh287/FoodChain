@@ -251,6 +251,6 @@ public class GameMap {
 				yPos >= UI_OFFSET &&
 			   xPos <= Gdx.graphics.getWidth() && 
 			   yPos <= Gdx.graphics.getHeight() &&
-			   screenPosToTileType(xPos, yPos) == Tile.tileType.GRASS);
+			   screenPosToTileType((xPos),(yPos)) == Tile.tileType.GRASS);
 	}
 }

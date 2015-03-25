@@ -76,6 +76,8 @@ public class AIController implements InputController {
     
     private Random random;
     
+    protected final float moveDistance = 100f;
+    
     
     /*
      * Creates an AIController for the animal
@@ -204,7 +206,7 @@ public class AIController implements InputController {
 //            //markGoal();
             move = getNextMoveToGoal();
         
-        //System.out.println(move);
+        System.out.println("X: "+move.x+" Y: "+move.y);
         return move;
     }
     
@@ -255,43 +257,43 @@ public class AIController implements InputController {
         // Animal's best option
 
         Vector2 norm = getAnimal().getPosition().sub(attacker.getPosition()).nor();
-        if (map.isSafeAt(anX + 100*norm.x, anY + 100*norm.y)) {
-        	goal.set(anX + 100*norm.x, anY + 100*norm.y);
+        if (map.isSafeAt(anX + moveDistance*norm.x, anY + moveDistance*norm.y)) {
+        	goal.set(anX + moveDistance*norm.x, anY + moveDistance*norm.y);
 
         	return;
         }
         // Find farthest valid tile from attacker
-        if (map.isSafeAt(anX - 100, anY + 100)) {
-        	distVctrs[0].x = anX - 100;
-        	distVctrs[0].y = anY + 100;
+        if (map.isSafeAt(anX - moveDistance, anY + moveDistance)) {
+        	distVctrs[0].x = anX - moveDistance;
+        	distVctrs[0].y = anY + moveDistance;
         }
-        if (map.isSafeAt(anX, anY + 100)) {
+        if (map.isSafeAt(anX, anY + moveDistance)) {
         	distVctrs[1].x = anX;
-        	distVctrs[1].y = anY + 100;
+        	distVctrs[1].y = anY + moveDistance;
         }
-        if (map.isSafeAt(anX + 100, anY + 100)) {
-        	distVctrs[2].x = anX + 100;
-        	distVctrs[2].y = anY + 100;
+        if (map.isSafeAt(anX + moveDistance, anY + moveDistance)) {
+        	distVctrs[2].x = anX + moveDistance;
+        	distVctrs[2].y = anY + moveDistance;
         }
-        if (map.isSafeAt(anX - 100, anY)) {
-        	distVctrs[3].x = anX - 100;
+        if (map.isSafeAt(anX - moveDistance, anY)) {
+        	distVctrs[3].x = anX - moveDistance;
         	distVctrs[3].y = anY;
         }
-        if (map.isSafeAt(anX + 100, anY)) {
-        	distVctrs[4].x = anX + 100;
+        if (map.isSafeAt(anX + moveDistance, anY)) {
+        	distVctrs[4].x = anX + moveDistance;
         	distVctrs[4].y = anY;
         }
-        if (map.isSafeAt(anX - 100, anY - 100)) {
-        	distVctrs[5].x = anX - 100;
-		   	distVctrs[5].y = anY - 100;
+        if (map.isSafeAt(anX - moveDistance, anY - moveDistance)) {
+        	distVctrs[5].x = anX - moveDistance;
+		   	distVctrs[5].y = anY - moveDistance;
 	    }            
-	    if (map.isSafeAt(anX, anY - 100)) {
+	    if (map.isSafeAt(anX, anY - moveDistance)) {
 	    	distVctrs[6].x = anX;
-		   	distVctrs[6].y = anY - 100;
+		   	distVctrs[6].y = anY - moveDistance;
 	    }
-	    if (map.isSafeAt(anX + 100, anY - 100)) {
-	    	distVctrs[7].x = anX + 100;
-		   	distVctrs[7].y = anY - 100;
+	    if (map.isSafeAt(anX + moveDistance, anY - moveDistance)) {
+	    	distVctrs[7].x = anX + moveDistance;
+		   	distVctrs[7].y = anY - moveDistance;
         }
         // biggest distance
         float biggest = 0;
@@ -347,22 +349,22 @@ public class AIController implements InputController {
 				patrolTurn = 4;
 			}
 		}
-		if (map.isSafeAt(anX + 100, anY) && patrolTurn == 1) {
-			goal.set(anX + 100, anY);
+		if (map.isSafeAt(anX + moveDistance, anY) && patrolTurn == 1) {
+			goal.set(anX + moveDistance, anY);
 			return;
 		}
-		if (map.isSafeAt(anX - 100, anY) && patrolTurn == 2) {
-			goal.set(anX - 100, anY);
-			return;
-		}
-
-		if (map.isSafeAt(anX, anY + 100) && patrolTurn == 3) {
-			goal.set(anX, anY + 100);
+		if (map.isSafeAt(anX - moveDistance, anY) && patrolTurn == 2) {
+			goal.set(anX - moveDistance, anY);
 			return;
 		}
 
-		if (map.isSafeAt(anX, anY - 100) && patrolTurn == 4) {
-			goal.set(anX, anY - 100);
+		if (map.isSafeAt(anX, anY + moveDistance) && patrolTurn == 3) {
+			goal.set(anX, anY + moveDistance);
+			return;
+		}
+
+		if (map.isSafeAt(anX, anY - moveDistance) && patrolTurn == 4) {
+			goal.set(anX, anY - moveDistance);
 			return;
 		}
 		

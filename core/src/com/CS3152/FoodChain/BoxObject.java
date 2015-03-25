@@ -171,8 +171,8 @@ public class BoxObject extends SimplePhysicsObject {
 		vertices[6] =  width/2.0f;
 		vertices[7] = -height/2.0f;
 		shape.set(vertices);
-		drawScale.x = width/texture.getRegionWidth();
-		drawScale.y = height/texture.getRegionHeight();
+//		drawScale.x = width/texture.getRegionWidth();
+//		drawScale.y = height/texture.getRegionHeight();
 	}
 
 	/**
@@ -200,13 +200,23 @@ public class BoxObject extends SimplePhysicsObject {
 	 */
 	public void draw(GameCanvas canvas) {
 		//System.out.println(" Position X: " + getX() +" Position Y:" +getY()+" originx: "+origin.x+"origin y:"+origin.y);
-		canvas.draw(texture,Color.WHITE,(origin.x),(origin.y),PhysicsScaler.metersToPixels(getX()),PhysicsScaler.metersToPixels(getY()),getAngle(),drawScale.x,drawScale.y);
+		canvas.draw(texture,Color.WHITE,(origin.x),(origin.y),(getX()),(getY()),getAngle(),drawScale.x,drawScale.y);
 	}
 
 	@Override
 	public void drawDebug(GameCanvas canvas) {
 		// TODO Auto-generated method stub
-		canvas.drawPhysics(shape,Color.YELLOW,PhysicsScaler.metersToPixels(getX()),PhysicsScaler.metersToPixels(getY()),getAngle());
+		canvas.drawPhysics(shape,Color.YELLOW,(getX()),(getY()),getAngle());
+	}
+	
+	@Override
+	public float getX(){
+		return PhysicsScaler.metersToPixels(super.getX());
+	}
+	
+	@Override
+	public float getY(){
+		return PhysicsScaler.metersToPixels(super.getY());
 	}
 	
 //	/**
