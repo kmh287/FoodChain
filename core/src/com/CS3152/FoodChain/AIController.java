@@ -76,7 +76,7 @@ public class AIController implements InputController {
     
     private Random random;
     
-    protected final float moveDistance = 100f;
+    protected final float moveDistance = 1f;
     
     
     /*
@@ -205,8 +205,8 @@ public class AIController implements InputController {
 //            // Pathfinding
 //            //markGoal();
             move = getNextMoveToGoal();
-        
-        System.out.println("X: "+move.x+" Y: "+move.y);
+//        
+//        System.out.println("X: "+move.x+" Y: "+move.y);
         return move;
     }
     

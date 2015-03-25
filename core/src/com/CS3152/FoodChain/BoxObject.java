@@ -200,7 +200,7 @@ public class BoxObject extends SimplePhysicsObject {
 	 */
 	public void draw(GameCanvas canvas) {
 		//System.out.println(" Position X: " + getX() +" Position Y:" +getY()+" originx: "+origin.x+"origin y:"+origin.y);
-		canvas.draw(texture,Color.WHITE,(origin.x),(origin.y),(getX()),(getY()),getAngle(),drawScale.x,drawScale.y);
+		canvas.draw(texture,Color.WHITE,(origin.x),(origin.y),PhysicsScaler.metersToPixels(getX()),PhysicsScaler.metersToPixels(getY()),getAngle(),drawScale.x,drawScale.y);
 	}
 
 	@Override
@@ -209,15 +209,6 @@ public class BoxObject extends SimplePhysicsObject {
 		canvas.drawPhysics(shape,Color.YELLOW,(getX()),(getY()),getAngle());
 	}
 	
-	@Override
-	public float getX(){
-		return PhysicsScaler.metersToPixels(super.getX());
-	}
-	
-	@Override
-	public float getY(){
-		return PhysicsScaler.metersToPixels(super.getY());
-	}
 	
 //	/**
 //	 * Draws the outline of the physics body.

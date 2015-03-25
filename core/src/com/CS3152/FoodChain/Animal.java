@@ -94,7 +94,7 @@ public abstract class Animal extends Actor {
 	    		//do nothing
 	    		//If this code doesn't change, remove this else
 	    }
-        super.setPosition(xPos, yPos);
+        super.setPosition((xPos), (yPos));
 	}
 	
 	public void updateLOS(float angle) {
@@ -150,12 +150,7 @@ public abstract class Animal extends Actor {
 		Vector2 pos = new Vector2(getX()+getTexWidth()/2, getY()+getTexHeight()/2);
         return pos;
 	}
-	
-	public void setCenter(Vector2 pos){
-		float xPos = pos.x-getTexWidth()/2;
-		float yPos = pos.y-getTexHeight()/2;
-        super.setPosition(xPos, yPos);
-	}
+
 	
 	/**
 	 * Standard toString methoH
