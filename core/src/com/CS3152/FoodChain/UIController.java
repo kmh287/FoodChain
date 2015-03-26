@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 
 public class UIController {
@@ -19,6 +20,8 @@ public class UIController {
     private static final String TRAP_THREE_TWO = "assets/trap3_2.png";
     private static final String SELECT = "assets/select.png";
     private static final String BLACK_BAR = "assets/blackbar.png";
+    private static final float TrapBarXScale = 0.88f;
+    private static final float TrapBarYScale = 0.9f;
     
     private Hunter hunter;
     
@@ -77,7 +80,8 @@ public class UIController {
         int screenWidth = Gdx.graphics.getWidth();
         int xCoordinate = (screenWidth/2) - (texWidth/2);
         canvas.draw(blackBar, 0, 0);
-        canvas.draw(allDeselect, xCoordinate, 0);
+        canvas.draw(allDeselect, Color.WHITE, 0, 0, 
+        		xCoordinate, 0, 0, TrapBarXScale, TrapBarYScale);
         
         //loop through hunter inventory and draw the correct png
         regularCount = 0;

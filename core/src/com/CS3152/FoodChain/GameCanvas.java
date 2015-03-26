@@ -463,7 +463,6 @@ public class GameCanvas {
 			return;
 		}
 		
-		local.scale(sx,sy);
 		local.setToTranslation(x,y);
 		local.rotateRad(angle);
 		
