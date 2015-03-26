@@ -7,6 +7,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class UIController {
     //UI Trap pngs
@@ -20,6 +21,8 @@ public class UIController {
     private static final String TRAP_THREE_TWO = "assets/trap3_2.png";
     private static final String SELECT = "assets/select.png";
     private static final String BLACK_BAR = "assets/blackbar.png";
+    private static final String RED_BAR = "assets/red-small.png";
+    private static final String PANIC_BAR = "assets/panic-bar-small.png";
     private static final float TrapBarXScale = 0.88f;
     private static final float TrapBarYScale = 0.9f;
     
@@ -34,6 +37,14 @@ public class UIController {
     private static Texture trap_3_2_texture = null;
     private static Texture blackBar = null;
     private static Texture select_texture = null;
+    private static Texture panic_meter = null;
+    private static Texture red = null;
+    
+    TextureRegion redProgressSegment;
+    private float PROGRESS_CAP;
+    private float PROGRESS_MIDDLE;
+    private float PROGRESS_HEIGHT;
+    private float progress_percent;
     
     private int regularCount = 0;
     private int sheepCount = 0;
@@ -53,6 +64,8 @@ public class UIController {
             manager.load(TRAP_THREE_ONE, Texture.class);
             manager.load(TRAP_THREE_TWO, Texture.class);
             manager.load(SELECT,Texture.class);
+            manager.load(RED_BAR,Texture.class);
+            manager.load(PANIC_BAR,Texture.class);
             manager.finishLoading();
             if (manager.isLoaded(TRAPS_DESELECT)){
             	allDeselect = manager.get(TRAPS_DESELECT);
@@ -63,6 +76,8 @@ public class UIController {
             	trap_3_1_texture = manager.get(TRAP_THREE_ONE);
             	trap_3_2_texture = manager.get(TRAP_THREE_TWO);
             	select_texture = manager.get(SELECT);
+            	panic_meter = manager.get(PANIC_BAR);
+            	red = manager.get(RED_BAR);
             }
         }
         
@@ -133,6 +148,25 @@ public class UIController {
         		canvas.draw(select_texture, xCoordinate+143, 13);
         	}
         }
+        
+        //draw panic bar
+        TextureRegion statusBkgMiddle;
+      // progress_percent determines the amount of bar to display
+        progress_percent=.25f;
+      // PROGRESS_CAP is the variable that determines the width of the bar
+        PROGRESS_CAP = red.getWidth()*progress_percent+32;
+        PROGRESS_MIDDLE = red.getWidth();
+        PROGRESS_HEIGHT = red.getHeight()-4;
+        redProgressSegment = new TextureRegion(red,PROGRESS_CAP,0,PROGRESS_MIDDLE,PROGRESS_HEIGHT);
+
+        
+        canvas.draw(redProgressSegment, Color.WHITE, 32+PROGRESS_CAP, 48, 34-PROGRESS_CAP, PROGRESS_HEIGHT);
+        canvas.draw(panic_meter, Color.WHITE, 0, 0, 
+        		20, 20, 0, TrapBarXScale, TrapBarYScale);
+
+        //canvas.draw(red, Color.WHITE, 0, 0,34, 45, 0, 1, 1);
+       
+        
         
     }
 }

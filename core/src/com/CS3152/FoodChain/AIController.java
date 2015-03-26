@@ -74,6 +74,8 @@ public class AIController implements InputController {
     // Which direction to patrol
     protected int patrolTurn;
     
+    private Random random;
+
     
     /*
      * Creates an AIController for the animal
@@ -107,11 +109,16 @@ public class AIController implements InputController {
         this.tmp = new Vector2();
         this.move = InputController.WEST;
         goal.set (getAnimal().getX() + 1, getAnimal().getY());
+
         this.turns = 3;//should be 0 in future
         
         this.patrolTurn = 1;
         
         this.vcb = new VisionCallback(this);
+        
+        this.tmp = new Vector2();
+        
+        this.random = new Random();
     }
     
     /*
@@ -232,10 +239,12 @@ public class AIController implements InputController {
     
     // Determines whether or not the animal should run away
     public void flee() {
+
     	/*world.rayCast(fcb, attacker.getPosition(), getAnimal().getPosition());
     	if (fcb.getContact() != getAnimal()) {
     		turns--;
     	}*/
+
         // Animal's position
     	float anX = getAnimal().getX();
     	float anY = getAnimal().getY();
@@ -243,9 +252,11 @@ public class AIController implements InputController {
     	float attackX = attacker.getX();
         float attackY = attacker.getY();
         // Animal's best option
+
         Vector2 norm = getAnimal().getPosition().sub(attacker.getPosition()).nor();
         if (map.isSafeAt(anX + 100*norm.x, anY + 100*norm.y)) {
         	goal.set(anX + 100*norm.x, anY + 100*norm.y);
+
         	return;
         }
         // Find farthest valid tile from attacker
@@ -293,7 +304,6 @@ public class AIController implements InputController {
         	}
         }
         goal.set(distVctrs[bigIndex].x, distVctrs[bigIndex].y);
-        return;
     }
     
     public void chase() {
@@ -318,26 +328,41 @@ public class AIController implements InputController {
 	public void patrol() {
 		float anX = getAnimal().getPosition().x;
 		float anY = getAnimal().getPosition().y;
-		if (map.isSafeAt(anX + 100, anY)) {
-			if (patrolTurn == 1) {
-				goal.set(anX + 100, anY);
-				return;
+		
+		if (patrolTurn == 0) {
+			float rand = random.nextFloat();
+			if (rand < 0.25) {
+				patrolTurn = 1;
+			}
+			else if (rand < 0.5) {
+				patrolTurn = 2;
+			}
+			else if (rand < 0.75) {
+				patrolTurn = 3;
+			}
+			else {
+				patrolTurn = 4;
 			}
 		}
-		patrolTurn = 2;
-		if (map.isSafeAt(anX - 100, anY)) {
-			if (patrolTurn == 2) {
-				goal.set(anX - 100, anY);
-				return;
-			}
+		if (map.isSafeAt(anX + 100, anY) && patrolTurn == 1) {
+			goal.set(anX + 100, anY);
+			return;
 		}
-		patrolTurn = 1;
+		if (map.isSafeAt(anX - 100, anY) && patrolTurn == 2) {
+			goal.set(anX - 100, anY);
+			return;
+		}
+
 		if (map.isSafeAt(anX, anY + 100) && patrolTurn == 3) {
 			goal.set(anX, anY + 100);
 			return;
 		}
-		patrolTurn = 1;
-		goal.set(anX, anY - 100);
+
+		if (map.isSafeAt(anX, anY - 100) && patrolTurn == 4) {
+			goal.set(anX, anY - 100);
+			return;
+		}
+		patrolTurn = 0;
 		return;
 	}
     

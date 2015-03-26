@@ -9,6 +9,9 @@ public class Wolf extends Animal{
     private static final String WOLF_TEX = "assets/wolf.png";
     private static Texture tex = null;
     
+    private static float scaleXDrawWolf = 1.2f;
+    private static float scaleYDrawWolf = 0.9f;
+    
     static final Actor.actorType prey[] = {Actor.actorType.SHEEP,
     									   Actor.actorType.HUNTER};
     
@@ -20,6 +23,8 @@ public class Wolf extends Animal{
     public Wolf(float x, float y) {
         super(new TextureRegion(tex), Actor.actorType.WOLF, x, y, 
               prey, InputController.EAST);
+        drawScale.x = scaleXDrawWolf;
+        drawScale.y = scaleYDrawWolf;
     }
 
     @Override

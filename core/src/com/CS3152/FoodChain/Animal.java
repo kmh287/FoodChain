@@ -22,7 +22,6 @@ public abstract class Animal extends Actor {
     
     private Vector2 tmp;
 
-	
 	//texture used in getCenter and setCenter
 	private float texWidth;
 	private float texHeight;
@@ -49,10 +48,13 @@ public abstract class Animal extends Actor {
 		super(tr, type, x, y, AnimalWidth, AnimalHeight, prey);
 		this.type = type;
 		this.setPos(x,y);
-		this.facing = facing;
+		setFacing(facing);
 		this.leftSectorLine = new Vector2();
 		this.rightSectorLine = new Vector2();
+
+
 		this.tmp = new Vector2();
+
 		updateLOS(0);
 		setTexWidth(tr.getRegionWidth());
 		setTexHeight(tr.getRegionHeight());
@@ -193,11 +195,11 @@ public abstract class Animal extends Actor {
         return false;
 	}
 	
-	public void draw(GameMap map, GameCanvas canvas){
-	    canvas.begin();
-	    canvas.draw(getTexture(), getX(), getY());
-	    canvas.end();
-	}
+//	public void draw(GameMap map, GameCanvas canvas){
+//	    canvas.begin();
+//	    canvas.draw(getTexture(), getX(), getY());
+//	    canvas.end();
+//	}
 	
 	public float getXDiamter() {
 	    return texWidth;

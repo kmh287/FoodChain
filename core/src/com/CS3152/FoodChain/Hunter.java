@@ -5,16 +5,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 
-
-
-
-
-
-
-
-
-
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
@@ -45,7 +35,8 @@ public class Hunter extends Actor {
     /** How far the hunter can lay a trap from itself */
     private static final float TRAP_RADIUS = 50.0f;
     
-    private static final float hunterDrawScaleX=0.2f;
+    private static float scaleXDrawHunter = 0.2f;
+    private static float scaleYDrawHunter = 0.15f;
     
     private FilmStrip sprite;
     
@@ -58,13 +49,14 @@ public class Hunter extends Actor {
     		){
     	super(new TextureRegion(tex), actorType.HUNTER, xPos, yPos, 40,
     		  40, new actorType[]{actorType.SHEEP});
-    	inventory= new HashMap<String, List<Trap>>();
-    	inventory.put("REGULAR_TRAP", new ArrayList<Trap>());
-    	inventory.put("SHEEP_TRAP", new ArrayList<Trap>());
-    	inventory.put("WOLF_TRAP", new ArrayList<Trap>());
+	    	inventory= new HashMap<String, List<Trap>>();
+	    	inventory.put("REGULAR_TRAP", new ArrayList<Trap>());
+	    	inventory.put("SHEEP_TRAP", new ArrayList<Trap>());
+	    	inventory.put("WOLF_TRAP", new ArrayList<Trap>());
         tmp = new Vector2();
         sprite = new FilmStrip(tex,1,4,4);
-        drawScale.x=hunterDrawScaleX;
+        drawScale.x=scaleXDrawHunter;
+        drawScale.y=scaleYDrawHunter;
         //set selected trap
         /*
         for (Trap trap : traps.get("REGULAR_TRAP")) {
@@ -219,7 +211,7 @@ public class Hunter extends Actor {
     }*/
     
     public boolean canSetTrap(Vector2 clickPos) {
-    	tmp.set(getPosition().add(20.0f, 20.0f));
+    	tmp.set(getPosition());
     	tmp.sub(clickPos);
     	if (Math.abs(tmp.len()) <= TRAP_RADIUS && selectedTrap.getInInventory()==true) {
     		return true;
