@@ -3,10 +3,11 @@ package com.CS3152.FoodChain;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
-import com.CS3152.FoodChain.Animal.animalType;
-import com.CS3152.FoodChain.GameMap.Coordinate;
+import com.badlogic.gdx.math.Vector2;
+import com.CS3152.FoodChain.Actor.actorType;
 
 /**
  * This is not part of the final game.
@@ -19,56 +20,71 @@ import com.CS3152.FoodChain.GameMap.Coordinate;
 public class LevelOneExporter {
 
     public static void main(String[] args) {
-        GameMap.Tile[][] layout = new GameMap.Tile[16][32];
+        Tile.tileType[][] layout = new Tile.tileType[16][32];
         for (int i = 0; i < layout.length; ++i){
             for (int j = 0; j < layout[0].length; ++j){
-                GameMap.Tile t = new GameMap.Tile();
                 //Want a tree boundary
                 if (i == 0 || i == layout.length-1 ||
                     j == 0 || j == layout[0].length-1){
-                    t.type = GameMap.tileType.TREE;
+                    layout[i][j] = Tile.tileType.TREE;
                 } else {
-                    t.type = GameMap.tileType.GRASS;
+                    layout[i][j] = Tile.tileType.GRASS;
                 }
-                layout[i][j] = t;
             }
         }
         
         //Hi in bushes!
         //H
-        layout[2][2].type = GameMap.tileType.BUSH;
-        layout[3][2].type = GameMap.tileType.BUSH;
-        layout[4][2].type = GameMap.tileType.BUSH;
-        layout[5][2].type = GameMap.tileType.BUSH;
-        layout[6][2].type = GameMap.tileType.BUSH;
-        layout[4][3].type = GameMap.tileType.BUSH;
-        layout[2][4].type = GameMap.tileType.BUSH;
-        layout[3][4].type = GameMap.tileType.BUSH;
-        layout[4][4].type = GameMap.tileType.BUSH;
-        layout[5][4].type = GameMap.tileType.BUSH;
-        layout[6][4].type = GameMap.tileType.BUSH;
+        layout[2][2] = Tile.tileType.BUSH;
+        layout[3][2] = Tile.tileType.BUSH;
+        layout[4][2] = Tile.tileType.BUSH;
+        layout[5][2] = Tile.tileType.BUSH;
+        layout[6][2] = Tile.tileType.BUSH;
+        layout[4][3] = Tile.tileType.BUSH;
+        layout[2][4] = Tile.tileType.BUSH;
+        layout[3][4] = Tile.tileType.BUSH;
+        layout[4][4] = Tile.tileType.BUSH;
+        layout[5][4] = Tile.tileType.BUSH;
+        layout[6][4] = Tile.tileType.BUSH;
         
         //i
         
-        layout[2][8].type = GameMap.tileType.BUSH;
-        layout[3][8].type = GameMap.tileType.BUSH;
-        layout[4][8].type = GameMap.tileType.BUSH;
-        layout[6][8].type = GameMap.tileType.BUSH;
+        layout[2][8] = Tile.tileType.BUSH;
+        layout[3][8] = Tile.tileType.BUSH;
+        layout[4][8] = Tile.tileType.BUSH;
+        layout[6][8] = Tile.tileType.BUSH;
           
-        List<animalType> animals = new ArrayList<animalType>();
-        animals.add(animalType.SHEEP);
-        animals.add(animalType.WOLF);
+        List<actorType> animals = new ArrayList<actorType>();
+        animals.add(actorType.SHEEP);
+        animals.add(actorType.WOLF);
         
-        List<Coordinate> coords = new ArrayList<Coordinate>();
-        coords.add(new Coordinate(5,5));
-        coords.add(new Coordinate(7,7));
+
+        List<Vector2> coords = new ArrayList<Vector2>();
+        coords.add(new Vector2(15,11));
+        coords.add(new Vector2(7,8));
         
-        Coordinate playerStart = new Coordinate(10,10);
-        Trap startingTrap = new Trap("SHEEP_TRAP");
+        Vector2 playerStart = new Vector2(15,3);
+        
+        /*
+        HashMap<String, List<Trap>> startingInventory = new HashMap<String, List<Trap>>();
+        List<Trap> trap0List = new ArrayList<Trap>();
+        List<Trap> trap1List = new ArrayList<Trap>();
+        List<Trap> trap2List = new ArrayList<Trap>();
+        trap0List.add(new SheepTrap());
+        trap0List.add(new SheepTrap());
+        trap1List.add(new WolfTrap());
+        trap1List.add(new WolfTrap());
+        trap2List.add(new RegularTrap());
+        trap2List.add(new RegularTrap());
+        startingInventory.put("SHEEP_TRAP", trap0List);
+        startingInventory.put("WOLF_TRAP", trap1List);
+        startingInventory.put("REGULAR_TRAP", trap2List);
+        */
         
         GameMap gm = new GameMap(layout, animals, 
-                                coords, playerStart,
-                                startingTrap);
+                                coords, playerStart
+                                //,startingInventory
+                                );
         try {
             MapManager.MapToGson(gm, "level1");
         } catch (IOException e) {
