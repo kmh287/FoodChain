@@ -21,9 +21,10 @@ public abstract class Actor extends BoxObject {
     }
     
     public enum actorType{
-    		HUNTER,
-		SHEEP, 
-		WOLF
+	    	HUNTER,
+			SHEEP, 
+			WOLF,
+			OWL 
 	}
     
 	public boolean activatePhysics(World world) {
@@ -49,7 +50,8 @@ public abstract class Actor extends BoxObject {
         this.victims = victims;
     }
     
-    /*
+
+	/*
      * @return the direction this Actor's facing
      */
     public Vector2 getFacing() {
