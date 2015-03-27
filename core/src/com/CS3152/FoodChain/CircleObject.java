@@ -114,9 +114,12 @@ public class CircleObject extends SimplePhysicsObject {
 	 *
 	 * @param canvas Drawing context
 	 */
+
 	public void draw(GameCanvas canvas) {
-		canvas.draw(texture,Color.WHITE,origin.x,origin.y,getX(),getY(),getAngle(),drawScale.x,drawScale.y);
+		//System.out.println(" Position X: " + getX() +" Position Y:" +getY()+" originx: "+origin.x+"origin y:"+origin.y);
+		canvas.draw(texture,Color.WHITE,(origin.x),(origin.y),PhysicsScaler.metersToPixels(getX()),PhysicsScaler.metersToPixels(getY()),getAngle(),drawScale.x,drawScale.y);
 	}
+
 	
 	/**
 	 * Draws the outline of the physics body.

@@ -41,6 +41,8 @@ public class GameMode implements Screen {
 	
 	private int ticks=0;
 	
+	private float accumulator = 0;
+	
 	
     
 	/** 
@@ -308,6 +310,15 @@ public class GameMode implements Screen {
 			i++;
 		}
 		ticks++;
+		
+//		float frameTime = Math.min(delta, 0.25f);
+//		float TIME_STEP = 1/1000f;
+//		accumulator += frameTime;
+//		while (accumulator >= TIME_STEP) {
+//			collisionController.getWorld().step(TIME_STEP, 3, 3);
+//		    accumulator -= TIME_STEP;
+//		}
+		
 		collisionController.update();		
 		
 		/*} else {
