@@ -116,7 +116,7 @@ public class CollisionController implements ContactListener {
 
 
 	public void update() {
-		world.step(1/60f, 3, 3);
+		//world.step(1/60f, 3, 3);
 		
 		//Updates the animals' actions
 		//i is the index of each animal AI in controls
@@ -134,7 +134,7 @@ public class CollisionController implements ContactListener {
 			}
 			//System.out.println(o.getPosition().toString());
 		}
-		//world.step(1/60f, 6, 2);
+		world.step(1/60f, 3, 3);
 		//checkTrapped();
 	}
 	
