@@ -75,7 +75,7 @@ public class AIController implements InputController {
     protected int patrolTurn;
     
     private Random random;
-    
+
     
     /*
      * Creates an AIController for the animal
@@ -93,7 +93,6 @@ public class AIController implements InputController {
         for (int id = 0; id < distVctrs.length; id++) {
         	distVctrs[id] = new Vector2();
         }
-
         
         this.loc = new Vector2(map.screenXToMap(animal.getX()),
                                map.screenYToMap(animal.getY()));
@@ -465,7 +464,6 @@ public class AIController implements InputController {
      *
      * @return int corresponding to InputController bit-vector
      */
-    
     public Vector2 getNextMoveToGoal() {
     	//System.out.println("goalx:" + goal.x + "goaly:" + goal.y);
     	//System.out.println("locx:" + getLoc().x + "locy:" + getLoc().y);

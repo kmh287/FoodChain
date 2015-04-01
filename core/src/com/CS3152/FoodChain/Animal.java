@@ -22,7 +22,6 @@ public abstract class Animal extends Actor {
     
     private Vector2 tmp;
 
-    
 	//texture used in getCenter and setCenter
 	private float texWidth;
 	private float texHeight;
@@ -52,6 +51,7 @@ public abstract class Animal extends Actor {
 		setFacing(facing);
 		this.leftSectorLine = new Vector2();
 		this.rightSectorLine = new Vector2();
+
 
 		this.tmp = new Vector2();
 
