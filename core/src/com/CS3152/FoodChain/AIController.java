@@ -5,6 +5,7 @@ import java.util.*;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import com.badlogic.gdx.math.*;
+import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.World;
 
 /**
@@ -100,21 +101,18 @@ public class AIController implements InputController {
         this.target = null;
         this.attacker = null;
         
-        vcb = new VisionCallback(this);
+        this.vcb = new VisionCallback(this);
         //fcb = new FleeCallback(this, attacker);
         
         //this.state = State.PATROL;//FIND;
         this.goal = new Vector2();
         // To where it should start moving
-        this.tmp = new Vector2();
         this.move = InputController.WEST;
         goal.set (getAnimal().getX() + 1, getAnimal().getY());
 
         this.turns = 3;//should be 0 in future
         
         this.patrolTurn = 1;
-        
-        this.vcb = new VisionCallback(this);
         
         this.tmp = new Vector2();
         
@@ -186,16 +184,37 @@ public class AIController implements InputController {
         	for (Actor a : actors) {
         		if (a != getAnimal()) {
         			world.rayCast(vcb, getAnimal().getPosition(), a.getPosition());
+        			Fixture fix = vcb.getFixture();
+        			if (fix != null) {
+	        			Object objSeen = fix.getBody().getUserData();
+	        			if (objSeen instanceof Actor) {
+	        				if (((Actor)objSeen).canKill(getAnimal())) {
+	        					setScared((Actor)objSeen);
+	        					setTurns();
+	        					setTarget(null);
+	        				}
+	        				if (getAnimal().canKill((Actor)objSeen)) {
+	        					setScared(null);
+	        					setTarget((Actor)objSeen);
+	        				}
+	        			}
+	        			else if (objSeen instanceof Tile) {
+	        				
+	        			}
+        			}
         			//vcb.getFixture();
         		}
         	}
             if (isScared()) {
+            	System.out.println(animal.getType() + ": flee");
             	flee();
             }
             else if (hasTarget()) {
+            	System.out.println(animal.getType() + ": chase");
             	chase();
             }
             else {
+            	System.out.println(animal.getType() + ": patrol");
             	patrol();
             }
 //            
