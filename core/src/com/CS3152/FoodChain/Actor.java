@@ -32,20 +32,17 @@ public abstract class Actor extends BoxObject {
 			return false;
 		}
 		
-		body.setAngularDamping(Float.MAX_VALUE);
-		
 		return true;
 	}
     
     public Actor(TextureRegion tr, actorType type, float x, float y, float width, 
     		     float height, actorType[] victims) {
-	    	super(tr,x,y,
-	    			PhysicsScaler.pixelsToMeters(width),
-	    			PhysicsScaler.pixelsToMeters(height));
+	    	super(tr,x,y, width, height);
 	    	this.type = type;
 	    	this.tr = tr;
         this.facing = new Vector2();
         this.victims = victims;
+        setFixedRotation(true);
     }
     
     /*
