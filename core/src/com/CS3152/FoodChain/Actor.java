@@ -21,7 +21,7 @@ public abstract class Actor extends BoxObject {
     }
     
     public enum actorType{
-    		HUNTER,
+    	HUNTER,
 		SHEEP, 
 		WOLF
 	}

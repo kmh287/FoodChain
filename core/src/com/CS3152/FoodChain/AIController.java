@@ -175,52 +175,61 @@ public class AIController implements InputController {
         //ticks++;
         
         //if (ticks % 10 == 0 && state != State.DEAD) {
-        	//comment out for fixing collisions
-//            // Process the State
-//            //changeStateIfApplicable();
-//       	  checkCone();
-        	// RayCasting
-        	//Should be at beginning
-        	for (Actor a : actors) {
-        		if (a != getAnimal()) {
-        			world.rayCast(vcb, getAnimal().getPosition(), a.getPosition());
-        			Fixture fix = vcb.getFixture();
-        			if (fix != null) {
-	        			Object objSeen = fix.getBody().getUserData();
-	        			if (objSeen instanceof Actor) {
-	        				if (((Actor)objSeen).canKill(getAnimal())) {
-	        					setScared((Actor)objSeen);
-	        					setTurns();
-	        					setTarget(null);
-	        				}
-	        				if (getAnimal().canKill((Actor)objSeen)) {
-	        					setScared(null);
-	        					setTarget((Actor)objSeen);
-	        				}
-	        			}
-	        			else if (objSeen instanceof Tile) {
-	        				
-	        			}
+        //comment out for fixing collisions
+    	// Process the State
+    	//changeStateIfApplicable();
+    	//checkCone();
+        // RayCasting
+        //Should be at beginning
+    	if (getTarget() instanceof Animal) {
+    		Animal target = (Animal) getTarget();
+    		if (!target.getAlive()) {
+    			setTarget(null);
+    		}
+    	}
+    	for (Actor a : actors) {
+    		if (a != getAnimal()) {
+    			world.rayCast(vcb, getAnimal().getPosition(), a.getPosition());
+    			Fixture fix = vcb.getFixture();
+    			if (fix != null) {
+        			Object objSeen = fix.getBody().getUserData();
+        			if (objSeen instanceof Actor) {
+        				if (((Actor)objSeen).canKill(getAnimal())) {
+        					setScared((Actor)objSeen);
+        					setTurns();
+        					setTarget(null);
+        				}
+        				if (getAnimal().canKill((Actor)objSeen)) {
+        					setScared(null);
+        					setTarget((Actor)objSeen);
+        				}
         			}
-        			//vcb.getFixture();
-        		}
+        			else if (objSeen instanceof Tile) {
+        				
+        			}
+    			}
+    			if (canSettle()) { 
+			    	setScared(null);
+					setTarget(null);
+			    }
+    			//vcb.getFixture();
         	}
-            if (isScared()) {
-            	System.out.println(animal.getType() + ": flee");
-            	flee();
-            }
-            else if (hasTarget()) {
-            	System.out.println(animal.getType() + ": chase");
-            	chase();
-            }
-            else {
-            	System.out.println(animal.getType() + ": patrol");
-            	patrol();
-            }
-//            
-//            // Pathfinding
-//            //markGoal();
-            move = getNextMoveToGoal();
+    	}
+        	
+        if (isScared()) {
+        	System.out.println(animal.getType() + ": flee");
+        	flee();
+        }
+        else if (hasTarget()) {
+        	System.out.println(animal.getType() + ": chase");
+        	chase();
+        }
+        else {
+        	System.out.println(animal.getType() + ": patrol");
+        	patrol();
+        }
+
+        move = getNextMoveToGoal();
         
         //System.out.println(move);
         return move;
@@ -422,8 +431,19 @@ public class AIController implements InputController {
         this.attacker = ac;
     }
     
-    /*
+    /**
+     * Returns the target of the current animal AI
+     * 
+     * @return Target of the animal AI
+     */
+    public Actor getTarget() {
+    	return target;
+    }
+    
+    /**
      * Sets the animal that this animal should chase. Null if it shouldn't chase.
+     * 
+     * @param ac Actor the animal should target
      */
     public void setTarget(Actor ac) {
         this.target = ac;

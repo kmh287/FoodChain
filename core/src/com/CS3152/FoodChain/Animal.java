@@ -8,10 +8,10 @@ import com.badlogic.gdx.math.Vector2;
 
 public abstract class Animal extends Actor {
 
-	//Whether the animal is caught in a trap
+	// Whether the animal is alive
+	private boolean alive = true;
+	// Whether the animal is caught in a trap
 	private boolean trapped = false;
-
-	private actorType type;
 	
 	// Vector that runs from the center of the animal diagonally leftward some length
     // RELATIVE TO ANIMAL'S POSITION
@@ -46,7 +46,6 @@ public abstract class Animal extends Actor {
 	public Animal(TextureRegion tr, actorType type, float x, float y, 
 	              actorType[] prey, Vector2 facing){
 		super(tr, type, x, y, AnimalWidth, AnimalHeight, prey);
-		this.type = type;
 		this.setPos(x,y);
 		setFacing(facing);
 		this.leftSectorLine = new Vector2();
@@ -104,13 +103,6 @@ public abstract class Animal extends Actor {
 		this.rightSectorLine.set((float)(SIGHT_LENGTH*Math.cos(angle - SIGHT_ANGLE)),
 								 (float)(SIGHT_LENGTH*Math.sin(angle - SIGHT_ANGLE)));
 	}
-	
-    /**
-     * @return the type
-     */
-    public actorType getType() {
-        return type;
-    }
     
 	/**
 	 * The name of this animal type, e.g. "Sheep"
@@ -181,13 +173,31 @@ public abstract class Animal extends Actor {
 	public void setTrapped(boolean val) {
 		trapped = val;
 	}
+	
+	/**
+	 * Returns whether the animal is alive
+	 * 
+	 * @return Whether the animal is alive
+	 */
+	public boolean getAlive() {
+		return alive;
+	}
+	
+	/**
+	 * Sets whether the animal is alive
+	 * 
+	 * @param val A boolean whether the animal is alive
+	 */
+	public void setAlive(boolean val) {
+		alive = val;
+	}
 
 	    
 	/**
-	 * @return the bottom LeftxPos
+	 * @return
 	 */
 	public boolean canEat(Animal ani){
-	    for (actorType t : ani.getPrey()){
+	    for (actorType t : getPrey()){
 	        if (ani.getType() == t){
 	            return true;
 	        }
@@ -218,9 +228,18 @@ public abstract class Animal extends Actor {
 	}
 	
 	public void drawSight(GameCanvas canvas) {
-		tmp.set(getPosition());
-		canvas.drawLine(Color.YELLOW, getPosition(), tmp.add(getLeftSectorLine()));
-		tmp.set(getPosition());
-		canvas.drawLine(Color.YELLOW, getPosition(), tmp.add(getRightSectorLine()));
+		//if (getAlive()) {
+			tmp.set(getPosition());
+			canvas.drawLine(Color.YELLOW, getPosition(), tmp.add(getLeftSectorLine()));
+			tmp.set(getPosition());
+			canvas.drawLine(Color.YELLOW, getPosition(), tmp.add(getRightSectorLine()));
+		//}
+	}
+	
+	@Override
+	public void draw(GameCanvas canvas) {
+		if (getAlive()) {
+			super.draw(canvas);
+		}
 	}
 }

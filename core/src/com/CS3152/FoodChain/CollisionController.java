@@ -107,11 +107,13 @@ public class CollisionController implements ContactListener {
 	}
 
 	private void move(Animal actor,int index) {
-		actor.setLinearVelocity(controls[index].getAction());
-		float angle = ((AIController)controls[index]).getAngle();
-		actor.updateLOS(angle);
-		//actor.setAngle(((AIController)controls[index]).getAngle());
-		actor.setFacing(((AIController) controls[index]).getAction());
+		if (actor.getAlive()) {
+			actor.setLinearVelocity(controls[index].getAction());
+			float angle = ((AIController)controls[index]).getAngle();
+			actor.updateLOS(angle);
+			//actor.setAngle(((AIController)controls[index]).getAngle());
+			actor.setFacing(((AIController) controls[index]).getAction());
+		}
 	}
 
 
@@ -143,7 +145,7 @@ public class CollisionController implements ContactListener {
     	for (BoxObject o : objects) {
     		if (o.getBody().getUserData() instanceof Animal) {
     			Animal a = (Animal) o;
-    			if (a.getTrapped()) {
+    			if (a.getTrapped() || !a.getAlive()) {
     				a.setActive(false);
     			}
     		}
@@ -234,6 +236,17 @@ public class CollisionController implements ContactListener {
 				trapToRemove = "SHEEP_TRAP";
 				trapToAdd = "WOLF_TRAP";
 				trapLocationToAdd = trap.getPosition();
+			}
+		}
+		if (bd1 instanceof Animal && bd2 instanceof Animal) {
+			Animal a1 = (Animal) bd1;
+			Animal a2 = (Animal) bd2;
+			
+			if (a1.canEat(a2)) {
+				a2.setAlive(false);
+			}
+			if (a2.canEat(a1)) {
+				a1.setAlive(false);
 			}
 		}
 	}
