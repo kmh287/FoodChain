@@ -116,7 +116,7 @@ public class CollisionController implements ContactListener {
 
 
 	public void update() {
-		world.step(1/60f, 3, 3);
+		//world.step(1/60f, 3, 3);
 		
 		//Updates the animals' actions
 		//i is the index of each animal AI in controls
@@ -135,7 +135,7 @@ public class CollisionController implements ContactListener {
 			}
 			//System.out.println(o.getPosition().toString());
 		}
-		//world.step(1/60f, 6, 2);
+		world.step(1/60f, 3, 3);
 		//checkTrapped();
 	}
 	
@@ -192,15 +192,11 @@ public class CollisionController implements ContactListener {
 			Trap trap = (Trap) bd2;
 			trap.setOnMap(false);
 			trap.setInInventory(true);
-			//trap.setActive(false);
-			//trap.setPosition(0.0f, 0.0f);
 		}
 		if (bd1 instanceof Trap && bd2 instanceof Hunter) {
 			Trap trap = (Trap) bd1;
 			trap.setOnMap(false);
 			trap.setInInventory(true);
-			//trap.setActive(false);
-			//trap.setPosition(0.0f, 0.0f);
 		}
 		if (bd1 instanceof Animal && bd2 instanceof Trap) {
 			Animal animal = (Animal) bd1;
@@ -221,8 +217,6 @@ public class CollisionController implements ContactListener {
 				trapToAdd = "WOLF_TRAP";
 				trapLocationToAdd = trap.getPosition();
 			}
-				
-			//animal.setActive(false);
 		}
 		if (bd1 instanceof Trap && bd2 instanceof Animal) {
 			Animal animal = (Animal) bd2;
@@ -242,15 +236,7 @@ public class CollisionController implements ContactListener {
 				trapToAdd = "WOLF_TRAP";
 				trapLocationToAdd = trap.getPosition();
 			}
-			//animal.setActive(false);
 		}
-		//System.out.println("COLLISION");
-
-		body1 = contact.getFixtureA().getBody();
-		body2 = contact.getFixtureB().getBody();
-		//System.out.println("body1"+body1.getUserData() +" "+  body1.isActive());
-//		System.out.println(body1.getUserData());
-//		System.out.println(body2.getUserData());
 	}
 
 	@Override

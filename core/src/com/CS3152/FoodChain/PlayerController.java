@@ -12,9 +12,6 @@ public class PlayerController implements InputController{
 	private boolean mouse;
 	
 	private Vector2 PlayerAction;
-		
-	//Field to manage click events 
-	public static final int CLICK = 0x08;
 
 	/**
 	* Constructs a PlayerController with keyboard/mouse control
