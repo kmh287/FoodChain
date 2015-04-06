@@ -152,7 +152,7 @@ public class UIController {
         //draw panic bar
         TextureRegion statusBkgMiddle;
       // progress_percent determines the amount of bar to display
-        progress_percent=.25f;
+        progress_percent=.95f;
       // PROGRESS_CAP is the variable that determines the width of the bar
         PROGRESS_CAP = red.getWidth()*progress_percent+32;
         PROGRESS_MIDDLE = red.getWidth();
