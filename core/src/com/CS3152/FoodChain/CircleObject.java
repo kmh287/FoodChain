@@ -28,7 +28,7 @@ public class CircleObject extends SimplePhysicsObject {
 	/** A cache value for the fixture (for resizing) */
 	private Fixture geometry;
 	/** The width and height of the box */
-	private Vector2 drawScale;
+	protected Vector2 drawScale;
 	
 	/**
 	 * Returns the radius of this circle
@@ -114,9 +114,12 @@ public class CircleObject extends SimplePhysicsObject {
 	 *
 	 * @param canvas Drawing context
 	 */
+
 	public void draw(GameCanvas canvas) {
-		canvas.draw(texture,Color.WHITE,origin.x,origin.y,getX(),getY(),getAngle(),drawScale.x,drawScale.y);
+		//System.out.println(" Position X: " + getX() +" Position Y:" +getY()+" originx: "+origin.x+"origin y:"+origin.y);
+		canvas.draw(texture,Color.WHITE,(origin.x),(origin.y),(getX()),(getY()),getAngle(),drawScale.x,drawScale.y);
 	}
+
 	
 	/**
 	 * Draws the outline of the physics body.

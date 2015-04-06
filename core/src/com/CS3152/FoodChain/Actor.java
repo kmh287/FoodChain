@@ -5,11 +5,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 
 
-public abstract class Actor extends BoxObject {
-    
-	// Whether the actor is alive
-	private boolean alive = true;
-	//The direction this actor is facing
+public abstract class Actor extends CircleObject {
+    //The direction this actor is facing
     protected Vector2 facing;
     //TextureRegion for this actor's texture
     protected TextureRegion tr;
@@ -40,7 +37,7 @@ public abstract class Actor extends BoxObject {
     
     public Actor(TextureRegion tr, actorType type, float x, float y, float width, 
     		     float height, actorType[] victims) {
-	    	super(tr,x,y, width, height);
+	    	super(tr,x,y, height/2);
 	    	this.type = type;
 	    	this.tr = tr;
         this.facing = new Vector2();

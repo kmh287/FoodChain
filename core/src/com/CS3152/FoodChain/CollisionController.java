@@ -28,7 +28,7 @@ public class CollisionController implements ContactListener {
 	//The game world
 	private World world;
 	/** All the objects in the world. */
-	protected PooledList<BoxObject> objects  = new PooledList<BoxObject>();
+	protected PooledList<SimplePhysicsObject> objects  = new PooledList<SimplePhysicsObject>();
 	//Vector2 cache for calculations
 	private Vector2 tmp;
 	private InputController[] controls;
@@ -51,7 +51,7 @@ public class CollisionController implements ContactListener {
 	 * @param obj: the object to add
 	 */
 	//protected void addObject(BoxObject obj, Object data) {
-	protected void addObject(BoxObject obj) {
+	protected void addObject(SimplePhysicsObject obj) {
 		objects.add(obj);
 		obj.activatePhysics(world);
 		//obj.getBody().setUserData(data.toString());
@@ -73,7 +73,7 @@ public class CollisionController implements ContactListener {
 	 * 
 	 * @return PooledList of BoxObjects
 	 */
-	public PooledList<BoxObject> getObjects() {
+	public PooledList<SimplePhysicsObject> getObjects() {
 		return objects;
 	}
 	
@@ -142,7 +142,7 @@ public class CollisionController implements ContactListener {
 	
 
     public void postUpdate(float dt) {
-    	for (BoxObject o : objects) {
+    	for (SimplePhysicsObject o : objects) {
     		if (o.getBody().getUserData() instanceof Animal) {
     			Animal a = (Animal) o;
     			if (a.getTrapped() || !a.getAlive()) {
