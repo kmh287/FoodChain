@@ -146,7 +146,14 @@ public class CollisionController implements ContactListener {
     		if (o.getBody().getUserData() instanceof Animal) {
     			Animal a = (Animal) o;
     			if (a.getTrapped() || !a.getAlive()) {
+    				a.setAlive(false);
     				a.setActive(false);
+    			}
+    		}
+    		if (o.getBody().getUserData() instanceof Hunter) {
+    			Hunter h = (Hunter) o;
+    			if (!h.getAlive()) {
+    				h.setActive(false);
     			}
     		}
     		if (trapToRemove != null
@@ -206,6 +213,7 @@ public class CollisionController implements ContactListener {
 			if (trap.getOnMap() && trap.getType() == "REGULAR_TRAP"
 					&& animal.getType() == Actor.actorType.SHEEP) {
 				animal.setTrapped(true);
+				
 				trapToRemove = "REGULAR_TRAP";
 				trapToAdd = "SHEEP_TRAP";
 				trapLocationToAdd = trap.getPosition();
@@ -214,6 +222,7 @@ public class CollisionController implements ContactListener {
 			else if (trap.getOnMap() && trap.getType() == "SHEEP_TRAP"
 					&& animal.getType() == Actor.actorType.WOLF) {
 				animal.setTrapped(true);
+				animal.setAlive(false);
 				trapToRemove = "SHEEP_TRAP";
 				trapToAdd = "WOLF_TRAP";
 				trapLocationToAdd = trap.getPosition();
@@ -225,6 +234,7 @@ public class CollisionController implements ContactListener {
 			if (trap.getOnMap() && trap.getType() == "REGULAR_TRAP"
 					&& animal.getType() == Actor.actorType.SHEEP) {
 				animal.setTrapped(true);
+				animal.setAlive(false);
 				trapToRemove = "REGULAR_TRAP";
 				trapToAdd = "SHEEP_TRAP";
 				trapLocationToAdd = trap.getPosition();
@@ -233,6 +243,7 @@ public class CollisionController implements ContactListener {
 			else if (trap.getOnMap() && trap.getType() == "SHEEP_TRAP"
 					&& animal.getType() == Actor.actorType.WOLF) {
 				animal.setTrapped(true);
+				animal.setAlive(false);
 				trapToRemove = "SHEEP_TRAP";
 				trapToAdd = "WOLF_TRAP";
 				trapLocationToAdd = trap.getPosition();
@@ -247,6 +258,22 @@ public class CollisionController implements ContactListener {
 			}
 			if (a2.canEat(a1)) {
 				a1.setAlive(false);
+			}
+		}
+		if (bd1 instanceof Hunter && bd2 instanceof Animal) {
+			Animal a = (Animal) bd2;
+			Hunter h = (Hunter) bd1;
+			
+			if (a.canEat(h)) {
+				h.setAlive(false);
+			}
+		}
+		if (bd1 instanceof Animal && bd2 instanceof Hunter) {
+			Animal a = (Animal) bd1;
+			Hunter h = (Hunter) bd2;
+			
+			if (a.canEat(h)) {
+				h.setAlive(false);
 			}
 		}
 	}

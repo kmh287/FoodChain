@@ -8,8 +8,6 @@ import com.badlogic.gdx.math.Vector2;
 
 public abstract class Animal extends Actor {
 
-	// Whether the animal is alive
-	private boolean alive = true;
 	// Whether the animal is caught in a trap
 	private boolean trapped = false;
 	
@@ -173,30 +171,12 @@ public abstract class Animal extends Actor {
 	public void setTrapped(boolean val) {
 		trapped = val;
 	}
-	
-	/**
-	 * Returns whether the animal is alive
-	 * 
-	 * @return Whether the animal is alive
-	 */
-	public boolean getAlive() {
-		return alive;
-	}
-	
-	/**
-	 * Sets whether the animal is alive
-	 * 
-	 * @param val A boolean whether the animal is alive
-	 */
-	public void setAlive(boolean val) {
-		alive = val;
-	}
 
 	    
 	/**
 	 * @return
 	 */
-	public boolean canEat(Animal ani){
+	public boolean canEat(Actor ani){
 	    for (actorType t : getPrey()){
 	        if (ani.getType() == t){
 	            return true;
@@ -228,12 +208,12 @@ public abstract class Animal extends Actor {
 	}
 	
 	public void drawSight(GameCanvas canvas) {
-		//if (getAlive()) {
+		if (getAlive()) {
 			tmp.set(getPosition());
 			canvas.drawLine(Color.YELLOW, getPosition(), tmp.add(getLeftSectorLine()));
 			tmp.set(getPosition());
 			canvas.drawLine(Color.YELLOW, getPosition(), tmp.add(getRightSectorLine()));
-		//}
+		}
 	}
 	
 	@Override

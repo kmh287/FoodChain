@@ -187,6 +187,12 @@ public class AIController implements InputController {
     			setTarget(null);
     		}
     	}
+    	if (getTarget() instanceof Hunter) {
+    		Hunter target = (Hunter) getTarget();
+    		if (!target.getAlive()) {
+    			setTarget(null);
+    		}
+    	}
     	for (Actor a : actors) {
     		if (a != getAnimal()) {
     			world.rayCast(vcb, getAnimal().getPosition(), a.getPosition());
@@ -201,11 +207,19 @@ public class AIController implements InputController {
         				}
         				if (getAnimal().canKill((Actor)objSeen)) {
         					setScared(null);
+        					setTurns();
         					setTarget((Actor)objSeen);
         				}
         			}
         			else if (objSeen instanceof Tile) {
-        				
+        				if (turns > 0) {
+        					turns--;
+        				}
+        			}
+        			else {
+        				if (turns > 0) {
+        					turns--;
+        				}
         			}
     			}
     			if (canSettle()) { 
@@ -282,43 +296,43 @@ public class AIController implements InputController {
         // Animal's best option
 
         Vector2 norm = getAnimal().getPosition().sub(attacker.getPosition()).nor();
-        if (map.isSafeAt(anX + 100*norm.x, anY + 100*norm.y)) {
-        	goal.set(anX + 100*norm.x, anY + 100*norm.y);
+        if (map.isSafeAt(anX + 200*norm.x, anY + 200*norm.y)) {
+        	goal.set(anX + 200*norm.x, anY + 200*norm.y);
 
         	return;
         }
         // Find farthest valid tile from attacker
-        if (map.isSafeAt(anX - 100, anY + 100)) {
-        	distVctrs[0].x = anX - 100;
-        	distVctrs[0].y = anY + 100;
+        if (map.isSafeAt(anX - 50, anY + 50)) {
+        	distVctrs[0].x = anX - 50;
+        	distVctrs[0].y = anY + 50;
         }
-        if (map.isSafeAt(anX, anY + 100)) {
+        if (map.isSafeAt(anX, anY + 50)) {
         	distVctrs[1].x = anX;
-        	distVctrs[1].y = anY + 100;
+        	distVctrs[1].y = anY + 50;
         }
-        if (map.isSafeAt(anX + 100, anY + 100)) {
-        	distVctrs[2].x = anX + 100;
-        	distVctrs[2].y = anY + 100;
+        if (map.isSafeAt(anX + 50, anY + 50)) {
+        	distVctrs[2].x = anX + 50;
+        	distVctrs[2].y = anY + 50;
         }
-        if (map.isSafeAt(anX - 100, anY)) {
-        	distVctrs[3].x = anX - 100;
+        if (map.isSafeAt(anX - 50, anY)) {
+        	distVctrs[3].x = anX - 50;
         	distVctrs[3].y = anY;
         }
-        if (map.isSafeAt(anX + 100, anY)) {
-        	distVctrs[4].x = anX + 100;
+        if (map.isSafeAt(anX + 50, anY)) {
+        	distVctrs[4].x = anX + 50;
         	distVctrs[4].y = anY;
         }
-        if (map.isSafeAt(anX - 100, anY - 100)) {
-        	distVctrs[5].x = anX - 100;
-		   	distVctrs[5].y = anY - 100;
+        if (map.isSafeAt(anX - 50, anY - 50)) {
+        	distVctrs[5].x = anX - 50;
+		   	distVctrs[5].y = anY - 50;
 	    }            
-	    if (map.isSafeAt(anX, anY - 100)) {
+	    if (map.isSafeAt(anX, anY - 50)) {
 	    	distVctrs[6].x = anX;
-		   	distVctrs[6].y = anY - 100;
+		   	distVctrs[6].y = anY - 50;
 	    }
-	    if (map.isSafeAt(anX + 100, anY - 100)) {
-	    	distVctrs[7].x = anX + 100;
-		   	distVctrs[7].y = anY - 100;
+	    if (map.isSafeAt(anX + 50, anY - 50)) {
+	    	distVctrs[7].x = anX + 50;
+		   	distVctrs[7].y = anY - 50;
         }
         // biggest distance
         float biggest = 0;
@@ -372,22 +386,22 @@ public class AIController implements InputController {
 				patrolTurn = 4;
 			}
 		}
-		if (map.isSafeAt(anX + 100, anY) && patrolTurn == 1) {
-			goal.set(anX + 100, anY);
+		if (map.isSafeAt(anX + 50, anY) && patrolTurn == 1) {
+			goal.set(anX + 50, anY);
 			return;
 		}
-		if (map.isSafeAt(anX - 100, anY) && patrolTurn == 2) {
-			goal.set(anX - 100, anY);
-			return;
-		}
-
-		if (map.isSafeAt(anX, anY + 100) && patrolTurn == 3) {
-			goal.set(anX, anY + 100);
+		if (map.isSafeAt(anX - 50, anY) && patrolTurn == 2) {
+			goal.set(anX - 50, anY);
 			return;
 		}
 
-		if (map.isSafeAt(anX, anY - 100) && patrolTurn == 4) {
-			goal.set(anX, anY - 100);
+		if (map.isSafeAt(anX, anY + 50) && patrolTurn == 3) {
+			goal.set(anX, anY + 50);
+			return;
+		}
+
+		if (map.isSafeAt(anX, anY - 50) && patrolTurn == 4) {
+			goal.set(anX, anY - 50);
 			return;
 		}
 		patrolTurn = 0;
@@ -495,10 +509,10 @@ public class AIController implements InputController {
     }
     
     public void setTurns() {
-    	this.turns = 10;
+    	this.turns = 20;
     }
     
-    /*
+    /**
      * Gets the move that will get the animal to its goal the fastest
      *
      * @return int corresponding to InputController bit-vector
