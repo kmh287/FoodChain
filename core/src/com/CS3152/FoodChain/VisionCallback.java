@@ -10,40 +10,35 @@ public class VisionCallback implements RayCastCallback {
 	
 	private AIController source;
 	private Vector2 tmp;
-	private Object fix;
+	private Fixture fix;
 	
 	public VisionCallback (AIController src) {
 		source = src;
 		tmp = new Vector2();
-		fix = new Object();
+		fix = null;
 	}
 	
 	public Fixture getFixture() {
-		return (Fixture) fix;
+		Fixture result = fix;
+		fix = null;
+		return result;
+		
 	}
 	
 	@Override
 	public float reportRayFixture(Fixture fixture, Vector2 point, Vector2 normal,
 			                      float fraction) {
-		/*
-		 if (((Fixture) fix).getBody().getUserData() instanceof Tile
-				&& ((Tile) fix).getType() == Tile.tileType.GRASS) {
-			return -1;
-		}
-		fix = fixture;
-		return fraction;
-		*/
-		
-		
-		//Commented this out since it seems incomplete
-		//throw new NotImplementedException();
 		tmp.set(point);
 		tmp.sub(source.getAnimal().getPosition());
+		// Check to see if the fixture seen is within the animal's line-of-sight
 		if (AIController.withinCone(source.getAnimal(), tmp)) {
 			Object contact = fixture.getBody().getUserData();
 			//Check if it saw its prey
 			
 			if (contact instanceof Actor) {
+				fix = fixture;
+				return fraction;
+				/**
 				if (((Actor)contact).canKill(source.getAnimal())) {
 					source.setScared((Actor)contact);
 					source.setTurns();
@@ -63,8 +58,19 @@ public class VisionCallback implements RayCastCallback {
 					source.setTarget(null);
 			    }
 				return 1;
+				*/
 			}
 			else if (contact instanceof Tile) {
+				if (((Tile)contact).getType() == Tile.tileType.GRASS) {
+					return -1;
+				}
+				// Ray cast ran into an opaque tile so set the current fixture
+				// and ray cast a smaller distance 
+				else {
+					fix = fixture;
+					return fraction;
+				}
+				/**
 				if (source.canSettle()) {
 					source.setScared(null);
 					source.setTarget(null);
@@ -73,13 +79,15 @@ public class VisionCallback implements RayCastCallback {
 					return -1;
 				}
 				return 0;
+				*/
 			}
-			else {// Ray cast ran into Trap
+			// Ray cast ran into Trap so ignore it
+			else {
 				return -1;
 			}
 		}
 		else {
-			return 0;
+			return -1;
 		}
 	}
 }
