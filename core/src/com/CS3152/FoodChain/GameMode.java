@@ -371,7 +371,7 @@ public class GameMode implements Screen {
         canvas.end();
         
         canvas.beginDebug();
-        PooledList<BoxObject> objects = collisionController.getObjects();
+        PooledList<SimplePhysicsObject> objects = collisionController.getObjects();
 		for(PhysicsObject obj : objects) {
 			obj.drawDebug(canvas);
 			if (obj instanceof Animal) {
