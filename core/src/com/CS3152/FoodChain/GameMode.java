@@ -35,7 +35,6 @@ public class GameMode implements Screen {
 
     private HashMap<String, List<Trap>> traps;
     private UIController ui;
-	private float accumulator = 0;
 	private float TIME_STEP = 1/200f;
 	private float frameTime;
 
@@ -46,6 +45,8 @@ public class GameMode implements Screen {
 	private static final float DEFAULT_DENSITY = 1.0f;
 	
 	private int ticks=0;
+	
+	private float accumulator = 0;
 	
 	
     
@@ -335,6 +336,7 @@ public class GameMode implements Screen {
 		    	collisionController.getWorld().step(TIME_STEP, 3, 3);
 		        accumulator -= TIME_STEP;
 		    }
+
 		collisionController.update();		
 		
 		/*} else {
@@ -386,7 +388,7 @@ public class GameMode implements Screen {
         canvas.end();
         
         canvas.beginDebug();
-        PooledList<BoxObject> objects = collisionController.getObjects();
+        PooledList<SimplePhysicsObject> objects = collisionController.getObjects();
 		for(PhysicsObject obj : objects) {
 			obj.drawDebug(canvas);
 			if (obj instanceof Animal) {
