@@ -395,24 +395,24 @@ public class AIController implements InputController {
 				patrolTurn = 4;
 			}
 		}
-		isSafeAt = map.isSafeAt(anX + 70, anY);
-		if (map.isSafeAt(anX + 70, anY) && patrolTurn == 1) {
-			goal.set(anX + 70, anY);
+		isSafeAt = map.isSafeAt(anX + 50, anY);
+		if (map.isSafeAt(anX + 50, anY) && patrolTurn == 1) {
+			goal.set(anX + 50, anY);
 			return;
 		}
-		isSafeAt = map.isSafeAt(anX - 70, anY);
-		if (map.isSafeAt(anX - 70, anY) && patrolTurn == 2) {
-			goal.set(anX - 70, anY);
+		isSafeAt = map.isSafeAt(anX - 50, anY);
+		if (map.isSafeAt(anX - 50, anY) && patrolTurn == 2) {
+			goal.set(anX - 50, anY);
 			return;
 		}
-		isSafeAt = map.isSafeAt(anX, anY + 70);
-		if (map.isSafeAt(anX, anY + 70) && patrolTurn == 3) {
-			goal.set(anX, anY + 70);
+		isSafeAt = map.isSafeAt(anX, anY + 50);
+		if (map.isSafeAt(anX, anY + 50) && patrolTurn == 3) {
+			goal.set(anX, anY + 50);
 			return;
 		}
-		isSafeAt = map.isSafeAt(anX, anY - 70);
-		if (map.isSafeAt(anX, anY - 70) && patrolTurn == 4) {
-			goal.set(anX, anY - 70);
+		isSafeAt = map.isSafeAt(anX, anY - 50);
+		if (map.isSafeAt(anX, anY - 50) && patrolTurn == 4) {
+			goal.set(anX, anY - 50);
 			return;
 		}
 		patrolTurn = 0;

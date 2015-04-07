@@ -318,16 +318,18 @@ public class GameMode implements Screen {
 		//i is the index of each animal AI in controls
 		int i = 1;
 		for (Animal an : animals) {
-			an.update(delta);
-			//need to update wolf once we have animations
-			if(an instanceof Sheep){
-				if(controls[i].getAction()!=InputController.NO_ACTION){
-					if(ticks%10==0){
-						((Sheep) an).updateWalkFrame();
+			if (an.getAlive()) {	
+				an.update(delta);
+				//need to update wolf once we have animations
+				if(an instanceof Sheep){
+					if(controls[i].getAction()!=InputController.NO_ACTION){
+						if(ticks%10==0){
+							((Sheep) an).updateWalkFrame();
+						}
 					}
-				}
-				else{
-					((Sheep) an).setStillFrame();
+					else{
+						((Sheep) an).setStillFrame();
+					}
 				}
 			}
 			i++;

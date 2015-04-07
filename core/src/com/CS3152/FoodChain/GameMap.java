@@ -303,9 +303,7 @@ public class GameMap implements IndexedGraph<MapNode> {
      * @return The x-index in layout for the containing tile
      */
     public int screenXToMap(float xPos){
-        int screenWidth = Gdx.graphics.getWidth();
-        int xIncrement = screenWidth / layout[0].length;
-        return (int) (xPos / xIncrement);
+        return (int) (xPos / 40.0);
     }
     
     /**
@@ -314,9 +312,7 @@ public class GameMap implements IndexedGraph<MapNode> {
      * @return The y-index in layout for the containing tile
      */
     public int screenYToMap(float yPos){
-    	int screenHeight = Gdx.graphics.getHeight();
-        int yIncrement = (screenHeight - UI_OFFSET) / layout.length;
-        return (int) ((yPos - UI_OFFSET) / yIncrement);
+        return (int) (yPos / 40.0);
     }
     
 
