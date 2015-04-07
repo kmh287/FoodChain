@@ -23,16 +23,10 @@ public abstract class Actor extends CircleObject {
     }
     
     public enum actorType{
-<<<<<<< HEAD
-    	HUNTER,
+	    HUNTER,
 		SHEEP, 
-		WOLF
-=======
-	    	HUNTER,
-			SHEEP, 
-			WOLF,
-			OWL 
->>>>>>> master
+		WOLF,
+		OWL
 	}
     
 	public boolean activatePhysics(World world) {

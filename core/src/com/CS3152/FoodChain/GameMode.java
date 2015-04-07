@@ -385,17 +385,13 @@ public class GameMode implements Screen {
             //animal.drawDebug(canvas);
         }
         //Draw the hunter
-<<<<<<< HEAD
         if (hunter.getAlive()) {
         	hunter.draw(canvas);
         }
-=======
         canvas.end();
         
         
     	canvas.beginCam(hunter.getPosition().x, hunter.getPosition().y);
-        hunter.draw(canvas);
->>>>>>> master
         //hunter.drawDebug(canvas);
         
         //ui.draw(canvas);
