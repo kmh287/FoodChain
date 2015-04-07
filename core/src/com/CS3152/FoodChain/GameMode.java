@@ -107,6 +107,7 @@ public class GameMode implements Screen {
         //what level to start on. This code will change
         map = loadMap("level2");
         map.LoadContent(manager);
+        canvas.getUIControllerStage().loadTextures(manager);
         //ui = new UIController();
         //ui.loadTextures(manager);
         animals = new ArrayList<Animal>();

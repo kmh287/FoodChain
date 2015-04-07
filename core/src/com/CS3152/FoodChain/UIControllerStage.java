@@ -8,6 +8,7 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
@@ -81,19 +82,25 @@ public class UIControllerStage {
                 blackBar = manager.get(BLACK_BAR);
             }
         }
-
+    	Gdx.input.setInputProcessor(stage);
+        container = new Table();
+        //container.setBackground(new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("assets/all_deselect.png")))));
+        //container.setBackground(new TextureRegionDrawable(new TextureRegion((allDeselect))));
+        
+        //container.add(new TextureRegionDrawable(new TextureRegion((allDeselect)))).width(100);
+        Image imageLogo = new Image();
+        imageLogo.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("assets/all_deselect.png")))));
+        container.add(imageLogo).width(40).height(20);
+    	container.setFillParent(true);
+    	container.center().bottom(); 
+    	container.row();
+    	
+    	stage.addActor(container);
     }
     
     public void setStage(Stage stage){
     	this.stage=stage;
-    	Gdx.input.setInputProcessor(stage);
-        container = new Table();
-        //container.setBackground(new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("assets/all_deselect.png")))));
 
-    	container.setFillParent(true);
-    	container.bottom(); 
-    	container.row();
-    	stage.addActor(container);
     }
     
     public void drawStage () {

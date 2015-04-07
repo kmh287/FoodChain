@@ -19,6 +19,7 @@ package com.CS3152.FoodChain;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.*;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.graphics.glutils.*;
@@ -27,6 +28,8 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.ScalingViewport;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 /**
@@ -62,6 +65,8 @@ public class GameCanvas {
 	private OrthographicCamera camera;
 	
 	private Viewport viewport; 
+	private Viewport viewportS; 
+
 	private Stage stage;
 	private UIControllerStage ui; 
 	
@@ -102,6 +107,7 @@ public class GameCanvas {
 
 	    stage = new Stage(new ExtendViewport(100, 100));
 	    //stage = new Stage(new StretchViewport(viewport.getScreenWidth()), viewport.getScreenHeight());
+
 	    ui.setStage(stage);
 	    	
 		spriteBatch.setProjectionMatrix(camera.combined);
@@ -1167,4 +1173,8 @@ public class GameCanvas {
 		/** Color values are draw on top of one another with no transparency support */
 		OPAQUE
 	}	
+	
+	public UIControllerStage getUIControllerStage(){
+		return ui;
+	}
 }
