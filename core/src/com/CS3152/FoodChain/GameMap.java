@@ -1,6 +1,7 @@
 package com.CS3152.FoodChain;
 import com.CS3152.FoodChain.Tile.tileType;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.ai.pfa.Connection;
 import com.badlogic.gdx.ai.pfa.DefaultConnection;
 import com.badlogic.gdx.ai.pfa.indexed.IndexedGraph;
 import com.badlogic.gdx.assets.AssetManager;
@@ -15,11 +16,7 @@ import com.google.gson.Gson;
 
 import java.util.*;
 
-@SuppressWarnings("unused")
-
-public class GameMap
-//implements IndexedGraph
-{
+public class GameMap implements IndexedGraph<MapNode> {
     
     //Offset for the UI at the bottom of the screen.
     private static final int UI_OFFSET = 80;
@@ -47,9 +44,7 @@ public class GameMap
     private int mapHeight;
     
     // All the nodes in the map/graph
-    private Array nodes;
-    // All the node connections within the graph
-    private Array connections;
+    private Array<MapNode> nodes;
     
     // The number of nodes within the map
     private int nodeCount;
@@ -166,82 +161,113 @@ public class GameMap
         this.animals = animals;
         this.coordinates = coordinates;
         this.hunterStartPosition = hunterStartPosition;
-        //this.mapWidth = layout[0].length;
-        //this.mapHeight = layout.length;
-        //this.nodeCount = layout.length * layout[0].length;
-        //this.nodes = createNodes(nodeCount);
-        //this.connections = createConnections(nodeCount);
+        this.mapWidth = layout[0].length;
+        this.mapHeight = layout.length;
+        this.nodeCount = 0;
+        this.nodes = null;
     }
     
-//    
-//    /**
-//     * 
-//     * @param nodeCount
-//     * @return
-//     */
-//    private Array createNodes(int nodeCount) {
-//		Array<MapNode> nodes = new Array<MapNode>(nodeCount);
-//		for (MapNode node : nodes) {
-//			//node = new MapNode();
-//		}
-//		return null;
-//	}
-//
-//	/**
-//     * Creates the connections for each tile in the map
-//     * 
-//     * @param size the number of nodes in the map
-//     * @return an array of connections for each node in the map
-//     */
-//    private Array createConnections(int size) {
-//		Array<Array> connections = new Array(size);
-//		for (Array a : connections) {
-//			a = new Array();
-//		}
-//		for (int y = 0; y < getMapHeight(); y++) {
-//			for (int x = 0; x < getMapWidth(); x++) {
-//				int index = calculateIndex(x, y);
-//				int adjacent = calculateIndex(x - 1, y);
-//				if (validTile(adjacent)) {
-//					//a.get(index).add(new DefaultConnection(adjacent, adjacent))
-//				}
-//			}
-//		}
-//		return connections;
-//	}
-//
-//	/**
-//     * Calculates and returns the index of the node for a tile in the map
-//     * 
-//     * @param x the x coordinate of the tile in layout
-//     * @param y the y coordinate of the tile in layout
-//     * @return the index for the node representing the tile
-//     */
-//	private int calculateIndex(int x, int y) {
-//		return y * getMapWidth() + x;
-//	}
-//	
-//	/**
-//	 * Returns whether a set of coordinates references a valid tile
-//	 *  
-//	 * @param x the x coordinate of the tile
-//	 * @param y the y coordinate of the tile
-//	 * @return whether the tile is valid
-//	 */
-//	private boolean validTile(int x, int y) {
-//		return y * mapWidth + x >= 0 && y * mapWidth + x < nodeCount;
-//	}
-//	
-//	/**
-//	 * Returns whether an index references a valid tile
-//	 *  
-//	 * @param index the index of a possible tile in question
-//	 * @return whether the tile is valid
-//	 */
-//	private boolean validTile(int index) {
-//		return index >= 0 && index < nodeCount;
-//	}
-//	
+    /**
+     * Creates the graph for the map and
+     * fills it with the nodes and connections
+     */
+    public void createGraph() {
+    	nodeCount = layout.length * layout[0].length;
+        nodes = createNodes(layout, nodeCount);
+        createConnections(this.nodes);
+    }
+    
+    
+    /**
+     * Creates all the nodes required for the graph
+     * 
+     * @param layout the 2D array of tiles to create a graph of
+     * @param nodeCount the number of nodes in the graph
+     * @return the graph of the map as an array of nodes
+     */
+    private Array<MapNode> createNodes(Tile.tileType[][] layout, int nodeCount) {
+		Array<MapNode> nodes = new Array<MapNode>(nodeCount);
+		//for (MapNode node : nodes) {
+		for (int i = 0; i < nodeCount; i++) {
+			nodes.add(new MapNode());
+		}
+		int width = layout[0].length;
+		int height = layout.length;
+		for (int y = 0; y < height; y++) {	
+			for (int x = 0; x < width; x++) {
+				int index = calculateIndex(x, y);
+				MapNode node = nodes.get(index);
+				node.setIndex(index);
+				node.setX(x);
+				node.setY(y);
+			}
+		}
+		return nodes;
+	}
+
+	/**
+     * Creates the connections for each tile/node in the map
+     * 
+     * @param size the number of nodes in the map
+     * @return an array of connections for each node in the map
+     */
+    private void createConnections(Array<MapNode> nodes) {
+		for (MapNode node : nodes) {
+			int x = node.getX();
+			int y = node.getY();
+			int index = node.getIndex();
+			
+			if (validTile(x - 1, y)) {
+				int adjIndex = calculateIndex(x - 1, y);
+				node.addConnection(new DefaultConnection<MapNode>(node, nodes.get(adjIndex)));
+			}
+			if (validTile(x + 1, y)) {
+				int adjIndex = calculateIndex(x + 1, y);
+				node.addConnection(new DefaultConnection<MapNode>(node, nodes.get(adjIndex)));
+			}
+			if (validTile(x, y - 1)) {
+				int adjIndex = calculateIndex(x, y - 1);
+				node.addConnection(new DefaultConnection<MapNode>(node, nodes.get(adjIndex)));
+			}
+			if (validTile(x, y + 1)) {
+				int adjIndex = calculateIndex(x, y + 1);
+				node.addConnection(new DefaultConnection<MapNode>(node, nodes.get(adjIndex)));
+			}
+		}
+	}
+
+	/**
+     * Calculates and returns the index of the node for a tile in the map
+     * 
+     * @param x the x coordinate of the tile in layout
+     * @param y the y coordinate of the tile in layout
+     * @return the index for the node representing the tile
+     */
+	private int calculateIndex(int x, int y) {
+		return y * getMapWidth() + x;
+	}
+	
+	/**
+	 * Returns whether a set of coordinates references a valid tile
+	 *  
+	 * @param x the x coordinate of the tile
+	 * @param y the y coordinate of the tile
+	 * @return whether the tile is valid
+	 */
+	private boolean validTile(int x, int y) {
+		return y * mapWidth + x >= 0 && y * mapWidth + x < nodeCount;
+	}
+	
+	/**
+	 * Returns whether an index references a valid tile
+	 *  
+	 * @param index the index of a possible tile in question
+	 * @return whether the tile is valid
+	 */
+	private boolean validTile(int index) {
+		return index >= 0 && index < nodeCount;
+	}
+	
 
 	/** Return a string representation of the map
      * Currently this does not return the player position nor the animals
@@ -457,16 +483,23 @@ public class GameMap
 	}
 
 	/**
+	 * Returns the connections outgoing from the given node.
+	 * 
+	 * @param fromNode the node whose outgoing connections will be returned
+	 * @return the array of connections outgoing from the given node.
+	 */
 	@Override
-	public Array getConnections(Object fromNode) {
-		// TODO Auto-generated method stub
-		return connections;
+	public Array<Connection<MapNode>> getConnections(MapNode fromNode) {
+		return fromNode.getConnections();
 	}
 
+	/**
+	 * Returns the number of nodes in the graph
+	 * 
+	 * @return number of nodes in the graph
+	 */
 	@Override
 	public int getNodeCount() {
-		// TODO Auto-generated method stub
 		return nodeCount;
 	}
-	*/
 }

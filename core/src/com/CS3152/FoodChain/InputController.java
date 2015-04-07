@@ -22,13 +22,15 @@ public interface InputController {
 	public static final Vector2 EAST = new Vector2(PLAYER_SPEED,0);
 	public static final Vector2 WEST = new Vector2(-PLAYER_SPEED,0);
 	
+	public static final int SPACE = 0x07;
 	//Field to manage click events 
-	public static final int CLICK = 0x08;
 	
 	//Fields to manage trap selection
 	public static final int ONE = 0x10;
 	public static final int TWO = 0x11;
 	public static final int THREE = 0x12;
+	
+
 
 	// deal with exit, etc.  
 
