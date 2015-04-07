@@ -1,12 +1,13 @@
 package com.CS3152.FoodChain;
 
-import java.io.FileNotFoundException;
+import java.io.FileNotFoundException; 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
 import com.CS3152.FoodChain.Actor.actorType;
+
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.math.Vector2;
@@ -18,6 +19,7 @@ import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 
 
 public class GameMode implements Screen {
@@ -30,8 +32,14 @@ public class GameMode implements Screen {
     private AssetManager manager;
     private List<Animal> animals;
     private Hunter hunter;
+    
+    private Stage stage; 
+    private UIControllerStage uis; 
+
     private HashMap<String, List<Trap>> traps;
     private UIController ui;
+	private float TIME_STEP = 1/200f;
+	private float frameTime;
 
     protected InputController[] controls;
     
@@ -40,6 +48,8 @@ public class GameMode implements Screen {
 	private static final float DEFAULT_DENSITY = 1.0f;
 	
 	private int ticks=0;
+	
+	private float accumulator = 0;
 	
 	
     
@@ -86,6 +96,7 @@ public class GameMode implements Screen {
 	public GameMode(GameCanvas canvas) {
 		
 		this.canvas = canvas;
+		this.stage = stage;
         //active = false;
         manager = new AssetManager();
         PreLoadContent(manager);
@@ -94,10 +105,11 @@ public class GameMode implements Screen {
         //For now we will hard code the level to load
         //When we implement a UI that may ask players
         //what level to start on. This code will change
-        map = loadMap("level2");
+        map = loadMap("tileTest");
         map.LoadContent(manager);
-        ui = new UIController();
-        ui.loadTextures(manager);
+        canvas.getUIControllerStage().loadTextures(manager);
+        //ui = new UIController();
+        //ui.loadTextures(manager);
         animals = new ArrayList<Animal>();
         /*size of animal list + the player 
         controls = new InputController[animals.size() + 1]; 
@@ -122,7 +134,7 @@ public class GameMode implements Screen {
         createHunter(map.getHunterStartingCoordinate() 
                 /*,map.getStartingInventory()*/
         		);
-	    ui.setHunter(this.hunter);
+        canvas.getUIControllerStage().setHunter(hunter);
 	    
 	    traps = (HashMap<String, List<Trap>>) hunter.getInventory();
     
@@ -250,6 +262,13 @@ public class GameMode implements Screen {
 	                //See comment in sheep
 	                animals.add(newAnimal);
 	                break;
+	            /*case OWL:
+            		Owl.loadTexture(manager);
+            		newAnimal = new Owl(map.mapXToScreen((int)coord.x), 
+                                     map.mapYToScreen((int)coord.y));
+	                //See comment in sheep
+	                animals.add(newAnimal);
+	                break;*/
 	            default:
 	                System.out.println(currType);
 	                throw new IllegalArgumentException("Unexpected animal type");
@@ -269,15 +288,20 @@ public class GameMode implements Screen {
     }
 
     private void update(float delta){
-    	//if (hunter's turn) {
-		//Updates the hunters action
 
 		hunter.update(delta);
+		//System.out.println(hunter.getAngle());
 		hunter.setSelectedTrap(controls[0].getNum());
-		Vector2 click = controls[0].getClickPos();
-		if (controls[0].isClicked()  && hunter.canSetTrap(click)) {
+		//Vector2 click = controls[0].getClickPos();
+		Vector2 hunterps = hunter.getPosition(); 
+		//Vector2 trappos = 0;
+		if (controls[0].isClicked()  && hunter.canSetTrap(hunterps)) {
 			//increment hunter frames
-			hunter.setTrapDown(click);
+			//hunter.setTrapDown(click);
+			
+			//set down in front of hunter.
+			hunter.setTrap();
+		
 		}
 		//if WASD pressed, then update frame
 		if(controls[0].getAction()!=InputController.NO_ACTION){
@@ -308,6 +332,16 @@ public class GameMode implements Screen {
 			i++;
 		}
 		ticks++;
+		
+
+		    // fixed time step
+		    frameTime = Math.min(delta, 1/60f);
+		    accumulator += frameTime;
+		    while (accumulator >= TIME_STEP) {
+		    	collisionController.getWorld().step(TIME_STEP, 3, 3);
+		        accumulator -= TIME_STEP;
+		    }
+
 		collisionController.update();		
 		
 		/*} else {
@@ -318,10 +352,11 @@ public class GameMode implements Screen {
     }
     
     private void draw(float delta){
-        
-    		canvas.begin();
+        canvas.begin(); 
+    	//canvas.begin();
         //Draw the map
         map.draw(canvas);
+      
         
         for (Trap trap : traps.get("WOLF_TRAP")) {
 	    		if (trap != null) {
@@ -341,6 +376,7 @@ public class GameMode implements Screen {
 	    		}
         }
         
+        
         //Draw the animals
         for (Animal animal : animals){
             if (!animal.getTrapped()) {
@@ -349,25 +385,40 @@ public class GameMode implements Screen {
             //animal.drawDebug(canvas);
         }
         //Draw the hunter
-        hunter.draw(canvas);
+        if (hunter.getAlive()) {
+        		hunter.draw(canvas);
+        }
+        canvas.end();
+        
+        
+        canvas.beginCam(hunter.getPosition().x, hunter.getPosition().y);
         //hunter.drawDebug(canvas);
         
-        ui.draw(canvas);
+        //ui.draw(canvas);
+        //uis.drawStage(stage);
         
         canvas.end();
         
-//        canvas.beginDebug();
-//        PooledList<BoxObject> objects = collisionController.getObjects();
-//		for(PhysicsObject obj : objects) {
-//			//obj.drawDebug(canvas);
-//			if (obj instanceof Animal) {
-//				Animal a = (Animal) obj;
-//				if (!a.getTrapped()) {
-//					((Animal) obj).drawSight(canvas);
-//				}
-//			}
-//		}
-//		canvas.endDebug();
+        /*
+        canvas.beginDebug();
+        for (Animal animal : animals) {
+        	animal.drawSight(canvas);
+        }
+        canvas.endDebug();
+        */
+        
+        canvas.beginDebug();
+        PooledList<SimplePhysicsObject> objects = collisionController.getObjects();
+		for(PhysicsObject obj : objects) {
+			obj.drawDebug(canvas);
+			if (obj instanceof Animal) {
+				Animal a = (Animal) obj;
+				if (!a.getTrapped()) {
+					((Animal) obj).drawSight(canvas);
+				}
+			}
+		}
+		canvas.endDebug();
     }
     
     @Override
@@ -376,8 +427,7 @@ public class GameMode implements Screen {
         collisionController.postUpdate(delta);
         draw(delta);
 
-        //update(delta);
-        
+
     }
 
     @Override

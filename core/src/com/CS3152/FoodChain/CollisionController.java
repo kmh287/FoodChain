@@ -6,6 +6,7 @@ import java.util.Random;
 
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+import com.CS3152.FoodChain.Tile.tileType;
 import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Contact;
@@ -21,14 +22,14 @@ import com.badlogic.gdx.physics.box2d.World;
  * This is the simplest of physics engines.  In later labs, we will see how to work 
  * with more interesting engines.
  *
- * As a major subcontroller, this class must have a reference to all the models.
+ * As a major sub-controller, this class must have a reference to all the models.
  */
 
 public class CollisionController implements ContactListener {
 	//The game world
 	private World world;
 	/** All the objects in the world. */
-	protected PooledList<BoxObject> objects  = new PooledList<BoxObject>();
+	protected PooledList<SimplePhysicsObject> objects  = new PooledList<SimplePhysicsObject>();
 	//Vector2 cache for calculations
 	private Vector2 tmp;
 	private InputController[] controls;
@@ -51,18 +52,22 @@ public class CollisionController implements ContactListener {
 	 * @param obj: the object to add
 	 */
 	//protected void addObject(BoxObject obj, Object data) {
-	protected void addObject(BoxObject obj) {
+	protected void addObject(SimplePhysicsObject obj) {
 		objects.add(obj);
 		obj.activatePhysics(world);
 		//obj.getBody().setUserData(data.toString());
 		if(obj instanceof Tile){
-			setGrassTileOff((Tile)obj);
+			setTraversableTiles((Tile)obj);
 		}
 		//System.out.println("body1"+obj.getBody().toString() +" "+  obj.isActive());
 	}
 	
-	private void setGrassTileOff(Tile t){
-		if(t.type==Tile.tileType.GRASS){
+	private void setTraversableTiles(Tile t){
+		if(t.type == tileType.GRASS || t.type == tileType.DIRT ||
+		   t.type == tileType.N_GRASS || t.type == tileType.NE_GRASS || 
+		   t.type == tileType.E_GRASS || t.type == tileType.SE_GRASS ||
+		   t.type == tileType.SW_GRASS || t.type == tileType.SW_GRASS ||
+		   t.type == tileType.W_GRASS || t.type == tileType.NW_GRASS){
 			t.setActive(false);
 		}
 	}
@@ -73,7 +78,7 @@ public class CollisionController implements ContactListener {
 	 * 
 	 * @return PooledList of BoxObjects
 	 */
-	public PooledList<BoxObject> getObjects() {
+	public PooledList<SimplePhysicsObject> getObjects() {
 		return objects;
 	}
 	
@@ -107,16 +112,18 @@ public class CollisionController implements ContactListener {
 	}
 
 	private void move(Animal actor,int index) {
-		actor.setLinearVelocity(controls[index].getAction());
-		float angle = ((AIController)controls[index]).getAngle();
-		actor.updateLOS(angle);
-		//actor.setAngle(((AIController)controls[index]).getAngle());
-		actor.setFacing(((AIController) controls[index]).getAction());
+		if (actor.getAlive()) {
+			actor.setLinearVelocity(controls[index].getAction());
+			float angle = ((AIController)controls[index]).getAngle();
+			actor.updateLOS(angle);
+			//actor.setAngle(((AIController)controls[index]).getAngle());
+			actor.setFacing(((AIController) controls[index]).getAction());
+		}
 	}
 
 
 	public void update() {
-		world.step(1/60f, 3, 3);
+		//world.step(1/60f, 3, 3);
 		
 		//Updates the animals' actions
 		//i is the index of each animal AI in controls
@@ -125,6 +132,7 @@ public class CollisionController implements ContactListener {
 		for(PhysicsObject o : objects) {
 			
 			if (o instanceof Hunter){
+				
 				move((Hunter)o);
 			}
 			//unsure about order of objects.
@@ -134,24 +142,30 @@ public class CollisionController implements ContactListener {
 			}
 			//System.out.println(o.getPosition().toString());
 		}
-		//world.step(1/60f, 6, 2);
+		world.step(1/60f, 3, 3);
 		//checkTrapped();
 	}
 	
 
     public void postUpdate(float dt) {
-    	for (BoxObject o : objects) {
+    	for (SimplePhysicsObject o : objects) {
     		if (o.getBody().getUserData() instanceof Animal) {
     			Animal a = (Animal) o;
-    			if (a.getTrapped()) {
+    			if (a.getTrapped() || !a.getAlive()) {
+    				a.setAlive(false);
     				a.setActive(false);
+    			}
+    		}
+    		if (o.getBody().getUserData() instanceof Hunter) {
+    			Hunter h = (Hunter) o;
+    			if (!h.getAlive()) {
+    				h.setActive(false);
     			}
     		}
     		if (trapToRemove != null
     				&& o.getBody().getUserData() instanceof Trap) {
     			Trap t = (Trap) o;
     			if (t.getType() == trapToRemove) {
-    				t.setOnMap(false);
     				t.setActive(false);
     				trapToRemove = null;
     			}
@@ -189,55 +203,89 @@ public class CollisionController implements ContactListener {
 		
 		if (bd1 instanceof Hunter && bd2 instanceof Trap) {
 			Trap trap = (Trap) bd2;
-			trap.setOnMap(false);
-			trap.setInInventory(true);
-			//trap.setActive(false);
-			//trap.setPosition(0.0f, 0.0f);
+			if (trap.getOnMap()) {
+				trap.setOnMap(false);
+				trap.setInInventory(true);
+			}
 		}
 		if (bd1 instanceof Trap && bd2 instanceof Hunter) {
 			Trap trap = (Trap) bd1;
-			trap.setOnMap(false);
-			trap.setInInventory(true);
-			//trap.setActive(false);
-			//trap.setPosition(0.0f, 0.0f);
+			if (trap.getOnMap()) {
+				trap.setOnMap(false);
+				trap.setInInventory(true);
+			}
 		}
 		if (bd1 instanceof Animal && bd2 instanceof Trap) {
 			Animal animal = (Animal) bd1;
 			Trap trap = (Trap) bd2;
 
-			if (trap.getType() == "REGULAR_TRAP"
+			if (trap.getOnMap() && trap.getType() == "REGULAR_TRAP"
 					&& animal.getType() == Actor.actorType.PIG) {
+
 				animal.setTrapped(true);
+				trap.setOnMap(false);
 				trapToRemove = "REGULAR_TRAP";
 				trapToAdd = "SHEEP_TRAP";
 				trapLocationToAdd = trap.getPosition();
 				
 			}
-			else if (trap.getType() == "SHEEP_TRAP"
+			else if (trap.getOnMap() && trap.getType() == "SHEEP_TRAP"
 					&& animal.getType() == Actor.actorType.WOLF) {
 				animal.setTrapped(true);
+				trap.setOnMap(false);
 				trapToRemove = "SHEEP_TRAP";
 				trapToAdd = "WOLF_TRAP";
 				trapLocationToAdd = trap.getPosition();
 			}
-				
-			//animal.setActive(false);
 		}
 		if (bd1 instanceof Trap && bd2 instanceof Animal) {
 			Animal animal = (Animal) bd2;
 			Trap trap = (Trap) bd1;
-			if (trap.getOnMap()) {
+			if (trap.getOnMap() && trap.getType() == "REGULAR_TRAP"
+					&& animal.getType() == Actor.actorType.PIG) {
 				animal.setTrapped(true);
+				trap.setOnMap(false);
+				trapToRemove = "REGULAR_TRAP";
+				trapToAdd = "SHEEP_TRAP";
+				trapLocationToAdd = trap.getPosition();
+				
 			}
-			//animal.setActive(false);
+			else if (trap.getOnMap() && trap.getType() == "SHEEP_TRAP"
+					&& animal.getType() == Actor.actorType.WOLF) {
+				animal.setTrapped(true);
+				trap.setOnMap(false);
+				trapToRemove = "SHEEP_TRAP";
+				trapToAdd = "WOLF_TRAP";
+				trapLocationToAdd = trap.getPosition();
+			}
 		}
-		//System.out.println("COLLISION");
-
-		body1 = contact.getFixtureA().getBody();
-		body2 = contact.getFixtureB().getBody();
-		//System.out.println("body1"+body1.getUserData() +" "+  body1.isActive());
-//		System.out.println(body1.getUserData());
-//		System.out.println(body2.getUserData());
+		if (bd1 instanceof Animal && bd2 instanceof Animal) {
+			Animal a1 = (Animal) bd1;
+			Animal a2 = (Animal) bd2;
+			
+			if (a1.canEat(a2)) {
+				a2.setAlive(false);
+			}
+			if (a2.canEat(a1)) {
+				a1.setAlive(false);
+			}
+		}
+		if (bd1 instanceof Hunter && bd2 instanceof Animal) {
+			Animal a = (Animal) bd2;
+			Hunter h = (Hunter) bd1;
+			
+			if (a.canEat(h)) {
+				h.setAlive(false);
+			}
+		}
+		if (bd1 instanceof Animal && bd2 instanceof Hunter) {
+			Animal a = (Animal) bd1;
+			Hunter h = (Hunter) bd2;
+			
+			if (a.canEat(h)) {
+				h.setAlive(false);
+			}
+		}
 	}
 
 	@Override

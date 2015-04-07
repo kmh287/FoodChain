@@ -1,11 +1,13 @@
 package com.CS3152.FoodChain;
 
-import java.util.*;
+import java.util.*;	
 
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import com.badlogic.gdx.math.*;
+import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.Array;
 
 /**
  * InputController corresponding to AI control.
@@ -74,8 +76,12 @@ public class AIController implements InputController {
     // Which direction to patrol
     protected int patrolTurn;
     
-    private Random random;
+    // The animal's patrol path
+    protected Array<Vector2> patrolPath;
     
+    // The random number generator used by the AI
+    private Random random;
+
     
     /*
      * Creates an AIController for the animal
@@ -93,7 +99,6 @@ public class AIController implements InputController {
         for (int id = 0; id < distVctrs.length; id++) {
         	distVctrs[id] = new Vector2();
         }
-
         
         this.loc = new Vector2(map.screenXToMap(animal.getX()),
                                map.screenYToMap(animal.getY()));
@@ -101,21 +106,18 @@ public class AIController implements InputController {
         this.target = null;
         this.attacker = null;
         
-        vcb = new VisionCallback(this);
+        this.vcb = new VisionCallback(this);
         //fcb = new FleeCallback(this, attacker);
         
         //this.state = State.PATROL;//FIND;
         this.goal = new Vector2();
         // To where it should start moving
-        this.tmp = new Vector2();
         this.move = InputController.WEST;
         goal.set (getAnimal().getX() + 1, getAnimal().getY());
 
-        this.turns = 3;//should be 0 in future
+        this.turns = 10;//should be 0 in future
         
-        this.patrolTurn = 1;
-        
-        this.vcb = new VisionCallback(this);
+        this.patrolTurn = 0;
         
         this.tmp = new Vector2();
         
@@ -178,31 +180,75 @@ public class AIController implements InputController {
         //ticks++;
         
         //if (ticks % 10 == 0 && state != State.DEAD) {
-        	//comment out for fixing collisions
-//            // Process the State
-//            //changeStateIfApplicable();
-//       	  checkCone();
-        	// RayCasting
-        	//Should be at beginning
-        	for (Actor a : actors) {
-        		if (a != getAnimal()) {
-        			world.rayCast(vcb, getAnimal().getPosition(), a.getPosition());
-        			//vcb.getFixture();
-        		}
+        //comment out for fixing collisions
+    	// Process the State
+    	//changeStateIfApplicable();
+    	//checkCone();
+        // RayCasting
+        //Should be at beginning
+    	if (getTarget() instanceof Animal) {
+    		Animal target = (Animal) getTarget();
+    		if (!target.getAlive()) {
+    			setTarget(null);
+    		}
+    	}
+    	if (getTarget() instanceof Hunter) {
+    		Hunter target = (Hunter) getTarget();
+    		if (!target.getAlive()) {
+    			setTarget(null);
+    		}
+    	}
+    	for (Actor a : actors) {
+    		if (a != getAnimal()) {
+    			world.rayCast(vcb, getAnimal().getPosition(), a.getPosition());
+    			Fixture fix = vcb.getFixture();
+    			if (fix != null) {
+        			Object objSeen = fix.getBody().getUserData();
+        			if (objSeen instanceof Actor) {
+        				if (((Actor)objSeen).canKill(getAnimal())) {
+        					setScared((Actor)objSeen);
+        					setTurns();
+        					setTarget(null);
+        				}
+        				if (getAnimal().canKill((Actor)objSeen)) {
+        					setScared(null);
+        					setTurns();
+        					setTarget((Actor)objSeen);
+        				}
+        			}
+        			else if (objSeen instanceof Tile) {
+        				if (turns > 0) {
+        					turns--;
+        				}
+        			}
+        			else {
+        				if (turns > 0) {
+        					turns--;
+        				}
+        			}
+    			}
+    			if (canSettle()) { 
+			    	setScared(null);
+					setTarget(null);
+			    }
+    			//vcb.getFixture();
         	}
-            if (isScared()) {
-            	flee();
-            }
-            else if (hasTarget()) {
-            	chase();
-            }
-            else {
-            	patrol();
-            }
-//            
-//            // Pathfinding
-//            //markGoal();
-            move = getNextMoveToGoal();
+    	}
+        	
+        if (isScared()) {
+        	//System.out.println(animal.getType() + ": flee");
+        	flee();
+        }
+        else if (hasTarget()) {
+        	//System.out.println(animal.getType() + ": chase");
+        	chase();
+        }
+        else {
+        	//System.out.println(animal.getType() + ": patrol");
+        	patrol();
+        }
+
+        move = getNextMoveToGoal();
         
         //System.out.println(move);
         return move;
@@ -236,6 +282,7 @@ public class AIController implements InputController {
      */
     public static boolean withinRadius(Animal an, Vector2 length) {
     	return length.len() <= an.getSightLength();
+
     }
     
     // Determines whether or not the animal should run away
@@ -255,45 +302,46 @@ public class AIController implements InputController {
         // Animal's best option
 
         Vector2 norm = getAnimal().getPosition().sub(attacker.getPosition()).nor();
-        if (map.isSafeAt(anX + 100*norm.x, anY + 100*norm.y)) {
-        	goal.set(anX + 100*norm.x, anY + 100*norm.y);
+        if (map.isSafeAt(anX + 200*norm.x, anY + 200*norm.y)) {
+        	goal.set(anX + 200*norm.x, anY + 200*norm.y);
 
         	return;
         }
         // Find farthest valid tile from attacker
-        if (map.isSafeAt(anX - 100, anY + 100)) {
-        	distVctrs[0].x = anX - 100;
-        	distVctrs[0].y = anY + 100;
+        if (map.isSafeAt(anX - 50, anY + 50)) {
+        	distVctrs[0].x = anX - 50;
+        	distVctrs[0].y = anY + 50;
         }
-        if (map.isSafeAt(anX, anY + 100)) {
+        if (map.isSafeAt(anX, anY + 50)) {
         	distVctrs[1].x = anX;
-        	distVctrs[1].y = anY + 100;
+        	distVctrs[1].y = anY + 50;
         }
-        if (map.isSafeAt(anX + 100, anY + 100)) {
-        	distVctrs[2].x = anX + 100;
-        	distVctrs[2].y = anY + 100;
+        if (map.isSafeAt(anX + 50, anY + 50)) {
+        	distVctrs[2].x = anX + 50;
+        	distVctrs[2].y = anY + 50;
         }
-        if (map.isSafeAt(anX - 100, anY)) {
-        	distVctrs[3].x = anX - 100;
+        if (map.isSafeAt(anX - 50, anY)) {
+        	distVctrs[3].x = anX - 50;
         	distVctrs[3].y = anY;
         }
-        if (map.isSafeAt(anX + 100, anY)) {
-        	distVctrs[4].x = anX + 100;
+        if (map.isSafeAt(anX + 50, anY)) {
+        	distVctrs[4].x = anX + 50;
         	distVctrs[4].y = anY;
         }
-        if (map.isSafeAt(anX - 100, anY - 100)) {
-        	distVctrs[5].x = anX - 100;
-		   	distVctrs[5].y = anY - 100;
+        if (map.isSafeAt(anX - 50, anY - 50)) {
+        	distVctrs[5].x = anX - 50;
+		   	distVctrs[5].y = anY - 50;
 	    }            
-	    if (map.isSafeAt(anX, anY - 100)) {
+	    if (map.isSafeAt(anX, anY - 50)) {
 	    	distVctrs[6].x = anX;
-		   	distVctrs[6].y = anY - 100;
+		   	distVctrs[6].y = anY - 50;
 	    }
-	    if (map.isSafeAt(anX + 100, anY - 100)) {
-	    	distVctrs[7].x = anX + 100;
-		   	distVctrs[7].y = anY - 100;
+	    if (map.isSafeAt(anX + 50, anY - 50)) {
+	    	distVctrs[7].x = anX + 50;
+		   	distVctrs[7].y = anY - 50;
         }
         // biggest distance
+
         float biggest = 0;
         int bigIndex = 0;
         for (int index = 0; index < distVctrs.length; index++) {
@@ -345,22 +393,22 @@ public class AIController implements InputController {
 				patrolTurn = 4;
 			}
 		}
-		if (map.isSafeAt(anX + 100, anY) && patrolTurn == 1) {
-			goal.set(anX + 100, anY);
+		if (map.isSafeAt(anX + 50, anY) && patrolTurn == 1) {
+			goal.set(anX + 50, anY);
 			return;
 		}
-		if (map.isSafeAt(anX - 100, anY) && patrolTurn == 2) {
-			goal.set(anX - 100, anY);
-			return;
-		}
-
-		if (map.isSafeAt(anX, anY + 100) && patrolTurn == 3) {
-			goal.set(anX, anY + 100);
+		if (map.isSafeAt(anX - 50, anY) && patrolTurn == 2) {
+			goal.set(anX - 50, anY);
 			return;
 		}
 
-		if (map.isSafeAt(anX, anY - 100) && patrolTurn == 4) {
-			goal.set(anX, anY - 100);
+		if (map.isSafeAt(anX, anY + 50) && patrolTurn == 3) {
+			goal.set(anX, anY + 50);
+			return;
+		}
+
+		if (map.isSafeAt(anX, anY - 50) && patrolTurn == 4) {
+			goal.set(anX, anY - 50);
 			return;
 		}
 		patrolTurn = 0;
@@ -404,8 +452,19 @@ public class AIController implements InputController {
         this.attacker = ac;
     }
     
-    /*
+    /**
+     * Returns the target of the current animal AI
+     * 
+     * @return Target of the animal AI
+     */
+    public Actor getTarget() {
+    	return target;
+    }
+    
+    /**
      * Sets the animal that this animal should chase. Null if it shouldn't chase.
+     * 
+     * @param ac Actor the animal should target
      */
     public void setTarget(Actor ac) {
         this.target = ac;
@@ -457,15 +516,14 @@ public class AIController implements InputController {
     }
     
     public void setTurns() {
-    	this.turns = 10;
+    	this.turns = 50;
     }
     
-    /*
+    /**
      * Gets the move that will get the animal to its goal the fastest
      *
      * @return int corresponding to InputController bit-vector
      */
-    
     public Vector2 getNextMoveToGoal() {
     	//System.out.println("goalx:" + goal.x + "goaly:" + goal.y);
     	//System.out.println("locx:" + getLoc().x + "locy:" + getLoc().y);

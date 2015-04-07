@@ -5,8 +5,10 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 
 
-public abstract class Actor extends BoxObject {
-    //The direction this actor is facing
+public abstract class Actor extends CircleObject {
+	// Whether the actor is alive
+	private boolean alive = true;
+	//The direction this actor is facing
     protected Vector2 facing;
     //TextureRegion for this actor's texture
     protected TextureRegion tr;
@@ -23,7 +25,8 @@ public abstract class Actor extends BoxObject {
     public enum actorType{
     		HUNTER,
 		PIG, 
-		WOLF
+		WOLF,
+		OWL
 	}
     
 	public boolean activatePhysics(World world) {
@@ -32,21 +35,21 @@ public abstract class Actor extends BoxObject {
 			return false;
 		}
 		
-		body.setAngularDamping(Float.MAX_VALUE);
-		
 		return true;
 	}
     
     public Actor(TextureRegion tr, actorType type, float x, float y, float width, 
     		     float height, actorType[] victims) {
-	    	super(tr,x,y,width,height);
+	    	super(tr,x,y, height/2);
 	    	this.type = type;
 	    	this.tr = tr;
         this.facing = new Vector2();
         this.victims = victims;
+        setFixedRotation(true);
     }
     
-    /*
+
+	/*
      * @return the direction this Actor's facing
      */
     public Vector2 getFacing() {
@@ -112,6 +115,24 @@ public abstract class Actor extends BoxObject {
 	        }
 	    }
         return false;
+	}
+	
+	/**
+	 * Returns whether the actor is alive
+	 * 
+	 * @return Whether the actor is alive
+	 */
+	public boolean getAlive() {
+		return alive;
+	}
+	
+	/**
+	 * Sets whether the actor is alive
+	 * 
+	 * @param val A boolean whether the actor is alive
+	 */
+	public void setAlive(boolean val) {
+		alive = val;
 	}
 	
     public void draw(GameCanvas canvas){

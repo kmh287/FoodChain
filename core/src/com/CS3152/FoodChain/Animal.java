@@ -5,13 +5,15 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 
 public abstract class Animal extends Actor {
 
-	//Whether the animal is caught in a trap
+	// Whether the animal is caught in a trap
 	private boolean trapped = false;
-
-	private actorType type;
+	
+	// The way points for an animal's patrol path
+	private Array<Vector2> patrolPath;
 	
 	// Vector that runs from the center of the animal diagonally leftward some length
     // RELATIVE TO ANIMAL'S POSITION
@@ -20,17 +22,19 @@ public abstract class Animal extends Actor {
     // RELATIVE TO ANIMAL'S POSITION
     protected Vector2 rightSectorLine;
     
+    // A vector used for temporary calculations
     private Vector2 tmp;
 
-    
 	//texture used in getCenter and setCenter
 	private float texWidth;
 	private float texHeight;
 	protected static final int AnimalWidth = 40;
 	protected static final int AnimalHeight = 40;
-	//how far forward the hunter can move in a turn. 
+	//how far forward an animal can move in a turn. 
     private static final float MOVE_SPEED = 150f;
+    // How wide the animal's line of sight is
     private static final double SIGHT_ANGLE = 0.35;
+    // How long the animal's line of sight is
     private static final float SIGHT_LENGTH = 120;
 	
 	/** Protected constructor for the animal type. 
@@ -47,11 +51,12 @@ public abstract class Animal extends Actor {
 	public Animal(TextureRegion tr, actorType type, float x, float y, 
 	              actorType[] prey, Vector2 facing){
 		super(tr, type, x, y, AnimalWidth, AnimalHeight, prey);
-		this.type = type;
 		this.setPos(x,y);
 		setFacing(facing);
 		this.leftSectorLine = new Vector2();
 		this.rightSectorLine = new Vector2();
+		
+		patrolPath = new Array();
 
 		this.tmp = new Vector2();
 
@@ -104,13 +109,6 @@ public abstract class Animal extends Actor {
 		this.rightSectorLine.set((float)(SIGHT_LENGTH*Math.cos(angle - SIGHT_ANGLE)),
 								 (float)(SIGHT_LENGTH*Math.sin(angle - SIGHT_ANGLE)));
 	}
-	
-    /**
-     * @return the type
-     */
-    public actorType getType() {
-        return type;
-    }
     
 	/**
 	 * The name of this animal type, e.g. "Sheep"
@@ -184,10 +182,10 @@ public abstract class Animal extends Actor {
 
 	    
 	/**
-	 * @return the bottom LeftxPos
+	 * @return
 	 */
-	public boolean canEat(Animal ani){
-	    for (actorType t : ani.getPrey()){
+	public boolean canEat(Actor ani){
+	    for (actorType t : getPrey()){
 	        if (ani.getType() == t){
 	            return true;
 	        }
@@ -217,10 +215,27 @@ public abstract class Animal extends Actor {
 		return this.rightSectorLine;
 	}
 	
+	public Array<Vector2> getPatrolPath() {
+		return patrolPath;
+	}
+	
+	public void setPatrolPath(Array<Vector2> path) {
+		patrolPath = path;
+	}
+	
 	public void drawSight(GameCanvas canvas) {
-		tmp.set(getPosition());
-		canvas.drawLine(Color.YELLOW, getPosition(), tmp.add(getLeftSectorLine()));
-		tmp.set(getPosition());
-		canvas.drawLine(Color.YELLOW, getPosition(), tmp.add(getRightSectorLine()));
+		if (getAlive()) {
+			tmp.set(getPosition());
+			canvas.drawLine(Color.YELLOW, getPosition(), tmp.add(getLeftSectorLine()));
+			tmp.set(getPosition());
+			canvas.drawLine(Color.YELLOW, getPosition(), tmp.add(getRightSectorLine()));
+		}
+	}
+	
+	@Override
+	public void draw(GameCanvas canvas) {
+		if (getAlive()) {
+			super.draw(canvas);
+		}
 	}
 }
