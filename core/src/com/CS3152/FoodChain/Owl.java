@@ -34,7 +34,7 @@ public class Owl extends Animal {
 	private static float scaleXDrawWolf = 1.2f;
 	private static float scaleYDrawWolf = 0.9f;
 	
-	static final Actor.actorType prey[] = {Actor.actorType.OWL, Actor.actorType.SHEEP,
+	static final Actor.actorType prey[] = {Actor.actorType.OWL, Actor.actorType.PIG,
 		   Actor.actorType.HUNTER};
 	
 	public Owl(TextureRegion tr, actorType type, float x, float y, 

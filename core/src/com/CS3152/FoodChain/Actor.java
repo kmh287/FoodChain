@@ -23,8 +23,8 @@ public abstract class Actor extends CircleObject {
     }
     
     public enum actorType{
-	    HUNTER,
-		SHEEP, 
+    		HUNTER,
+		PIG, 
 		WOLF,
 		OWL
 	}
@@ -40,10 +40,7 @@ public abstract class Actor extends CircleObject {
     
     public Actor(TextureRegion tr, actorType type, float x, float y, float width, 
     		     float height, actorType[] victims) {
-
-
 	    	super(tr,x,y, height/2);
-
 	    	this.type = type;
 	    	this.tr = tr;
         this.facing = new Vector2();

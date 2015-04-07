@@ -11,9 +11,9 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
  * @author Kevin
  *
  */
-public class Sheep extends Animal {
+public class Pig extends Animal {
 
-    private static final String SHEEP_TEX = "assets/pig_walk_cycle.png";
+    private static final String PIG_TEX = "assets/pig_walk_cycle.png";
     private static Texture tex = null;
     private static float scaleXDrawSheep=0.4f;
     private static float scaleYDrawSheep=0.3f;
@@ -24,8 +24,8 @@ public class Sheep extends Animal {
      * @param x Starting x position for this sheep
      * @param y Starting y position for this sheep
      */
-    public Sheep(float x, float y) {
-        super(new TextureRegion(tex), Actor.actorType.SHEEP, x, y, 
+    public Pig(float x, float y) {
+        super(new TextureRegion(tex), Actor.actorType.PIG, x, y, 
               prey, InputController.EAST);
         sprite = new FilmStrip(tex,1,4,4);
         drawScale.x=scaleXDrawSheep;
@@ -46,10 +46,10 @@ public class Sheep extends Animal {
      */
     public static void loadTexture(AssetManager manager) {
         if (tex == null){
-            manager.load(SHEEP_TEX, Texture.class);
+            manager.load(PIG_TEX, Texture.class);
             manager.finishLoading();
-            if (manager.isLoaded(SHEEP_TEX)){
-                tex = manager.get(SHEEP_TEX);
+            if (manager.isLoaded(PIG_TEX)){
+                tex = manager.get(PIG_TEX);
             }
         }
     }
