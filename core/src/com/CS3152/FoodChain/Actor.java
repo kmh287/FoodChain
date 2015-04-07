@@ -6,7 +6,9 @@ import com.badlogic.gdx.physics.box2d.World;
 
 
 public abstract class Actor extends CircleObject {
-    //The direction this actor is facing
+	// Whether the actor is alive
+	private boolean alive = true;
+	//The direction this actor is facing
     protected Vector2 facing;
     //TextureRegion for this actor's texture
     protected TextureRegion tr;
@@ -21,10 +23,10 @@ public abstract class Actor extends CircleObject {
     }
     
     public enum actorType{
-	    	HUNTER,
-			SHEEP, 
-			WOLF,
-			OWL 
+	    HUNTER,
+		SHEEP, 
+		WOLF,
+		OWL
 	}
     
 	public boolean activatePhysics(World world) {
@@ -116,6 +118,24 @@ public abstract class Actor extends CircleObject {
 	        }
 	    }
         return false;
+	}
+	
+	/**
+	 * Returns whether the actor is alive
+	 * 
+	 * @return Whether the actor is alive
+	 */
+	public boolean getAlive() {
+		return alive;
+	}
+	
+	/**
+	 * Sets whether the actor is alive
+	 * 
+	 * @param val A boolean whether the actor is alive
+	 */
+	public void setAlive(boolean val) {
+		alive = val;
 	}
 	
     public void draw(GameCanvas canvas){
