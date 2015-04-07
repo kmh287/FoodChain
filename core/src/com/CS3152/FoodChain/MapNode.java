@@ -1,6 +1,7 @@
 package com.CS3152.FoodChain;
 
 import com.badlogic.gdx.ai.pfa.Connection;
+import com.badlogic.gdx.ai.pfa.DefaultConnection;
 import com.badlogic.gdx.ai.pfa.indexed.IndexedNode;
 import com.badlogic.gdx.utils.Array;
 
@@ -11,6 +12,19 @@ public class MapNode implements IndexedNode<MapNode> {
 	private int y;
 	
 	private Array<Connection<MapNode>> connections;
+	
+	/**
+	 * Creates a new MapNode with default parameteres.
+	 * 
+	 * MapNodes are used in the graph representing the map.
+	 * They are also in pathfinding throughout the game.
+	 */
+	public MapNode() {
+		this.index = 0;
+		this.x = 0;
+		this.y = 0;
+		this.connections = new Array<Connection<MapNode>>();
+	}
 	
 	/**
 	 * Creates a new MapNode.
@@ -37,6 +51,51 @@ public class MapNode implements IndexedNode<MapNode> {
 	@Override
 	public int getIndex() {
 		return index;
+	}
+	
+	/**
+	 * Sets the index of the node
+	 * 
+	 * @param index the index of the node
+	 */
+	public void setIndex(int index) {
+		this.index = index;
+	}
+	
+	/**
+	 * Returns the x index of the node
+	 * 
+	 * @return x the x index of the node
+	 */
+	public int getX() {
+		return x;
+	}
+	
+	/**
+	 * Sets the x index of the node
+	 * 
+	 * @param x the x index of the node
+	 */
+	public void setX(int x) {
+		this.x = x;
+	}
+	
+	/**
+	 * Returns the y index of the node
+	 * 
+	 * @return y the y index of the node
+	 */
+	public int getY() {
+		return y;
+	}
+	
+	/**
+	 * Sets the y index of the node
+	 * 
+	 * @param y the y index of the node
+	 */
+	public void setY(int y) {
+		this.y = y;
 	}
 
 	/**
