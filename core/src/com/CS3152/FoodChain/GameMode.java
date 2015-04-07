@@ -38,7 +38,7 @@ public class GameMode implements Screen {
 
     private HashMap<String, List<Trap>> traps;
     private UIController ui;
-	private float TIME_STEP = 1/60f;
+	private float TIME_STEP = 1/200f;
 	private float frameTime;
 
     protected InputController[] controls;
