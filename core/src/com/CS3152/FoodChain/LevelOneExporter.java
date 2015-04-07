@@ -55,7 +55,7 @@ public class LevelOneExporter {
         layout[6][8] = Tile.tileType.BUSH;
           
         List<actorType> animals = new ArrayList<actorType>();
-        animals.add(actorType.SHEEP);
+        animals.add(actorType.PIG);
         animals.add(actorType.WOLF);
         
 

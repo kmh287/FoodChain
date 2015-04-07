@@ -31,7 +31,7 @@ public class GameMap {
     //starting trap
 
     private Vector2 hunterStartPosition = null;
-	private HashMap<String, List<Trap>> hunterStartingInventory = null;
+	//private HashMap<String, List<Trap>> hunterStartingInventory = null;
     
     //Should be 16 tiles across, and 9 down.
     //Therefore, layout should be [9][16] to match
@@ -226,9 +226,9 @@ public class GameMap {
         return this.hunterStartPosition;
     }
 
-    public HashMap<String, List<Trap>> getStartingInventory() {
-        return this.hunterStartingInventory; 
-    }
+//    public HashMap<String, List<Trap>> getStartingInventory() {
+//        return this.hunterStartingInventory; 
+//    }
 
 	public void addTilesToWorld(CollisionController collisionController) {
 		for (int i = 0; i < this.layout.length; ++i){

@@ -206,7 +206,7 @@ public class CollisionController implements ContactListener {
 			Trap trap = (Trap) bd2;
 
 			if (trap.getType() == "REGULAR_TRAP"
-					&& animal.getType() == Actor.actorType.SHEEP) {
+					&& animal.getType() == Actor.actorType.PIG) {
 				animal.setTrapped(true);
 				trapToRemove = "REGULAR_TRAP";
 				trapToAdd = "SHEEP_TRAP";

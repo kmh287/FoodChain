@@ -120,7 +120,7 @@ public class GameMode implements Screen {
         //tmp = new Vector2();
         
         createHunter(map.getHunterStartingCoordinate() 
-                ,map.getStartingInventory()
+                /*,map.getStartingInventory()*/
         		);
 	    ui.setHunter(this.hunter);
 	    
@@ -175,8 +175,8 @@ public class GameMode implements Screen {
 	}
 	
 
-	private void createHunter(Vector2 startingPos,
-			HashMap<String, List<Trap>> startingInventory){
+	private void createHunter(Vector2 startingPos/*,
+			HashMap<String, List<Trap>> startingInventory*/){
 		Hunter.loadTexture(manager);
 	    this.hunter = new Hunter(map.mapXToScreen((int)startingPos.x),
 	                             map.mapYToScreen((int)startingPos.y)
@@ -237,9 +237,9 @@ public class GameMode implements Screen {
 	        Animal newAnimal;
 	        
 	        switch(currType){
-	            case SHEEP:
-	            		Sheep.loadTexture(manager);
-	                newAnimal = new Sheep(map.mapXToScreen((int)coord.x), 
+	            case PIG:
+	            		Pig.loadTexture(manager);
+	                newAnimal = new Pig(map.mapXToScreen((int)coord.x), 
 	                                      map.mapYToScreen((int)coord.y));
 	                animals.add(newAnimal);
 	                break;
@@ -295,14 +295,14 @@ public class GameMode implements Screen {
 		for (Animal an : animals) {
 			an.update(delta);
 			//need to update wolf once we have animations
-			if(an instanceof Sheep){
+			if(an instanceof Pig){
 				if(controls[i].getAction()!=InputController.NO_ACTION){
 					if(ticks%10==0){
-						((Sheep) an).updateWalkFrame();
+						((Pig) an).updateWalkFrame();
 					}
 				}
 				else{
-					((Sheep) an).setStillFrame();
+					((Pig) an).setStillFrame();
 				}
 			}
 			i++;
@@ -356,18 +356,18 @@ public class GameMode implements Screen {
         
         canvas.end();
         
-        canvas.beginDebug();
-        PooledList<BoxObject> objects = collisionController.getObjects();
-		for(PhysicsObject obj : objects) {
-			//obj.drawDebug(canvas);
-			if (obj instanceof Animal) {
-				Animal a = (Animal) obj;
-				if (!a.getTrapped()) {
-					((Animal) obj).drawSight(canvas);
-				}
-			}
-		}
-		canvas.endDebug();
+//        canvas.beginDebug();
+//        PooledList<BoxObject> objects = collisionController.getObjects();
+//		for(PhysicsObject obj : objects) {
+//			//obj.drawDebug(canvas);
+//			if (obj instanceof Animal) {
+//				Animal a = (Animal) obj;
+//				if (!a.getTrapped()) {
+//					((Animal) obj).drawSight(canvas);
+//				}
+//			}
+//		}
+//		canvas.endDebug();
     }
     
     @Override

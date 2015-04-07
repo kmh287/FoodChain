@@ -65,7 +65,7 @@ public class LevelTwoExporter {
         
           
         List<actorType> animals = new ArrayList<actorType>();
-        animals.add(actorType.SHEEP);
+        animals.add(actorType.PIG);
         animals.add(actorType.WOLF);
         
 
