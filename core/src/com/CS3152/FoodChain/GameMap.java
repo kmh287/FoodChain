@@ -114,6 +114,8 @@ public class GameMap {
                     returnString.append("#");
                 } else if (layout[i][j] == tileType.TREE){
                     returnString.append("T");
+                } else if (layout[i][j] == null){
+                		returnString.append("!");
                 }
                 //Move to next column
                 if (j == layout[0].length-1){
@@ -237,6 +239,8 @@ public class GameMap {
 		for (int i = 0; i < this.layout.length; ++i){
 			for (int j = 0; j < this.layout[0].length; ++j){
         			Tile.tileType curr = layout[i][j];
+        			System.out.println(curr);
+        			System.out.println("i: " + i + "j:" + j);
         			TextureRegion tr = new TextureRegion(getTextureFromTileType(curr));
         			Tile t = new Tile(tr, (float)mapXToScreen(j), (float)mapYToScreen(i),
         										 (float)tr.getRegionWidth(), (float)tr.getRegionHeight(),

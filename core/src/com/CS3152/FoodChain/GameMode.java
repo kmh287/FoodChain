@@ -101,7 +101,7 @@ public class GameMode implements Screen {
         //For now we will hard code the level to load
         //When we implement a UI that may ask players
         //what level to start on. This code will change
-        map = loadMap("level3");
+        map = loadMap("field");
         map.LoadContent(manager);
         //ui = new UIController();
         //ui.loadTextures(manager);
