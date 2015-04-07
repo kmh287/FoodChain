@@ -24,7 +24,7 @@ public class UIControllerStage {
     private static final String TRAP_TWO_ONE = "assets/trap2_1.png";
     private static final String TRAP_TWO_TWO = "assets/trap2_2.png";
     private static final String SELECT = "assets/select.png";
-    private static final String BLACK_BAR = "assets/blackbar.png";
+    private static final String BLACK_SPACE = "assets/black_space.png";
     
     private Hunter hunter;
     
@@ -35,7 +35,7 @@ public class UIControllerStage {
     private static Texture trap_1_2_texture = null;
     private static Texture trap_2_1_texture = null;
     private static Texture trap_2_2_texture = null;
-    private static Texture blackBar = null;
+    private static Texture blackSpace_texture = null;
     private static Texture select_texture = null;
     private static Texture select_texture_2 = null;
     
@@ -50,6 +50,7 @@ public class UIControllerStage {
 	Image trap_1_2;
 	Image trap_2_1;
 	Image trap_2_2;
+	Image blackSpace;
 	
 	Table deselect_container;
 	Table select__trap_1_container;
@@ -58,6 +59,7 @@ public class UIControllerStage {
 	Table trap_1_2_container;
 	Table trap_2_1_container;
 	Table trap_2_2_container;
+	Table blackSpace_container;
 	
     public void setHunter(Hunter h){
     	hunter=h;
@@ -83,12 +85,12 @@ public class UIControllerStage {
             }
         }
         
-        if (blackBar == null){
-            manager.load(BLACK_BAR, Texture.class);
+        if (blackSpace_texture == null){
+            manager.load(BLACK_SPACE, Texture.class);
             
             manager.finishLoading();
-            if (manager.isLoaded(BLACK_BAR)){
-                blackBar = manager.get(BLACK_BAR);
+            if (manager.isLoaded(BLACK_SPACE)){
+            	blackSpace_texture = manager.get(BLACK_SPACE);
             }
         }
     	Gdx.input.setInputProcessor(stage);
@@ -101,6 +103,7 @@ public class UIControllerStage {
     	trap_1_2 = new Image();
     	trap_2_1 = new Image();
     	trap_2_2 = new Image();
+    	blackSpace = new Image();
     	
     	deselect_container = new Table();
     	select__trap_1_container = new Table();
@@ -109,6 +112,7 @@ public class UIControllerStage {
     	trap_1_2_container = new Table();
     	trap_2_1_container = new Table();
     	trap_2_2_container = new Table();
+    	blackSpace_container = new Table();
     	
     	//assign texture to image
         deselect.setDrawable(new TextureRegionDrawable(new TextureRegion(allDeselect)));
@@ -154,6 +158,12 @@ public class UIControllerStage {
         trap_2_2_container.center().bottom(); 
         trap_2_2_container.row();
         
+        //blackSpace.setDrawable(new TextureRegionDrawable(new TextureRegion(blackSpace_texture)));
+        blackSpace_container.setBackground(new TextureRegionDrawable(new TextureRegion(blackSpace_texture)));
+        blackSpace_container.setFillParent(true);
+        
+        
+        
     	stage.addActor(deselect_container);
     	stage.addActor(trap_1_1_container);
     	stage.addActor(trap_1_2_container);
@@ -161,6 +171,7 @@ public class UIControllerStage {
     	stage.addActor(trap_2_2_container);
     	stage.addActor(select__trap_1_container);
     	stage.addActor(select__trap_2_container);
+    	stage.addActor(blackSpace_container);
     	trap_1_1_container.setVisible(false);
     	trap_1_2_container.setVisible(false);
     	trap_2_1_container.setVisible(false);
@@ -168,6 +179,7 @@ public class UIControllerStage {
     	trap_1_1_container.setVisible(false);
     	select__trap_1_container.setVisible(false);
     	select__trap_2_container.setVisible(false);
+    	blackSpace_container.setVisible(false);
     	
  
     	
@@ -229,6 +241,12 @@ public class UIControllerStage {
     	stage.draw();
     }
     
+    public void drawBlack() {  	
+    	blackSpace_container.setVisible(true);
+    	stage.act();
+    	stage.draw();
+    	blackSpace_container.setVisible(false);
+    }
     
 }
 

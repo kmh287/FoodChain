@@ -352,6 +352,8 @@ public class GameMode implements Screen {
     }
     
     private void draw(float delta){
+    	canvas.DrawBlack(hunter.getPosition().x, hunter.getPosition().y);
+    	canvas.end();
         canvas.begin(); 
     	//canvas.begin();
         //Draw the map
