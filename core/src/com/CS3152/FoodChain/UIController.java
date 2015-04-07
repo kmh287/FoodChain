@@ -92,7 +92,7 @@ public class UIController {
         }
     }
     
-    /*public void draw(GameCanvas canvas){
+    public void draw(GameCanvas canvas){
         int texWidth = allDeselect.getWidth();
         int screenWidth = Gdx.graphics.getWidth();
         int xCoordinate = (screenWidth/2) - (texWidth/2);
@@ -150,11 +150,7 @@ public class UIController {
         		canvas.draw(select_texture, xCoordinate+143, 13);
         	}
         }
-        
-<<<<<<< HEAD
-    } */
-        //draw panic bar
-        TextureRegion statusBkgMiddle;
+                TextureRegion statusBkgMiddle;
       // progress_percent determines the amount of bar to display
         progress_percent=.95f;
       // PROGRESS_CAP is the variable that determines the width of the bar
@@ -170,7 +166,5 @@ public class UIController {
 
         //canvas.draw(red, Color.WHITE, 0, 0,34, 45, 0, 1, 1);
        
-        
-        
-    }
+    } 
 }

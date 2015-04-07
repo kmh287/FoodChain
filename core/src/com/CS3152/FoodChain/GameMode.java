@@ -19,6 +19,7 @@ import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 
 
 public class GameMode implements Screen {
@@ -31,7 +32,9 @@ public class GameMode implements Screen {
     private AssetManager manager;
     private List<Animal> animals;
     private Hunter hunter;
-
+    
+    private Stage stage; 
+    private UIControllerStage uis; 
 
     private HashMap<String, List<Trap>> traps;
     private UIController ui;
@@ -93,6 +96,7 @@ public class GameMode implements Screen {
 	public GameMode(GameCanvas canvas) {
 		
 		this.canvas = canvas;
+		this.stage = stage;
         //active = false;
         manager = new AssetManager();
         PreLoadContent(manager);
@@ -101,7 +105,7 @@ public class GameMode implements Screen {
         //For now we will hard code the level to load
         //When we implement a UI that may ask players
         //what level to start on. This code will change
-        map = loadMap("field");
+        map = loadMap("level2");
         map.LoadContent(manager);
         //ui = new UIController();
         //ui.loadTextures(manager);
@@ -384,6 +388,7 @@ public class GameMode implements Screen {
         //hunter.drawDebug(canvas);
         
         //ui.draw(canvas);
+        //uis.drawStage(stage);
         
         canvas.end();
         
