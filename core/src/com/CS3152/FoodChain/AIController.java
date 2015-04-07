@@ -7,6 +7,7 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.Array;
 
 /**
  * InputController corresponding to AI control.
@@ -75,6 +76,10 @@ public class AIController implements InputController {
     // Which direction to patrol
     protected int patrolTurn;
     
+    // The animal's patrol path
+    protected Array<Vector2> patrolPath;
+    
+    // The random number generator used by the AI
     private Random random;
 
     
@@ -110,9 +115,9 @@ public class AIController implements InputController {
         this.move = InputController.WEST;
         goal.set (getAnimal().getX() + 1, getAnimal().getY());
 
-        this.turns = 3;//should be 0 in future
+        this.turns = 10;//should be 0 in future
         
-        this.patrolTurn = 1;
+        this.patrolTurn = 0;
         
         this.tmp = new Vector2();
         
@@ -509,7 +514,7 @@ public class AIController implements InputController {
     }
     
     public void setTurns() {
-    	this.turns = 20;
+    	this.turns = 50;
     }
     
     /**

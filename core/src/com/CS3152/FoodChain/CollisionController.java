@@ -247,7 +247,6 @@ public class CollisionController implements ContactListener {
 					&& animal.getType() == Actor.actorType.WOLF) {
 				animal.setTrapped(true);
 				trap.setOnMap(false);
-				System.out.println("SHEEP_TRAP setOnMap false");
 				trapToRemove = "SHEEP_TRAP";
 				trapToAdd = "WOLF_TRAP";
 				trapLocationToAdd = trap.getPosition();

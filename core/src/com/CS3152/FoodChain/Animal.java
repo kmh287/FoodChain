@@ -5,11 +5,15 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 
 public abstract class Animal extends Actor {
 
 	// Whether the animal is caught in a trap
 	private boolean trapped = false;
+	
+	// The way points for an animal's patrol path
+	private Array<Vector2> patrolPath;
 	
 	// Vector that runs from the center of the animal diagonally leftward some length
     // RELATIVE TO ANIMAL'S POSITION
@@ -18,6 +22,7 @@ public abstract class Animal extends Actor {
     // RELATIVE TO ANIMAL'S POSITION
     protected Vector2 rightSectorLine;
     
+    // A vector used for temporary calculations
     private Vector2 tmp;
 
 	//texture used in getCenter and setCenter
@@ -25,9 +30,11 @@ public abstract class Animal extends Actor {
 	private float texHeight;
 	protected static final int AnimalWidth = 40;
 	protected static final int AnimalHeight = 40;
-	//how far forward the hunter can move in a turn. 
+	//how far forward an animal can move in a turn. 
     private static final float MOVE_SPEED = 150f;
+    // How wide the animal's line of sight is
     private static final double SIGHT_ANGLE = 0.35;
+    // How long the animal's line of sight is
     private static final float SIGHT_LENGTH = 120;
 	
 	/** Protected constructor for the animal type. 
@@ -48,7 +55,8 @@ public abstract class Animal extends Actor {
 		setFacing(facing);
 		this.leftSectorLine = new Vector2();
 		this.rightSectorLine = new Vector2();
-
+		
+		patrolPath = new Array();
 
 		this.tmp = new Vector2();
 
@@ -205,6 +213,14 @@ public abstract class Animal extends Actor {
 	
 	public Vector2 getRightSectorLine() {
 		return this.rightSectorLine;
+	}
+	
+	public Array<Vector2> getPatrolPath() {
+		return patrolPath;
+	}
+	
+	public void setPatrolPath(Array<Vector2> path) {
+		patrolPath = path;
 	}
 	
 	public void drawSight(GameCanvas canvas) {

@@ -1,6 +1,8 @@
 package com.CS3152.FoodChain;
 import com.CS3152.FoodChain.Tile.tileType;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.ai.pfa.DefaultConnection;
+import com.badlogic.gdx.ai.pfa.indexed.IndexedGraph;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -8,13 +10,14 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.utils.Array;
 import com.google.gson.Gson;
 
 import java.util.*;
 
 @SuppressWarnings("unused")
 
-public class GameMap {
+public class GameMap implements IndexedGraph {
     
     //Offset for the UI at the bottom of the screen.
     private static final int UI_OFFSET = 80;
@@ -37,6 +40,17 @@ public class GameMap {
     //Therefore, layout should be [9][16] to match
     //Row-then-column form.
     private Tile.tileType[][] layout;
+    
+    private int mapWidth;
+    private int mapHeight;
+    
+    // All the nodes in the map/graph
+    private Array nodes;
+    // All the node connections within the graph
+    private Array connections;
+    
+    // The number of nodes within the map
+    private int nodeCount;
     
     private static final String GRASS_TEX = "assets/grass.png";
     private static final String BUSH_TEX = "assets/bush.png";
@@ -88,19 +102,90 @@ public class GameMap {
      *                            start position
      */
     public GameMap(Tile.tileType[][] layout,
-                   List<Actor.actorType>animals,
+                   List<Actor.actorType> animals,
                    List<Vector2> coordinates,
                    Vector2 hunterStartPosition
-                   //,HashMap<String, List<Trap>> startingInventory
-                   ){
+                   ) {
     	this.layout = layout;
         this.animals = animals;
         this.coordinates = coordinates;
         this.hunterStartPosition = hunterStartPosition;
-        //this.hunterStartingInventory = startingInventory;
+        this.mapWidth = layout[0].length;
+        this.mapHeight = layout.length;
+        this.nodeCount = layout.length * layout[0].length;
+        this.nodes = createNodes(nodeCount);
+        this.connections = createConnections(nodeCount);
     }
     
-    /** Return a string representation of the map
+    /**
+     * 
+     * @param nodeCount
+     * @return
+     */
+    private Array createNodes(int nodeCount) {
+		Array<MapNode> nodes = new Array<MapNode>(nodeCount);
+		for (MapNode node : nodes) {
+			node = new MapNode();
+		}
+		return null;
+	}
+
+	/**
+     * Creates the connections for each tile in the map
+     * 
+     * @param size the number of nodes in the map
+     * @return an array of connections for each node in the map
+     */
+    private Array createConnections(int size) {
+		Array<Array> connections = new Array(size);
+		for (Array a : connections) {
+			a = new Array();
+		}
+		for (int y = 0; y < getMapHeight(); y++) {
+			for (int x = 0; x < getMapWidth(); x++) {
+				int index = calculateIndex(x, y);
+				int adjacent = calculateIndex(x - 1, y);
+				if (validTile(adjacent)) {
+					a.get(index).add(new DefaultConnection(adjacent, adjacent))
+				}
+			}
+		}
+		return connections;
+	}
+
+	/**
+     * Calculates and returns the index of the node for a tile in the map
+     * 
+     * @param x the x coordinate of the tile in layout
+     * @param y the y coordinate of the tile in layout
+     * @return the index for the node representing the tile
+     */
+	private int calculateIndex(int x, int y) {
+		return y * getMapWidth() + x;
+	}
+	
+	/**
+	 * Returns whether a set of coordinates references a valid tile
+	 *  
+	 * @param x the x coordinate of the tile
+	 * @param y the y coordinate of the tile
+	 * @return whether the tile is valid
+	 */
+	private boolean validTile(int x, int y) {
+		return y * mapWidth + x >= 0 && y * mapWidth + x < nodeCount;
+	}
+	
+	/**
+	 * Returns whether an index references a valid tile
+	 *  
+	 * @param index the index of a possible tile in question
+	 * @return whether the tile is valid
+	 */
+	private boolean validTile(int index) {
+		return index >= 0 && index < nodeCount;
+	}
+
+	/** Return a string representation of the map
      * Currently this does not return the player position nor the animals
      * @return A string representation of the map
      */
@@ -122,6 +207,14 @@ public class GameMap {
             }
         }
         return returnString.toString();
+    }
+    
+    public int getMapWidth() {
+    	return mapWidth;
+    }
+    
+    public int getMapHeight() {
+    	return mapHeight;
     }
     
     public Texture getTextureFromTileType(Tile.tileType t){
@@ -252,5 +345,17 @@ public class GameMap {
 			   xPos <= Gdx.graphics.getWidth() && 
 			   yPos <= Gdx.graphics.getHeight() &&
 			   screenPosToTileType(xPos, yPos) == Tile.tileType.GRASS);
+	}
+
+	@Override
+	public Array getConnections(Object fromNode) {
+		// TODO Auto-generated method stub
+		return connections;
+	}
+
+	@Override
+	public int getNodeCount() {
+		// TODO Auto-generated method stub
+		return nodeCount;
 	}
 }
