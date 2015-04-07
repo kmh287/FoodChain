@@ -167,7 +167,6 @@ public class GameMap {
     public int mapYToScreen(int yTileIndex){
         int screenHeight = Gdx.graphics.getHeight();
         int yIncrement = (screenHeight - UI_OFFSET) / layout.length;
-        //System.out.println(yTileIndex * yIncrement + UI_OFFSET);
         return yTileIndex * yIncrement + UI_OFFSET;
     }
     
@@ -188,17 +187,19 @@ public class GameMap {
      * @return The y-index in layout for the containing tile
      */
     public int screenYToMap(float yPos){
-        int screenHeight = Gdx.graphics.getHeight();
+    	int screenHeight = Gdx.graphics.getHeight();
         int yIncrement = (screenHeight - UI_OFFSET) / layout.length;
         return (int) ((yPos - UI_OFFSET) / yIncrement);
     }
     
+
     public Tile.tileType screenPosToTileType(float xPos, float yPos){
 //    		System.out.println("xPos: " + xPos + "\n");
 //    		System.out.println("yPos: " + yPos + "\n");
 //    		System.out.println("xPos Screen to Map: " + screenXToMap(xPos) + "\n");
 //    		System.out.println("yPos Screen to Map: " + screenYToMap(yPos) + "\n");
     		return layout[screenYToMap(yPos)][screenXToMap(xPos)];
+
     }
     
     /**
