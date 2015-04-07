@@ -99,8 +99,9 @@ public class GameCanvas {
 	    viewport = new FitViewport((float) (Gdx.graphics.getWidth()/1.3), (float) (Gdx.graphics.getHeight()/1.3), camera);
 	    viewport.apply(); 
 	    ui = new UIControllerStage(); 
-	    stage = new Stage(new ExtendViewport(100, 100));
-	    stage.getViewport().setCamera(camera);
+	    stage = new Stage(new ExtendViewport(30, 30));
+	    stage = new Stage(viewport);
+	    //stage.getViewport().setCamera(camera);
 	    	
 		spriteBatch.setProjectionMatrix(camera.combined);
 		debugRender.setProjectionMatrix(camera.combined);
