@@ -12,7 +12,7 @@ public class Wolf extends Animal{
     private static float scaleXDrawWolf = 1.2f;
     private static float scaleYDrawWolf = 0.9f;
     
-    static final Actor.actorType prey[] = {Actor.actorType.SHEEP,
+    static final Actor.actorType prey[] = {Actor.actorType.PIG,
     									   Actor.actorType.HUNTER};
     
     /**

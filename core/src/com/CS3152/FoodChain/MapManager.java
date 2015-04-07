@@ -41,6 +41,7 @@ public class MapManager {
             file.getParentFile().mkdirs();
             file.createNewFile();
         }
+        System.out.println(file.getPath());
         Gson gson = new Gson();
         String json = gson.toJson(map);
         FileWriter writer = new FileWriter(outPath);

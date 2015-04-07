@@ -6,6 +6,7 @@ import java.util.Random;
 
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+import com.CS3152.FoodChain.Tile.tileType;
 import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Contact;
@@ -56,13 +57,17 @@ public class CollisionController implements ContactListener {
 		obj.activatePhysics(world);
 		//obj.getBody().setUserData(data.toString());
 		if(obj instanceof Tile){
-			setGrassTileOff((Tile)obj);
+			setTraversableTiles((Tile)obj);
 		}
 		//System.out.println("body1"+obj.getBody().toString() +" "+  obj.isActive());
 	}
 	
-	private void setGrassTileOff(Tile t){
-		if(t.type==Tile.tileType.GRASS){
+	private void setTraversableTiles(Tile t){
+		if(t.type == tileType.GRASS || t.type == tileType.DIRT ||
+		   t.type == tileType.N_GRASS || t.type == tileType.NE_GRASS || 
+		   t.type == tileType.E_GRASS || t.type == tileType.SE_GRASS ||
+		   t.type == tileType.SW_GRASS || t.type == tileType.SW_GRASS ||
+		   t.type == tileType.W_GRASS || t.type == tileType.NW_GRASS){
 			t.setActive(false);
 		}
 	}
@@ -215,7 +220,8 @@ public class CollisionController implements ContactListener {
 			Trap trap = (Trap) bd2;
 
 			if (trap.getOnMap() && trap.getType() == "REGULAR_TRAP"
-					&& animal.getType() == Actor.actorType.SHEEP) {
+					&& animal.getType() == Actor.actorType.PIG) {
+
 				animal.setTrapped(true);
 				trap.setOnMap(false);
 				trapToRemove = "REGULAR_TRAP";
@@ -236,7 +242,7 @@ public class CollisionController implements ContactListener {
 			Animal animal = (Animal) bd2;
 			Trap trap = (Trap) bd1;
 			if (trap.getOnMap() && trap.getType() == "REGULAR_TRAP"
-					&& animal.getType() == Actor.actorType.SHEEP) {
+					&& animal.getType() == Actor.actorType.PIG) {
 				animal.setTrapped(true);
 				trap.setOnMap(false);
 				trapToRemove = "REGULAR_TRAP";
