@@ -385,17 +385,27 @@ public class GameMode implements Screen {
             //animal.drawDebug(canvas);
         }
         //Draw the hunter
+        if (hunter.getAlive()) {
+        	hunter.draw(canvas);
+        }
         canvas.end();
         
         
     	canvas.beginCam(hunter.getPosition().x, hunter.getPosition().y);
-        hunter.draw(canvas);
         //hunter.drawDebug(canvas);
         
         //ui.draw(canvas);
         //uis.drawStage(stage);
         
         canvas.end();
+        
+        /*
+        canvas.beginDebug();
+        for (Animal animal : animals) {
+        	animal.drawSight(canvas);
+        }
+        canvas.endDebug();
+        */
         
         canvas.beginDebug();
         PooledList<SimplePhysicsObject> objects = collisionController.getObjects();
@@ -409,6 +419,7 @@ public class GameMode implements Screen {
 			}
 		}
 		canvas.endDebug();
+		
     }
     
     @Override

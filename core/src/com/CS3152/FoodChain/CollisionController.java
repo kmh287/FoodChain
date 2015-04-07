@@ -21,7 +21,7 @@ import com.badlogic.gdx.physics.box2d.World;
  * This is the simplest of physics engines.  In later labs, we will see how to work 
  * with more interesting engines.
  *
- * As a major subcontroller, this class must have a reference to all the models.
+ * As a major sub-controller, this class must have a reference to all the models.
  */
 
 public class CollisionController implements ContactListener {
@@ -107,11 +107,13 @@ public class CollisionController implements ContactListener {
 	}
 
 	private void move(Animal actor,int index) {
-		actor.setLinearVelocity(controls[index].getAction());
-		float angle = ((AIController)controls[index]).getAngle();
-		actor.updateLOS(angle);
-		//actor.setAngle(((AIController)controls[index]).getAngle());
-		actor.setFacing(((AIController) controls[index]).getAction());
+		if (actor.getAlive()) {
+			actor.setLinearVelocity(controls[index].getAction());
+			float angle = ((AIController)controls[index]).getAngle();
+			actor.updateLOS(angle);
+			//actor.setAngle(((AIController)controls[index]).getAngle());
+			actor.setFacing(((AIController) controls[index]).getAction());
+		}
 	}
 
 
@@ -144,15 +146,21 @@ public class CollisionController implements ContactListener {
     	for (SimplePhysicsObject o : objects) {
     		if (o.getBody().getUserData() instanceof Animal) {
     			Animal a = (Animal) o;
-    			if (a.getTrapped()) {
+    			if (a.getTrapped() || !a.getAlive()) {
+    				a.setAlive(false);
     				a.setActive(false);
+    			}
+    		}
+    		if (o.getBody().getUserData() instanceof Hunter) {
+    			Hunter h = (Hunter) o;
+    			if (!h.getAlive()) {
+    				h.setActive(false);
     			}
     		}
     		if (trapToRemove != null
     				&& o.getBody().getUserData() instanceof Trap) {
     			Trap t = (Trap) o;
     			if (t.getType() == trapToRemove) {
-    				t.setOnMap(false);
     				t.setActive(false);
     				trapToRemove = null;
     			}
@@ -190,13 +198,17 @@ public class CollisionController implements ContactListener {
 		
 		if (bd1 instanceof Hunter && bd2 instanceof Trap) {
 			Trap trap = (Trap) bd2;
-			trap.setOnMap(false);
-			trap.setInInventory(true);
+			if (trap.getOnMap()) {
+				trap.setOnMap(false);
+				trap.setInInventory(true);
+			}
 		}
 		if (bd1 instanceof Trap && bd2 instanceof Hunter) {
 			Trap trap = (Trap) bd1;
-			trap.setOnMap(false);
-			trap.setInInventory(true);
+			if (trap.getOnMap()) {
+				trap.setOnMap(false);
+				trap.setInInventory(true);
+			}
 		}
 		if (bd1 instanceof Animal && bd2 instanceof Trap) {
 			Animal animal = (Animal) bd1;
@@ -205,6 +217,7 @@ public class CollisionController implements ContactListener {
 			if (trap.getOnMap() && trap.getType() == "REGULAR_TRAP"
 					&& animal.getType() == Actor.actorType.SHEEP) {
 				animal.setTrapped(true);
+				trap.setOnMap(false);
 				trapToRemove = "REGULAR_TRAP";
 				trapToAdd = "SHEEP_TRAP";
 				trapLocationToAdd = trap.getPosition();
@@ -213,6 +226,7 @@ public class CollisionController implements ContactListener {
 			else if (trap.getOnMap() && trap.getType() == "SHEEP_TRAP"
 					&& animal.getType() == Actor.actorType.WOLF) {
 				animal.setTrapped(true);
+				trap.setOnMap(false);
 				trapToRemove = "SHEEP_TRAP";
 				trapToAdd = "WOLF_TRAP";
 				trapLocationToAdd = trap.getPosition();
@@ -224,6 +238,7 @@ public class CollisionController implements ContactListener {
 			if (trap.getOnMap() && trap.getType() == "REGULAR_TRAP"
 					&& animal.getType() == Actor.actorType.SHEEP) {
 				animal.setTrapped(true);
+				trap.setOnMap(false);
 				trapToRemove = "REGULAR_TRAP";
 				trapToAdd = "SHEEP_TRAP";
 				trapLocationToAdd = trap.getPosition();
@@ -232,9 +247,37 @@ public class CollisionController implements ContactListener {
 			else if (trap.getOnMap() && trap.getType() == "SHEEP_TRAP"
 					&& animal.getType() == Actor.actorType.WOLF) {
 				animal.setTrapped(true);
+				trap.setOnMap(false);
 				trapToRemove = "SHEEP_TRAP";
 				trapToAdd = "WOLF_TRAP";
 				trapLocationToAdd = trap.getPosition();
+			}
+		}
+		if (bd1 instanceof Animal && bd2 instanceof Animal) {
+			Animal a1 = (Animal) bd1;
+			Animal a2 = (Animal) bd2;
+			
+			if (a1.canEat(a2)) {
+				a2.setAlive(false);
+			}
+			if (a2.canEat(a1)) {
+				a1.setAlive(false);
+			}
+		}
+		if (bd1 instanceof Hunter && bd2 instanceof Animal) {
+			Animal a = (Animal) bd2;
+			Hunter h = (Hunter) bd1;
+			
+			if (a.canEat(h)) {
+				h.setAlive(false);
+			}
+		}
+		if (bd1 instanceof Animal && bd2 instanceof Hunter) {
+			Animal a = (Animal) bd1;
+			Hunter h = (Hunter) bd2;
+			
+			if (a.canEat(h)) {
+				h.setAlive(false);
 			}
 		}
 	}
