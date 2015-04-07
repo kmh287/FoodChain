@@ -81,20 +81,20 @@ public class UIControllerStage {
                 blackBar = manager.get(BLACK_BAR);
             }
         }
-
-    }
-    
-    public void setStage(Stage stage){
-    	this.stage=stage;
     	Gdx.input.setInputProcessor(stage);
         container = new Table();
-        container.setBackground(new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("assets/all_deselect.png")))));
+        container.setBackground(new TextureRegionDrawable(new TextureRegion((allDeselect))));
 
     	container.setFillParent(true);
     	container.bottom(); 
     	container.row();
     	//container.add(skin);
     	stage.addActor(container);
+    }
+    
+    public void setStage(Stage stage){
+    	this.stage=stage;
+
     }
     
     public void drawStage () {

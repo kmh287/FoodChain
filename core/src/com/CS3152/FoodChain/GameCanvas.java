@@ -19,6 +19,7 @@ package com.CS3152.FoodChain;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.*;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.graphics.glutils.*;
@@ -1166,4 +1167,8 @@ public class GameCanvas {
 		/** Color values are draw on top of one another with no transparency support */
 		OPAQUE
 	}	
+	
+	public UIControllerStage getUIControllerStage(){
+		return ui;
+	}
 }
