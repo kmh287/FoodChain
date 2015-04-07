@@ -367,8 +367,16 @@ public class GameCanvas {
     public void beginCam(float x, float y) {
     	
     	moveCamera(x,y);
-    	
     	ui.drawStage();
+    	spriteBatch.setProjectionMatrix(camera.combined);
+    	spriteBatch.begin();
+    	active = DrawPass.STANDARD;
+    } 
+    
+    public void DrawBlack(float x, float y) {
+    	
+    	moveCamera(x,y);
+    	ui.drawBlack();
     	spriteBatch.setProjectionMatrix(camera.combined);
     	spriteBatch.begin();
     	active = DrawPass.STANDARD;
