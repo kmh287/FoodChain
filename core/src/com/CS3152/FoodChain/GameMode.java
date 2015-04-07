@@ -290,7 +290,7 @@ public class GameMode implements Screen {
 
     private void update(float delta){
 
-   		hunter.update(delta);
+   	hunter.update(delta);
 		//System.out.println(hunter.getAngle());
 		hunter.setSelectedTrap(controls[0].getNum());
 		//Vector2 click = controls[0].getClickPos();
@@ -353,6 +353,8 @@ public class GameMode implements Screen {
     }
     
     private void draw(float delta){
+    	canvas.DrawBlack(hunter.getPosition().x, hunter.getPosition().y);
+    	canvas.end();
         canvas.begin(); 
     	//canvas.begin();
         //Draw the map
@@ -378,23 +380,24 @@ public class GameMode implements Screen {
         }
         
         
-        //Draw the animals
+        
+       
+        canvas.end();
+        
+        
+    	canvas.beginCam(hunter.getPosition().x, hunter.getPosition().y);
+        //hunter.drawDebug(canvas);
+    	 //Draw the hunter
+    	//Draw the animals
         for (Animal animal : animals){
             if (!animal.getTrapped()) {
             		animal.draw(canvas);
             }
             //animal.drawDebug(canvas);
         }
-        //Draw the hunter
         if (hunter.getAlive()) {
         	hunter.draw(canvas);
         }
-        canvas.end();
-        
-        
-    	canvas.beginCam(hunter.getPosition().x, hunter.getPosition().y);
-        //hunter.drawDebug(canvas);
-        
         //ui.draw(canvas);
         //uis.drawStage(stage);
         

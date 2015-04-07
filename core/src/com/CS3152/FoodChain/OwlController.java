@@ -6,7 +6,7 @@ import java.util.*;
 import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.physics.box2d.World;
 
-public class OwlController implements InputController {
+public class OwlController extends AIController {
 	
 	    protected static enum State {
 	        // Animal determines where to go next
@@ -77,7 +77,8 @@ public class OwlController implements InputController {
 	     * @param map The game map
 	     */
 	    public OwlController(Owl owl, World world, GameMap map, List<Actor> actors) {
-	        this.owl = owl;
+	        super(animal, world, map, actors);
+	    	this.owl = owl;
 	        this.world = world;
 	        this.map = map;
 	        this.actors = actors;
@@ -94,7 +95,7 @@ public class OwlController implements InputController {
 	        this.target = null;
 	        this.attacker = null;
 	        
-	        vcb = new VisionCallback(this);
+	        vcb = new VisionCallback((AIController) this);
 	        //fcb = new FleeCallback(this, attacker);
 	        
 	        //this.state = State.PATROL;//FIND;
@@ -466,6 +467,6 @@ public class OwlController implements InputController {
 
 
 
-
+} 
 
 }
