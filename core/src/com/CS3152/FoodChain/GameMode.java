@@ -352,12 +352,11 @@ public class GameMode implements Screen {
     }
     
     private void draw(float delta){
-        
-    	//Draw the map
-    	canvas.beginCam(hunter.getPosition().x, hunter.getPosition().y);
+        canvas.begin(); 
     	//canvas.begin();
         //Draw the map
         map.draw(canvas);
+      
         
         for (Trap trap : traps.get("WOLF_TRAP")) {
 	    		if (trap != null) {
@@ -377,6 +376,7 @@ public class GameMode implements Screen {
 	    		}
         }
         
+        
         //Draw the animals
         for (Animal animal : animals){
             if (!animal.getTrapped()) {
@@ -385,6 +385,10 @@ public class GameMode implements Screen {
             //animal.drawDebug(canvas);
         }
         //Draw the hunter
+        canvas.end();
+        
+        
+    	canvas.beginCam(hunter.getPosition().x, hunter.getPosition().y);
         hunter.draw(canvas);
         //hunter.drawDebug(canvas);
         
