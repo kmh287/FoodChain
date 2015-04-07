@@ -1,6 +1,6 @@
 package com.CS3152.FoodChain;
 
-import java.util.HashMap;
+import java.util.HashMap; 
 import java.util.List;
 
 import com.badlogic.gdx.Gdx;
@@ -53,6 +53,8 @@ public class UIController {
     public void setHunter(Hunter h){
     	hunter=h;
     }
+    /* Skin skin = new Skin();
+		skin.add("logo", new Texture("logo.png"));*/
     
     public void loadTextures(AssetManager manager){
         if (allDeselect == null){
@@ -148,9 +150,7 @@ public class UIController {
         		canvas.draw(select_texture, xCoordinate+143, 13);
         	}
         }
-        
-        //draw panic bar
-        TextureRegion statusBkgMiddle;
+                TextureRegion statusBkgMiddle;
       // progress_percent determines the amount of bar to display
         progress_percent=.95f;
       // PROGRESS_CAP is the variable that determines the width of the bar
@@ -166,7 +166,5 @@ public class UIController {
 
         //canvas.draw(red, Color.WHITE, 0, 0,34, 45, 0, 1, 1);
        
-        
-        
-    }
+    } 
 }
