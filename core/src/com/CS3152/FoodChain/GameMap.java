@@ -114,6 +114,8 @@ public class GameMap {
                     returnString.append("#");
                 } else if (layout[i][j] == tileType.TREE){
                     returnString.append("T");
+                } else if (layout[i][j] == null){
+                		returnString.append("!");
                 }
                 //Move to next column
                 if (j == layout[0].length-1){
@@ -153,9 +155,10 @@ public class GameMap {
      * @return an int, corresponding to the proper pixel
      */
     public int mapXToScreen(int xTileIndex){
-        int screenWidth = Gdx.graphics.getWidth();
-        int xIncrement = screenWidth / layout[0].length;
-        return xTileIndex * xIncrement;
+//        int screenWidth = Gdx.graphics.getWidth();
+//        int xIncrement = screenWidth / layout[0].length;
+//        return xTileIndex * xIncrement;
+    		return xTileIndex*40;
     }
     
     /**
@@ -165,10 +168,10 @@ public class GameMap {
      * @return an int, corresponding to the proper pixel
      */
     public int mapYToScreen(int yTileIndex){
-        int screenHeight = Gdx.graphics.getHeight();
-        int yIncrement = (screenHeight - UI_OFFSET) / layout.length;
-        //System.out.println(yTileIndex * yIncrement + UI_OFFSET);
-        return yTileIndex * yIncrement + UI_OFFSET;
+//        int screenHeight = Gdx.graphics.getHeight();
+//        int yIncrement = (screenHeight - UI_OFFSET) / layout.length;
+//        return yTileIndex * yIncrement + UI_OFFSET;
+    		return yTileIndex*40;
     }
     
     /**
@@ -188,17 +191,19 @@ public class GameMap {
      * @return The y-index in layout for the containing tile
      */
     public int screenYToMap(float yPos){
-        int screenHeight = Gdx.graphics.getHeight();
+    	int screenHeight = Gdx.graphics.getHeight();
         int yIncrement = (screenHeight - UI_OFFSET) / layout.length;
         return (int) ((yPos - UI_OFFSET) / yIncrement);
     }
     
+
     public Tile.tileType screenPosToTileType(float xPos, float yPos){
 //    		System.out.println("xPos: " + xPos + "\n");
 //    		System.out.println("yPos: " + yPos + "\n");
 //    		System.out.println("xPos Screen to Map: " + screenXToMap(xPos) + "\n");
 //    		System.out.println("yPos Screen to Map: " + screenYToMap(yPos) + "\n");
     		return layout[screenYToMap(yPos)][screenXToMap(xPos)];
+
     }
     
     /**
@@ -234,6 +239,8 @@ public class GameMap {
 		for (int i = 0; i < this.layout.length; ++i){
 			for (int j = 0; j < this.layout[0].length; ++j){
         			Tile.tileType curr = layout[i][j];
+        			System.out.println(curr);
+        			System.out.println("i: " + i + "j:" + j);
         			TextureRegion tr = new TextureRegion(getTextureFromTileType(curr));
         			Tile t = new Tile(tr, (float)mapXToScreen(j), (float)mapYToScreen(i),
         										 (float)tr.getRegionWidth(), (float)tr.getRegionHeight(),

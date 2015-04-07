@@ -1,6 +1,6 @@
 package com.CS3152.FoodChain;
 
-import java.util.*;
+import java.util.*;	
 
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
@@ -254,6 +254,7 @@ public class AIController implements InputController {
      */
     public static boolean withinRadius(Animal an, Vector2 length) {
     	return length.len() <= an.getSightLength();
+
     }
     
     // Determines whether or not the animal should run away
@@ -312,6 +313,7 @@ public class AIController implements InputController {
 		   	distVctrs[7].y = anY - 100;
         }
         // biggest distance
+
         float biggest = 0;
         int bigIndex = 0;
         for (int index = 0; index < distVctrs.length; index++) {
