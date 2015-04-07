@@ -377,10 +377,16 @@ public class GameMap implements IndexedGraph<MapNode> {
 	}
 		
 	public boolean isSafeAt(float xPos, float yPos) {
+		float x = xPos;
+		float y = yPos;
+		float width = Gdx.graphics.getWidth();
+		float height = Gdx.graphics.getHeight();
+		Tile.tileType tile = screenPosToTileType(x, y);
+		
 		return (xPos >= 0 && 
-				yPos >= UI_OFFSET &&
-			   xPos <= Gdx.graphics.getWidth() && 
-			   yPos <= Gdx.graphics.getHeight() &&
+				yPos >= 0 &&
+			   xPos < getMapWidth() * 40.0 && 
+			   yPos < getMapHeight() * 40.0 &&
 			   screenPosToTileType(xPos, yPos) == Tile.tileType.GRASS);
 	}
 
