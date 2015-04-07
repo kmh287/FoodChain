@@ -99,9 +99,10 @@ public class GameCanvas {
 	    viewport = new FitViewport((float) (Gdx.graphics.getWidth()/1.3), (float) (Gdx.graphics.getHeight()/1.3), camera);
 	    viewport.apply(); 
 	    ui = new UIControllerStage(); 
-	    stage = new Stage(new ExtendViewport(30, 30));
-	    stage = new Stage(viewport);
-	    //stage.getViewport().setCamera(camera);
+
+	    stage = new Stage(new ExtendViewport(100, 100));
+	    //stage = new Stage(new StretchViewport(viewport.getScreenWidth()), viewport.getScreenHeight());
+	    ui.setStage(stage);
 	    	
 		spriteBatch.setProjectionMatrix(camera.combined);
 		debugRender.setProjectionMatrix(camera.combined);
@@ -260,7 +261,7 @@ public class GameCanvas {
 	 public void resize() {
 		// Resizing screws up the spriteBatch projection matrix
 		spriteBatch.getProjectionMatrix().setToOrtho2D(0, 0, getWidth(), getHeight());
-		 stage.getViewport().update(getWidth(), getHeight(), true);
+		stage.getViewport().update(getWidth(), getHeight(), true);
 		//camera.setToOrtho(false,getWidth(),getHeight());
 		//spriteBatch.setProjectionMatrix(camera.combined);
 	}
@@ -361,7 +362,7 @@ public class GameCanvas {
     	
     	moveCamera(x,y);
     	
-    	ui.drawStage(stage);
+    	ui.drawStage();
     	spriteBatch.setProjectionMatrix(camera.combined);
     	spriteBatch.begin();
     	active = DrawPass.STANDARD;

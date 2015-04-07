@@ -44,6 +44,7 @@ public class UIControllerStage {
     private int regularCount = 0;
     private int sheepCount = 0;
     private int wolfCount = 0;
+	private Stage stage;
     
     public void setHunter(Hunter h){
     	hunter=h;
@@ -80,22 +81,22 @@ public class UIControllerStage {
                 blackBar = manager.get(BLACK_BAR);
             }
         }
+
     }
     
-    public void drawStage (Stage stage) {
-        Skin skin = new Skin();
-        //skin.add("blackBar", "assets/blackbar.png");
-        //skin.add( "bar", new Texture("assets/trap3_2.png"));
-
-        Gdx.input.setInputProcessor(stage);
-        
-    	container = new Table(); 
-        container.setBackground(new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("assets/all_deselect.png")))));
+    public void setStage(Stage stage){
+    	this.stage=stage;
+    	Gdx.input.setInputProcessor(stage);
+        container = new Table();
+        //container.setBackground(new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("assets/all_deselect.png")))));
 
     	container.setFillParent(true);
     	container.bottom(); 
     	container.row();
-    	//container.add(skin);
+    	stage.addActor(container);
+    }
+    
+    public void drawStage () {
     	stage.addActor(container);
     	
 
