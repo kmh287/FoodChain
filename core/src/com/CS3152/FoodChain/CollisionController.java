@@ -21,7 +21,7 @@ import com.badlogic.gdx.physics.box2d.World;
  * This is the simplest of physics engines.  In later labs, we will see how to work 
  * with more interesting engines.
  *
- * As a major subcontroller, this class must have a reference to all the models.
+ * As a major sub-controller, this class must have a reference to all the models.
  */
 
 public class CollisionController implements ContactListener {
@@ -160,7 +160,6 @@ public class CollisionController implements ContactListener {
     				&& o.getBody().getUserData() instanceof Trap) {
     			Trap t = (Trap) o;
     			if (t.getType() == trapToRemove) {
-    				t.setOnMap(false);
     				t.setActive(false);
     				trapToRemove = null;
     			}
@@ -198,13 +197,17 @@ public class CollisionController implements ContactListener {
 		
 		if (bd1 instanceof Hunter && bd2 instanceof Trap) {
 			Trap trap = (Trap) bd2;
-			trap.setOnMap(false);
-			trap.setInInventory(true);
+			if (trap.getOnMap()) {
+				trap.setOnMap(false);
+				trap.setInInventory(true);
+			}
 		}
 		if (bd1 instanceof Trap && bd2 instanceof Hunter) {
 			Trap trap = (Trap) bd1;
-			trap.setOnMap(false);
-			trap.setInInventory(true);
+			if (trap.getOnMap()) {
+				trap.setOnMap(false);
+				trap.setInInventory(true);
+			}
 		}
 		if (bd1 instanceof Animal && bd2 instanceof Trap) {
 			Animal animal = (Animal) bd1;
@@ -213,7 +216,7 @@ public class CollisionController implements ContactListener {
 			if (trap.getOnMap() && trap.getType() == "REGULAR_TRAP"
 					&& animal.getType() == Actor.actorType.SHEEP) {
 				animal.setTrapped(true);
-				
+				trap.setOnMap(false);
 				trapToRemove = "REGULAR_TRAP";
 				trapToAdd = "SHEEP_TRAP";
 				trapLocationToAdd = trap.getPosition();
@@ -222,7 +225,7 @@ public class CollisionController implements ContactListener {
 			else if (trap.getOnMap() && trap.getType() == "SHEEP_TRAP"
 					&& animal.getType() == Actor.actorType.WOLF) {
 				animal.setTrapped(true);
-				animal.setAlive(false);
+				trap.setOnMap(false);
 				trapToRemove = "SHEEP_TRAP";
 				trapToAdd = "WOLF_TRAP";
 				trapLocationToAdd = trap.getPosition();
@@ -234,7 +237,7 @@ public class CollisionController implements ContactListener {
 			if (trap.getOnMap() && trap.getType() == "REGULAR_TRAP"
 					&& animal.getType() == Actor.actorType.SHEEP) {
 				animal.setTrapped(true);
-				animal.setAlive(false);
+				trap.setOnMap(false);
 				trapToRemove = "REGULAR_TRAP";
 				trapToAdd = "SHEEP_TRAP";
 				trapLocationToAdd = trap.getPosition();
@@ -243,7 +246,8 @@ public class CollisionController implements ContactListener {
 			else if (trap.getOnMap() && trap.getType() == "SHEEP_TRAP"
 					&& animal.getType() == Actor.actorType.WOLF) {
 				animal.setTrapped(true);
-				animal.setAlive(false);
+				trap.setOnMap(false);
+				System.out.println("SHEEP_TRAP setOnMap false");
 				trapToRemove = "SHEEP_TRAP";
 				trapToAdd = "WOLF_TRAP";
 				trapLocationToAdd = trap.getPosition();

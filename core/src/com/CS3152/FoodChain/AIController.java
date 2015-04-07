@@ -231,15 +231,15 @@ public class AIController implements InputController {
     	}
         	
         if (isScared()) {
-        	System.out.println(animal.getType() + ": flee");
+        	//System.out.println(animal.getType() + ": flee");
         	flee();
         }
         else if (hasTarget()) {
-        	System.out.println(animal.getType() + ": chase");
+        	//System.out.println(animal.getType() + ": chase");
         	chase();
         }
         else {
-        	System.out.println(animal.getType() + ": patrol");
+        	//System.out.println(animal.getType() + ": patrol");
         	patrol();
         }
 

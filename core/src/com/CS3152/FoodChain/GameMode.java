@@ -372,15 +372,16 @@ public class GameMode implements Screen {
         
         canvas.end();
         
+        /*
         canvas.beginDebug();
-
         for (Animal animal : animals) {
         	animal.drawSight(canvas);
         }
         canvas.endDebug();
-        /*
+        */
+        
         canvas.beginDebug();
-        PooledList<BoxObject> objects = collisionController.getObjects();
+        PooledList<SimplePhysicsObject> objects = collisionController.getObjects();
 		for(PhysicsObject obj : objects) {
 			obj.drawDebug(canvas);
 			if (obj instanceof Animal) {
@@ -391,7 +392,7 @@ public class GameMode implements Screen {
 			}
 		}
 		canvas.endDebug();
-		*/
+		
     }
     
     @Override

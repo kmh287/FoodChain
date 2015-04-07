@@ -6,7 +6,9 @@ import com.badlogic.gdx.physics.box2d.World;
 
 
 public abstract class Actor extends CircleObject {
-    //The direction this actor is facing
+	// Whether the actor is alive
+	private boolean alive = true;
+	//The direction this actor is facing
     protected Vector2 facing;
     //TextureRegion for this actor's texture
     protected TextureRegion tr;
