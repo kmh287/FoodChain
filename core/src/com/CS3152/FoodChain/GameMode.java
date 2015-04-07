@@ -106,6 +106,7 @@ public class GameMode implements Screen {
         //When we implement a UI that may ask players
         //what level to start on. This code will change
         map = loadMap("level2");
+        map.createGraph();
         map.LoadContent(manager);
         canvas.getUIControllerStage().loadTextures(manager);
         //ui = new UIController();
@@ -134,7 +135,7 @@ public class GameMode implements Screen {
         createHunter(map.getHunterStartingCoordinate() 
                 ,map.getStartingInventory()
         		);
-	    //ui.setHunter(this.hunter);
+        canvas.getUIControllerStage().setHunter(hunter);
 	    
 	    traps = (HashMap<String, List<Trap>>) hunter.getInventory();
     
@@ -290,7 +291,8 @@ public class GameMode implements Screen {
     private void update(float delta){
 
 		hunter.update(delta);
-		System.out.println(hunter.getAngle());
+
+		//System.out.println(hunter.getAngle());
 		hunter.setSelectedTrap(controls[0].getNum());
 		//Vector2 click = controls[0].getClickPos();
 		Vector2 hunterps = hunter.getPosition(); 
@@ -352,6 +354,8 @@ public class GameMode implements Screen {
     }
     
     private void draw(float delta){
+    	canvas.DrawBlack(hunter.getPosition().x, hunter.getPosition().y);
+    	canvas.end();
         canvas.begin(); 
     	//canvas.begin();
         //Draw the map
@@ -410,11 +414,13 @@ public class GameMode implements Screen {
         canvas.beginDebug();
         PooledList<SimplePhysicsObject> objects = collisionController.getObjects();
 		for(PhysicsObject obj : objects) {
-			obj.drawDebug(canvas);
-			if (obj instanceof Animal) {
-				Animal a = (Animal) obj;
-				if (!a.getTrapped()) {
-					((Animal) obj).drawSight(canvas);
+			if (obj instanceof Actor && ((Actor) obj).getAlive()) {
+				obj.drawDebug(canvas);
+				if (obj instanceof Animal) {
+					Animal a = (Animal) obj;
+					if (!a.getTrapped()) {
+						((Animal) obj).drawSight(canvas);
+					}
 				}
 			}
 		}
