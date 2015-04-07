@@ -153,9 +153,10 @@ public class GameMap {
      * @return an int, corresponding to the proper pixel
      */
     public int mapXToScreen(int xTileIndex){
-        int screenWidth = Gdx.graphics.getWidth();
-        int xIncrement = screenWidth / layout[0].length;
-        return xTileIndex * xIncrement;
+//        int screenWidth = Gdx.graphics.getWidth();
+//        int xIncrement = screenWidth / layout[0].length;
+//        return xTileIndex * xIncrement;
+    		return xTileIndex*40;
     }
     
     /**
@@ -165,9 +166,10 @@ public class GameMap {
      * @return an int, corresponding to the proper pixel
      */
     public int mapYToScreen(int yTileIndex){
-        int screenHeight = Gdx.graphics.getHeight();
-        int yIncrement = (screenHeight - UI_OFFSET) / layout.length;
-        return yTileIndex * yIncrement + UI_OFFSET;
+//        int screenHeight = Gdx.graphics.getHeight();
+//        int yIncrement = (screenHeight - UI_OFFSET) / layout.length;
+//        return yTileIndex * yIncrement + UI_OFFSET;
+    		return yTileIndex*40;
     }
     
     /**
