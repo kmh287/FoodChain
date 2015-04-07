@@ -38,7 +38,7 @@ public class GameMode implements Screen {
 
     private HashMap<String, List<Trap>> traps;
     private UIController ui;
-	private float TIME_STEP = 1/200f;
+	private float TIME_STEP = 1/60f;
 	private float frameTime;
 
     protected InputController[] controls;
@@ -134,7 +134,7 @@ public class GameMode implements Screen {
         createHunter(map.getHunterStartingCoordinate() 
                 ,map.getStartingInventory()
         		);
-	    //ui.setHunter(this.hunter);
+        canvas.getUIControllerStage().setHunter(hunter);
 	    
 	    traps = (HashMap<String, List<Trap>>) hunter.getInventory();
     
@@ -290,7 +290,7 @@ public class GameMode implements Screen {
     private void update(float delta){
 
 		hunter.update(delta);
-		System.out.println(hunter.getAngle());
+		//System.out.println(hunter.getAngle());
 		hunter.setSelectedTrap(controls[0].getNum());
 		//Vector2 click = controls[0].getClickPos();
 		Vector2 hunterps = hunter.getPosition(); 
