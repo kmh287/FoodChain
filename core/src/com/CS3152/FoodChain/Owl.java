@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
-public class Owl extends Actor {
+public class Owl extends Animal {
 	
 	private actorType type;
 	// Vector that runs from the center of the animal diagonally leftward some length
