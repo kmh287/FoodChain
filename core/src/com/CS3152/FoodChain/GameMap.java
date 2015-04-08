@@ -219,19 +219,19 @@ public class GameMap implements IndexedGraph<MapNode> {
 			int y = node.getY();
 			int index = node.getIndex();
 			
-			if (validTile(x - 1, y)) {
+			if (validTile(x - 1, y) && isSafeAt(x - 1, y)) {
 				int adjIndex = calculateIndex(x - 1, y);
 				node.addConnection(new DefaultConnection<MapNode>(node, nodes.get(adjIndex)));
 			}
-			if (validTile(x + 1, y)) {
+			if (validTile(x + 1, y) && isSafeAt(x + 1, y)) {
 				int adjIndex = calculateIndex(x + 1, y);
 				node.addConnection(new DefaultConnection<MapNode>(node, nodes.get(adjIndex)));
 			}
-			if (validTile(x, y - 1)) {
+			if (validTile(x, y - 1) && isSafeAt(x, y - 1)) {
 				int adjIndex = calculateIndex(x, y - 1);
 				node.addConnection(new DefaultConnection<MapNode>(node, nodes.get(adjIndex)));
 			}
-			if (validTile(x, y + 1)) {
+			if (validTile(x, y + 1) && isSafeAt(x, y + 1)) {
 				int adjIndex = calculateIndex(x, y + 1);
 				node.addConnection(new DefaultConnection<MapNode>(node, nodes.get(adjIndex)));
 			}
@@ -245,7 +245,7 @@ public class GameMap implements IndexedGraph<MapNode> {
      * @param y the y coordinate of the tile in layout
      * @return the index for the node representing the tile
      */
-	private int calculateIndex(int x, int y) {
+	public int calculateIndex(int x, int y) {
 		return y * getMapWidth() + x;
 	}
 	
@@ -257,7 +257,8 @@ public class GameMap implements IndexedGraph<MapNode> {
 	 * @return whether the tile is valid
 	 */
 	private boolean validTile(int x, int y) {
-		return y * mapWidth + x >= 0 && y * mapWidth + x < nodeCount;
+		return x >= 0 && x < getMapWidth() && y >= 0 && y < getMapHeight() &&
+				y * mapWidth + x >= 0 && y * mapWidth + x < nodeCount;
 	}
 	
 	/**
@@ -268,6 +269,12 @@ public class GameMap implements IndexedGraph<MapNode> {
 	 */
 	private boolean validTile(int index) {
 		return index >= 0 && index < nodeCount;
+	}
+	
+	
+	public void setDimensions() {
+		this.mapWidth = layout[0].length;
+        this.mapHeight = layout.length;
 	}
 	
 
@@ -399,9 +406,7 @@ public class GameMap implements IndexedGraph<MapNode> {
      * @return The x-index in layout for the containing tile
      */
     public int screenXToMap(float xPos){
-        int screenWidth = Gdx.graphics.getWidth();
-        int xIncrement = screenWidth / layout[0].length;
-        return (int) (xPos / xIncrement);
+        return (int) (xPos / 40.0);
     }
     
     /**
@@ -410,9 +415,7 @@ public class GameMap implements IndexedGraph<MapNode> {
      * @return The y-index in layout for the containing tile
      */
     public int screenYToMap(float yPos){
-    	int screenHeight = Gdx.graphics.getHeight();
-        int yIncrement = (screenHeight - UI_OFFSET) / layout.length;
-        return (int) ((yPos - UI_OFFSET) / yIncrement);
+        return (int) (yPos / 40.0);
     }
     
 
@@ -471,17 +474,36 @@ public class GameMap implements IndexedGraph<MapNode> {
 	}
 		
 	public boolean isSafeAt(float xPos, float yPos) {
-		if (xPos >= 0 && yPos >= 0 &&
-			   xPos <= Gdx.graphics.getWidth() && 
-			   yPos <= Gdx.graphics.getHeight()) {
-			Tile.tileType curr = screenPosToTileType(xPos, yPos);
-			return (curr == tileType.GRASS || curr == tileType.DIRT ||
+
+		Tile.tileType curr = screenPosToTileType(xPos, yPos);
+		return (xPos >= 0 && 
+				yPos >= 0 &&
+			   xPos <= getMapWidth() * 40.0 && 
+			   yPos <= getMapHeight() * 40.0 &&
+			   (curr == tileType.GRASS || curr == tileType.DIRT ||
 			   curr == tileType.N_GRASS || curr == tileType.NE_GRASS || 
 			   curr == tileType.E_GRASS || curr == tileType.SE_GRASS ||
-			   curr == tileType.SW_GRASS || curr == tileType.SW_GRASS ||
-			   curr == tileType.W_GRASS || curr == tileType.NW_GRASS);
-		}
-		return false;
+			   curr == tileType.S_GRASS || curr == tileType.SW_GRASS ||
+			   curr == tileType.W_GRASS || curr == tileType.NW_GRASS));
+	}
+	
+	public boolean isSafeAt(int xPos, int yPos) {
+		Tile.tileType curr = layout[yPos][xPos];
+		return ((curr == tileType.GRASS || curr == tileType.DIRT ||
+			   curr == tileType.N_GRASS || curr == tileType.NE_GRASS || 
+			   curr == tileType.E_GRASS || curr == tileType.SE_GRASS ||
+			   curr == tileType.S_GRASS || curr == tileType.SW_GRASS ||
+			   curr == tileType.W_GRASS || curr == tileType.NW_GRASS));
+	}
+	
+	/**
+	 * Get the node with a specific index in the map
+	 * 
+	 * @param index the index of the node
+	 * @return the node requested in the map
+	 */
+	public MapNode getNode(int index) {
+		return nodes.get(index);
 	}
 
 	/**

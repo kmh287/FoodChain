@@ -20,7 +20,6 @@ public class VisionCallback implements RayCastCallback {
 	
 	public Fixture getFixture() {
 		Fixture result = fix;
-		fix = null;
 		return result;
 		
 	}

@@ -108,7 +108,9 @@ public class GameMode implements Screen {
         //For now we will hard code the level to load
         //When we implement a UI that may ask players
         //what level to start on. This code will change
-        map = loadMap("test");
+        map = loadMap("levelAlpha");
+
+        map.setDimensions();
         map.createGraph();
         map.LoadContent(manager);
         canvas.getUIControllerStage().loadTextures(manager);
@@ -267,13 +269,13 @@ public class GameMode implements Screen {
 	                //See comment in sheep
 	                animals.add(newAnimal);
 	                break;
-	            /*case OWL:
+	            case OWL:
             		Owl.loadTexture(manager);
             		newAnimal = new Owl(map.mapXToScreen((int)coord.x), 
                                      map.mapYToScreen((int)coord.y));
 	                //See comment in sheep
 	                animals.add(newAnimal);
-	                break;*/
+	                break;
 	            default:
 	                System.out.println(currType);
 	                throw new IllegalArgumentException("Unexpected animal type");
@@ -294,8 +296,7 @@ public class GameMode implements Screen {
 
     private void update(float delta){
 
-		hunter.update(delta);
-
+   	hunter.update(delta);
 		//System.out.println(hunter.getAngle());
 		hunter.setSelectedTrap(controls[0].getNum());
 		//Vector2 click = controls[0].getClickPos();
@@ -429,6 +430,7 @@ public class GameMode implements Screen {
         */
         
         canvas.beginDebug();
+        ((AIController) controls[1]).drawPath(canvas);
         PooledList<SimplePhysicsObject> objects = collisionController.getObjects();
 		for(PhysicsObject obj : objects) {
 			if (obj instanceof Actor && ((Actor) obj).getAlive()) {

@@ -231,23 +231,6 @@ public class UIControllerStage {
     	select__trap_1_container.setVisible(false);
     	select__trap_2_container.setVisible(false);
     	blackSpace_container.setVisible(false);
-    	
-    	
-//    	Skin skin = new Skin();
-//    	Pixmap pixmap = new Pixmap(10, 10, Format.RGBA8888);
-//    	pixmap.setColor(Color.WHITE);
-//    	pixmap.fill();
-//    	skin.add("white", new Texture(pixmap));
-//
-//    	TextureRegionDrawable textureBar = new TextureRegionDrawable(new TextureRegion(red_bar_texture));
-//    	ProgressBarStyle barStyle = new ProgressBarStyle(skin.newDrawable("white", Color.DARK_GRAY), textureBar);
-//    	barStyle.knobBefore = barStyle.knob;
-//    	ProgressBar bar = new ProgressBar(0, 10, 0.5f, false, barStyle);
-//    	bar.setPosition(10, 10);
-//    	bar.setSize(.02f, bar.getPrefHeight());
-//    	bar.setAnimateDuration(2);
-//    	//bar.setValue(.5f);
-//    	stage.addActor(bar);
  
     	
     }
@@ -309,7 +292,7 @@ public class UIControllerStage {
         }
         
         //panic bar code
-        red_bar.setScaleX(panic);
+        red_bar.setScaleX(AIController.getPanicPercentage());
         
     	
         stage.act();
