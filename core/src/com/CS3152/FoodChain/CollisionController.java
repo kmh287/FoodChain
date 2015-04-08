@@ -117,7 +117,7 @@ public class CollisionController implements ContactListener {
 			if (actor instanceof Owl) {
 				//System.out.println("yo");
 			}
-			actor.setLinearVelocity(controls[index].getAction());
+			actor.setLinearVelocity(controls[index].getAction().scl(actor.getMoveSpeed()));
 			float angle = ((AIController)controls[index]).getAngle();
 			actor.updateLOS(angle);
 			//actor.setAngle(((AIController)controls[index]).getAngle());

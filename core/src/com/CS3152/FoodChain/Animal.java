@@ -102,6 +102,10 @@ public abstract class Animal extends Actor {
         super.setPosition(xPos, yPos);
 	}
 	
+	public float getMoveSpeed() {
+		return MOVE_SPEED;
+	}
+	
 	public void updateLOS(float angle) {
 		this.leftSectorLine.set((float)(SIGHT_LENGTH*Math.cos(angle + SIGHT_ANGLE)),
 								(float)(SIGHT_LENGTH*Math.sin(angle + SIGHT_ANGLE)));

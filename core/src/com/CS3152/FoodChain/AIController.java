@@ -147,7 +147,7 @@ public class AIController implements InputController {
         
         this.tmp = new Vector2();
         
-        this.random = new Random();
+        this.random = new Random(1362);
         
         angle = animal.getAngle();
         vect = new Vector2(animal.getPosition());
@@ -648,7 +648,7 @@ public class AIController implements InputController {
 //            return NO_ACTION;
 //        }
     	tmp.set(goal);
-    	return tmp.sub(getAnimal().getPosition());
+    	return tmp.sub(getAnimal().getPosition()).nor();
     }
     
     private void getPathToGoal() {
