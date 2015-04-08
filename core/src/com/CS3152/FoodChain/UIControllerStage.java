@@ -292,6 +292,7 @@ public class UIControllerStage {
         }
         
         //panic bar code
+
         red_bar.setScaleX(0.05f + 0.95f * AIController.getPanicPercentage());
         
     	
