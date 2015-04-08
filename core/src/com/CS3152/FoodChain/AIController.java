@@ -82,6 +82,7 @@ public class AIController implements InputController {
     // The random number generator used by the AI
     private Random random;
 
+    private static float panicPercentage;
     
     /*
      * Creates an AIController for the animal
@@ -122,6 +123,8 @@ public class AIController implements InputController {
         this.tmp = new Vector2();
         
         this.random = new Random();
+        
+        panicPercentage = 0f;
     }
     
     /*
@@ -205,6 +208,7 @@ public class AIController implements InputController {
     			if (fix != null) {
         			Object objSeen = fix.getBody().getUserData();
         			if (objSeen instanceof Actor) {
+        				panicPercentage += 10.0;
         				if (((Actor)objSeen).canKill(getAnimal())) {
         					setScared((Actor)objSeen);
         					setTurns();
@@ -216,15 +220,18 @@ public class AIController implements InputController {
         					setTarget((Actor)objSeen);
         				}
         			}
-        			else if (objSeen instanceof Tile) {
-        				if (turns > 0) {
-        					turns--;
-        				}
-        			}
         			else {
-        				if (turns > 0) {
-        					turns--;
-        				}
+        				panicPercentage -= 0.1;
+	        			if (objSeen instanceof Tile) {
+	        				if (turns > 0) {
+	        					turns--;
+	        				}
+	        			}
+	        			else {
+	        				if (turns > 0) {
+	        					turns--;
+	        				}
+	        			}
         			}
     			}
     			if (canSettle()) { 
@@ -565,6 +572,10 @@ public class AIController implements InputController {
     public boolean isClicked() {return false;}
     
     public int getNum() {return 0;}
+    
+    public static float getPanicPercentage() {
+    	return panicPercentage;
+    }
 }
 
 

@@ -6,14 +6,18 @@ import java.util.List;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar.ProgressBarStyle;
 
 public class UIControllerStage {
 	
@@ -28,6 +32,7 @@ public class UIControllerStage {
     private static final String BLACK_SPACE = "assets/black_space.png";
     private static final String RED_BAR = "assets/red-small.png";
     private static final String PANIC_BAR = "assets/panic-bar-small.png";
+    private static final String PANIC_CIRCLE = "assets/panic-circle.png";
     
     private Hunter hunter;
     
@@ -43,6 +48,7 @@ public class UIControllerStage {
     private static Texture select_texture_2 = null;
     private static Texture panic_meter_texture = null;
     private static Texture red_bar_texture = null;
+    private static Texture panic_circle_texture = null;
     
     private int regularCount = 0;
     private int sheepCount = 0;
@@ -58,6 +64,7 @@ public class UIControllerStage {
 	Image blackSpace;
 	Image panic_meter;
 	Image red_bar;
+	Image panic_circle;
 	
 	Table deselect_container;
 	Table select__trap_1_container;
@@ -69,12 +76,10 @@ public class UIControllerStage {
 	Table blackSpace_container;
 	Table panic_meter_container;
 	Table red_bar_container;
+	Table panic_circle_container;
 	
-    TextureRegion redProgressSegment;
-    private float PROGRESS_CAP;
-    private float PROGRESS_MIDDLE;
-    private float PROGRESS_HEIGHT;
-    private float progress_percent;
+	private static float panic;
+	
 	
     public void setHunter(Hunter h){
     	hunter=h;
@@ -90,6 +95,7 @@ public class UIControllerStage {
             manager.load(SELECT,Texture.class);
             manager.load(PANIC_BAR,Texture.class);
             manager.load(RED_BAR,Texture.class);
+            manager.load(PANIC_CIRCLE,Texture.class);
             manager.finishLoading();
             if (manager.isLoaded(TRAPS_DESELECT)){
             	allDeselect = manager.get(TRAPS_DESELECT);
@@ -101,6 +107,7 @@ public class UIControllerStage {
             	select_texture_2 = manager.get(SELECT);
             	panic_meter_texture = manager.get(PANIC_BAR);
             	red_bar_texture = manager.get(RED_BAR);
+            	panic_circle_texture = manager.get(PANIC_CIRCLE);
             }
         }
         
@@ -125,6 +132,7 @@ public class UIControllerStage {
     	blackSpace = new Image();
     	panic_meter = new Image();
     	red_bar = new Image();
+    	panic_circle = new Image();
     	
     	deselect_container = new Table();
     	select__trap_1_container = new Table();
@@ -136,6 +144,7 @@ public class UIControllerStage {
     	blackSpace_container = new Table();
     	panic_meter_container = new Table();
     	red_bar_container = new Table();
+    	panic_circle_container = new Table();
     	
     	//assign texture to image
         deselect.setDrawable(new TextureRegionDrawable(new TextureRegion(allDeselect)));
@@ -190,23 +199,18 @@ public class UIControllerStage {
         panic_meter_container.center().top(); 
         panic_meter_container.row();
         
+        panic_circle.setDrawable(new TextureRegionDrawable(new TextureRegion(panic_circle_texture)));
+        panic_circle_container.add(panic_circle).width(panic_meter_texture.getWidth()/7.8f).height(panic_meter_texture.getHeight()/7.8f).padTop(.5f);
+        panic_circle_container.setFillParent(true);
+        panic_circle_container.center().top(); 
+        panic_circle_container.row();
         
-        
-        
-        progress_percent=.9f;
-        // PROGRESS_CAP is the variable that determines the width of the bar
-        PROGRESS_CAP = red_bar_texture.getWidth()*progress_percent;
-        PROGRESS_MIDDLE = red_bar_texture.getWidth();
-        PROGRESS_HEIGHT = red_bar_texture.getHeight();
-        redProgressSegment = new TextureRegion(red_bar_texture,PROGRESS_CAP,0,PROGRESS_MIDDLE,PROGRESS_HEIGHT);
-        
-        red_bar.setDrawable(new TextureRegionDrawable(new TextureRegion(redProgressSegment)));
-        red_bar_container.add(red_bar).width(PROGRESS_CAP/7.8f).height(PROGRESS_HEIGHT/7.8f).padTop(2f);
+        red_bar.setDrawable(new TextureRegionDrawable(new TextureRegion(red_bar_texture)));
+        red_bar_container.add(red_bar).width(34).height(3f).padTop(1.5f).padLeft(2f);
         red_bar_container.setFillParent(true);
         red_bar_container.center().top(); 
         red_bar_container.row();
-        
-        
+       
         
     	stage.addActor(deselect_container);
     	stage.addActor(trap_1_1_container);
@@ -218,6 +222,7 @@ public class UIControllerStage {
     	stage.addActor(blackSpace_container);
     	stage.addActor(panic_meter_container);
     	stage.addActor(red_bar_container);
+    	stage.addActor(panic_circle_container);
     	trap_1_1_container.setVisible(false);
     	trap_1_2_container.setVisible(false);
     	trap_2_1_container.setVisible(false);
@@ -227,6 +232,22 @@ public class UIControllerStage {
     	select__trap_2_container.setVisible(false);
     	blackSpace_container.setVisible(false);
     	
+    	
+//    	Skin skin = new Skin();
+//    	Pixmap pixmap = new Pixmap(10, 10, Format.RGBA8888);
+//    	pixmap.setColor(Color.WHITE);
+//    	pixmap.fill();
+//    	skin.add("white", new Texture(pixmap));
+//
+//    	TextureRegionDrawable textureBar = new TextureRegionDrawable(new TextureRegion(red_bar_texture));
+//    	ProgressBarStyle barStyle = new ProgressBarStyle(skin.newDrawable("white", Color.DARK_GRAY), textureBar);
+//    	barStyle.knobBefore = barStyle.knob;
+//    	ProgressBar bar = new ProgressBar(0, 10, 0.5f, false, barStyle);
+//    	bar.setPosition(10, 10);
+//    	bar.setSize(.02f, bar.getPrefHeight());
+//    	bar.setAnimateDuration(2);
+//    	//bar.setValue(.5f);
+//    	stage.addActor(bar);
  
     	
     }
@@ -237,7 +258,12 @@ public class UIControllerStage {
 
     }
     
+    public void setPanic(float panic){
+    	this.panic=panic;
+    }
+    
     public void drawStage () {
+    	
     	trap_1_1_container.setVisible(false);
     	trap_1_2_container.setVisible(false);
     	trap_2_1_container.setVisible(false);
@@ -282,16 +308,8 @@ public class UIControllerStage {
         	}
         }
         
-    	//panic meter
-        progress_percent=.10f;
-        // PROGRESS_CAP is the variable that determines the width of the bar
-        PROGRESS_CAP = red_bar_texture.getWidth()*progress_percent+32;
-        PROGRESS_MIDDLE = red_bar_texture.getWidth();
-        PROGRESS_HEIGHT = red_bar_texture.getHeight()-4;
-        redProgressSegment = new TextureRegion(red_bar_texture,PROGRESS_CAP,0,PROGRESS_MIDDLE,PROGRESS_HEIGHT);
-
-        red_bar.setDrawable(new TextureRegionDrawable(new TextureRegion(redProgressSegment)));
-        
+        //panic bar code
+        red_bar.setScaleX(panic);
         
     	
         stage.act();

@@ -408,7 +408,7 @@ public class GameCanvas {
     	if (difx<100 && difx>-100){
     		difx=0;
     	}
-    	else if(difx>100){
+    	if(difx>100){
     		difx-=99;
     	}
     	else if(difx<-100){

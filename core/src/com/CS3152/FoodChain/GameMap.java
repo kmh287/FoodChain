@@ -167,6 +167,8 @@ public class GameMap implements IndexedGraph<MapNode> {
         this.nodes = null;
     }
     
+
+    
     /**
      * Creates the graph for the map and
      * fills it with the nodes and connections
@@ -469,17 +471,17 @@ public class GameMap implements IndexedGraph<MapNode> {
 	}
 		
 	public boolean isSafeAt(float xPos, float yPos) {
-		
-		Tile.tileType curr = screenPosToTileType(xPos, yPos);
-		return ((xPos >= 0 && 
-				yPos >= UI_OFFSET &&
+		if (xPos >= 0 && yPos >= 0 &&
 			   xPos <= Gdx.graphics.getWidth() && 
-			   yPos <= Gdx.graphics.getHeight()) &&
-			   (curr == tileType.GRASS || curr == tileType.DIRT ||
+			   yPos <= Gdx.graphics.getHeight()) {
+			Tile.tileType curr = screenPosToTileType(xPos, yPos);
+			return (curr == tileType.GRASS || curr == tileType.DIRT ||
 			   curr == tileType.N_GRASS || curr == tileType.NE_GRASS || 
 			   curr == tileType.E_GRASS || curr == tileType.SE_GRASS ||
 			   curr == tileType.SW_GRASS || curr == tileType.SW_GRASS ||
-			   curr == tileType.W_GRASS || curr == tileType.NW_GRASS));
+			   curr == tileType.W_GRASS || curr == tileType.NW_GRASS);
+		}
+		return false;
 	}
 
 	/**
