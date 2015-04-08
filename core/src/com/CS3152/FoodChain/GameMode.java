@@ -108,7 +108,7 @@ public class GameMode implements Screen {
         //For now we will hard code the level to load
         //When we implement a UI that may ask players
         //what level to start on. This code will change
-        map = loadMap("levelAlpha");
+        map = loadMap("alphaLevel");
         map.setDimensions();
         map.createGraph();
         map.LoadContent(manager);
