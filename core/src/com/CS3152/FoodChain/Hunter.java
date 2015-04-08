@@ -31,7 +31,7 @@ public class Hunter extends Actor {
     private Trap selectedTrap = null;
 
     //how far forward the hunter can move in a turn. 
-    private static final float MOVE_SPEED = 150.0f;
+    private static final float MOVE_SPEED = 100.0f;
     /** How far the hunter can lay a trap from itself */
     private static final float TRAP_RADIUS = 50.0f;
     
@@ -191,6 +191,10 @@ public class Hunter extends Actor {
     		Vector2 pos = new Vector2(getX(), getY());
     		return pos; 
     }
+    
+    public float getMoveSpeed() {
+		return MOVE_SPEED;
+	}
     
 //    public void setPosition(Vector2 pos) {
 //    		xPos = pos.x;

@@ -92,7 +92,7 @@ public class CollisionController implements ContactListener {
 	 * TODO have to decide how to handle multiple collisions and which collisions to process first. like animal or tiles
 	 */
 	private void move(Hunter actor) {
-		actor.setLinearVelocity(controls[0].getAction());
+		actor.setLinearVelocity(controls[0].getAction().scl(actor.getMoveSpeed()));
 		actor.setFacing(controls[0].getAction());
 	}
 	
@@ -117,7 +117,7 @@ public class CollisionController implements ContactListener {
 			if (actor instanceof Owl) {
 				//System.out.println("yo");
 			}
-			actor.setLinearVelocity(controls[index].getAction().scl(actor.getMoveSpeed()));
+			actor.setLinearVelocity(controls[index].getAction().scl(actor.getMoveSpeed() + 100*AIController.getPanicPercentage()));
 			float angle = ((AIController)controls[index]).getAngle();
 			actor.updateLOS(angle);
 			//actor.setAngle(((AIController)controls[index]).getAngle());

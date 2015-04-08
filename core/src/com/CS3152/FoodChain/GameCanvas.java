@@ -408,22 +408,21 @@ public class GameCanvas {
     	if (difx<100 && difx>-100){
     		difx=0;
     	}
-    	if(difx>100){
-    		difx-=98;
+    	else if(difx>=100){
+    		difx= difx-99;
     	}
-    	else if(difx<-100){
-    		difx+=98;
+    	else if(difx<=-100){
+    		difx= difx+99;
     	}
     	if (dify<100 && dify>-100){
     		dify=0;
     	}
-    	else if(dify>100){
-    		dify-=98;
+    	else if(dify>=100){
+    		dify= dify-99;
     	}
-    	else if(dify<-100){
-    		dify+=98;
+    	else if(dify<=-100){
+    		dify= dify+99;
     	}
-    	
     	
         camera.position.set(camX+difx, camY+dify, 0);
        	global.setTranslation(x, y, 0);

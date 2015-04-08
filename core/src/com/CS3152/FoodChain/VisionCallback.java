@@ -20,6 +20,7 @@ public class VisionCallback implements RayCastCallback {
 	
 	public Fixture getFixture() {
 		Fixture result = fix;
+		fix = null;
 		return result;
 		
 	}
@@ -62,13 +63,13 @@ public class VisionCallback implements RayCastCallback {
 			else if (contact instanceof Tile) {
 				Tile tile = (Tile) contact;
 				Tile.tileType type = tile.getType();
-				if (type == Tile.tileType.BUSH ||
-						type == Tile.tileType.TREE) {
+				// Ray cast ran into an opaque tile so set the current fixture
+				// and ray cast a smaller distance 
+				if (type == Tile.tileType.TREE ||
+						type == Tile.tileType.BUSH) {
 					fix = fixture;
 					return fraction;
 				}
-				// Ray cast ran into an opaque tile so set the current fixture
-				// and ray cast a smaller distance 
 				else {
 					return -1;
 				}
