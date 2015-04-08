@@ -224,14 +224,22 @@ public class AIController implements InputController {
         //Should be at beginning
     	
     	for (Actor a : actors) {
+    		System.out.println(a.getTypeNameString());
     		if (a != getAnimal()) {
     			world.rayCast(vcb, getAnimal().getPosition(), a.getPosition());
     			Fixture fix = vcb.getFixture();
     			if (fix != null) {
         			Object objSeen = fix.getBody().getUserData();
         			if (objSeen instanceof Actor) {
-        				if (panicPercentage<1){
-        					panicPercentage += .001;
+        				if (panicPercentage<1 && animal.getType() == Actor.actorType.PIG && a.getType() == Actor.actorType.HUNTER){
+        					//System.out.println(a.getTypeNameString());
+        					panicPercentage += .10f;
+        					if(panicPercentage>1){
+        						panicPercentage=1f;
+        					}
+        				}
+        				else if(panicPercentage<1 && !(animal.getType().equals(a.getType()))){
+        					panicPercentage +=.01f;
         				}
         				if (((Actor)objSeen).canKill(getAnimal())) {
         					setScared((Actor)objSeen);
@@ -245,9 +253,6 @@ public class AIController implements InputController {
         				}
         			}
         			else {
-        				if (panicPercentage>0){
-        					panicPercentage -= 0.0005;
-        				}
         				
 	        			if (objSeen instanceof Tile) {
 	        				if (turns > 0) {
@@ -267,6 +272,9 @@ public class AIController implements InputController {
 			    }
     			//vcb.getFixture();
         	}
+    		if (panicPercentage>0){
+				panicPercentage -= 0.0005;
+			}
     	}
     	if (getTarget() instanceof Animal) {
     		Animal target = (Animal) getTarget();
