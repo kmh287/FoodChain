@@ -5,14 +5,19 @@ import java.util.List;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar.ProgressBarStyle;
 
 public class UIControllerStage {
 	
@@ -25,6 +30,9 @@ public class UIControllerStage {
     private static final String TRAP_TWO_TWO = "assets/trap2_2.png";
     private static final String SELECT = "assets/select.png";
     private static final String BLACK_SPACE = "assets/black_space.png";
+    private static final String RED_BAR = "assets/red-small.png";
+    private static final String PANIC_BAR = "assets/panic-bar-small.png";
+    private static final String PANIC_CIRCLE = "assets/panic-circle.png";
     
     private Hunter hunter;
     
@@ -38,6 +46,9 @@ public class UIControllerStage {
     private static Texture blackSpace_texture = null;
     private static Texture select_texture = null;
     private static Texture select_texture_2 = null;
+    private static Texture panic_meter_texture = null;
+    private static Texture red_bar_texture = null;
+    private static Texture panic_circle_texture = null;
     
     private int regularCount = 0;
     private int sheepCount = 0;
@@ -51,6 +62,9 @@ public class UIControllerStage {
 	Image trap_2_1;
 	Image trap_2_2;
 	Image blackSpace;
+	Image panic_meter;
+	Image red_bar;
+	Image panic_circle;
 	
 	Table deselect_container;
 	Table select__trap_1_container;
@@ -60,6 +74,12 @@ public class UIControllerStage {
 	Table trap_2_1_container;
 	Table trap_2_2_container;
 	Table blackSpace_container;
+	Table panic_meter_container;
+	Table red_bar_container;
+	Table panic_circle_container;
+	
+	private static float panic;
+	
 	
     public void setHunter(Hunter h){
     	hunter=h;
@@ -73,6 +93,9 @@ public class UIControllerStage {
             manager.load(TRAP_TWO_ONE, Texture.class);
             manager.load(TRAP_TWO_TWO, Texture.class);
             manager.load(SELECT,Texture.class);
+            manager.load(PANIC_BAR,Texture.class);
+            manager.load(RED_BAR,Texture.class);
+            manager.load(PANIC_CIRCLE,Texture.class);
             manager.finishLoading();
             if (manager.isLoaded(TRAPS_DESELECT)){
             	allDeselect = manager.get(TRAPS_DESELECT);
@@ -82,6 +105,9 @@ public class UIControllerStage {
             	trap_2_2_texture = manager.get(TRAP_TWO_TWO);
             	select_texture = manager.get(SELECT);
             	select_texture_2 = manager.get(SELECT);
+            	panic_meter_texture = manager.get(PANIC_BAR);
+            	red_bar_texture = manager.get(RED_BAR);
+            	panic_circle_texture = manager.get(PANIC_CIRCLE);
             }
         }
         
@@ -104,6 +130,9 @@ public class UIControllerStage {
     	trap_2_1 = new Image();
     	trap_2_2 = new Image();
     	blackSpace = new Image();
+    	panic_meter = new Image();
+    	red_bar = new Image();
+    	panic_circle = new Image();
     	
     	deselect_container = new Table();
     	select__trap_1_container = new Table();
@@ -113,6 +142,9 @@ public class UIControllerStage {
     	trap_2_1_container = new Table();
     	trap_2_2_container = new Table();
     	blackSpace_container = new Table();
+    	panic_meter_container = new Table();
+    	red_bar_container = new Table();
+    	panic_circle_container = new Table();
     	
     	//assign texture to image
         deselect.setDrawable(new TextureRegionDrawable(new TextureRegion(allDeselect)));
@@ -158,11 +190,27 @@ public class UIControllerStage {
         trap_2_2_container.center().bottom(); 
         trap_2_2_container.row();
         
-        //blackSpace.setDrawable(new TextureRegionDrawable(new TextureRegion(blackSpace_texture)));
         blackSpace_container.setBackground(new TextureRegionDrawable(new TextureRegion(blackSpace_texture)));
         blackSpace_container.setFillParent(true);
         
+        panic_meter.setDrawable(new TextureRegionDrawable(new TextureRegion(panic_meter_texture)));
+        panic_meter_container.add(panic_meter).width(panic_meter_texture.getWidth()/7.8f).height(panic_meter_texture.getHeight()/7.8f).padTop(.5f);
+        panic_meter_container.setFillParent(true);
+        panic_meter_container.center().top(); 
+        panic_meter_container.row();
         
+        panic_circle.setDrawable(new TextureRegionDrawable(new TextureRegion(panic_circle_texture)));
+        panic_circle_container.add(panic_circle).width(panic_meter_texture.getWidth()/7.8f).height(panic_meter_texture.getHeight()/7.8f).padTop(.5f);
+        panic_circle_container.setFillParent(true);
+        panic_circle_container.center().top(); 
+        panic_circle_container.row();
+        
+        red_bar.setDrawable(new TextureRegionDrawable(new TextureRegion(red_bar_texture)));
+        red_bar_container.add(red_bar).width(34).height(3f).padTop(1.5f).padLeft(2f);
+        red_bar_container.setFillParent(true);
+        red_bar_container.center().top(); 
+        red_bar_container.row();
+       
         
     	stage.addActor(deselect_container);
     	stage.addActor(trap_1_1_container);
@@ -172,6 +220,9 @@ public class UIControllerStage {
     	stage.addActor(select__trap_1_container);
     	stage.addActor(select__trap_2_container);
     	stage.addActor(blackSpace_container);
+    	stage.addActor(panic_meter_container);
+    	stage.addActor(red_bar_container);
+    	stage.addActor(panic_circle_container);
     	trap_1_1_container.setVisible(false);
     	trap_1_2_container.setVisible(false);
     	trap_2_1_container.setVisible(false);
@@ -180,7 +231,6 @@ public class UIControllerStage {
     	select__trap_1_container.setVisible(false);
     	select__trap_2_container.setVisible(false);
     	blackSpace_container.setVisible(false);
-    	
  
     	
     }
@@ -191,7 +241,12 @@ public class UIControllerStage {
 
     }
     
+    public void setPanic(float panic){
+    	this.panic=panic;
+    }
+    
     public void drawStage () {
+    	
     	trap_1_1_container.setVisible(false);
     	trap_1_2_container.setVisible(false);
     	trap_2_1_container.setVisible(false);
@@ -235,9 +290,12 @@ public class UIControllerStage {
         		select__trap_2_container.setVisible(true);
         	}
         }
+        
+        //panic bar code
+        red_bar.setScaleX(AIController.getPanicPercentage());
+        
     	
-
-    	stage.act();
+        stage.act();
     	stage.draw();
     }
     
