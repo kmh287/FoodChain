@@ -96,7 +96,10 @@ public class AIController implements InputController {
     private PathSmoother<MapNode, Vector2> pathSmoother;
     
     // The random number generator used by the AI
-    private Random random; 
+    private Random random;
+
+    private static float panicPercentage;
+
     
     private Vector2 vect;
     private float angle;
@@ -149,6 +152,7 @@ public class AIController implements InputController {
         
         this.random = new Random();
         
+        panicPercentage = 0f;
         angle = animal.getAngle();
         vect = new Vector2(animal.getPosition());
     }
@@ -226,6 +230,9 @@ public class AIController implements InputController {
     			if (fix != null) {
         			Object objSeen = fix.getBody().getUserData();
         			if (objSeen instanceof Actor) {
+        				if (panicPercentage<1){
+        					panicPercentage += .001;
+        				}
         				if (((Actor)objSeen).canKill(getAnimal())) {
         					setScared((Actor)objSeen);
         					setTurns();
@@ -237,15 +244,21 @@ public class AIController implements InputController {
         					setTarget((Actor)objSeen);
         				}
         			}
-        			else if (objSeen instanceof Tile) {
-        				if (turns > 0) {
-        					turns--;
-        				}
-        			}
         			else {
-        				if (turns > 0) {
-        					turns--;
+        				if (panicPercentage>0){
+        					panicPercentage -= 0.0005;
         				}
+        				
+	        			if (objSeen instanceof Tile) {
+	        				if (turns > 0) {
+	        					turns--;
+	        				}
+	        			}
+	        			else {
+	        				if (turns > 0) {
+	        					turns--;
+	        				}
+	        			}
         			}
     			}
     			if (canSettle()) { 
@@ -670,6 +683,10 @@ public class AIController implements InputController {
     
     public int getNum() {return 0;}
     
+
+    public static float getPanicPercentage() {
+    	return panicPercentage;
+    }
     public void drawPath(GameCanvas canvas) {
     	int pathSize = path.getCount();
     	

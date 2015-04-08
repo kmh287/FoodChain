@@ -167,6 +167,8 @@ public class GameMap implements IndexedGraph<MapNode> {
         this.nodes = null;
     }
     
+
+    
     /**
      * Creates the graph for the map and
      * fills it with the nodes and connections
@@ -472,6 +474,7 @@ public class GameMap implements IndexedGraph<MapNode> {
 	}
 		
 	public boolean isSafeAt(float xPos, float yPos) {
+
 		Tile.tileType curr = screenPosToTileType(xPos, yPos);
 		return (xPos >= 0 && 
 				yPos >= 0 &&

@@ -108,7 +108,8 @@ public class GameMode implements Screen {
         //For now we will hard code the level to load
         //When we implement a UI that may ask players
         //what level to start on. This code will change
-        map = loadMap("test");
+        map = loadMap("levelAlpha");
+
         map.setDimensions();
         map.createGraph();
         map.LoadContent(manager);
@@ -155,6 +156,7 @@ public class GameMode implements Screen {
 //				    				   map, actors);
 //        controls[2] = new AIController(animals.get(1), collisionController.getWorld(),
 //				   					   map, actors);
+        canvas.getUIControllerStage().setPanic(AIController.getPanicPercentage());
         collisionController.setControls(controls);
         //loadTextures
         /*
