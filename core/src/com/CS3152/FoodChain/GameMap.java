@@ -243,7 +243,7 @@ public class GameMap implements IndexedGraph<MapNode> {
      * @param y the y coordinate of the tile in layout
      * @return the index for the node representing the tile
      */
-	private int calculateIndex(int x, int y) {
+	public int calculateIndex(int x, int y) {
 		return y * getMapWidth() + x;
 	}
 	
@@ -465,20 +465,6 @@ public class GameMap implements IndexedGraph<MapNode> {
 	}
 		
 	public boolean isSafeAt(float xPos, float yPos) {
-<<<<<<< HEAD
-		float x = xPos;
-		float y = yPos;
-		float width = Gdx.graphics.getWidth();
-		float height = Gdx.graphics.getHeight();
-		Tile.tileType tile = screenPosToTileType(x, y);
-		
-		return (xPos >= 0 && 
-				yPos >= 0 &&
-			   xPos < getMapWidth() * 40.0 && 
-			   yPos < getMapHeight() * 40.0 &&
-			   screenPosToTileType(xPos, yPos) == Tile.tileType.GRASS);
-=======
-		
 		Tile.tileType curr = screenPosToTileType(xPos, yPos);
 		return ((xPos >= 0 && 
 				yPos >= UI_OFFSET &&
@@ -489,7 +475,16 @@ public class GameMap implements IndexedGraph<MapNode> {
 			   curr == tileType.E_GRASS || curr == tileType.SE_GRASS ||
 			   curr == tileType.SW_GRASS || curr == tileType.SW_GRASS ||
 			   curr == tileType.W_GRASS || curr == tileType.NW_GRASS));
->>>>>>> master
+	}
+	
+	/**
+	 * Get the node with a specific index in the map
+	 * 
+	 * @param index the index of the node
+	 * @return the node requested in the map
+	 */
+	public MapNode getNode(int index) {
+		return nodes.get(index);
 	}
 
 	/**

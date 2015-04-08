@@ -4,6 +4,8 @@ import java.util.*;
 
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+import com.badlogic.gdx.ai.pfa.PathSmoother;
+import com.badlogic.gdx.ai.pfa.indexed.IndexedAStarPathFinder;
 import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.World;
@@ -79,6 +81,18 @@ public class AIController implements InputController {
     // The animal's patrol path
     protected Array<Vector2> patrolPath;
     
+    // The path finder used to calculate paths to the goal
+    protected IndexedAStarPathFinder<MapNode> pathFinder;
+    
+    // Heuristic used to approximate distance to a node
+    private static TiledManhattanDistance<MapNode> heuristic;
+    
+    // The path the AI uses to get from its current position to the goal
+    private SmoothableMapPath<MapNode> path;
+    
+    // PathSmoother object used to smooth out path
+    private PathSmoother<MapNode, Vector2> pathSmoother;
+    
     // The random number generator used by the AI
     private Random random;
 
@@ -118,6 +132,14 @@ public class AIController implements InputController {
         this.turns = 10;//should be 0 in future
         
         this.patrolTurn = 0;
+        
+        this.pathFinder = new IndexedAStarPathFinder(map);
+        
+        this.heuristic = new TiledManhattanDistance<MapNode>();
+        
+        //this.pathSmoother = new PathSmoother<MapNode, Vector2>();
+        
+        this.path = new SmoothableMapPath();
         
         this.tmp = new Vector2();
         
@@ -249,6 +271,8 @@ public class AIController implements InputController {
         }
 
         move = getNextMoveToGoal();
+        
+        getPathToGoal();
         
         //System.out.println(move);
         return move;
@@ -561,6 +585,18 @@ public class AIController implements InputController {
 //        }
     	tmp.set(goal);
     	return tmp.sub(getAnimal().getPosition());
+    }
+    
+    private void getPathToGoal() {
+    	int startX = map.screenXToMap(animal.getX());
+    	int startY = map.screenYToMap(animal.getY());
+    	int goalX = map.screenXToMap(goal.x);
+    	int goalY = map.screenYToMap(goal.y);
+    	path.clear();
+    	pathFinder.searchNodePath(map.getNode(map.calculateIndex(startX, startY)),
+    							  map.getNode(map.calculateIndex(goalX, goalY)),
+    							  heuristic,
+    							  path);
     }
     
     // Should not be here, but need to finish

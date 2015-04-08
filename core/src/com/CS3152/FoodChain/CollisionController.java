@@ -55,6 +55,7 @@ public class CollisionController implements ContactListener {
 	protected void addObject(SimplePhysicsObject obj) {
 		objects.add(obj);
 		obj.activatePhysics(world);
+		obj.setBullet(true);
 		//obj.getBody().setUserData(data.toString());
 		if(obj instanceof Tile){
 			setTraversableTiles((Tile)obj);
@@ -142,7 +143,7 @@ public class CollisionController implements ContactListener {
 			}
 			//System.out.println(o.getPosition().toString());
 		}
-		world.step(1/60f, 3, 3);
+		world.step(1/100f, 3, 3);
 		//checkTrapped();
 	}
 	
