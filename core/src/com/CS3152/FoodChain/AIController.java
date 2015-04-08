@@ -150,7 +150,7 @@ public class AIController implements InputController {
         
         this.tmp = new Vector2();
         
-        this.random = new Random();
+        this.random = new Random(2);
         
         panicPercentage = 0f;
         angle = animal.getAngle();
@@ -224,14 +224,15 @@ public class AIController implements InputController {
         //Should be at beginning
     	
     	for (Actor a : actors) {
-    		if (a != getAnimal()) {
+    		if (a != getAnimal() && a.getAlive()) {
     			world.rayCast(vcb, getAnimal().getPosition(), a.getPosition());
     			Fixture fix = vcb.getFixture();
     			if (fix != null) {
         			Object objSeen = fix.getBody().getUserData();
         			if (objSeen instanceof Actor) {
-        				if (panicPercentage<1){
-        					panicPercentage += .001;
+        				Actor actor = (Actor) objSeen;
+        				if (panicPercentage<1 && actor.getType() != animal.getType()){
+        					panicPercentage += 0.005;//.001
         				}
         				if (((Actor)objSeen).canKill(getAnimal())) {
         					setScared((Actor)objSeen);
@@ -245,21 +246,26 @@ public class AIController implements InputController {
         				}
         			}
         			else {
-        				if (panicPercentage>0){
-        					panicPercentage -= 0.0005;
+        				if (target != null) {
+    	    				if (a.getType() == target.getType()) {
+    	    					turns--;
+    	    				}
         				}
-        				
-	        			if (objSeen instanceof Tile) {
-	        				if (turns > 0) {
-	        					turns--;
-	        				}
-	        			}
-	        			else {
-	        				if (turns > 0) {
-	        					turns--;
-	        				}
-	        			}
         			}
+    			}
+    			else {
+    				if (animal.getTypeNameString() == "Owl" &&
+    					  a.getType() == Actor.actorType.HUNTER) {
+    					setTarget(null);
+    				}
+    				if (target != null) {
+	    				if (a.getType() == target.getType()) {
+	    					turns--;
+	    				}
+    				}
+    				if (panicPercentage>0){
+    					panicPercentage -= 0.00005;
+    				}
     			}
     			if (canSettle()) { 
 			    	setScared(null);
@@ -312,7 +318,9 @@ public class AIController implements InputController {
         		animal.setAngle(angle); 
         		animal.updateLOS(angle);*/
         		//animal.deactivatePhysics(world);
-        		angle += Math.PI/80;
+        		if (Math.random() > 0) {
+        			angle += Math.PI/80;
+        		}
         		animal.updateLOS(angle);
         		vect.set(vect.x + (float)Math.cos(angle), vect.y + (float)Math.sin(angle));
         		goal.set(vect.x, vect.y);
@@ -621,7 +629,7 @@ public class AIController implements InputController {
     }
     
     public void setTurns() {
-    	this.turns = 50;
+    	this.turns = 100;
     }
     
     /**
@@ -661,7 +669,7 @@ public class AIController implements InputController {
 //            return NO_ACTION;
 //        }
     	tmp.set(goal);
-    	return tmp.sub(getAnimal().getPosition());
+    	return tmp.sub(getAnimal().getPosition()).nor();
     }
     
     private void getPathToGoal() {

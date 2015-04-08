@@ -109,7 +109,6 @@ public class GameMode implements Screen {
         //When we implement a UI that may ask players
         //what level to start on. This code will change
         map = loadMap("levelAlpha");
-
         map.setDimensions();
         map.createGraph();
         map.LoadContent(manager);
@@ -341,13 +340,13 @@ public class GameMode implements Screen {
 		ticks++;
 		
 
-		    // fixed time step
-		    frameTime = Math.min(delta, 1/60f);
-		    accumulator += frameTime;
-		    while (accumulator >= TIME_STEP) {
-		    	collisionController.getWorld().step(TIME_STEP, 3, 3);
-		        accumulator -= TIME_STEP;
-		    }
+	    // fixed time step
+	    frameTime = Math.min(delta, 1/60f);
+	    accumulator += frameTime;
+	    while (accumulator >= TIME_STEP) {
+	    	collisionController.getWorld().step(TIME_STEP, 3, 3);
+	        accumulator -= TIME_STEP;
+	    }
 
 		collisionController.update();		
 		
