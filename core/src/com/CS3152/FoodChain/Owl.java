@@ -9,13 +9,12 @@ import com.badlogic.gdx.math.Vector2;
 
 public class Owl extends Animal {
 	
-	private static final String OWL_TEX = "assets/player.png";
-    private static Texture tex = null;
-    
-    private static float scaleXDrawOwl = 1.2f;
-    private static float scaleYDrawOwl = 0.9f;
-    
-    static final Actor.actorType prey[] = {Actor.actorType.SHEEP,
+	private static final String OWL_TEX = "assets/wolf.png";
+	private static Texture tex = null;
+	private static float scaleXDrawOwl = 1.2f;
+	private static float scaleYDrawOwl = 0.9f;
+	
+    static final Actor.actorType prey[] = {Actor.actorType.PIG,
     									   Actor.actorType.WOLF, Actor.actorType.HUNTER};
     
     public Owl(float x, float y) {
@@ -24,6 +23,8 @@ public class Owl extends Animal {
         drawScale.x = scaleXDrawOwl;
         drawScale.y = scaleYDrawOwl;
     }
+
+	
 
 	@Override
 	public String getTypeNameString() {

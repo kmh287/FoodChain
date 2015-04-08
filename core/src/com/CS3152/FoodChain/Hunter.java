@@ -48,7 +48,7 @@ public class Hunter extends Actor {
     		//, HashMap<String, List<Trap>> traps
     		){
     	super(new TextureRegion(tex), actorType.HUNTER, xPos, yPos, 40,
-    		  40, new actorType[]{actorType.SHEEP});
+    		  40, new actorType[]{actorType.PIG});
 	    	inventory= new HashMap<String, List<Trap>>();
 	    	inventory.put("REGULAR_TRAP", new ArrayList<Trap>());
 	    	inventory.put("SHEEP_TRAP", new ArrayList<Trap>());
@@ -140,11 +140,11 @@ public class Hunter extends Actor {
      * @param trap the trap to add to the inventory
      */
     public void addToInventory(Trap trap) {
-    	inventory.get(trap.getType()).add(trap);
+    		inventory.get(trap.getType()).add(trap);
     }
     
     public Map<String,List<Trap>> getInventory() {
-    	return inventory;
+    		return inventory;
     }
     
     public void setSelectedTrap(int controlcode){
@@ -252,7 +252,7 @@ public class Hunter extends Actor {
     		selectedTrap.setInInventory(false);
     	}
     	else if (angle == (float) (Math.PI/4.0f)) {
-    		selectedTrap.setPosition(getPosition().x + 40.0f, getPosition().y - 40.0f);
+    		selectedTrap.setPosition(getPosition().x + 30.0f, getPosition().y - 30.0f);
     		selectedTrap.setInInventory(false);
     	}
     	else if (angle == (float) (Math.PI/2.0f)) {
@@ -260,7 +260,7 @@ public class Hunter extends Actor {
     		selectedTrap.setInInventory(false);
     	}
     	else if (angle == (float) (3.0*Math.PI/4.0)) {
-    		selectedTrap.setPosition(getPosition().x + 40.0f, getPosition().y + 40.0f);
+    		selectedTrap.setPosition(getPosition().x + 30.0f, getPosition().y + 30.0f);
     		selectedTrap.setInInventory(false);
     	}
     	else if (angle == (float) (Math.PI)) {
@@ -273,11 +273,11 @@ public class Hunter extends Actor {
     		selectedTrap.setInInventory(false);
     	}
     	else if (angle == (float) -(Math.PI/4.0f)) {
-    		selectedTrap.setPosition(getPosition().x - 40.0f, getPosition().y - 40.0f);
+    		selectedTrap.setPosition(getPosition().x - 30.0f, getPosition().y - 30.0f);
     		selectedTrap.setInInventory(false);
     	}
     	else if (angle == (float) -(3.0*Math.PI/4.0f)) {
-    		selectedTrap.setPosition(getPosition().x - 40.0f, getPosition().y + 40.0f);
+    		selectedTrap.setPosition(getPosition().x - 30.0f, getPosition().y + 30.0f);
     		selectedTrap.setInInventory(false);
     	}
 

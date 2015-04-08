@@ -40,6 +40,8 @@ public class GameMode implements Screen {
     private UIController ui;
 	private float TIME_STEP = 1/200f;
 	private float frameTime;
+	
+	private boolean start;
 
     protected InputController[] controls;
     
@@ -97,6 +99,7 @@ public class GameMode implements Screen {
 		
 		this.canvas = canvas;
 		this.stage = stage;
+		start=true;
         //active = false;
         manager = new AssetManager();
         PreLoadContent(manager);
@@ -105,7 +108,7 @@ public class GameMode implements Screen {
         //For now we will hard code the level to load
         //When we implement a UI that may ask players
         //what level to start on. This code will change
-        map = loadMap("level2");
+        map = loadMap("tileTest");
         map.createGraph();
         map.LoadContent(manager);
         canvas.getUIControllerStage().loadTextures(manager);
@@ -133,7 +136,7 @@ public class GameMode implements Screen {
         //tmp = new Vector2();
         
         createHunter(map.getHunterStartingCoordinate() 
-                ,map.getStartingInventory()
+                /*,map.getStartingInventory()*/
         		);
         canvas.getUIControllerStage().setHunter(hunter);
 	    
@@ -188,8 +191,8 @@ public class GameMode implements Screen {
 	}
 	
 
-	private void createHunter(Vector2 startingPos,
-			HashMap<String, List<Trap>> startingInventory){
+	private void createHunter(Vector2 startingPos/*,
+			HashMap<String, List<Trap>> startingInventory*/){
 		Hunter.loadTexture(manager);
 	    this.hunter = new Hunter(map.mapXToScreen((int)startingPos.x),
 	                             map.mapYToScreen((int)startingPos.y)
@@ -250,9 +253,9 @@ public class GameMode implements Screen {
 	        Animal newAnimal;
 	        
 	        switch(currType){
-	            case SHEEP:
-	            		Sheep.loadTexture(manager);
-	                newAnimal = new Sheep(map.mapXToScreen((int)coord.x), 
+	            case PIG:
+	            		Pig.loadTexture(manager);
+	                newAnimal = new Pig(map.mapXToScreen((int)coord.x), 
 	                                      map.mapYToScreen((int)coord.y));
 	                animals.add(newAnimal);
 	                break;
@@ -321,14 +324,14 @@ public class GameMode implements Screen {
 		for (Animal an : animals) {
 			an.update(delta);
 			//need to update wolf once we have animations
-			if(an instanceof Sheep){
+			if(an instanceof Pig){
 				if(controls[i].getAction()!=InputController.NO_ACTION){
 					if(ticks%10==0){
-						((Sheep) an).updateWalkFrame();
+						((Pig) an).updateWalkFrame();
 					}
 				}
 				else{
-					((Sheep) an).setStillFrame();
+					((Pig) an).setStillFrame();
 				}
 			}
 			i++;
@@ -385,8 +388,14 @@ public class GameMode implements Screen {
        
         canvas.end();
         
-        
-    	canvas.beginCam(hunter.getPosition().x, hunter.getPosition().y);
+        if(!start){
+        	canvas.beginCam(hunter.getPosition().x, hunter.getPosition().y);
+        }
+        else{
+        	canvas.beginCamStart(hunter.getPosition().x, hunter.getPosition().y);
+        	start=false;
+        }
+    	
         //hunter.drawDebug(canvas);
     	 //Draw the hunter
     	//Draw the animals
@@ -397,8 +406,14 @@ public class GameMode implements Screen {
             //animal.drawDebug(canvas);
         }
         if (hunter.getAlive()) {
-        	hunter.draw(canvas);
+        		hunter.draw(canvas);
         }
+
+        canvas.end();
+        
+        canvas.beginCam(hunter.getPosition().x, hunter.getPosition().y);
+        //hunter.drawDebug(canvas);
+
         //ui.draw(canvas);
         //uis.drawStage(stage);
         
@@ -426,7 +441,6 @@ public class GameMode implements Screen {
 			}
 		}
 		canvas.endDebug();
-		
     }
     
     @Override
