@@ -58,7 +58,7 @@ public abstract class Actor extends CircleObject {
     
     public void setFacing(Vector2 dir) {
     		this.facing = dir;
-    		if (dir.x < 0 && dir.y == 0) {
+    		/*if (dir.x < 0 && dir.y == 0) {
     			super.setAngle((float) (-Math.PI/2.0));
     		}
     		else if (dir.x > 0 && dir.y == 0) {
@@ -81,7 +81,8 @@ public abstract class Actor extends CircleObject {
     		}
     		else if (dir.x < 0  && dir.y > 0) {
     			super.setAngle((float) (-3.0*Math.PI/4.0));
-    		}
+    		}*/
+    		super.setAngle(dir.angleRad() + (float)Math.PI/2);
     }
     
     
@@ -136,7 +137,8 @@ public abstract class Actor extends CircleObject {
 	}
 	
     public void draw(GameCanvas canvas){
-        super.draw(canvas);
+        System.out.println(getTypeNameString() + " draw angle: " + getAngle());
+    	super.draw(canvas);
     }
 	
 }

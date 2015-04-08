@@ -108,8 +108,12 @@ public class GameMode implements Screen {
         //For now we will hard code the level to load
         //When we implement a UI that may ask players
         //what level to start on. This code will change
+<<<<<<< HEAD
         map = loadMap("tileTest");
         map.setDimensions();
+=======
+        map = loadMap("levelAlpha");
+>>>>>>> origin/Margaret
         map.createGraph();
         map.LoadContent(manager);
         canvas.getUIControllerStage().loadTextures(manager);
@@ -267,13 +271,13 @@ public class GameMode implements Screen {
 	                //See comment in sheep
 	                animals.add(newAnimal);
 	                break;
-	            /*case OWL:
+	            case OWL:
             		Owl.loadTexture(manager);
             		newAnimal = new Owl(map.mapXToScreen((int)coord.x), 
                                      map.mapYToScreen((int)coord.y));
 	                //See comment in sheep
 	                animals.add(newAnimal);
-	                break;*/
+	                break;
 	            default:
 	                System.out.println(currType);
 	                throw new IllegalArgumentException("Unexpected animal type");
