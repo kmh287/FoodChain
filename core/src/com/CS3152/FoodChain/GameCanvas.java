@@ -409,19 +409,19 @@ public class GameCanvas {
     		difx=0;
     	}
     	else if(difx>100){
-    		difx-=99;
+    		difx-=98;
     	}
     	else if(difx<-100){
-    		difx+=99;
+    		difx+=98;
     	}
     	if (dify<100 && dify>-100){
     		dify=0;
     	}
     	else if(dify>100){
-    		dify-=99;
+    		dify-=98;
     	}
     	else if(dify<-100){
-    		dify+=99;
+    		dify+=98;
     	}
     	
     	

@@ -67,7 +67,7 @@ public class CollisionController implements ContactListener {
 		if(t.type == tileType.GRASS || t.type == tileType.DIRT ||
 		   t.type == tileType.N_GRASS || t.type == tileType.NE_GRASS || 
 		   t.type == tileType.E_GRASS || t.type == tileType.SE_GRASS ||
-		   t.type == tileType.SW_GRASS || t.type == tileType.SW_GRASS ||
+		   t.type == tileType.S_GRASS || t.type == tileType.SW_GRASS ||
 		   t.type == tileType.W_GRASS || t.type == tileType.NW_GRASS){
 			t.setActive(false);
 		}

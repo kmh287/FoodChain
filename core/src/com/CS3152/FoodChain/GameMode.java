@@ -109,6 +109,7 @@ public class GameMode implements Screen {
         //When we implement a UI that may ask players
         //what level to start on. This code will change
         map = loadMap("tileTest");
+        map.setDimensions();
         map.createGraph();
         map.LoadContent(manager);
         canvas.getUIControllerStage().loadTextures(manager);
@@ -427,6 +428,7 @@ public class GameMode implements Screen {
         */
         
         canvas.beginDebug();
+        ((AIController) controls[1]).drawPath(canvas);
         PooledList<SimplePhysicsObject> objects = collisionController.getObjects();
 		for(PhysicsObject obj : objects) {
 			if (obj instanceof Actor && ((Actor) obj).getAlive()) {

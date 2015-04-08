@@ -6,6 +6,7 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import com.badlogic.gdx.ai.pfa.PathSmoother;
 import com.badlogic.gdx.ai.pfa.indexed.IndexedAStarPathFinder;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.World;
@@ -198,6 +199,9 @@ public class AIController implements InputController {
      * @return the action selected by this InputController
      */
     public Vector2 getAction() {
+    	int testx = map.getMapWidth();
+    	int testy = map.getMapHeight();
+    	goal.set(400, 400);
         // Increment the number of ticks.
         //ticks++;
         
@@ -605,6 +609,17 @@ public class AIController implements InputController {
     public boolean isClicked() {return false;}
     
     public int getNum() {return 0;}
+    
+    public void drawPath(GameCanvas canvas) {
+    	int pathSize = path.getCount();
+    	
+    	for (int i = 0; i < pathSize - 1; i++) {
+    		canvas.drawLine(Color.YELLOW,
+    						tmp.set(map.mapXToScreen(path.get(i).getX()), map.mapYToScreen(path.get(i).getY())),
+    						tmp.set(map.mapXToScreen(path.get(i+1).getX()), map.mapYToScreen(path.get(i+1).getY())));
+    	}
+
+    }
 }
 
 
