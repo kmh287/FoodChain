@@ -252,7 +252,7 @@ public class Hunter extends Actor {
     		selectedTrap.setInInventory(false);
     	}
     	else if (angle == (float) (Math.PI/4.0f)) {
-    		selectedTrap.setPosition(getPosition().x + 40.0f, getPosition().y - 40.0f);
+    		selectedTrap.setPosition(getPosition().x + 30.0f, getPosition().y - 30.0f);
     		selectedTrap.setInInventory(false);
     	}
     	else if (angle == (float) (Math.PI/2.0f)) {
@@ -260,7 +260,7 @@ public class Hunter extends Actor {
     		selectedTrap.setInInventory(false);
     	}
     	else if (angle == (float) (3.0*Math.PI/4.0)) {
-    		selectedTrap.setPosition(getPosition().x + 40.0f, getPosition().y + 40.0f);
+    		selectedTrap.setPosition(getPosition().x + 30.0f, getPosition().y + 30.0f);
     		selectedTrap.setInInventory(false);
     	}
     	else if (angle == (float) (Math.PI)) {
@@ -273,11 +273,11 @@ public class Hunter extends Actor {
     		selectedTrap.setInInventory(false);
     	}
     	else if (angle == (float) -(Math.PI/4.0f)) {
-    		selectedTrap.setPosition(getPosition().x - 40.0f, getPosition().y - 40.0f);
+    		selectedTrap.setPosition(getPosition().x - 30.0f, getPosition().y - 30.0f);
     		selectedTrap.setInInventory(false);
     	}
     	else if (angle == (float) -(3.0*Math.PI/4.0f)) {
-    		selectedTrap.setPosition(getPosition().x - 40.0f, getPosition().y + 40.0f);
+    		selectedTrap.setPosition(getPosition().x - 30.0f, getPosition().y + 30.0f);
     		selectedTrap.setInInventory(false);
     	}
 

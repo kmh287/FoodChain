@@ -40,6 +40,8 @@ public class GameMode implements Screen {
     private UIController ui;
 	private float TIME_STEP = 1/200f;
 	private float frameTime;
+	
+	private boolean start;
 
     protected InputController[] controls;
     
@@ -97,6 +99,7 @@ public class GameMode implements Screen {
 		
 		this.canvas = canvas;
 		this.stage = stage;
+		start=true;
         //active = false;
         manager = new AssetManager();
         PreLoadContent(manager);
@@ -384,8 +387,14 @@ public class GameMode implements Screen {
        
         canvas.end();
         
-        
-    	canvas.beginCam(hunter.getPosition().x, hunter.getPosition().y);
+        if(!start){
+        	canvas.beginCam(hunter.getPosition().x, hunter.getPosition().y);
+        }
+        else{
+        	canvas.beginCamStart(hunter.getPosition().x, hunter.getPosition().y);
+        	start=false;
+        }
+    	
         //hunter.drawDebug(canvas);
     	 //Draw the hunter
     	//Draw the animals

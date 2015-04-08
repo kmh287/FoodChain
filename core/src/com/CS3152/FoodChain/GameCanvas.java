@@ -70,6 +70,8 @@ public class GameCanvas {
 	private Stage stage;
 	private UIControllerStage ui; 
 	
+	private final static float cam_radius=100;
+	
 	// CACHE OBJECTS
 	/** Affine cache for current sprite to draw */
 	private Affine2 local;
@@ -373,6 +375,17 @@ public class GameCanvas {
     	active = DrawPass.STANDARD;
     } 
     
+    //first time cam draws it will center over hunter and not perform lazy scroll
+	public void beginCamStart(float x, float y) {
+		camera.position.set(x, y, 0);
+       	global.setTranslation(x, y, 0);
+        camera.update();        
+    	ui.drawStage();
+    	spriteBatch.setProjectionMatrix(camera.combined);
+    	spriteBatch.begin();
+    	active = DrawPass.STANDARD;
+	}
+    
     public void DrawBlack(float x, float y) {
     	
     	moveCamera(x,y);
@@ -386,9 +399,35 @@ public class GameCanvas {
         	//camera.unproject(new Vector3(x, y, 0));
     		//stage.getCamera().translate(x, y, 0);
     		//stage.getCamera().update();
-            camera.position.set(x, y, 0);
-        	global.setTranslation(x, y, 0);
-            camera.update();
+    	
+    	//lazy camera code
+    	float camX = camera.position.x;
+    	float camY = camera.position.y;
+    	float difx = x-camX;
+    	float dify = y-camY;
+    	if (difx<100 && difx>-100){
+    		difx=0;
+    	}
+    	else if(difx>100){
+    		difx-=99;
+    	}
+    	else if(difx<-100){
+    		difx+=99;
+    	}
+    	if (dify<100 && dify>-100){
+    		dify=0;
+    	}
+    	else if(dify>100){
+    		dify-=99;
+    	}
+    	else if(dify<-100){
+    		dify+=99;
+    	}
+    	
+    	
+        camera.position.set(camX+difx, camY+dify, 0);
+       	global.setTranslation(x, y, 0);
+        camera.update();
 
     }
     
@@ -1185,4 +1224,6 @@ public class GameCanvas {
 	public UIControllerStage getUIControllerStage(){
 		return ui;
 	}
+
+
 }
