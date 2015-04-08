@@ -218,18 +218,7 @@ public class AIController implements InputController {
     	//checkCone();
         // RayCasting
         //Should be at beginning
-    	if (getTarget() instanceof Animal) {
-    		Animal target = (Animal) getTarget();
-    		if (!target.getAlive()) {
-    			setTarget(null);
-    		}
-    	}
-    	if (getTarget() instanceof Hunter) {
-    		Hunter target = (Hunter) getTarget();
-    		if (!target.getAlive()) {
-    			setTarget(null);
-    		}
-    	}
+    	
     	for (Actor a : actors) {
     		if (a != getAnimal()) {
     			world.rayCast(vcb, getAnimal().getPosition(), a.getPosition());
@@ -266,6 +255,19 @@ public class AIController implements InputController {
     			//vcb.getFixture();
         	}
     	}
+    	if (getTarget() instanceof Animal) {
+    		Animal target = (Animal) getTarget();
+    		if (!target.getAlive()) {
+    			System.out.println("Wolf killed sheep");
+    			setTarget(null);
+    		}
+    	}
+    	if (getTarget() instanceof Hunter) {
+    		Hunter target = (Hunter) getTarget();
+    		if (!target.getAlive()) {
+    			setTarget(null);
+    		}
+    	}
         	
         if (isScared()) {
         	if (getAnimal().getTypeNameString() == "Owl") {
@@ -273,18 +275,18 @@ public class AIController implements InputController {
         	}
         	//System.out.println(animal.getType() + ": flee");
         	else { 
-        		System.out.println(getAnimal().getTypeNameString() + "isScared");
+        		//System.out.println(getAnimal().getTypeNameString() + "isScared");
         		flee();
         	}
         }
         
         else if (hasTarget()) {
         	if (getAnimal().getTypeNameString() == "Owl") {
-        		System.out.println(getAnimal().getTypeNameString() + "owlhasTarget");
+        		//System.out.println(getAnimal().getTypeNameString() + "owlhasTarget");
         		//fleeOwl();
         	}
         	else {
-        		System.out.println(getAnimal().getTypeNameString() + "hasTarget");
+        		//System.out.println(getAnimal().getTypeNameString() + "hasTarget");
         		chase();
         	}
         	//System.out.println(getAnimal().getTypeNameString() + ": chase"); 
@@ -301,18 +303,19 @@ public class AIController implements InputController {
         		animal.updateLOS(angle);
         		vect.set(vect.x + (float)Math.cos(angle), vect.y + (float)Math.sin(angle));
         		goal.set(vect.x, vect.y);
-        		System.out.println("Owl angle owwll: " + angle);
+        		//System.out.println("Owl angle owwll: " + angle);
         		
         	}
         	else {
         	//System.out.println(animal.getType() + ": patrol");
         		patrol();
-        		System.out.println(getAnimal().getTypeNameString() + "patrol angle");
+        		//System.out.println(getAnimal().getTypeNameString() + "patrol angle");
+        		//System.out.println(animal.getType() + "now patrolling");
         	}
         }
         
         if (getAnimal().getTypeNameString() == "Owl") {
-        	System.out.println("Owl angle: " + animal.getAngle());
+        	//System.out.println("Owl angle: " + animal.getAngle());
         }
         move = getNextMoveToGoal();
         
