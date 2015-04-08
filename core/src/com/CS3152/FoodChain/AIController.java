@@ -4,6 +4,9 @@ import java.util.*;
 
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+import com.badlogic.gdx.ai.pfa.PathSmoother;
+import com.badlogic.gdx.ai.pfa.indexed.IndexedAStarPathFinder;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.World;
@@ -28,7 +31,7 @@ public class AIController implements InputController {
         FLEE,
         // Animal kills target
         KILL,
-        // Aniaml is dead
+        // Animal is dead
         DEAD
     }
     
@@ -53,6 +56,7 @@ public class AIController implements InputController {
     
     protected VisionCallback vcb;
     //protected FleeCallback fcb;
+    
     
     // The vector position of the animal's goal
     protected Vector2 goal;
@@ -79,10 +83,23 @@ public class AIController implements InputController {
     // The animal's patrol path
     protected Array<Vector2> patrolPath;
     
-    // The random number generator used by the AI
-    private Random random;
-
+    // The path finder used to calculate paths to the goal
+    protected IndexedAStarPathFinder<MapNode> pathFinder;
     
+    // Heuristic used to approximate distance to a node
+    private static TiledManhattanDistance<MapNode> heuristic;
+    
+    // The path the AI uses to get from its current position to the goal
+    private SmoothableMapPath<MapNode> path;
+    
+    // PathSmoother object used to smooth out path
+    private PathSmoother<MapNode, Vector2> pathSmoother;
+    
+    // The random number generator used by the AI
+    private Random random; 
+    
+    private Vector2 vect;
+    private float angle;
     /*
      * Creates an AIController for the animal
      *
@@ -94,6 +111,7 @@ public class AIController implements InputController {
         this.world = world;
         this.map = map;
         this.actors = actors;
+        
         
         this.distVctrs = new Vector2[8];
         for (int id = 0; id < distVctrs.length; id++) {
@@ -113,15 +131,26 @@ public class AIController implements InputController {
         this.goal = new Vector2();
         // To where it should start moving
         this.move = InputController.WEST;
-        goal.set (getAnimal().getX() + 1, getAnimal().getY());
+        goal.set (getAnimal().getX() + 1 , getAnimal().getY());
 
         this.turns = 10;//should be 0 in future
         
         this.patrolTurn = 0;
         
+        this.pathFinder = new IndexedAStarPathFinder(map);
+        
+        this.heuristic = new TiledManhattanDistance<MapNode>();
+        
+        //this.pathSmoother = new PathSmoother<MapNode, Vector2>();
+        
+        this.path = new SmoothableMapPath();
+        
         this.tmp = new Vector2();
         
         this.random = new Random();
+        
+        angle = animal.getAngle();
+        vect = new Vector2(animal.getPosition());
     }
     
     /*
@@ -176,6 +205,9 @@ public class AIController implements InputController {
      * @return the action selected by this InputController
      */
     public Vector2 getAction() {
+    	int testx = map.getMapWidth();
+    	int testy = map.getMapHeight();
+    	goal.set(400, 400);
         // Increment the number of ticks.
         //ticks++;
         
@@ -186,18 +218,7 @@ public class AIController implements InputController {
     	//checkCone();
         // RayCasting
         //Should be at beginning
-    	if (getTarget() instanceof Animal) {
-    		Animal target = (Animal) getTarget();
-    		if (!target.getAlive()) {
-    			setTarget(null);
-    		}
-    	}
-    	if (getTarget() instanceof Hunter) {
-    		Hunter target = (Hunter) getTarget();
-    		if (!target.getAlive()) {
-    			setTarget(null);
-    		}
-    	}
+    	
     	for (Actor a : actors) {
     		if (a != getAnimal()) {
     			world.rayCast(vcb, getAnimal().getPosition(), a.getPosition());
@@ -234,21 +255,71 @@ public class AIController implements InputController {
     			//vcb.getFixture();
         	}
     	}
+    	if (getTarget() instanceof Animal) {
+    		Animal target = (Animal) getTarget();
+    		if (!target.getAlive()) {
+    			System.out.println("Wolf killed sheep");
+    			setTarget(null);
+    		}
+    	}
+    	if (getTarget() instanceof Hunter) {
+    		Hunter target = (Hunter) getTarget();
+    		if (!target.getAlive()) {
+    			setTarget(null);
+    		}
+    	}
         	
         if (isScared()) {
+        	if (getAnimal().getTypeNameString() == "Owl") {
+        		//fleeOwl();
+        	}
         	//System.out.println(animal.getType() + ": flee");
-        	flee();
+        	else { 
+        		//System.out.println(getAnimal().getTypeNameString() + "isScared");
+        		flee();
+        	}
         }
+        
         else if (hasTarget()) {
-        	//System.out.println(animal.getType() + ": chase");
-        	chase();
+        	if (getAnimal().getTypeNameString() == "Owl") {
+        		//System.out.println(getAnimal().getTypeNameString() + "owlhasTarget");
+        		//fleeOwl();
+        	}
+        	else {
+        		//System.out.println(getAnimal().getTypeNameString() + "hasTarget");
+        		chase();
+        	}
+        	//System.out.println(getAnimal().getTypeNameString() + ": chase"); 
         }
         else {
+        	if (getAnimal().getTypeNameString() == "Owl") {
+        		/*float angle = animal.getAngle();
+        		angle += Math.PI/8.0;
+        		System.out.println("Owl angle owwll: " + angle);
+        		animal.setAngle(angle); 
+        		animal.updateLOS(angle);*/
+        		//animal.deactivatePhysics(world);
+        		angle += Math.PI/80;
+        		animal.updateLOS(angle);
+        		vect.set(vect.x + (float)Math.cos(angle), vect.y + (float)Math.sin(angle));
+        		goal.set(vect.x, vect.y);
+        		//System.out.println("Owl angle owwll: " + angle);
+        		
+        	}
+        	else {
         	//System.out.println(animal.getType() + ": patrol");
-        	patrol();
+        		patrol();
+        		//System.out.println(getAnimal().getTypeNameString() + "patrol angle");
+        		//System.out.println(animal.getType() + "now patrolling");
+        	}
         }
-
+        
+        if (getAnimal().getTypeNameString() == "Owl") {
+        	//System.out.println("Owl angle: " + animal.getAngle());
+        }
         move = getNextMoveToGoal();
+        
+        getPathToGoal();
         
         //System.out.println(move);
         return move;
@@ -373,10 +444,29 @@ public class AIController implements InputController {
         	return;
         }
     }
+    
+    public void fleeOwl() {
+    	// Animal's position
+    	float anX = getAnimal().getX();
+    	float anY = getAnimal().getY();
+    	// Get random position on map. 
+    	//float targetX = goal.set(20, 5);
+        //float targetY = ;
+        // Animal's best option
+        float goalX = 20;
+        float goalY = 20;
+        
+        if (map.isSafeAt(goalX, goalY)) {
+        	goal.set(goalX, goalY);
+        	return;
+        } 
+    }
 	
 	public void patrol() {
 		float anX = getAnimal().getPosition().x;
 		float anY = getAnimal().getPosition().y;
+		
+		boolean isSafeAt = false;
 		
 		if (patrolTurn == 0) {
 			float rand = random.nextFloat();
@@ -393,20 +483,22 @@ public class AIController implements InputController {
 				patrolTurn = 4;
 			}
 		}
+		isSafeAt = map.isSafeAt(anX + 50, anY);
 		if (map.isSafeAt(anX + 50, anY) && patrolTurn == 1) {
 			goal.set(anX + 50, anY);
 			return;
 		}
+		isSafeAt = map.isSafeAt(anX - 50, anY);
 		if (map.isSafeAt(anX - 50, anY) && patrolTurn == 2) {
 			goal.set(anX - 50, anY);
 			return;
 		}
-
+		isSafeAt = map.isSafeAt(anX, anY + 50);
 		if (map.isSafeAt(anX, anY + 50) && patrolTurn == 3) {
 			goal.set(anX, anY + 50);
 			return;
 		}
-
+		isSafeAt = map.isSafeAt(anX, anY - 50);
 		if (map.isSafeAt(anX, anY - 50) && patrolTurn == 4) {
 			goal.set(anX, anY - 50);
 			return;
@@ -559,12 +651,35 @@ public class AIController implements InputController {
     	return tmp.sub(getAnimal().getPosition());
     }
     
+    private void getPathToGoal() {
+    	int startX = map.screenXToMap(animal.getX());
+    	int startY = map.screenYToMap(animal.getY());
+    	int goalX = map.screenXToMap(goal.x);
+    	int goalY = map.screenYToMap(goal.y);
+    	path.clear();
+    	pathFinder.searchNodePath(map.getNode(map.calculateIndex(startX, startY)),
+    							  map.getNode(map.calculateIndex(goalX, goalY)),
+    							  heuristic,
+    							  path);
+    }
+    
     // Should not be here, but need to finish
     public Vector2 getClickPos() {return new Vector2();}
     
     public boolean isClicked() {return false;}
     
     public int getNum() {return 0;}
+    
+    public void drawPath(GameCanvas canvas) {
+    	int pathSize = path.getCount();
+    	
+    	for (int i = 0; i < pathSize - 1; i++) {
+    		canvas.drawLine(Color.YELLOW,
+    						tmp.set(map.mapXToScreen(path.get(i).getX()), map.mapYToScreen(path.get(i).getY())),
+    						tmp.set(map.mapXToScreen(path.get(i+1).getX()), map.mapYToScreen(path.get(i+1).getY())));
+    	}
+
+    }
 }
 
 
