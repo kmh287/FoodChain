@@ -414,10 +414,7 @@ public class GameCanvas {
     	else if(difx<-100){
     		difx+=98;
     	}
-    	if (dify<100 && dify>-100){
-    		dify=0;
-    	}
-    	else if(dify>100){
+    	if(dify>100){
     		dify-=98;
     	}
     	else if(dify<-100){
