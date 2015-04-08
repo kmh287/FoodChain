@@ -67,7 +67,7 @@ public class PlayerController implements InputController{
 			code ^= (WEST | EAST);
 		}*/
 
-	    return PlayerAction; 
+	    return PlayerAction.nor(); 
 	    
 	} 
 	

@@ -192,6 +192,10 @@ public class Hunter extends Actor {
     		return pos; 
     }
     
+    public float getMoveSpeed() {
+		return MOVE_SPEED;
+	}
+    
 //    public void setPosition(Vector2 pos) {
 //    		xPos = pos.x;
 //    		yPos = pos.y;

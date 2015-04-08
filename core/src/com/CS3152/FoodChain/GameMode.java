@@ -341,13 +341,13 @@ public class GameMode implements Screen {
 		ticks++;
 		
 
-		    // fixed time step
-		    frameTime = Math.min(delta, 1/60f);
-		    accumulator += frameTime;
-		    while (accumulator >= TIME_STEP) {
-		    	collisionController.getWorld().step(TIME_STEP, 3, 3);
-		        accumulator -= TIME_STEP;
-		    }
+	    // fixed time step
+	    frameTime = Math.min(delta, 1/60f);
+	    accumulator += frameTime;
+	    while (accumulator >= TIME_STEP) {
+	    	collisionController.getWorld().step(TIME_STEP, 3, 3);
+	        accumulator -= TIME_STEP;
+	    }
 
 		collisionController.update();		
 		

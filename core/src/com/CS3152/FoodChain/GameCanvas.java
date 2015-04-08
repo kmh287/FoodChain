@@ -424,7 +424,6 @@ public class GameCanvas {
     		dify= dify+99;
     	}
     	
-    	
         camera.position.set(camX+difx, camY+dify, 0);
        	global.setTranslation(x, y, 0);
         camera.update();

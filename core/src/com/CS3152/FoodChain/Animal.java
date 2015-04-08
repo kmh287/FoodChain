@@ -31,7 +31,7 @@ public abstract class Animal extends Actor {
 	protected static final int AnimalWidth = 40;
 	protected static final int AnimalHeight = 40;
 	//how far forward an animal can move in a turn. 
-    private static final float MOVE_SPEED = 150f;
+    private static final float MOVE_SPEED = 75.0f;
     // How wide the animal's line of sight is
     private static final double SIGHT_ANGLE = 0.35;
     // How long the animal's line of sight is
@@ -100,6 +100,10 @@ public abstract class Animal extends Actor {
 	    		//If this code doesn't change, remove this else
 	    }
         super.setPosition(xPos, yPos);
+	}
+	
+	public float getMoveSpeed() {
+		return MOVE_SPEED;
 	}
 	
 	public void updateLOS(float angle) {
