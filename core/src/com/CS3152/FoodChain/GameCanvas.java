@@ -373,7 +373,7 @@ public class GameCanvas {
     	spriteBatch.setProjectionMatrix(camera.combined);
     	spriteBatch.begin();
     	active = DrawPass.STANDARD;
-    } 
+    }  
     
     //first time cam draws it will center over hunter and not perform lazy scroll
 	public void beginCamStart(float x, float y) {

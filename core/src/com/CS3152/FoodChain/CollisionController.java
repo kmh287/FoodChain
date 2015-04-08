@@ -114,9 +114,21 @@ public class CollisionController implements ContactListener {
 
 	private void move(Animal actor,int index) {
 		if (actor.getAlive()) {
+			if (actor instanceof Owl) {
+				//System.out.println("yo");
+			}
 			actor.setLinearVelocity(controls[index].getAction());
 			float angle = ((AIController)controls[index]).getAngle();
 			actor.updateLOS(angle);
+			//actor.setAngle(((AIController)controls[index]).getAngle());
+			actor.setFacing(((AIController) controls[index]).getAction());
+		}
+	}
+	
+	private void moveOwl(Animal actor,int index) {
+		if (actor.getAlive()) {
+			//actor.setLinearVelocity(controls[index].getAction());
+			//actor.updateLOS(angle);
 			//actor.setAngle(((AIController)controls[index]).getAngle());
 			actor.setFacing(((AIController) controls[index]).getAction());
 		}
@@ -138,7 +150,14 @@ public class CollisionController implements ContactListener {
 			}
 			//unsure about order of objects.
 			else if (o instanceof Animal){
-				move((Animal)o,i);
+				if (o instanceof Owl) {
+					//System.out.println ("instanceof"); 
+					moveOwl((Owl) o, i); 
+				}
+				else {
+					move((Animal)o,i);
+				
+				}
 				i++;
 			}
 			//System.out.println(o.getPosition().toString());
