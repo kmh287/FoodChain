@@ -84,7 +84,7 @@ public class AIController implements InputController {
     private Random random; 
     
     private Vector2 vect;
-    
+    private float angle;
     /*
      * Creates an AIController for the animal
      *
@@ -126,6 +126,7 @@ public class AIController implements InputController {
         
         this.random = new Random();
         
+        angle = animal.getAngle();
         vect = new Vector2(animal.getPosition());
     }
     
@@ -269,8 +270,8 @@ public class AIController implements InputController {
         		System.out.println("Owl angle owwll: " + angle);
         		animal.setAngle(angle); 
         		animal.updateLOS(angle);*/
-        		float angle = animal.getAngle();
-        		angle += Math.PI/800;
+        		//animal.deactivatePhysics(world);
+        		angle += Math.PI/80;
         		animal.updateLOS(angle);
         		vect.set(vect.x + (float)Math.cos(angle), vect.y + (float)Math.sin(angle));
         		goal.set(vect.x, vect.y);
