@@ -147,7 +147,7 @@ public class AIController implements InputController {
         
         this.tmp = new Vector2();
         
-        this.random = new Random(1362);
+        this.random = new Random(2);
         
         angle = animal.getAngle();
         vect = new Vector2(animal.getPosition());
