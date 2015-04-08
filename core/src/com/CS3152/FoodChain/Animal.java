@@ -31,11 +31,11 @@ public abstract class Animal extends Actor {
 	protected static final int AnimalWidth = 40;
 	protected static final int AnimalHeight = 40;
 	//how far forward an animal can move in a turn. 
-    private static final float MOVE_SPEED = 150f;
+    protected static final float MOVE_SPEED = 75.0f;
     // How wide the animal's line of sight is
-    private static final double SIGHT_ANGLE = 0.35;
+    protected double SIGHT_ANGLE = 0.35;
     // How long the animal's line of sight is
-    private static final float SIGHT_LENGTH = 120;
+    protected float SIGHT_LENGTH;
 	
 	/** Protected constructor for the animal type. 
 	 * 
@@ -102,13 +102,11 @@ public abstract class Animal extends Actor {
         super.setPosition(xPos, yPos);
 	}
 	
-	public void updateLOS(float angle) {
-		this.leftSectorLine.set((float)(SIGHT_LENGTH*Math.cos(angle + SIGHT_ANGLE)),
-								(float)(SIGHT_LENGTH*Math.sin(angle + SIGHT_ANGLE)));
-
-		this.rightSectorLine.set((float)(SIGHT_LENGTH*Math.cos(angle - SIGHT_ANGLE)),
-								 (float)(SIGHT_LENGTH*Math.sin(angle - SIGHT_ANGLE)));
+	public float getMoveSpeed() {
+		return MOVE_SPEED;
 	}
+	
+	public abstract void updateLOS(float angle);
     
 	/**
 	 * The name of this animal type, e.g. "Sheep"

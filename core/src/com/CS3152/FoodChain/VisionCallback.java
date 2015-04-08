@@ -61,14 +61,17 @@ public class VisionCallback implements RayCastCallback {
 				*/
 			}
 			else if (contact instanceof Tile) {
-				if (((Tile)contact).getType() == Tile.tileType.GRASS) {
-					return -1;
-				}
+				Tile tile = (Tile) contact;
+				Tile.tileType type = tile.getType();
 				// Ray cast ran into an opaque tile so set the current fixture
 				// and ray cast a smaller distance 
-				else {
+				if (type == Tile.tileType.TREE ||
+						type == Tile.tileType.BUSH) {
 					fix = fixture;
 					return fraction;
+				}
+				else {
+					return -1;
 				}
 				/**
 				if (source.canSettle()) {

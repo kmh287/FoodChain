@@ -373,7 +373,7 @@ public class GameCanvas {
     	spriteBatch.setProjectionMatrix(camera.combined);
     	spriteBatch.begin();
     	active = DrawPass.STANDARD;
-    } 
+    }  
     
     //first time cam draws it will center over hunter and not perform lazy scroll
 	public void beginCamStart(float x, float y) {
@@ -408,22 +408,21 @@ public class GameCanvas {
     	if (difx<100 && difx>-100){
     		difx=0;
     	}
-    	else if(difx>100){
-    		difx-=99;
+    	else if(difx>=100){
+    		difx= difx-99;
     	}
-    	else if(difx<-100){
-    		difx+=99;
+    	else if(difx<=-100){
+    		difx= difx+99;
     	}
     	if (dify<100 && dify>-100){
     		dify=0;
     	}
-    	else if(dify>100){
-    		dify-=99;
+    	else if(dify>=100){
+    		dify= dify-99;
     	}
-    	else if(dify<-100){
-    		dify+=99;
+    	else if(dify<=-100){
+    		dify= dify+99;
     	}
-    	
     	
         camera.position.set(camX+difx, camY+dify, 0);
        	global.setTranslation(x, y, 0);

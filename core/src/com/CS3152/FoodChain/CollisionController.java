@@ -55,6 +55,7 @@ public class CollisionController implements ContactListener {
 	protected void addObject(SimplePhysicsObject obj) {
 		objects.add(obj);
 		obj.activatePhysics(world);
+		obj.setBullet(true);
 		//obj.getBody().setUserData(data.toString());
 		if(obj instanceof Tile){
 			setTraversableTiles((Tile)obj);
@@ -66,7 +67,7 @@ public class CollisionController implements ContactListener {
 		if(t.type == tileType.GRASS || t.type == tileType.DIRT ||
 		   t.type == tileType.N_GRASS || t.type == tileType.NE_GRASS || 
 		   t.type == tileType.E_GRASS || t.type == tileType.SE_GRASS ||
-		   t.type == tileType.SW_GRASS || t.type == tileType.SW_GRASS ||
+		   t.type == tileType.S_GRASS || t.type == tileType.SW_GRASS ||
 		   t.type == tileType.W_GRASS || t.type == tileType.NW_GRASS){
 			t.setActive(false);
 		}
@@ -91,7 +92,7 @@ public class CollisionController implements ContactListener {
 	 * TODO have to decide how to handle multiple collisions and which collisions to process first. like animal or tiles
 	 */
 	private void move(Hunter actor) {
-		actor.setLinearVelocity(controls[0].getAction());
+		actor.setLinearVelocity(controls[0].getAction().scl(actor.getMoveSpeed()));
 		actor.setFacing(controls[0].getAction());
 	}
 	
@@ -113,9 +114,21 @@ public class CollisionController implements ContactListener {
 
 	private void move(Animal actor,int index) {
 		if (actor.getAlive()) {
-			actor.setLinearVelocity(controls[index].getAction());
+			if (actor instanceof Owl) {
+				//System.out.println("yo");
+			}
+			actor.setLinearVelocity(controls[index].getAction().scl(actor.getMoveSpeed() + 100*AIController.getPanicPercentage()));
 			float angle = ((AIController)controls[index]).getAngle();
 			actor.updateLOS(angle);
+			//actor.setAngle(((AIController)controls[index]).getAngle());
+			actor.setFacing(((AIController) controls[index]).getAction());
+		}
+	}
+	
+	private void moveOwl(Animal actor,int index) {
+		if (actor.getAlive()) {
+			//actor.setLinearVelocity(controls[index].getAction());
+			//actor.updateLOS(angle);
 			//actor.setAngle(((AIController)controls[index]).getAngle());
 			actor.setFacing(((AIController) controls[index]).getAction());
 		}
@@ -137,12 +150,19 @@ public class CollisionController implements ContactListener {
 			}
 			//unsure about order of objects.
 			else if (o instanceof Animal){
-				move((Animal)o,i);
+				if (o instanceof Owl) {
+					//System.out.println ("instanceof"); 
+					moveOwl((Owl) o, i); 
+				}
+				else {
+					move((Animal)o,i);
+				
+				}
 				i++;
 			}
 			//System.out.println(o.getPosition().toString());
 		}
-		world.step(1/60f, 3, 3);
+		world.step(1/100f, 3, 3);
 		//checkTrapped();
 	}
 	
