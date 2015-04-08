@@ -371,7 +371,7 @@ public class GameCanvas {
     	spriteBatch.setProjectionMatrix(camera.combined);
     	spriteBatch.begin();
     	active = DrawPass.STANDARD;
-    } 
+    }  
     
     public void DrawBlack(float x, float y) {
     	

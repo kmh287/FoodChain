@@ -139,7 +139,8 @@ public abstract class Actor extends CircleObject {
 	}
 	
     public void draw(GameCanvas canvas){
-        super.draw(canvas);
+        System.out.println(getTypeNameString() + " draw angle: " + getAngle());
+    	super.draw(canvas);
     }
 	
 }

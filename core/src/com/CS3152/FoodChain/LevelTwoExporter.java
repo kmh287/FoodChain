@@ -67,11 +67,13 @@ public class LevelTwoExporter {
         List<actorType> animals = new ArrayList<actorType>();
         animals.add(actorType.SHEEP);
         animals.add(actorType.WOLF);
+        animals.add(actorType.OWL);
         
 
         List<Vector2> coords = new ArrayList<Vector2>();
         coords.add(new Vector2(16,12));
         coords.add(new Vector2(7,9));
+        coords.add(new Vector2(26,8));
         
         Vector2 playerStart = new Vector2(23,5);
         

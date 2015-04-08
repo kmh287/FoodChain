@@ -263,13 +263,13 @@ public class GameMode implements Screen {
 	                //See comment in sheep
 	                animals.add(newAnimal);
 	                break;
-	            /*case OWL:
+	            case OWL:
             		Owl.loadTexture(manager);
             		newAnimal = new Owl(map.mapXToScreen((int)coord.x), 
                                      map.mapYToScreen((int)coord.y));
 	                //See comment in sheep
 	                animals.add(newAnimal);
-	                break;*/
+	                break;
 	            default:
 	                System.out.println(currType);
 	                throw new IllegalArgumentException("Unexpected animal type");
