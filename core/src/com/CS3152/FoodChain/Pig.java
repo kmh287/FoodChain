@@ -19,6 +19,8 @@ public class Pig extends Animal {
     private static float scaleYDrawSheep=0.3f;
     static final Actor.actorType prey[] = {};
     private FilmStrip sprite;
+    
+    
     /**
      * Public Constructor for a sheep
      * @param x Starting x position for this sheep
@@ -30,6 +32,8 @@ public class Pig extends Animal {
         sprite = new FilmStrip(tex,1,4,4);
         drawScale.x=scaleXDrawSheep;
         drawScale.y=scaleYDrawSheep;
+        SIGHT_LENGTH = 120;
+        SIGHT_ANGLE = 0.35;
     }
 
     /* (non-Javadoc)
@@ -40,6 +44,14 @@ public class Pig extends Animal {
         return "Sheep";
     }
 
+    public void updateLOS(float angle) {
+		this.leftSectorLine.set((float)(SIGHT_LENGTH*Math.cos(angle + SIGHT_ANGLE)),
+								(float)(SIGHT_LENGTH*Math.sin(angle + SIGHT_ANGLE)));
+
+		this.rightSectorLine.set((float)(SIGHT_LENGTH*Math.cos(angle - SIGHT_ANGLE)),
+								 (float)(SIGHT_LENGTH*Math.sin(angle - SIGHT_ANGLE)));
+	}
+    
     /**
      *  If the texture is loaded, return the texture
      *  Otherwise, load it.

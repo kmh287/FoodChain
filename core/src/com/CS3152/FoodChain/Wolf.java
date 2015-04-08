@@ -25,6 +25,8 @@ public class Wolf extends Animal{
               prey, InputController.EAST);
         drawScale.x = scaleXDrawWolf;
         drawScale.y = scaleYDrawWolf;
+        SIGHT_LENGTH = 1.5f*120;
+        SIGHT_ANGLE = 1.5f*0.35;
     }
 
     @Override
@@ -33,6 +35,14 @@ public class Wolf extends Animal{
         return "Wolf";
     }
 
+    public void updateLOS(float angle) {
+		this.leftSectorLine.set((float)(SIGHT_LENGTH*Math.cos(angle + SIGHT_ANGLE)),
+								(float)(SIGHT_LENGTH*Math.sin(angle + SIGHT_ANGLE)));
+
+		this.rightSectorLine.set((float)(SIGHT_LENGTH*Math.cos(angle - SIGHT_ANGLE)),
+								 (float)(SIGHT_LENGTH*Math.sin(angle - SIGHT_ANGLE)));
+	}
+    
     public static void loadTexture(AssetManager manager) {
         if (tex == null){
             manager.load(WOLF_TEX, Texture.class);
