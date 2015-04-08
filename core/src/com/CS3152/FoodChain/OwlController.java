@@ -17,6 +17,8 @@ public class OwlController extends AIController {
 	        CHASE,
 	        // Animal is running away
 	        FLEE,
+	        // Animal kills target
+	        KILL,
 	        // Animal is dead
 	        DEAD
 	    }

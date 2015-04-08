@@ -23,7 +23,7 @@ public abstract class Actor extends CircleObject {
     }
     
     public enum actorType{
-    	HUNTER,
+    		HUNTER,
 		PIG, 
 		WOLF,
 		OWL
@@ -82,7 +82,6 @@ public abstract class Actor extends CircleObject {
     		else if (dir.x < 0  && dir.y > 0) {
     			super.setAngle((float) (-3.0*Math.PI/4.0));
     		}
-    		//setAngle(dir.angleRad() + (float)Math.PI/2);
     }
     
     
@@ -137,7 +136,7 @@ public abstract class Actor extends CircleObject {
 	}
 	
     public void draw(GameCanvas canvas){
-    	super.draw(canvas);
+        super.draw(canvas);
     }
 	
 }
