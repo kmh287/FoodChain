@@ -289,6 +289,10 @@ public class CollisionController implements ContactListener {
 			if (a2.canEat(a1)) {
 				a1.setAlive(false);
 			}
+			
+			//If both animals are of the same type
+			//Animals need to find a new path as they may
+			//be colliding walking in opposite directions
 		}
 		if (bd1 instanceof Hunter && bd2 instanceof Animal) {
 			Animal a = (Animal) bd2;
