@@ -34,7 +34,7 @@ public class UIControllerStage {
     private static final String PANIC_BAR = "assets/panic-bar-small.png";
     private static final String PANIC_CIRCLE = "assets/panic-circle.png";
     
-    private Hunter hunter;
+    private TrapController trapController;
     
     private Table container; 
     
@@ -81,8 +81,8 @@ public class UIControllerStage {
 	private static float panic;
 	
 	
-    public void setHunter(Hunter h){
-    	hunter=h;
+    public void setTrapController(TrapController t){
+    	trapController=t;
     }
     
     public void loadTextures(AssetManager manager){
@@ -257,12 +257,12 @@ public class UIControllerStage {
     	regularCount = 0;
         sheepCount = 0;
         
-        for (Trap trap :  hunter.getInventory().get("REGULAR_TRAP")) {
+        for (Trap trap :  trapController.getInventory().get("REGULAR_TRAP")) {
         	if(trap.getInInventory()){
         		regularCount+=1;
         	}
         }
-        for (Trap trap :  hunter.getInventory().get("SHEEP_TRAP")) {
+        for (Trap trap :  trapController.getInventory().get("SHEEP_TRAP")) {
         	if(trap.getInInventory()){
         		sheepCount+=1;
         	}
@@ -282,11 +282,11 @@ public class UIControllerStage {
         }
         
         //draw highlighted selected trap
-        if(hunter.getSelectedTrap().getInInventory()){
-        	if(hunter.getSelectedTrap().getType().toString().equals("REGULAR_TRAP")){
+        if(trapController.getSelectedTrap().getInInventory()){
+        	if(trapController.getSelectedTrap().getType().toString().equals("REGULAR_TRAP")){
         		select__trap_1_container.setVisible(true);
         	}
-        	if(hunter.getSelectedTrap().getType().toString().equals("SHEEP_TRAP")){
+        	if(trapController.getSelectedTrap().getType().toString().equals("SHEEP_TRAP")){
         		select__trap_2_container.setVisible(true);
         	}
         }
