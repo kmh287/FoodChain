@@ -25,23 +25,14 @@ public class TrapController {
 	    tmp.setSensor(true);
 	    tmp.setBodyType(BodyDef.BodyType.StaticBody);
 	    collisionController.addObject(tmp);
-	    //collisionController.addObject(tmp, "REGULAR_TRAP");
 	    this.addToInventory(tmp);
-	    this.setSelectedTrap(InputController.ONE);
 	    tmp = new SheepTrap();
 	    tmp.setInInventory(false);
 	    tmp.setSensor(true);
 	    tmp.setBodyType(BodyDef.BodyType.StaticBody);
 	    collisionController.addObject(tmp);
-	    //collisionController.addObject(tmp, "SHEEP_TRAP");
 	    this.addToInventory(tmp);
-	    tmp = new WolfTrap();
-	    tmp.setInInventory(false);
-	    tmp.setSensor(true);
-	    tmp.setBodyType(BodyDef.BodyType.StaticBody);
-	    collisionController.addObject(tmp);
-	    //collisionController.addObject(tmp, "WOLF_TRAP");
-	    this.addToInventory(tmp);
+
     }
   
 
@@ -72,6 +63,22 @@ public class TrapController {
     		}
     	}
     }
+    
+    public void autoSelectTrap(){
+    	if(selectedTrap == null || !canSetTrap()){
+    		for (Trap trap : inventory.get("REGULAR_TRAP")) {
+    			if(trap.getInInventory()){
+    				selectedTrap = trap;
+    			}
+    		}
+    		for (Trap trap : inventory.get("SHEEP_TRAP")) {
+    			if(trap.getInInventory()){
+    				selectedTrap = trap;
+    			}
+    		}
+    	}
+    }
+    
 
     public boolean canSetTrap() {
     	/*tmp.set(getPosition());

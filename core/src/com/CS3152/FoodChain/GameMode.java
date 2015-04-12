@@ -156,21 +156,7 @@ public class GameMode implements Screen {
 //				   					   map, actors);
         canvas.getUIControllerStage().setPanic(AIController.getPanicPercentage());
         collisionController.setControls(controls);
-        //loadTextures
-        /*
-        traps = map.getStartingInventory();
-        for (Trap trap : traps.get("WOLF_TRAP")) {
-    		trap.setInInventory(true);
-        }
-        
-        for (Trap trap : traps.get("REGULAR_TRAP")) {
-        	trap.setInInventory(true);
-        }
-        
-        for (Trap trap : traps.get("SHEEP_TRAP")) {
-        	trap.setInInventory(true);
-        }
-        */
+
 	}
 
 	/**
@@ -322,12 +308,11 @@ public class GameMode implements Screen {
 	        accumulator -= TIME_STEP;
 	    }
 
-		collisionController.update();		
-		
-		/*} else {
-			//hunter.update(InputController.NO_ACTION);
+		collisionController.update();	
+		if(trapController.getSelectedTrap() == null || !trapController.canSetTrap()){
+			trapController.autoSelectTrap();
 		}
-		*/ 
+		
     	
     }
     
