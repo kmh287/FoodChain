@@ -38,7 +38,7 @@ public class GameMode implements Screen {
     private Stage stage; 
     private UIControllerStage uis;
     private HashMap<String, List<Trap>> traps;
-    private UIController ui;
+    private TrapController trapController;
 	private float TIME_STEP = 1/200f;
 	private float frameTime;
 	
@@ -109,13 +109,11 @@ public class GameMode implements Screen {
         //For now we will hard code the level to load
         //When we implement a UI that may ask players
         //what level to start on. This code will change
-        map = loadMap("oTest");
+        map = loadMap("alphaLevel2");
         map.setDimensions();
         map.createGraph();
         map.LoadContent(manager);
         canvas.getUIControllerStage().loadTextures(manager);
-        //ui = new UIController();
-        //ui.loadTextures(manager);
         animals = new ArrayList<Animal>();
         /*size of animal list + the player 
         controls = new InputController[animals.size() + 1]; 
@@ -135,14 +133,15 @@ public class GameMode implements Screen {
         //The hunter is always first in this array
         controls = new InputController[animals.size() + 1]; 
         controls[0] = new PlayerController();
-        //tmp = new Vector2();
         
-        createHunter(map.getHunterStartingCoordinate() 
-                /*,map.getStartingInventory()*/
-        		);
-        canvas.getUIControllerStage().setHunter(hunter);
-	    
-	    traps = (HashMap<String, List<Trap>>) hunter.getInventory();
+        createHunter(map.getHunterStartingCoordinate());
+        
+        trapController = new TrapController(collisionController);
+        
+        canvas.getUIControllerStage().setTrapController(trapController);
+        
+
+	    traps = (HashMap<String, List<Trap>>) trapController.getInventory();
     
         
         List<Actor> actors = new ArrayList<Actor>();
@@ -158,21 +157,7 @@ public class GameMode implements Screen {
 //				   					   map, actors);
         canvas.getUIControllerStage().setPanic(AIController.getPanicPercentage());
         collisionController.setControls(controls);
-        //loadTextures
-        /*
-        traps = map.getStartingInventory();
-        for (Trap trap : traps.get("WOLF_TRAP")) {
-    		trap.setInInventory(true);
-        }
-        
-        for (Trap trap : traps.get("REGULAR_TRAP")) {
-        	trap.setInInventory(true);
-        }
-        
-        for (Trap trap : traps.get("SHEEP_TRAP")) {
-        	trap.setInInventory(true);
-        }
-        */
+
 	}
 
 	private String formatObjective(String obj){
@@ -217,29 +202,6 @@ public class GameMode implements Screen {
 	    hunter.setAwake(true);
 	    hunter.setBodyType(BodyDef.BodyType.DynamicBody);
 	    collisionController.addObject(hunter);
-	    //collisionController.addObject(hunter, "HUNTER");
-	    
-	    Trap tmp = new RegularTrap();
-	    tmp.setSensor(true);
-	    tmp.setBodyType(BodyDef.BodyType.StaticBody);
-	    collisionController.addObject(tmp);
-	    //collisionController.addObject(tmp, "REGULAR_TRAP");
-	    hunter.addToInventory(tmp);
-	    hunter.setSelectedTrap(InputController.ONE);
-	    tmp = new SheepTrap();
-	    tmp.setInInventory(false);
-	    tmp.setSensor(true);
-	    tmp.setBodyType(BodyDef.BodyType.StaticBody);
-	    collisionController.addObject(tmp);
-	    //collisionController.addObject(tmp, "SHEEP_TRAP");
-	    hunter.addToInventory(tmp);
-	    tmp = new WolfTrap();
-	    tmp.setInInventory(false);
-	    tmp.setSensor(true);
-	    tmp.setBodyType(BodyDef.BodyType.StaticBody);
-	    collisionController.addObject(tmp);
-	    //collisionController.addObject(tmp, "WOLF_TRAP");
-	    hunter.addToInventory(tmp);
 	}
 	
 	/**
@@ -352,7 +314,6 @@ public class GameMode implements Screen {
     }
 
     private void update(float delta){
-
     		//Check the objective every second, end the game if the player has won or if the objective
     		//cannot be achieved
     		if (ticks % 60 == 0){
@@ -365,18 +326,15 @@ public class GameMode implements Screen {
 	    		}
     		}
     	
-    		hunter.update(delta);
-		//System.out.println(hunter.getAngle());
-		hunter.setSelectedTrap(controls[0].getNum());
+		hunter.update(delta);
+		trapController.setSelectedTrap(controls[0].getNum());
 		//Vector2 click = controls[0].getClickPos();
 		Vector2 hunterps = hunter.getPosition(); 
 		//Vector2 trappos = 0;
-		if (controls[0].isClicked()  && hunter.canSetTrap(hunterps)) {
+		if (controls[0].isClicked()  && trapController.canSetTrap()) {
 			//increment hunter frames
-			//hunter.setTrapDown(click);	
 			//set down in front of hunter.
-			hunter.setTrap();
-		
+			trapController.setTrap(hunter);
 		}
 		
 		//if WASD pressed, then update frame
@@ -417,12 +375,11 @@ public class GameMode implements Screen {
 	        accumulator -= TIME_STEP;
 	    }
 
-		collisionController.update();		
-		
-		/*} else {
-			//hunter.update(InputController.NO_ACTION);
+		collisionController.update();	
+		if(trapController.getSelectedTrap() == null || !trapController.canSetTrap()){
+			trapController.autoSelectTrap();
 		}
-		*/ 
+		
     	
     }
     
