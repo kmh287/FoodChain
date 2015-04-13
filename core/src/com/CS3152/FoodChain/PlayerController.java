@@ -76,6 +76,10 @@ public class PlayerController implements InputController{
 		return Gdx.input.isKeyPressed(Input.Keys.SPACE); 
 	}
 	
+	public boolean resetPressed(){
+		return Gdx.input.isKeyPressed(Input.Keys.R);
+	}
+	
 	public int getNum(){
 		if (keyboard && mouse) {
 			if (Gdx.input.isKeyPressed(Input.Keys.NUM_1)) return ONE; 
