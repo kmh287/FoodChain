@@ -246,45 +246,47 @@ public class Hunter extends Actor {
     }*/
     
     public void setTrap() {
-    	//Determine which direction the hunter is facing
-    	float angle = getAngle();
+	    	//Determine which direction the hunter is facing
+	    	float angle = getAngle();
+		    	
+	    	if (angle == 0.0f) {
+	    		selectedTrap.setPosition(getPosition().x, getPosition().y - 40.0f);
+	        	//update inventory
+	    		//set selectedTrap inventory status to false
+	    		selectedTrap.setInInventory(false);
+	    	}
+	    	else if (angle == (float) (Math.PI/4.0f)) {
+	    		selectedTrap.setPosition(getPosition().x + 30.0f, getPosition().y - 30.0f);
+	    		selectedTrap.setInInventory(false);
+	    	}
+	    	else if (angle == (float) (Math.PI/2.0f)) {
+	    		selectedTrap.setPosition(getPosition().x + 40.0f, getPosition().y);
+	    		selectedTrap.setInInventory(false);
+	    	}
+	    	else if (angle == (float) (3.0*Math.PI/4.0)) {
+	    		selectedTrap.setPosition(getPosition().x + 30.0f, getPosition().y + 30.0f);
+	    		selectedTrap.setInInventory(false);
+	    	}
+	    	else if (angle == (float) (Math.PI)) {
+	    		selectedTrap.setPosition(getPosition().x, getPosition().y + 40.0f);
+	    		selectedTrap.setInInventory(false);
+	    	}
+	    	else if (angle == (float) -(Math.PI/2.0f)) {
+	    		selectedTrap.setPosition(getPosition().x - 40.0f, getPosition().y);
+	    		selectedTrap.setInInventory(false);
+	    	}
+	    	else if (angle == (float) -(Math.PI/4.0f)) {
+	    		selectedTrap.setPosition(getPosition().x - 30.0f, getPosition().y - 30.0f);
+	    		selectedTrap.setInInventory(false);
+	    	}
+	    	else if (angle == (float) -(3.0*Math.PI/4.0f)) {
+	    		selectedTrap.setPosition(getPosition().x - 30.0f, getPosition().y + 30.0f);
+	    		selectedTrap.setInInventory(false);
+	    	}
+	    	else{
+	    		System.out.println("uh oh");
+	    	}
     	
-    	if (angle == 0.0f) {
-    		selectedTrap.setPosition(getPosition().x, getPosition().y - 40.0f);
-        	//update inventory
-    		//set selectedTrap inventory status to false
-    		selectedTrap.setInInventory(false);
-    	}
-    	else if (angle == (float) (Math.PI/4.0f)) {
-    		selectedTrap.setPosition(getPosition().x + 30.0f, getPosition().y - 30.0f);
-    		selectedTrap.setInInventory(false);
-    	}
-    	else if (angle == (float) (Math.PI/2.0f)) {
-    		selectedTrap.setPosition(getPosition().x + 40.0f, getPosition().y);
-    		selectedTrap.setInInventory(false);
-    	}
-    	else if (angle == (float) (3.0*Math.PI/4.0)) {
-    		selectedTrap.setPosition(getPosition().x + 30.0f, getPosition().y + 30.0f);
-    		selectedTrap.setInInventory(false);
-    	}
-    	else if (angle == (float) (Math.PI)) {
-    		selectedTrap.setPosition(getPosition().x, getPosition().y + 40.0f);
-    		selectedTrap.setInInventory(false);
-    	}
-    	
-    	else if (angle == (float) -(Math.PI/2.0f)) {
-    		selectedTrap.setPosition(getPosition().x - 40.0f, getPosition().y);
-    		selectedTrap.setInInventory(false);
-    	}
-    	else if (angle == (float) -(Math.PI/4.0f)) {
-    		selectedTrap.setPosition(getPosition().x - 30.0f, getPosition().y - 30.0f);
-    		selectedTrap.setInInventory(false);
-    	}
-    	else if (angle == (float) -(3.0*Math.PI/4.0f)) {
-    		selectedTrap.setPosition(getPosition().x - 30.0f, getPosition().y + 30.0f);
-    		selectedTrap.setInInventory(false);
-    	}
-
 		//set selectedTrap to next available trap inInventory of same type
 		//if no free trap then selectedTrap does not change and player can't put down another
 		for (Trap trap : inventory.get(selectedTrap.getType())){
@@ -293,6 +295,7 @@ public class Hunter extends Actor {
 			}
 		}
     }
+
     
     public void setTrapDown(Vector2 clickPos) {
 	    selectedTrap.setPosition(clickPos);

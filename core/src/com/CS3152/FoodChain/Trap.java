@@ -33,6 +33,8 @@ public class Trap extends BoxObject {
 	private boolean inInventory;
 	/** Whether the trap is placed on the map */
 	private boolean onMap;
+	/** Boolean to resolve the "trap bug" */
+	private boolean setWell;
 	/** Whether the trap is the currently selected trap */
 	private boolean isSelected;
 	/** The type of the trap */
@@ -48,6 +50,7 @@ public class Trap extends BoxObject {
 		super(new TextureRegion(texture), 0.0f, 0.0f, texture.getWidth(), texture.getHeight());
 		inInventory = true;
 		onMap = false;
+		setWell = false;
 		this.type=type;
 	}
 	
@@ -130,7 +133,7 @@ public class Trap extends BoxObject {
      * @param value whether the trap is in the player's inventory.
      */
     public void setInInventory(boolean value) {
-    	this.inInventory = value;
+    		this.inInventory = value;
     }
     
     /**
@@ -174,6 +177,14 @@ public class Trap extends BoxObject {
     public boolean getOnMap() {
     	return onMap;
     }
+    
+    public void setSetWell(boolean val){
+		setWell = val;
+    }
+
+	public boolean getSetWell(){
+			return setWell;
+	}
     
     /**
      * Draws the trap on the GameCanvas if it is on the map

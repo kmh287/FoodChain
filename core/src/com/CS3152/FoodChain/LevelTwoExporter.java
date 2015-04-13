@@ -94,8 +94,8 @@ public class LevelTwoExporter {
         */
         
         GameMap gm = new GameMap(layout, animals, 
-                                coords, playerStart
-                                //,startingInventory
+                                coords, playerStart,
+                                "0&0"
                                 );
         try {
             MapManager.MapToGson(gm, "level2");
