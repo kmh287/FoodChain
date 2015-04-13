@@ -28,14 +28,15 @@ public class GameMode implements Screen {
     
 	private GameCanvas canvas;
    // private boolean active;
+	
+	private static enum gameCondition {IN_PLAY, WIN, LOSE};
+	
     private GameMap map;
     private AssetManager manager;
     private List<Animal> animals;
     private Hunter hunter;
-    
     private Stage stage; 
-    private UIControllerStage uis; 
-
+    private UIControllerStage uis;
     private HashMap<String, List<Trap>> traps;
     private TrapController trapController;
 	private float TIME_STEP = 1/200f;
@@ -159,12 +160,22 @@ public class GameMode implements Screen {
 
 	}
 
+	private String formatObjective(String obj){
+		String[] goals = obj.split("&");
+		int numPigs = Integer.parseInt(goals[0]);
+		int numWolves = Integer.parseInt(goals[1]);
+		String pig = (numPigs == 1) ? "pig" : "pigs";
+		String wolf = (numWolves == 1) ? "wolf" : "wolves";
+		return "Your goal in this level is to catch " + numPigs + " " + pig + 
+				" and " + numWolves + " " + wolf;
+	}
+	
 	/**
 	 *  Function to wrap the try/catch required for loading
 	 *  a map in.
 	 * @return An instance of GameMap for the requested level
 	 */
-	public GameMap loadMap(String mapName){
+	private GameMap loadMap(String mapName){
         try {
             map = MapManager.GsonToMap(mapName);
         } catch (FileNotFoundException e) {
@@ -174,6 +185,7 @@ public class GameMode implements Screen {
             System.exit(-1);
             return null;
         }
+        System.out.println(formatObjective(map.getObjective()));
         return map;
 	}
 	
@@ -208,21 +220,21 @@ public class GameMode implements Screen {
 	    if (coordinates.size() != aTypes.size()){
 	        throw new IllegalArgumentException("Lists of unequal size");
 	    }
+	    
 	    Iterator<actorType> aTypesIt = aTypes.iterator();
 	    Iterator<Vector2> coordIt = coordinates.iterator();
 	    while (aTypesIt.hasNext() && coordIt.hasNext()){
 	        actorType currType = aTypesIt.next();
 	        Vector2 coord = coordIt.next();
-	        
 	        Animal newAnimal;
-	        
 	        switch(currType){
 	            case PIG:
 	            		Pig.loadTexture(manager);
 	                newAnimal = new Pig(map.mapXToScreen((int)coord.x), 
-	                                      map.mapYToScreen((int)coord.y));
+	                                    map.mapYToScreen((int)coord.y));
 	                animals.add(newAnimal);
 	                break;
+	                
 	            case WOLF:
 	            		Wolf.loadTexture(manager);
 	                newAnimal = new Wolf(map.mapXToScreen((int)coord.x), 
@@ -230,10 +242,11 @@ public class GameMode implements Screen {
 	                //See comment in sheep
 	                animals.add(newAnimal);
 	                break;
+	                
 	            case OWL:
-            		Owl.loadTexture(manager);
-            		newAnimal = new Owl(map.mapXToScreen((int)coord.x), 
-                                     map.mapYToScreen((int)coord.y));
+            			Owl.loadTexture(manager);
+            			newAnimal = new Owl(map.mapXToScreen((int)coord.x), 
+                                        map.mapYToScreen((int)coord.y));
 	                //See comment in sheep
 	                animals.add(newAnimal);
 	                break;
@@ -254,21 +267,76 @@ public class GameMode implements Screen {
         // TODO Auto-generated method stub
         
     }
+    
+    private gameCondition checkObjective(){
+    	
+    		if (!hunter.getAlive()){
+    			return gameCondition.LOSE;
+    		}
+    	
+		String[] goals = map.getObjective().split("&");
+		int numPigs = Integer.parseInt(goals[0]);
+		int numWolves = Integer.parseInt(goals[1]);
+		int numPigsCaptured = 0;
+		int numWolvesCaptured = 0;
+		int numPigsOnMap = 0;
+		int numWolvesOnMap = 0;
+		for (Animal animal : animals){
+			if (animal.getType() == actorType.PIG){
+				if (animal.getTrapped()){
+					numPigsCaptured++;
+				} else if (animal.isActive()){
+					numPigsOnMap++;
+				}
+			}
+			else if (animal.getType() == actorType.WOLF){
+				if (animal.getTrapped()){
+					numWolvesCaptured++;
+				} else if (animal.isActive()){
+					numWolvesOnMap++;
+				}
+			}
+		}
+		//Win
+		if (numPigsCaptured >= numPigs && numWolvesCaptured >= numWolves){
+			return gameCondition.WIN;
+		}
+		//Lose
+
+		if ((numPigsCaptured + numPigsOnMap < numPigs) || 
+			(numWolvesCaptured + numWolvesOnMap < numWolves)){
+			return gameCondition.LOSE;
+		}
+		return gameCondition.IN_PLAY;
+		
+		
+		
+    }
 
     private void update(float delta){
-
-   	hunter.update(delta);
+    		//Check the objective every second, end the game if the player has won or if the objective
+    		//cannot be achieved
+    		if (ticks % 60 == 0){
+	    		gameCondition con = checkObjective();
+	    		if (con == gameCondition.WIN){
+	    			//System.out.println("You win!");
+	    		}
+	    		else if (con == gameCondition.LOSE){
+	    			//System.out.println("You lose");
+	    		}
+    		}
+    	
+		hunter.update(delta);
 		trapController.setSelectedTrap(controls[0].getNum());
 		//Vector2 click = controls[0].getClickPos();
 		Vector2 hunterps = hunter.getPosition(); 
 		//Vector2 trappos = 0;
 		if (controls[0].isClicked()  && trapController.canSetTrap()) {
 			//increment hunter frames
-			
 			//set down in front of hunter.
 			trapController.setTrap(hunter);
-		
 		}
+		
 		//if WASD pressed, then update frame
 		if(controls[0].getAction()!=InputController.NO_ACTION){
 			if(ticks%10==0){
@@ -298,7 +366,6 @@ public class GameMode implements Screen {
 			i++;
 		}
 		ticks++;
-		
 
 	    // fixed time step
 	    frameTime = Math.min(delta, 1/60f);

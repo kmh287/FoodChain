@@ -231,8 +231,13 @@ public class CollisionController implements ContactListener {
 		if (bd1 instanceof Trap && bd2 instanceof Hunter) {
 			Trap trap = (Trap) bd1;
 			if (trap.getOnMap()) {
-				trap.setOnMap(false);
-				trap.setInInventory(true);
+				if (trap.getSetWell()){
+					trap.setOnMap(false);
+					trap.setInInventory(true);
+				}
+				else{
+					trap.setSetWell(true);
+				}
 			}
 		}
 		if (bd1 instanceof Animal && bd2 instanceof Trap) {
@@ -241,7 +246,6 @@ public class CollisionController implements ContactListener {
 
 			if (trap.getOnMap() && trap.getType() == "REGULAR_TRAP"
 					&& animal.getType() == Actor.actorType.PIG) {
-
 				animal.setTrapped(true);
 				trap.setOnMap(false);
 				trapToRemove = "REGULAR_TRAP";
@@ -261,6 +265,7 @@ public class CollisionController implements ContactListener {
 		if (bd1 instanceof Trap && bd2 instanceof Animal) {
 			Animal animal = (Animal) bd2;
 			Trap trap = (Trap) bd1;
+			
 			if (trap.getOnMap() && trap.getType() == "REGULAR_TRAP"
 					&& animal.getType() == Actor.actorType.PIG) {
 				animal.setTrapped(true);

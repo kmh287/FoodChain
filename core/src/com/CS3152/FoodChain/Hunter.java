@@ -94,7 +94,6 @@ public class Hunter extends Actor {
     public float getMoveSpeed() {
 		return MOVE_SPEED;
 	}
-
     
     /**
      * @return the bottom LeftxPos

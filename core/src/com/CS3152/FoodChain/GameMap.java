@@ -33,7 +33,9 @@ public class GameMap implements IndexedGraph<MapNode> {
     //starting trap
 
     private Vector2 hunterStartPosition = null;
-	//private HashMap<String, List<Trap>> hunterStartingInventory = null;
+
+    //Objective for this level
+    private String objective = null;
     
     //Should be 16 tiles across, and 9 down.
     //Therefore, layout should be [9][16] to match
@@ -155,12 +157,13 @@ public class GameMap implements IndexedGraph<MapNode> {
     public GameMap(Tile.tileType[][] layout,
                    List<Actor.actorType> animals,
                    List<Vector2> coordinates,
-                   Vector2 hunterStartPosition
-                   ) {
+                   Vector2 hunterStartPosition,
+                   String objective) {
     	this.layout = layout;
         this.animals = animals;
         this.coordinates = coordinates;
         this.hunterStartPosition = hunterStartPosition;
+        this.objective = objective;
         this.mapWidth = layout[0].length;
         this.mapHeight = layout.length;
         this.nodeCount = 0;
@@ -452,6 +455,10 @@ public class GameMap implements IndexedGraph<MapNode> {
     public Vector2 getHunterStartingCoordinate() {
         return this.hunterStartPosition;
     }
+
+	public String getObjective(){
+			return this.objective;
+	}
 
 //    public HashMap<String, List<Trap>> getStartingInventory() {
 //        return this.hunterStartingInventory; 
