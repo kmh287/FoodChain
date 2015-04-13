@@ -41,6 +41,7 @@ public class GameMode implements Screen {
     private TrapController trapController;
 	private float TIME_STEP = 1/200f;
 	private float frameTime;
+	private String levelName;
 	
 	private boolean start;
 
@@ -106,10 +107,15 @@ public class GameMode implements Screen {
         PreLoadContent(manager);
         manager.finishLoading();
         LoadContent(manager);
+        initializeLevel(canvas, "alphaLevel2");
+	}
+        
+ 	private void initializeLevel(GameCanvas canvas, String levelName){
         //For now we will hard code the level to load
         //When we implement a UI that may ask players
         //what level to start on. This code will change
-        map = loadMap("alphaLevel2");
+ 		this.levelName = levelName;
+        map = loadMap(levelName);
         map.setDimensions();
         map.createGraph();
         map.LoadContent(manager);
@@ -157,7 +163,6 @@ public class GameMode implements Screen {
 //				   					   map, actors);
         canvas.getUIControllerStage().setPanic(AIController.getPanicPercentage());
         collisionController.setControls(controls);
-
 	}
 
 	private String formatObjective(String obj){
@@ -314,6 +319,12 @@ public class GameMode implements Screen {
     }
 
     private void update(float delta){
+    		
+    		//Check if reset has been pressed
+    		if (controls[0].resetPressed()){
+    			initializeLevel(canvas, levelName);
+    		}
+    	
     		//Check the objective every second, end the game if the player has won or if the objective
     		//cannot be achieved
     		if (ticks % 60 == 0){

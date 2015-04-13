@@ -705,4 +705,9 @@ public class AIController implements InputController {
       }
 
     }
+
+	@Override
+	public boolean resetPressed() {
+		return false;
+	}
 }
