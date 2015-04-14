@@ -1,6 +1,6 @@
 package com.CS3152.FoodChain;
 
-import java.io.FileNotFoundException; 
+import java.io.FileNotFoundException; 	
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -10,6 +10,7 @@ import com.CS3152.FoodChain.Actor.actorType;
 
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -54,7 +55,9 @@ public class GameMode implements Screen {
 	
 	private float accumulator = 0;
 	
-	
+	/**sound assets here **/
+	//private static final String TRAP_DROP_FILE = "sounds/trap_drop.mp3";
+	//protected static Sound trapSound;
     
 	/** 
 	 * Preloads the assets for this game.
@@ -70,6 +73,8 @@ public class GameMode implements Screen {
 	 */
 	public static void PreLoadContent(AssetManager manager) {
 		Trap.PreLoadContent(manager);
+		//manager.load(TRAP_DROP_FILE,Sound.class);
+		SoundController.PreLoadContent(manager);
 	}
 	
 	/** 
@@ -87,6 +92,9 @@ public class GameMode implements Screen {
 	 */
 	public static void LoadContent(AssetManager manager) {
 		Trap.LoadContent(manager);
+		//trapSound = manager.get(TRAP_DROP_FILE,  Sound.class);
+		SoundController.LoadContent(manager);
+		
 	}
 	
     /**
@@ -285,6 +293,7 @@ public class GameMode implements Screen {
 			if (animal.getType() == actorType.PIG){
 				if (animal.getTrapped()){
 					numPigsCaptured++;
+					//testSound.play(); 
 				} else if (animal.isActive()){
 					numPigsOnMap++;
 				}
@@ -335,6 +344,7 @@ public class GameMode implements Screen {
 			//increment hunter frames
 			//set down in front of hunter.
 			trapController.setTrap(hunter);
+			hunter.play(SoundController.TRAP_SOUND);
 		}
 		
 		//if WASD pressed, then update frame
@@ -507,6 +517,7 @@ public class GameMode implements Screen {
     @Override
     public void dispose() {
         // TODO Auto-generated method stub
+    	SoundController.UnloadContent(manager);
         
     }
 

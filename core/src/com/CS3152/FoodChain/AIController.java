@@ -1,16 +1,18 @@
 package com.CS3152.FoodChain;
 
-import java.util.*; 
+import java.util.*; 	
 
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import com.badlogic.gdx.ai.pfa.PathSmoother;
 import com.badlogic.gdx.ai.pfa.indexed.IndexedAStarPathFinder;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
+
 
 /**
  * InputController corresponding to AI control.
@@ -99,10 +101,14 @@ public class AIController implements InputController {
     private Random random;
 
     private static float panicPercentage;
-
+    private Hunter hunter; 
     
     private Vector2 vect;
     private float angle;
+    
+    private Sound sound;
+	/** The associated sound cue (if ship is making a sound). */
+	private long sndcue;
     /*
      * Creates an AIController for the animal
      *
@@ -155,6 +161,9 @@ public class AIController implements InputController {
         panicPercentage = 0f;
         angle = animal.getAngle();
         vect = new Vector2(animal.getPosition());
+        
+        sound = null;
+		sndcue = -1;
     }
     
     /*
@@ -242,7 +251,11 @@ public class AIController implements InputController {
                 if (getAnimal().canKill((Actor)objSeen)) {
                   setScared(null);
                   setTurns();
+ 
                   setTarget((Actor)objSeen);
+                  if (animal.getTypeNameString() == "Wolf") {
+                	  play(SoundController.WOLF_ANGRY_SOUND);
+                  }
                 }
               }
               else {
@@ -303,6 +316,7 @@ public class AIController implements InputController {
           if (getAnimal().getTypeNameString() == "Owl") {
             //System.out.println(getAnimal().getTypeNameString() + "owlhasTarget");
             //fleeOwl();
+        	  
           }
           else {
             //System.out.println(getAnimal().getTypeNameString() + "hasTarget");
@@ -325,7 +339,7 @@ public class AIController implements InputController {
             vect.set(vect.x + (float)Math.cos(angle), vect.y + (float)Math.sin(angle));
             goal.set(vect.x, vect.y);
             //System.out.println("Owl angle owwll: " + angle);
-            
+            play(SoundController.OWL_SOUND);
           }
           else {
           //System.out.println(animal.getType() + ": patrol");
@@ -705,4 +719,13 @@ public class AIController implements InputController {
       }
 
     }
+    
+    public void play(String sound) {
+		if (sndcue != -1) {
+			this.sound.stop(sndcue);
+		}
+		this.sound = SoundController.get(sound);
+		sndcue = this.sound.loop();
+	}
+
 }
