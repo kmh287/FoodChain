@@ -1,11 +1,18 @@
 package com.CS3152.FoodChain;
 
+import com.badlogic.gdx.ai.steer.Steerable;
+import com.badlogic.gdx.ai.steer.SteeringAcceleration;
+import com.badlogic.gdx.ai.steer.SteeringBehavior;
+import com.badlogic.gdx.ai.utils.Location;
+import com.badlogic.gdx.ai.tests.steer.box2d.Box2dLocation;
+import com.badlogic.gdx.ai.tests.steer.box2d.Box2dSteeringUtils;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 
 
 public abstract class Actor extends CircleObject {
+	
 	// Whether the actor is alive
 	private boolean alive = true;
 	//The direction this actor is facing
@@ -40,9 +47,9 @@ public abstract class Actor extends CircleObject {
     
     public Actor(TextureRegion tr, actorType type, float x, float y, float width, 
     		     float height, actorType[] victims) {
-	    	super(tr,x,y, height/2);
-	    	this.type = type;
-	    	this.tr = tr;
+	    super(tr,x,y, height/2);
+	    this.type = type;
+	    this.tr = tr;
         this.facing = new Vector2();
         this.victims = victims;
         setFixedRotation(true);
@@ -139,5 +146,4 @@ public abstract class Actor extends CircleObject {
     public void draw(GameCanvas canvas){
     	super.draw(canvas);
     }
-	
 }

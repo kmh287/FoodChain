@@ -126,6 +126,4 @@ public class Hunter extends Actor {
     	sprite.flip(false,true);
     	super.setTexture(sprite);
     }
-   
-
 }
