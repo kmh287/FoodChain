@@ -328,10 +328,12 @@ public class GameMode implements Screen {
     	
 		hunter.update(delta);
 		trapController.setSelectedTrap(controls[0].getNum());
-		//Vector2 click = controls[0].getClickPos();
+		
 		Vector2 hunterps = hunter.getPosition(); 
-		//Vector2 trappos = 0;
-		if (controls[0].isClicked()  && trapController.canSetTrap()) {
+		
+		controls[0].update();
+		
+		if (controls[0].isSpacePressed()  && trapController.canSetTrap()) {
 			//increment hunter frames
 			//set down in front of hunter.
 			trapController.setTrap(hunter);
