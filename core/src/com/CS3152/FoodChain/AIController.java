@@ -710,4 +710,22 @@ public class AIController implements InputController {
 	public boolean resetPressed() {
 		return false;
 	}
+
+	@Override
+	public boolean isSpacePressed() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean isSpaceHeldDown() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void update() {
+		// TODO Auto-generated method stub
+		
+	}
 }

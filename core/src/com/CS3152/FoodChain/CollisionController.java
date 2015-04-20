@@ -87,8 +87,6 @@ public class CollisionController implements ContactListener {
 
 	public void update() {
 		world.step(1/100f, 3, 3);
-<<<<<<< HEAD
-=======
 		//checkTrapped();
 		
 		//shit
@@ -101,7 +99,6 @@ public class CollisionController implements ContactListener {
 				trapOver.setSetWell(true);
 			}
 		}
->>>>>>> master
 	}
 	
 

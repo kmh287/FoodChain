@@ -13,22 +13,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
-public abstract class Animal extends Actor implements Steerable<Vector2>{
-	
-	float boundingRadius;
-	
-	boolean tagged;
-	
-	float maxLinearSpeed;
-	float maxLinearAcceleration;
-	float maxAngularSpeed;
-	float maxAngularAcceleration;
-	
-	boolean independentFacing;
-	
-	protected SteeringBehavior<Vector2> steeringBehavior;
-	
-	private final SteeringAcceleration<Vector2> steeringOutput = new SteeringAcceleration<Vector2>(new Vector2());
+public abstract class Animal extends Actor{
 
 	// Whether the animal is caught in a trap
 	private boolean trapped = false;
@@ -86,6 +71,8 @@ public abstract class Animal extends Actor implements Steerable<Vector2>{
 		setTexHeight(tr.getRegionHeight());
 		this.tagged = false;
 	}
+	
+	public abstract void createSteeringBehaviors();
 	
 	public void setPos(float x, float y){
 		
@@ -246,9 +233,11 @@ public abstract class Animal extends Actor implements Steerable<Vector2>{
 	public void drawSight(GameCanvas canvas) {
 		if (getAlive()) {
 			tmp.set(getPosition());
-			canvas.drawLine(Color.YELLOW, getPosition(), tmp.add(getLeftSectorLine()));
+			tmp.add(getLeftSectorLine());
+			canvas.drawLine(Color.YELLOW, getPosition(), tmp);
 			tmp.set(getPosition());
-			canvas.drawLine(Color.YELLOW, getPosition(), tmp.add(getRightSectorLine()));
+			tmp.add(getRightSectorLine());
+			canvas.drawLine(Color.YELLOW, getPosition(), tmp);
 		}
 	}
 	
@@ -259,165 +248,9 @@ public abstract class Animal extends Actor implements Steerable<Vector2>{
 		}
 	}
 	
-    public boolean isTagged() {
-    	return tagged;
-    }
-
-    public void setTagged(boolean tagged) {
-    	this.tagged = tagged;
-    }
-    
-    public boolean isIndependentFacing() {
-    	return independentFacing;
-    }
-
-    public void setIndependentFacing(boolean independentFacing) {
-    	this.independentFacing = independentFacing;
-    }
-    
-	public float getOrientation() {
-		return getBody().getAngle();
+	@Override
+	public void update(float delta) {
+		updateLOS(getAngle() + (float)Math.PI/2.0f);
+		super.update(delta);
 	}
-    
-    public float getBoundingRadius() {
-    	return boundingRadius;
-    }
-    
-	public Vector2 newVector() {
-		return new Vector2();
-	}
-    public Location<Vector2> newLocation() {
-    	return new Box2dLocation();
-    }
-    
-    public float vectorToAngle(Vector2 vector) {
-    	return Box2dSteeringUtils.vectorToAngle(vector);
-    }
-
-    public Vector2 angleToVector(Vector2 outVector, float angle) {
-    	return Box2dSteeringUtils.angleToVector(outVector, angle);
-    }
-
-    public SteeringBehavior<Vector2> getSteeringBehavior() {
-    	return steeringBehavior;
-    }
-    
-    public void setSteeringBehavior(SteeringBehavior<Vector2> steeringBehavior) {
-    	this.steeringBehavior = steeringBehavior;
-    }
-	
-    public void update (float deltaTime) {
-    	if (steeringBehavior != null) {
-    		// Calculate steering acceleration
-    		steeringBehavior.calculateSteering(steeringOutput);
-
-    		/*
-    		 * Here you might want to add a motor control layer filtering steering accelerations.
-    		 * 
-    		 * For instance, a car in a driving game has physical constraints on its movement: it cannot turn while stationary; the
-    		 * faster it moves, the slower it can turn (without going into a skid); it can brake much more quickly than it can
-    		 * accelerate; and it only moves in the direction it is facing (ignoring power slides).
-    		 */
-
-    		// Apply steering acceleration
-    		applySteering(steeringOutput, deltaTime);
-    	}
-    }
-
-    protected void applySteering (SteeringAcceleration<Vector2> steering, float deltaTime) {
-    	boolean anyAccelerations = false;
-
-    	// Update position and linear velocity.
-    	if (!steeringOutput.linear.isZero()) {
-    		//Vector2 force = steeringOutput.linear.scl(deltaTime);
-    		Vector2 force = steeringOutput.linear.scl(1);
-    		//body.applyForceToCenter(force, true);
-    		body.applyLinearImpulse(force, getPosition(), true);
-    		anyAccelerations = true;
-    	}
-
-    	// Update orientation and angular velocity
-    	if (isIndependentFacing()) {
-    		if (steeringOutput.angular != 0) {
-    			body.applyTorque(steeringOutput.angular * deltaTime, true);
-    			anyAccelerations = true;
-    		}
-    	}
-    	else {
-    		// If we haven't got any velocity, then we can do nothing.
-    		Vector2 linVel = getLinearVelocity();
-    		if (!linVel.isZero(getZeroLinearSpeedThreshold())) {
-    			float newOrientation = vectorToAngle(linVel);
-    			body.setAngularVelocity((newOrientation - getAngularVelocity()) * deltaTime); // this is superfluous if independentFacing is always true
-    			body.setTransform(body.getPosition(), newOrientation);
-    		}
-    	}
-
-    	if (anyAccelerations) {
-    		// body.activate();
-
-    		// TODO:
-    		// Looks like truncating speeds here after applying forces doesn't work as expected.
-    		// We should likely cap speeds form inside an InternalTickCallback, see
-    		// http://www.bulletphysics.org/mediawiki-1.5.8/index.php/Simulation_Tick_Callbacks
-
-    		// Cap the linear speed
-    		Vector2 velocity = body.getLinearVelocity();
-    		float currentSpeedSquare = velocity.len2();
-    		float maxLinearSpeed = getMaxLinearSpeed();
-    		if (currentSpeedSquare > maxLinearSpeed * maxLinearSpeed) {
-    			body.setLinearVelocity(velocity.scl(maxLinearSpeed / (float)Math.sqrt(currentSpeedSquare)));
-    		}
-
-    		// Cap the angular speed
-    		float maxAngVelocity = getMaxAngularSpeed();
-    		if (body.getAngularVelocity() > maxAngVelocity) {
-    			body.setAngularVelocity(maxAngVelocity);
-    		}
-    	}
-    }
-    
-    //
-    // Limiter implementation
-    //
-
-    public float getMaxLinearSpeed () {
-    	return maxLinearSpeed;
-    }
-
-    public void setMaxLinearSpeed (float maxLinearSpeed) {
-    	this.maxLinearSpeed = maxLinearSpeed;
-    }
-
-    public float getMaxLinearAcceleration () {
-    	return maxLinearAcceleration;
-    }
-
-    public void setMaxLinearAcceleration (float maxLinearAcceleration) {
-    	this.maxLinearAcceleration = maxLinearAcceleration;
-    }
-
-    public float getMaxAngularSpeed () {
-    	return maxAngularSpeed;
-    }
-
-    public void setMaxAngularSpeed (float maxAngularSpeed) {
-    	this.maxAngularSpeed = maxAngularSpeed;
-    }
-
-    public float getMaxAngularAcceleration () {
-    	return maxAngularAcceleration;
-    }
-
-    public void setMaxAngularAcceleration (float maxAngularAcceleration) {
-    	this.maxAngularAcceleration = maxAngularAcceleration;
-    }
-    
-    public float getZeroLinearSpeedThreshold () {
-    	return 0.001f;
-    }
-
-    public void setZeroLinearSpeedThreshold (float value) {
-    	throw new UnsupportedOperationException();
-    }
 }

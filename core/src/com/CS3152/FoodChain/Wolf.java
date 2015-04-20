@@ -1,6 +1,7 @@
 package com.CS3152.FoodChain;
 
 import com.badlogic.gdx.ai.steer.behaviors.PrioritySteering;
+import com.badlogic.gdx.ai.steer.behaviors.Seek;
 import com.badlogic.gdx.ai.steer.behaviors.Wander;
 import com.badlogic.gdx.ai.steer.limiters.LinearAccelerationLimiter;
 import com.badlogic.gdx.assets.AssetManager;
@@ -34,9 +35,16 @@ public class Wolf extends Animal{
         SIGHT_ANGLE = 1.5f*0.35;
         maxLinearSpeed = 500.0f;
         maxLinearAcceleration = 0.0f;
+        maxAngularSpeed = 500.0f;
+        maxAngularAcceleration = 500.0f;
         independentFacing = false;
-        
-        Wander<Vector2> wanderSB = new Wander<Vector2>(this)
+    }
+    
+    public void createSteeringBehaviors() {
+    	Seek<Vector2> seekSB = new Seek<Vector2>(this, GameMode.hunter);
+    	seekSB.setLimiter(new LinearAccelerationLimiter(250));
+    	
+    	Wander<Vector2> wanderSB = new Wander<Vector2>(this)
         		// Don't use Face internally because independent facing is off
 				.setFaceEnabled(false) //
 				// We don't need a limiter supporting angular components because Face is not used
@@ -46,9 +54,11 @@ public class Wolf extends Animal{
 				.setWanderOrientation(10) //
 				.setWanderRadius(100) //
 				.setWanderRate(MathUtils.PI / 5);
-        setSteeringBehavior(wanderSB);
         
         PrioritySteering<Vector2> prioritySteering = new PrioritySteering<Vector2>(this);
+        //prioritySteering.add(seekSB);
+        prioritySteering.add(wanderSB);
+        setSteeringBehavior(prioritySteering);
     }
 
     @Override

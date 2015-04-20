@@ -26,6 +26,9 @@ public class Owl extends Animal {
         SIGHT_ANGLE = 1.5f*0.35;
     }
 
+    public void createSteeringBehaviors() {
+    	
+    }
 	
 
 	@Override

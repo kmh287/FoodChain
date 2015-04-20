@@ -49,6 +49,9 @@ public class Hunter extends Actor {
         sprite = new FilmStrip(tex,1,4,4);
         drawScale.x=scaleXDrawHunter;
         drawScale.y=scaleYDrawHunter;
+        maxLinearSpeed = 500.0f;
+        maxLinearAcceleration = 0.0f;
+        independentFacing = false;
         //set selected trap
         /*
         for (Trap trap : traps.get("REGULAR_TRAP")) {
