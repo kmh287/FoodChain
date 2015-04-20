@@ -10,6 +10,7 @@ public class PlayerController implements InputController{
 	/** Whether to enable keyboard and mouse control */
 	private boolean keyboard;
 	private boolean mouse;
+	private int spaceTicks = 0;
 	
 	private Vector2 PlayerAction;
 
@@ -71,9 +72,22 @@ public class PlayerController implements InputController{
 	    
 	} 
 	
-	public boolean isClicked(){
+	public boolean isSpacePressed(){
+		//if space bar is held down for long time, then do not register
+		if(spaceTicks>1){
+			return false;
+		}
+		else{
+			return Gdx.input.isKeyPressed(Input.Keys.SPACE); 
+		}
+	}
+	
+	public boolean isSpaceHeldDown(){
 		//return Gdx.input.isButtonPressed(Input.Buttons.LEFT);
-		return Gdx.input.isKeyPressed(Input.Keys.SPACE); 
+		if(spaceTicks>10){
+			return true;
+		}
+		return false;
 	}
 	
 	public boolean resetPressed(){
@@ -87,5 +101,14 @@ public class PlayerController implements InputController{
 			if (Gdx.input.isKeyPressed(Input.Keys.NUM_3)) return THREE; 
 	}
 		return 0;
+	}
+	
+	public void update(){
+		if( Gdx.input.isKeyPressed(Input.Keys.SPACE) && spaceTicks < 100){
+			spaceTicks+=1;
+		}
+		else if(!Gdx.input.isKeyPressed(Input.Keys.SPACE) || spaceTicks > 100){
+			spaceTicks=0;
+		}
 	}
 }
