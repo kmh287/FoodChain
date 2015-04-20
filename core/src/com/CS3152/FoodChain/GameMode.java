@@ -109,7 +109,7 @@ public class GameMode implements Screen {
         PreLoadContent(manager);
         manager.finishLoading();
         LoadContent(manager);
-        initializeLevel(canvas, "blah");
+        initializeLevel(canvas, "alphaLevel2");
 	}
         
  	private void initializeLevel(GameCanvas canvas, String levelName){
