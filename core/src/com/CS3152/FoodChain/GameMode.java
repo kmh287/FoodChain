@@ -469,7 +469,7 @@ public class GameMode implements Screen {
         PooledList<SimplePhysicsObject> objects = collisionController.getObjects();
 		for(PhysicsObject obj : objects) {
 			if (obj instanceof Actor && ((Actor) obj).getAlive()) {
-				obj.drawDebug(canvas);
+				//obj.drawDebug(canvas);
 				if (obj instanceof Animal) {
 					Animal a = (Animal) obj;
 					if (!a.getTrapped()) {
