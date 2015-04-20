@@ -329,8 +329,10 @@ public abstract class Animal extends Actor implements Steerable<Vector2>{
 
     	// Update position and linear velocity.
     	if (!steeringOutput.linear.isZero()) {
-    		Vector2 force = steeringOutput.linear.scl(deltaTime);
-    		body.applyForceToCenter(force, true);
+    		//Vector2 force = steeringOutput.linear.scl(deltaTime);
+    		Vector2 force = steeringOutput.linear.scl(1);
+    		//body.applyForceToCenter(force, true);
+    		body.applyLinearImpulse(force, getPosition(), true);
     		anyAccelerations = true;
     	}
 

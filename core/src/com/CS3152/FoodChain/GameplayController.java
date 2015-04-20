@@ -19,7 +19,7 @@ public class GameplayController {
 		this.controls = controls;
 	}
 	
-	public void update() {
+	public void update(float delta) {
 		//Updates the animals' actions
 		//i is the index of each animal AI in controls
 		int i = 1;
@@ -32,14 +32,15 @@ public class GameplayController {
 			}
 			//unsure about order of objects.
 			else if (actor instanceof Animal){
-				if (actor instanceof Owl) {
+				/**if (actor instanceof Owl) {
 					//System.out.println ("instanceof"); 
 					moveOwl((Owl) actor, i); 
 				}
 				else {
 					move((Animal) actor,i);
 				
-				}
+				}*/
+				actor.update(delta);
 				i++;
 			}
 			//System.out.println(o.getPosition().toString());

@@ -25,6 +25,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 public class GameMode implements Screen {
 	
 	private CollisionController collisionController;
+	private GameplayController gameplayController;
     
 	private GameCanvas canvas;
    // private boolean active;
@@ -155,6 +156,9 @@ public class GameMode implements Screen {
 //				    				   map, actors);
 //        controls[2] = new AIController(animals.get(1), collisionController.getWorld(),
 //				   					   map, actors);
+        Actor[] actorArray = new Actor[actors.size()];
+        actors.toArray(actorArray);
+        gameplayController = new GameplayController(map, actorArray, controls);
         canvas.getUIControllerStage().setPanic(AIController.getPanicPercentage());
         collisionController.setControls(controls);
 
@@ -232,6 +236,7 @@ public class GameMode implements Screen {
 	            		Pig.loadTexture(manager);
 	                newAnimal = new Pig(map.mapXToScreen((int)coord.x), 
 	                                    map.mapYToScreen((int)coord.y));
+	                newAnimal.setDensity(DEFAULT_DENSITY);
 	                animals.add(newAnimal);
 	                break;
 	                
@@ -325,6 +330,8 @@ public class GameMode implements Screen {
 	    			//System.out.println("You lose");
 	    		}
     		}
+    	
+    	gameplayController.update(delta);
     	
 		hunter.update(delta);
 		trapController.setSelectedTrap(controls[0].getNum());
