@@ -392,6 +392,16 @@ public class GameMode implements Screen {
 					((Pig) an).setStillFrame();
 				}
 			}
+			if(an instanceof Wolf){
+				if(controls[i].getAction()!=InputController.NO_ACTION){
+					if(ticks%10==0){
+						((Wolf) an).updateWalkFrame();
+					}
+				}
+				else{
+					((Wolf) an).setStillFrame();
+				}
+			}
 			i++;
 		}
 		ticks++;

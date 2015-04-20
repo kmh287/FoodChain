@@ -12,11 +12,13 @@ import com.badlogic.gdx.math.Vector2;
 
 public class Wolf extends Animal{
     
-    private static final String WOLF_TEX = "assets/wolf.png";
+    private static final String WOLF_TEX = "assets/wolf_walk_cycle.png";
     private static Texture tex = null;
+    private FilmStrip sprite;
     
-    private static float scaleXDrawWolf = 1.2f;
-    private static float scaleYDrawWolf = 0.9f;
+    private static float scaleYDrawWolf = .23f;
+    private static float scaleXDrawWolf = .3f;
+
     
     static final Actor.actorType prey[] = {Actor.actorType.PIG,
     									   Actor.actorType.HUNTER};
@@ -29,6 +31,7 @@ public class Wolf extends Animal{
     public Wolf(float x, float y) {
         super(new TextureRegion(tex), Actor.actorType.WOLF, x, y, 
               prey, InputController.EAST);
+        sprite = new FilmStrip(tex,1,4,4);
         drawScale.x = scaleXDrawWolf;
         drawScale.y = scaleYDrawWolf;
         SIGHT_LENGTH = 1.5f*120;
@@ -83,5 +86,25 @@ public class Wolf extends Animal{
                 tex = manager.get(WOLF_TEX);
             }
         }
+    }
+    public void updateWalkFrame(){
+    	int frame = sprite.getFrame();
+    	frame++;
+    	if (frame==4){
+    		frame=0;
+    	}
+    	sprite.setFrame(frame);
+    	sprite.flip(false,true);
+    	super.setTexture(sprite);
+    }
+    
+    public FilmStrip Sprite(){
+    	return sprite;
+    }
+    
+    public void setStillFrame(){
+    	sprite.setFrame(0);
+    	sprite.flip(false,true);
+    	super.setTexture(sprite);
     }
 }

@@ -9,10 +9,10 @@ import com.badlogic.gdx.math.Vector2;
 
 public class Owl extends Animal {
 	
-	private static final String OWL_TEX = "assets/owl_place_holder.png";
+	private static final String OWL_TEX = "assets/owl.png";
 	private static Texture tex = null;
-	private static float scaleXDrawOwl = 1.2f;
-	private static float scaleYDrawOwl = 0.9f;
+	private static float scaleXDrawOwl = .23f;
+	private static float scaleYDrawOwl = .23f;
 	
     static final Actor.actorType prey[] = {Actor.actorType.PIG,
     									   Actor.actorType.WOLF, Actor.actorType.HUNTER};
