@@ -1,8 +1,13 @@
 package com.CS3152.FoodChain;
 
+import com.badlogic.gdx.ai.steer.behaviors.PrioritySteering;
+import com.badlogic.gdx.ai.steer.behaviors.Wander;
+import com.badlogic.gdx.ai.steer.limiters.LinearAccelerationLimiter;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
 
 public class Wolf extends Animal{
     
@@ -27,6 +32,23 @@ public class Wolf extends Animal{
         drawScale.y = scaleYDrawWolf;
         SIGHT_LENGTH = 1.5f*120;
         SIGHT_ANGLE = 1.5f*0.35;
+        maxLinearSpeed = 500.0f;
+        maxLinearAcceleration = 0.0f;
+        independentFacing = false;
+        
+        Wander<Vector2> wanderSB = new Wander<Vector2>(this)
+        		// Don't use Face internally because independent facing is off
+				.setFaceEnabled(false) //
+				// We don't need a limiter supporting angular components because Face is not used
+				// No need to call setAlignTolerance, setDecelerationRadius and setTimeToTarget for the same reason
+				.setLimiter(new LinearAccelerationLimiter(500)) //
+				.setWanderOffset(500) //
+				.setWanderOrientation(10) //
+				.setWanderRadius(100) //
+				.setWanderRate(MathUtils.PI / 5);
+        setSteeringBehavior(wanderSB);
+        
+        PrioritySteering<Vector2> prioritySteering = new PrioritySteering<Vector2>(this);
     }
 
     @Override

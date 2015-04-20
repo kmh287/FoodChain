@@ -32,9 +32,8 @@ public class TrapController {
 	    tmp.setBodyType(BodyDef.BodyType.StaticBody);
 	    collisionController.addObject(tmp);
 	    this.addToInventory(tmp);
-
     }
-  
+
 
     public void setSelectedTrap(int controlcode){
     	boolean oneSelect = (controlcode == InputController.ONE);
@@ -163,18 +162,5 @@ public class TrapController {
     public void removeFromInventory(Trap trap) {
     	inventory.get(trap.getType()).remove(trap);
     }
-//public void setTrapDown(Vector2 clickPos) {
-//    selectedTrap.setPosition(clickPos);
-//    //update inventory
-//    //set selectedTrap inventory status to false
-//    selectedTrap.setInInventory(false);
-//    //set selectedTrap to next available trap inInventory of same type
-//    //if no free trap then selectedTrap does not change and player can't put down another
-//    for (Trap trap : inventory.get(selectedTrap.getType())){
-//    	if(trap.getInInventory()){
-//    		selectedTrap = trap;
-//    	}
-//	}
-//}
-    
+
 }

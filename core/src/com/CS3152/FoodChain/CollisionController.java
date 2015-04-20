@@ -39,6 +39,8 @@ public class CollisionController implements ContactListener {
 	private String trapToAdd = null;
 	private Vector2 trapLocationToAdd;
 	
+	private Trap trapOver = null;
+	
 	public CollisionController(){
 		//no gravity for top down
 		this.world = new World(new Vector2(0,0), false);
@@ -85,6 +87,21 @@ public class CollisionController implements ContactListener {
 
 	public void update() {
 		world.step(1/100f, 3, 3);
+<<<<<<< HEAD
+=======
+		//checkTrapped();
+		
+		//shit
+		if (trapOver!= null && trapOver.getisOver() && trapOver.getOnMap()) {
+			if (trapOver.getSetWell() && controls[0].isSpaceHeldDown() && trapOver.getisOver()){
+				trapOver.setOnMap(false);
+				trapOver.setInInventory(true);
+			}
+			else{
+				trapOver.setSetWell(true);
+			}
+		}
+>>>>>>> master
 	}
 	
 
@@ -144,7 +161,11 @@ public class CollisionController implements ContactListener {
 		
 		if (bd1 instanceof Hunter && bd2 instanceof Trap) {
 			Trap trap = (Trap) bd2;
-			if (trap.getOnMap()) {
+			if (trap.getOnMap() ){
+				trapOver = trap;
+				trap.setisOver(true);
+			}
+			if (trap.getOnMap() && controls[0].isSpaceHeldDown()) {
 				trap.setOnMap(false);
 				trap.setInInventory(true);
 			}
@@ -152,7 +173,9 @@ public class CollisionController implements ContactListener {
 		if (bd1 instanceof Trap && bd2 instanceof Hunter) {
 			Trap trap = (Trap) bd1;
 			if (trap.getOnMap()) {
-				if (trap.getSetWell()){
+				trap.setisOver(true);
+				trapOver = trap;
+				if (trap.getSetWell() && controls[0].isSpaceHeldDown()){
 					trap.setOnMap(false);
 					trap.setInInventory(true);
 				}
@@ -240,7 +263,27 @@ public class CollisionController implements ContactListener {
 
 	@Override
 	public void endContact(Contact contact) {
-		// TODO Auto-generated method stub
+		Fixture fix1 = contact.getFixtureA();
+		Fixture fix2 = contact.getFixtureB();
+
+		Body body1 = fix1.getBody();
+		Body body2 = fix2.getBody();
+
+		Object fd1 = fix1.getUserData();
+		Object fd2 = fix2.getUserData();
+		
+		Object bd1 = body1.getUserData();
+		Object bd2 = body2.getUserData();
+		
+		if (bd1 instanceof Hunter && bd2 instanceof Trap) {
+			Trap trap = (Trap) bd2;
+			trap.setisOver(false);
+		}
+		if (bd1 instanceof Trap && bd2 instanceof Hunter) {
+
+			Trap trap = (Trap) bd1;
+			trap.setisOver(false);
+		}
 		
 	}
 
