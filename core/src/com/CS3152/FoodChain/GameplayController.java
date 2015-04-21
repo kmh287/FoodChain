@@ -32,6 +32,8 @@ public class GameplayController {
 				else {
 					((AIController) controls[i]).preUpdate();
 				}
+			}
+			if (!(actor instanceof Hunter)) {
 				i++;
 			}
 		}
@@ -50,6 +52,8 @@ public class GameplayController {
 				else {
 					((AIController) controls[i]).update(delta);
 				}
+			}
+			if (!(actor instanceof Hunter)) {
 				i++;
 			}
 		}

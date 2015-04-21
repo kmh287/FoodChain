@@ -410,7 +410,7 @@ public class GameMode implements Screen {
 			an.update(delta);
 			//need to update wolf death once we have animations
 			if(an instanceof Pig) {
-				if( an.getAlive()==false){
+				if(an.getAlive()==false){
 					if(ticks%10==0){
 						((Pig)an).updateDeadFrame();
 					}
