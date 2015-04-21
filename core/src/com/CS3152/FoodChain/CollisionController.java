@@ -331,7 +331,6 @@ public class CollisionController implements ContactListener {
 			Hunter h = (Hunter) bd1;
 			
 			if (a.canEat(h)) {
-				play(SoundController.HUNTER_DEAD_SOUND);
 				h.setAlive(false);
 				
 			}
@@ -341,8 +340,9 @@ public class CollisionController implements ContactListener {
 			Hunter h = (Hunter) bd2;
 			
 			if (a.canEat(h)) {
-				play(SoundController.HUNTER_DEAD_SOUND);
+				
 				h.setAlive(false);
+				play(SoundController.HUNTER_DEAD_SOUND);
 			}
 		}
 	}
@@ -390,7 +390,7 @@ public class CollisionController implements ContactListener {
 				this.sound.stop(sndcue);
 			}
 			this.sound = SoundController.get(sound);
-			sndcue = this.sound.loop(); 
+			sndcue = this.sound.play(); 
 		}
 	
 	public World getWorld() {
