@@ -7,7 +7,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.CS3152.FoodChain.Actor.actorType;
-
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
@@ -21,11 +20,13 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.utils.Array;
 
 
 public class GameMode implements Screen {
 	
 	private CollisionController collisionController;
+	private GameplayController gameplayController;
     
 	private GameCanvas canvas;
    // private boolean active;
@@ -34,8 +35,9 @@ public class GameMode implements Screen {
 	
     private GameMap map;
     private AssetManager manager;
-    private List<Animal> animals;
-    private Hunter hunter;
+    public static Array<Actor> actors;
+    public static List<Animal> animals;
+    public static Hunter hunter;
     private Stage stage; 
     private UIControllerStage uis;
     private HashMap<String, List<Trap>> traps;
@@ -146,6 +148,7 @@ public class GameMode implements Screen {
         List<Actor.actorType> aTypes = 
                             map.getActorTypeList();
         List<Vector2> coordinates = map.getCoordinates();
+        createHunter(map.getHunterStartingCoordinate());
         buildAnimalList(aTypes, coordinates);
         
         //All the animals, plus the Hunter
@@ -156,6 +159,7 @@ public class GameMode implements Screen {
         createHunter(map.getHunterStartingCoordinate());
         
         trapController = new TrapController(collisionController,numPigs,numWolves);
+
         
         canvas.getUIControllerStage().setTrapController(trapController);
         
@@ -170,10 +174,17 @@ public class GameMode implements Screen {
         		controls[i+1] = new AIController(animals.get(i), collisionController.getWorld(),
 	    				   					   map, actors);
         }
+        
+        createSteeringBehaviors();
+        
 //        controls[1] = new AIController(animals.get(0), collisionController.getWorld(),
 //				    				   map, actors);
 //        controls[2] = new AIController(animals.get(1), collisionController.getWorld(),
 //				   					   map, actors);
+        Actor[] actorArray = new Actor[actors.size()];
+        actors.toArray(actorArray);
+        GameMode.actors = new Array<Actor>(actorArray);
+        gameplayController = new GameplayController(map, actorArray, controls);
         canvas.getUIControllerStage().setPanic(AIController.getPanicPercentage());
         collisionController.setControls(controls);
 	}
@@ -211,11 +222,10 @@ public class GameMode implements Screen {
 	private void createHunter(Vector2 startingPos/*,
 			HashMap<String, List<Trap>> startingInventory*/){
 		Hunter.loadTexture(manager);
-	    this.hunter = new Hunter(map.mapXToScreen((int)startingPos.x),
+	    GameMode.hunter = new Hunter(map.mapXToScreen((int)startingPos.x),
 	                             map.mapYToScreen((int)startingPos.y)
 	                             //,startingInventory
 	                             );
-
 	    hunter.setDensity(DEFAULT_DENSITY);
 	    hunter.setAwake(true);
 	    hunter.setBodyType(BodyDef.BodyType.DynamicBody);
@@ -250,6 +260,7 @@ public class GameMode implements Screen {
 	            		Pig.loadTexture(manager);
 	                newAnimal = new Pig(map.mapXToScreen((int)coord.x), 
 	                                    map.mapYToScreen((int)coord.y));
+	                newAnimal.setDensity(DEFAULT_DENSITY);
 	                animals.add(newAnimal);
 	                break;
 	                
@@ -278,6 +289,12 @@ public class GameMode implements Screen {
 	        collisionController.addObject(newAnimal);
 	    }
 	    
+	}
+	
+	private void createSteeringBehaviors() {
+		for (Animal a : animals) {
+			a.createSteeringBehaviors();
+		}
 	}
 	
     @Override
@@ -350,6 +367,8 @@ public class GameMode implements Screen {
 	    			//System.out.println("You lose");
 	    		}
     		}
+    	
+    	gameplayController.update(delta);
     	
 		hunter.update(delta);
 		trapController.setSelectedTrap(controls[0].getNum());
@@ -506,7 +525,6 @@ public class GameMode implements Screen {
         */
         
         canvas.beginDebug();
-        ((AIController) controls[1]).drawPath(canvas);
         PooledList<SimplePhysicsObject> objects = collisionController.getObjects();
 		for(PhysicsObject obj : objects) {
 			if (obj instanceof Actor && ((Actor) obj).getAlive()) {

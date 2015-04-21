@@ -1,10 +1,13 @@
 package com.CS3152.FoodChain;
 
+import com.badlogic.gdx.ai.steer.Steerable;
+import com.badlogic.gdx.ai.tests.steer.box2d.Box2dSteeringUtils;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Contact;
 
-public class Tile extends BoxObject{
+public class Tile extends BoxObject implements Steerable<Vector2>{
 
 	protected static enum tileType{GRASS, BUSH, TREE, WATER, DIRT,
 								   N_SHORE, NE_SHORE, E_SHORE, SE_SHORE,
@@ -17,10 +20,84 @@ public class Tile extends BoxObject{
 		float height, tileType type) {
 		super(texture, x + 20.0f, y + 20.0f, width, height);
 		this.type = type;
-		// TODO Auto-generated constructor stub
 	}
     
     public tileType getType() {
     	return type;
     }
+
+	@Override
+	public float getMaxLinearSpeed() {
+		return 0;
+	}
+
+	@Override
+	public void setMaxLinearSpeed(float maxLinearSpeed) {
+		
+	}
+
+	@Override
+	public float getMaxLinearAcceleration() {
+		return 0;
+	}
+
+	@Override
+	public void setMaxLinearAcceleration(float maxLinearAcceleration) {
+		
+	}
+
+	@Override
+	public float getMaxAngularSpeed() {
+		return 0;
+	}
+
+	@Override
+	public void setMaxAngularSpeed(float maxAngularSpeed) {
+		
+	}
+
+	@Override
+	public float getMaxAngularAcceleration() {
+		return 0;
+	}
+
+	@Override
+	public void setMaxAngularAcceleration(float maxAngularAcceleration) {
+		
+	}
+
+	@Override
+	public float getOrientation() {
+		return 0;
+	}
+
+	@Override
+	public float getBoundingRadius() {
+		return 0;
+	}
+
+	@Override
+	public boolean isTagged() {
+		return false;
+	}
+
+	@Override
+	public void setTagged(boolean tagged) {
+		
+	}
+
+	@Override
+	public Vector2 newVector() {
+		return new Vector2();
+	}
+
+	@Override
+	public float vectorToAngle(Vector2 vector) {
+		return Box2dSteeringUtils.vectorToAngle(vector);
+	}
+
+	@Override
+	public Vector2 angleToVector(Vector2 outVector, float angle) {
+		return Box2dSteeringUtils.angleToVector(outVector, angle);
+	}
 }
