@@ -217,7 +217,7 @@ public class BoxObject extends SimplePhysicsObject {
 		canvas.draw(texture,Color.WHITE,origin.x,origin.y,
 				GameMap.metersToPixels(getX()),
 				GameMap.metersToPixels(getY()),
-				getAngle(),1, 1);//drawScale.x,drawScale.y);
+				getAngle(),drawScale.x,drawScale.y);
 	}
 
 	@Override
