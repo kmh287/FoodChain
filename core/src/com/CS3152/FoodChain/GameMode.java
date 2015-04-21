@@ -384,8 +384,14 @@ public class GameMode implements Screen {
 			hunter.play(SoundController.TRAP_SOUND);
 		}
 		
+		
+		if(hunter.getAlive()==false){
+			if(ticks%15==0){
+				hunter.updateDeadFrame();
+			}
+		}
 		//if WASD pressed, then update frame
-		if(controls[0].getAction()!=InputController.NO_ACTION){
+		else if(controls[0].getAction()!=InputController.NO_ACTION){
 			if(ticks%10==0){
 				hunter.updateWalkFrame();
 			}
@@ -495,9 +501,10 @@ public class GameMode implements Screen {
             }
             //animal.drawDebug(canvas);
         }
-        if (hunter.getAlive()) {
-        		hunter.draw(canvas);
-        }
+        hunter.draw(canvas);
+//        if (hunter.getAlive()) {
+//        		hunter.draw(canvas);
+//        }
 
         canvas.end();
         /*if (player.isMousePressed()) {

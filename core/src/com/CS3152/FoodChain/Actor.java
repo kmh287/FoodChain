@@ -79,6 +79,7 @@ public abstract class Actor extends CircleObject implements Steerable<Vector2>{
     }
     
     public void setFacing(Vector2 dir) {
+    	if(getAlive()){
     		this.facing = dir;
     		if (dir.x < 0 && dir.y == 0) {
     			super.setAngle((float) (-Math.PI/2.0));
@@ -105,6 +106,8 @@ public abstract class Actor extends CircleObject implements Steerable<Vector2>{
     			super.setAngle((float) (-3.0*Math.PI/4.0));
     		}
     		//setAngle(dir.angleRad() + (float)Math.PI/2);
+    	}
+
     }
     
     
