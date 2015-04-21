@@ -283,6 +283,7 @@ public class AIController implements InputController {
         setAttacker(ac);
         return;
       }
+      this.scared = false;
       /*else {
         this.scared = false;
         setAttacker(null);
@@ -365,9 +366,11 @@ public class AIController implements InputController {
 			    case WANDER:
 			    	if (isScared()) {
 			    		animal.setState(State.FLEE);
+			    		setTurns();
 			    	}
 			    	else if (hasTarget()) {
 			        	animal.setState(State.CHASE);
+			        	setTurns();
 			        }
 			    	break;
 			    case CHASE:
@@ -390,6 +393,7 @@ public class AIController implements InputController {
 			            animal.setState(State.WANDER);
 			            setAttacker(null);
 			        }
+			        turns--;
 			    	break;
 			    case KILL:
 			    	if (turns <= 0) {
@@ -431,13 +435,19 @@ public class AIController implements InputController {
 	                  panicPercentage += 0.005;//.001
 	                }
 	                if (((Actor)objSeen).canKill(getAnimal())) {
-	                  setScared((Actor)objSeen);
-	                  System.out.println((Actor)objSeen);
-	                  if ((Actor)objSeen instanceof Pig){
+	                	if (!(objSeen instanceof Hunter)) {
+	                		System.out.println("Setting " + objSeen + " scared");
+	                		setScared((Actor)objSeen);
+	                	}
+	                	else {
+	                		
+	                	}
+	                	System.out.println((Actor)objSeen);
+	                	if ((Actor)objSeen instanceof Pig){
 	                      //play(SoundController.PIG_SCARED_SOUND);
 
-	                  }
-	                  setTurns();
+	                	}
+	                	setTurns();
 	                }
 	                if (getAnimal().canKill((Actor)objSeen)) {
 	                  setTurns();
