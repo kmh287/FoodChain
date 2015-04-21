@@ -29,7 +29,7 @@ public class SoundController {
 		private static final String OWL_FILE = "sounds/owl.mp3";
 		private static final String WOLF_A_FILE = "sounds/growl.mp3";
 		private static final String PIG_S_FILE = "sounds/pig_sound.mp3";
-		private static final String HUNTER_DEAD_FILE = "sounds/death?.mp3";
+		private static final String HUNTER_DEAD_FILE = "sounds/death_sound.mp3";
 
 		/** 
 		 * Preloads the assets for this Sound controller.
