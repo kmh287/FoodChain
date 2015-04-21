@@ -245,6 +245,11 @@ public class AIController implements InputController {
                 }
                 if (((Actor)objSeen).canKill(getAnimal())) {
                   setScared((Actor)objSeen);
+                  System.out.println((Actor)objSeen);
+                  if ((Actor)objSeen instanceof Pig){
+                      play(SoundController.PIG_SCARED_SOUND);
+
+                  }
                   setTurns();
                   setTarget(null);
                 }
@@ -253,7 +258,7 @@ public class AIController implements InputController {
                   setTurns();
  
                   setTarget((Actor)objSeen);
-                  if (animal.getTypeNameString() == "Wolf") {
+                  if (animal instanceof Wolf) {
                 	  play(SoundController.WOLF_ANGRY_SOUND);
                   }
                 }
@@ -267,7 +272,7 @@ public class AIController implements InputController {
               }
           }
           else {
-            if (animal.getTypeNameString() == "Owl" &&
+            if (animal instanceof Owl && 
                 a.getType() == Actor.actorType.HUNTER) {
               setTarget(null);
             }
@@ -302,9 +307,11 @@ public class AIController implements InputController {
       }
           
         if (isScared()) {
-          if (getAnimal().getTypeNameString() == "Owl") {
+          if (animal instanceof Owl) {
             //fleeOwl();
           }
+          
+        
           //System.out.println(animal.getType() + ": flee");
           else { 
             //System.out.println(getAnimal().getTypeNameString() + "isScared");
@@ -313,7 +320,7 @@ public class AIController implements InputController {
         }
         
         else if (hasTarget()) {
-          if (getAnimal().getTypeNameString() == "Owl") {
+          if (animal instanceof Owl) {
             //System.out.println(getAnimal().getTypeNameString() + "owlhasTarget");
             //fleeOwl();
         	  
@@ -325,7 +332,7 @@ public class AIController implements InputController {
           //System.out.println(getAnimal().getTypeNameString() + ": chase"); 
         }
         else {
-          if (getAnimal().getTypeNameString() == "Owl") {
+          if (animal instanceof Owl) {
             /*float angle = animal.getAngle();
             angle += Math.PI/8.0;
             System.out.println("Owl angle owwll: " + angle);
@@ -338,8 +345,9 @@ public class AIController implements InputController {
             animal.updateLOS(angle);
             vect.set(vect.x + (float)Math.cos(angle), vect.y + (float)Math.sin(angle));
             goal.set(vect.x, vect.y);
-            //System.out.println("Owl angle owwll: " + angle);
             play(SoundController.OWL_SOUND);
+            
+
           }
           else {
           //System.out.println(animal.getType() + ": patrol");
@@ -349,7 +357,7 @@ public class AIController implements InputController {
           }
         }
         
-        if (getAnimal().getTypeNameString() == "Owl") {
+        if (animal instanceof Owl) {
           //System.out.println("Owl angle: " + animal.getAngle());
         }
         move = getNextMoveToGoal();
@@ -398,7 +406,7 @@ public class AIController implements InputController {
       if (fcb.getContact() != getAnimal()) {
         turns--;
       }*/
-
+     
         // Animal's position
       float anX = getAnimal().getX();
       float anY = getAnimal().getY();
@@ -717,7 +725,6 @@ public class AIController implements InputController {
                 tmp.set(map.mapXToScreen(path.get(i).getX()), map.mapYToScreen(path.get(i).getY())),
                 tmp.set(map.mapXToScreen(path.get(i+1).getX()), map.mapYToScreen(path.get(i+1).getY())));
       }
-
     }
     
     public void play(String sound) {
@@ -725,7 +732,29 @@ public class AIController implements InputController {
 			this.sound.stop(sndcue);
 		}
 		this.sound = SoundController.get(sound);
-		sndcue = this.sound.loop();
+		sndcue = this.sound.loop(); 
 	}
 
+	@Override
+	public boolean resetPressed() {
+		return false;
+	}
+
+	@Override
+	public boolean isSpacePressed() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean isSpaceHeldDown() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void update() {
+		// TODO Auto-generated method stub
+		
+	}
 }
