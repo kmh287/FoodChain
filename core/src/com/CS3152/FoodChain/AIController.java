@@ -300,8 +300,8 @@ public class AIController implements InputController {
       return this.scared;
     }
     
-    public void setTurns() {
-      this.turns = 1000;
+    public void setTurns(int turns) {
+      this.turns = turns;
     }
     
     // Should not be here, but need to finish
@@ -364,16 +364,18 @@ public class AIController implements InputController {
     	if (getAnimal().getAlive()) {
 	        switch (animal.getState()) {
 			    case WANDER:
+			    	//System.out.println(getAnimal() + " is wandering");
 			    	if (isScared()) {
 			    		animal.setState(State.FLEE);
-			    		setTurns();
+			    		setTurns(10000);
 			    	}
 			    	else if (hasTarget()) {
 			        	animal.setState(State.CHASE);
-			        	setTurns();
+			        	setTurns(10000);
 			        }
 			    	break;
 			    case CHASE:
+			    	//System.out.println(getAnimal() + " is chasing");
 			        if (turns <= 0) {
 			        	animal.setState(State.WANDER);
 			        	setTarget(null);
@@ -385,10 +387,11 @@ public class AIController implements InputController {
 			        if (hasTarget() && !target.getAlive()) {
 			        	animal.setState(State.KILL);
 			        	setTarget(null);
-			        	setTurns();
+			        	setTurns(2000);
 			        }
 			        break;
 			    case FLEE:
+			    	//System.out.println(getAnimal() + " is fleeing");
 			        if (canSettle()) {
 			            animal.setState(State.WANDER);
 			            setAttacker(null);
@@ -396,6 +399,7 @@ public class AIController implements InputController {
 			        turns--;
 			    	break;
 			    case KILL:
+			    	//sdSystem.out.println(getAnimal() + " is killing");
 			    	if (turns <= 0) {
 			    		animal.setState(State.WANDER);
 			    	}
@@ -435,22 +439,17 @@ public class AIController implements InputController {
 	                  panicPercentage += 0.005;//.001
 	                }
 	                if (((Actor)objSeen).canKill(getAnimal())) {
-	                	if (!(objSeen instanceof Hunter)) {
-	                		System.out.println("Setting " + objSeen + " scared");
-	                		setScared((Actor)objSeen);
-	                	}
-	                	else {
-	                		
-	                	}
-	                	System.out.println((Actor)objSeen);
+	                	//System.out.println("Setting " + getAnimal() + " scared");
+	                	setScared((Actor)objSeen);
+	                	//System.out.println((Actor)objSeen);
 	                	if ((Actor)objSeen instanceof Pig){
 	                      //play(SoundController.PIG_SCARED_SOUND);
 
 	                	}
-	                	setTurns();
+	                	//setTurns();
 	                }
 	                if (getAnimal().canKill((Actor)objSeen)) {
-	                  setTurns();
+	                  //setTurns();
 	 
 	                  setTarget((Actor)objSeen);
 	                  if (animal instanceof Wolf) {
@@ -461,7 +460,7 @@ public class AIController implements InputController {
 	              else {
 	                if (target != null) {
 	                  if (a.getType() == target.getType()) {
-	                    turns--;
+	                    //turns--;
 	                  }
 	                }
 	              }
@@ -472,7 +471,7 @@ public class AIController implements InputController {
 	            }
 	            if (target != null) {
 	              if (a.getType() == target.getType()) {
-	                turns--;
+	                //turns--;
 	              }
 	            }
 	            if (panicPercentage>0){

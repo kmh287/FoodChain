@@ -54,19 +54,19 @@ public class Wolf extends Animal{
         
         RadiusProximity proximity = new RadiusProximity<Vector2>(this, steerArray, 1.0f);
         collisionAvoidanceSB = new CollisionAvoidance<Vector2>(this, proximity);
-        collisionAvoidanceSB.setLimiter(new LinearAccelerationLimiter(375));
+        collisionAvoidanceSB.setLimiter(new LinearAccelerationLimiter(2.0f));
         
     	seekSB = new Seek<Vector2>(this);
-    	seekSB.setLimiter(new LinearAccelerationLimiter(1));
+    	seekSB.setLimiter(new LinearAccelerationLimiter(3.0f));
     	
     	wanderSB = new Wander<Vector2>(this)
         		// Don't use Face internally because independent facing is off
 				.setFaceEnabled(false) //
 				// We don't need a limiter supporting angular components because Face is not used
 				// No need to call setAlignTolerance, setDecelerationRadius and setTimeToTarget for the same reason
-				.setLimiter(new LinearAccelerationLimiter(10)) //
+				.setLimiter(new LinearAccelerationLimiter(2.0f)) //
 				.setWanderOffset(1) //
-				.setWanderOrientation(1) //
+				.setWanderOrientation(GameMode.random.nextFloat()) //
 				.setWanderRadius(1) //
 				.setWanderRate(MathUtils.PI / 5);
     }

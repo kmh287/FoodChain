@@ -139,7 +139,7 @@ public class CollisionController implements ContactListener {
     			if (t.getType() == trapToAdd && t.getInInventory()!=true) {
     				t.setPosition(trapLocationToAdd);
     				t.setOnMap(true);
-    				t.setInInventory(true);
+    				//t.setInInventory(true);
     				trapToAdd = null;
     			}
     		}
