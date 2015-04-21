@@ -31,6 +31,7 @@ public abstract class Animal extends Actor{
     
     // A vector used for temporary calculations
     private Vector2 tmp;
+    private Vector2 tmp2;
 
 	//texture used in getCenter and setCenter
 	private float texWidth;
@@ -38,7 +39,7 @@ public abstract class Animal extends Actor{
 	protected static final int AnimalWidth = 40;
 	protected static final int AnimalHeight = 40;
 	//how far forward an animal can move in a turn. 
-    protected static final float MOVE_SPEED = 75.0f;
+    protected static final float MOVE_SPEED = 10.0f;
     // How wide the animal's line of sight is
     protected double SIGHT_ANGLE = 0.35;
     // How long the animal's line of sight is
@@ -65,7 +66,7 @@ public abstract class Animal extends Actor{
 	public Animal(TextureRegion tr, actorType type, float x, float y, 
 	              actorType[] prey, Vector2 facing){
 		super(tr, type, x, y, AnimalWidth, AnimalHeight, prey);
-		this.setPos(x,y);
+		this.setPos(GameMap.pixelsToMeters(x), GameMap.pixelsToMeters(y));
 		setFacing(facing);
 		this.leftSectorLine = new Vector2();
 		this.rightSectorLine = new Vector2();
@@ -73,10 +74,11 @@ public abstract class Animal extends Actor{
 		this.state = AIController.State.WANDER;
 
 		this.tmp = new Vector2();
+		this.tmp2 = new Vector2();
 
 		updateLOS(0);
-		setTexWidth(tr.getRegionWidth());
-		setTexHeight(tr.getRegionHeight());
+		setTexWidth(GameMap.pixelsToMeters(tr.getRegionWidth()));
+		setTexHeight(GameMap.pixelsToMeters(tr.getRegionHeight()));
 		this.tagged = false;
 	}
 	
@@ -232,12 +234,16 @@ public abstract class Animal extends Actor{
 	
 	public void drawSight(GameCanvas canvas) {
 		if (getAlive()) {
-			tmp.set(getPosition());
-			tmp.add(getLeftSectorLine());
-			canvas.drawLine(Color.YELLOW, getPosition(), tmp);
-			tmp.set(getPosition());
-			tmp.add(getRightSectorLine());
-			canvas.drawLine(Color.YELLOW, getPosition(), tmp);
+			Vector2 position = getPosition();
+			tmp.set(GameMap.metersToPixels(position.x), GameMap.metersToPixels(position.y));
+			tmp2.set(GameMap.metersToPixels(position.x), GameMap.metersToPixels(position.y));
+			Vector2 sectorLine = getLeftSectorLine();
+			tmp2.add(GameMap.metersToPixels(sectorLine.x), GameMap.metersToPixels(sectorLine.y));
+			canvas.drawLine(Color.YELLOW, tmp, tmp2);
+			tmp2.set(GameMap.metersToPixels(position.x), GameMap.metersToPixels(position.y));
+			sectorLine = getRightSectorLine();
+			tmp2.add(GameMap.metersToPixels(sectorLine.x), GameMap.metersToPixels(sectorLine.y));
+			canvas.drawLine(Color.YELLOW, tmp, tmp2);
 		}
 	}
 	

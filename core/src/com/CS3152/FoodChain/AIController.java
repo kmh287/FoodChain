@@ -4,6 +4,7 @@ import java.util.*;
 
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+
 import com.badlogic.gdx.ai.pfa.PathSmoother;
 import com.badlogic.gdx.ai.pfa.indexed.IndexedAStarPathFinder;
 import com.badlogic.gdx.graphics.Color;
@@ -105,8 +106,8 @@ public class AIController implements InputController {
           distVctrs[id] = new Vector2();
         }
         
-        this.loc = new Vector2(map.screenXToMap(animal.getX()),
-                               map.screenYToMap(animal.getY()));
+        this.loc = new Vector2(map.screenXToMap(GameMap.metersToPixels(animal.getX())),
+                               map.screenYToMap(GameMap.metersToPixels(animal.getY())));
         
         this.target = null;
         this.attacker = null;
@@ -137,8 +138,8 @@ public class AIController implements InputController {
      * Updates the animal's tile location
      */
     public void updateLoc() {
-        this.loc.set(map.screenXToMap(animal.getX()),
-                     map.screenYToMap(animal.getY()));
+        this.loc.set(map.screenXToMap(GameMap.metersToPixels(animal.getX())),
+                     map.screenYToMap(GameMap.metersToPixels(animal.getY())));
     }
     
     // Determines whether or not an actor is in the animal's line of sight

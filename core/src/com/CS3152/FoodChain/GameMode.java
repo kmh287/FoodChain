@@ -20,6 +20,7 @@ import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.ai.steer.Steerable;
 
 
 public class GameMode implements Screen {
@@ -36,6 +37,7 @@ public class GameMode implements Screen {
     private AssetManager manager;
     public static Array<Actor> actors;
     public static List<Animal> animals;
+    public static List<Steerable<Vector2>> steerables;
     public static Hunter hunter;
     private Stage stage; 
     private UIControllerStage uis;
@@ -109,7 +111,7 @@ public class GameMode implements Screen {
         PreLoadContent(manager);
         manager.finishLoading();
         LoadContent(manager);
-        initializeLevel(canvas, "blah");
+        initializeLevel(canvas, "alphaLevel2");
 	}
         
  	private void initializeLevel(GameCanvas canvas, String levelName){
@@ -129,7 +131,9 @@ public class GameMode implements Screen {
         tmp = new Vector2();
 		*/
         collisionController = new CollisionController();
-        map.addTilesToWorld(collisionController);  
+        map.addTilesToWorld(collisionController);
+        steerables = new ArrayList<Steerable<Vector2>>();
+        steerables.addAll(map.getTileList());
         //Get the animal types from map
         //but build and keep the actual list here
         List<Actor.actorType> aTypes = 
@@ -137,6 +141,7 @@ public class GameMode implements Screen {
         List<Vector2> coordinates = map.getCoordinates();
         createHunter(map.getHunterStartingCoordinate());
         buildAnimalList(aTypes, coordinates);
+        steerables.addAll(animals);
         
         //All the animals, plus the Hunter
         //The hunter is always first in this array
@@ -207,9 +212,7 @@ public class GameMode implements Screen {
 			HashMap<String, List<Trap>> startingInventory*/){
 		Hunter.loadTexture(manager);
 	    GameMode.hunter = new Hunter(map.mapXToScreen((int)startingPos.x),
-	                             map.mapYToScreen((int)startingPos.y)
-	                             //,startingInventory
-	                             );
+	    							 map.mapYToScreen((int)startingPos.y));
 	    hunter.setDensity(DEFAULT_DENSITY);
 	    hunter.setAwake(true);
 	    hunter.setBodyType(BodyDef.BodyType.DynamicBody);
@@ -243,7 +246,7 @@ public class GameMode implements Screen {
 	            case PIG:
 	            		Pig.loadTexture(manager);
 	                newAnimal = new Pig(map.mapXToScreen((int)coord.x), 
-	                                    map.mapYToScreen((int)coord.y));
+	                		map.mapYToScreen((int)coord.y));
 	                newAnimal.setDensity(DEFAULT_DENSITY);
 	                animals.add(newAnimal);
 	                break;
@@ -251,7 +254,7 @@ public class GameMode implements Screen {
 	            case WOLF:
 	            		Wolf.loadTexture(manager);
 	                newAnimal = new Wolf(map.mapXToScreen((int)coord.x), 
-                                         map.mapYToScreen((int)coord.y));
+	                					 map.mapYToScreen((int)coord.y));
 	                //See comment in sheep
 	                animals.add(newAnimal);
 	                break;
@@ -259,7 +262,7 @@ public class GameMode implements Screen {
 	            case OWL:
             			Owl.loadTexture(manager);
             			newAnimal = new Owl(map.mapXToScreen((int)coord.x), 
-                                        map.mapYToScreen((int)coord.y));
+            								map.mapYToScreen((int)coord.y));
 	                //See comment in sheep
 	                animals.add(newAnimal);
 	                break;
@@ -423,7 +426,7 @@ public class GameMode implements Screen {
     }
     
     private void draw(float delta){
-    	canvas.DrawBlack(hunter.getPosition().x, hunter.getPosition().y);
+    	canvas.DrawBlack(GameMap.metersToPixels(hunter.getPosition().x), GameMap.metersToPixels(hunter.getPosition().y));
     	canvas.end();
         canvas.begin(); 
     	//canvas.begin();
@@ -455,10 +458,10 @@ public class GameMode implements Screen {
         canvas.end();
         
         if(!start){
-        	canvas.beginCam(hunter.getPosition().x, hunter.getPosition().y);
+        	canvas.beginCam(GameMap.metersToPixels(hunter.getPosition().x), GameMap.metersToPixels(hunter.getPosition().y));
         }
         else{
-        	canvas.beginCamStart(hunter.getPosition().x, hunter.getPosition().y);
+        	canvas.beginCamStart(GameMap.metersToPixels(hunter.getPosition().x), GameMap.metersToPixels(hunter.getPosition().y));
         	start=false;
         }
     	
@@ -477,7 +480,7 @@ public class GameMode implements Screen {
 
         canvas.end();
         
-        canvas.beginCam(hunter.getPosition().x, hunter.getPosition().y);
+        canvas.beginCam(GameMap.metersToPixels(hunter.getPosition().x), GameMap.metersToPixels(hunter.getPosition().y));
         //hunter.drawDebug(canvas);
 
         //ui.draw(canvas);

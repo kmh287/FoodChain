@@ -117,7 +117,10 @@ public class CircleObject extends SimplePhysicsObject {
 
 	public void draw(GameCanvas canvas) {
 		//System.out.println(" Position X: " + getX() +" Position Y:" +getY()+" originx: "+origin.x+"origin y:"+origin.y);
-		canvas.draw(texture,Color.WHITE,(origin.x),(origin.y),(getX()),(getY()),getAngle(),drawScale.x,drawScale.y);
+		float testx = GameMap.metersToPixels(getX());
+		float testy = GameMap.metersToPixels(getY());
+		canvas.draw(texture,Color.WHITE,(origin.x),(origin.y),GameMap.metersToPixels(getX()),GameMap.metersToPixels(getY()),
+					getAngle(),drawScale.x,drawScale.y);
 	}
 
 	
@@ -129,7 +132,9 @@ public class CircleObject extends SimplePhysicsObject {
 	 * @param canvas Drawing context
 	 */
 	 public void drawDebug(GameCanvas canvas) {
-		canvas.drawPhysics(shape,Color.YELLOW,getX(),getY());
+		 float testx = GameMap.metersToPixels(getX());
+		 float testy = GameMap.metersToPixels(getY());
+		canvas.drawPhysics(shape,Color.YELLOW,GameMap.metersToPixels(getX()),GameMap.metersToPixels(getY()));
 	}
 
 }

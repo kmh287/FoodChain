@@ -99,38 +99,38 @@ public class TrapController {
     	float angle = hunter.getAngle();
 
     	if (angle == 0.0f) {
-    		selectedTrap.setPosition(hunter.getPosition().x, hunter.getPosition().y - 40.0f);
+    		selectedTrap.setPosition(hunter.getPosition().x, hunter.getPosition().y - 0.8f);
     		//update inventory
     		//set selectedTrap inventory status to false
     		selectedTrap.setInInventory(false);
     	}
     	else if (angle == (float) (Math.PI/4.0f)) {
-    		selectedTrap.setPosition(hunter.getPosition().x + 30.0f, hunter.getPosition().y - 30.0f);
+    		selectedTrap.setPosition(hunter.getPosition().x + 0.6f, hunter.getPosition().y - 0.6f);
     		selectedTrap.setInInventory(false);
     	}
     	else if (angle == (float) (Math.PI/2.0f)) {
-    		selectedTrap.setPosition(hunter.getPosition().x + 40.0f, hunter.getPosition().y);
+    		selectedTrap.setPosition(hunter.getPosition().x + 0.8f, hunter.getPosition().y);
     		selectedTrap.setInInventory(false);
     	}
     	else if (angle == (float) (3.0*Math.PI/4.0)) {
-    		selectedTrap.setPosition(hunter.getPosition().x + 30.0f, hunter.getPosition().y + 30.0f);
+    		selectedTrap.setPosition(hunter.getPosition().x + 0.6f, hunter.getPosition().y + 0.6f);
     		selectedTrap.setInInventory(false);
     	}
     	else if (angle == (float) (Math.PI)) {
-    		selectedTrap.setPosition(hunter.getPosition().x, hunter.getPosition().y + 40.0f);
+    		selectedTrap.setPosition(hunter.getPosition().x, hunter.getPosition().y + 0.8f);
     		selectedTrap.setInInventory(false);
     	}
 
     	else if (angle == (float) -(Math.PI/2.0f)) {
-    		selectedTrap.setPosition(hunter.getPosition().x - 40.0f, hunter.getPosition().y);
+    		selectedTrap.setPosition(hunter.getPosition().x - 0.8f, hunter.getPosition().y);
     		selectedTrap.setInInventory(false);
     	}
     	else if (angle == (float) -(Math.PI/4.0f)) {
-    		selectedTrap.setPosition(hunter.getPosition().x - 30.0f, hunter.getPosition().y - 30.0f);
+    		selectedTrap.setPosition(hunter.getPosition().x - 0.6f, hunter.getPosition().y - 0.6f);
     		selectedTrap.setInInventory(false);
     	}
     	else if (angle == (float) -(3.0*Math.PI/4.0f)) {
-    		selectedTrap.setPosition(hunter.getPosition().x - 30.0f, hunter.getPosition().y + 30.0f);
+    		selectedTrap.setPosition(hunter.getPosition().x - 0.6f, hunter.getPosition().y + 0.6f);
     		selectedTrap.setInInventory(false);
     	}
 

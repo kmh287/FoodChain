@@ -1,5 +1,6 @@
 package com.CS3152.FoodChain;
 
+
 import com.badlogic.gdx.ai.steer.Steerable;
 import com.badlogic.gdx.ai.steer.SteeringAcceleration;
 import com.badlogic.gdx.ai.steer.SteeringBehavior;
@@ -62,7 +63,7 @@ public abstract class Actor extends CircleObject implements Steerable<Vector2>{
     
     public Actor(TextureRegion tr, actorType type, float x, float y, float width, 
     		     float height, actorType[] victims) {
-	    super(tr,x,y, height/2);
+	    super(tr, GameMap.pixelsToMeters(x), GameMap.pixelsToMeters(y), GameMap.pixelsToMeters(height/2));
 	    this.type = type;
 	    this.tr = tr;
         this.facing = new Vector2();
@@ -234,8 +235,8 @@ public abstract class Actor extends CircleObject implements Steerable<Vector2>{
     	if (!steeringOutput.linear.isZero()) {
     		//Vector2 force = steeringOutput.linear.scl(deltaTime);
     		Vector2 force = steeringOutput.linear.scl(1);
-    		//body.applyForceToCenter(force, true);
-    		body.applyLinearImpulse(force, getPosition(), true);
+    		body.applyForceToCenter(force, true);
+    		//body.applyLinearImpulse(force, getPosition(), true);
     		anyAccelerations = true;
     	}
 

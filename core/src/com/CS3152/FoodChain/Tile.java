@@ -18,7 +18,10 @@ public class Tile extends BoxObject implements Steerable<Vector2>{
     
     public Tile(TextureRegion texture, float x, float y, float width,
 		float height, tileType type) {
-		super(texture, x + 20.0f, y + 20.0f, width, height);
+		super(texture, GameMap.pixelsToMeters(x + 20.0f),
+					   GameMap.pixelsToMeters(y + 20.0f),
+					   GameMap.pixelsToMeters(width),
+					   GameMap.pixelsToMeters(height));
 		this.type = type;
 	}
     
