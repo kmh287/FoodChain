@@ -24,11 +24,16 @@ import com.badlogic.gdx.utils.Array;
 public class Pig extends Animal {
 
     private static final String PIG_TEX = "assets/pig_walk_cycle.png";
+    private static final String DEATH_TEX = "assets/pig-death.png";
     private static Texture tex = null;
+    private static Texture deathTex = null;
     private static float scaleXDrawSheep=0.4f;
     private static float scaleYDrawSheep=0.3f;
+    private static float scaleXDrawSheepDead=.4f;
+    private static float scaleYDrawSheepDead=.3f;
     static final Actor.actorType prey[] = {};
     private FilmStrip sprite;
+    private FilmStrip spriteDeath;
     
     
     /**
@@ -40,6 +45,7 @@ public class Pig extends Animal {
         super(new TextureRegion(tex), Actor.actorType.PIG, x, y, 
               prey, InputController.EAST);
         sprite = new FilmStrip(tex,1,4,4);
+        spriteDeath = new FilmStrip(deathTex,1,3,3);
         drawScale.x=scaleXDrawSheep;
         drawScale.y=scaleYDrawSheep;
         SIGHT_LENGTH = 120;
@@ -105,9 +111,11 @@ public class Pig extends Animal {
     public static void loadTexture(AssetManager manager) {
         if (tex == null){
             manager.load(PIG_TEX, Texture.class);
+            manager.load(DEATH_TEX,Texture.class);
             manager.finishLoading();
             if (manager.isLoaded(PIG_TEX)){
                 tex = manager.get(PIG_TEX);
+                deathTex = manager.get(DEATH_TEX);
             }
         }
     }
@@ -121,6 +129,22 @@ public class Pig extends Animal {
     	sprite.setFrame(frame);
     	sprite.flip(false, true);
     	super.setTexture(sprite);
+    }
+    
+    public void updateDeadFrame(){
+        drawScale.x=scaleXDrawSheepDead;
+        drawScale.y=scaleYDrawSheepDead;
+    	int frame = spriteDeath.getFrame();
+    	if(frame<2){
+    		frame++;
+    		
+    	}
+    	else{
+    		this.setFinishedDeatAnimation(true);
+    	}
+    	spriteDeath.setFrame(frame);
+    	spriteDeath.flip(false,true);
+    	super.setTexture(spriteDeath);
     }
     
     public FilmStrip Sprite(){
