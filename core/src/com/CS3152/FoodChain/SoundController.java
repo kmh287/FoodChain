@@ -29,7 +29,7 @@ public class SoundController {
 		private static final String OWL_FILE = "sounds/owl.mp3";
 		private static final String WOLF_A_FILE = "sounds/growl.mp3";
 		private static final String PIG_S_FILE = "sounds/pig_sound.mp3";
-//		private static final String HUNTER_DEAD_FILE = "sounds/death.mp3";
+		private static final String HUNTER_DEAD_FILE = "sounds/death_sound.mp3";
 
 		/** 
 		 * Preloads the assets for this Sound controller.
@@ -45,7 +45,7 @@ public class SoundController {
 			manager.load(OWL_FILE,Sound.class);
 			manager.load(WOLF_A_FILE,Sound.class);
 			manager.load(PIG_S_FILE,Sound.class);
-//			manager.load(HUNTER_DEAD_FILE,Sound.class);
+			manager.load(HUNTER_DEAD_FILE,Sound.class);
 		}
 
 		/** 
@@ -72,9 +72,9 @@ public class SoundController {
 			if (manager.isLoaded(PIG_S_FILE)) {
 				soundBank.put(PIG_SCARED_SOUND,manager.get(PIG_S_FILE,Sound.class));
 			}
-//			if (manager.isLoaded(HUNTER_DEAD_FILE)) {
-//				soundBank.put(HUNTER_DEAD_SOUND,manager.get(HUNTER_DEAD_FILE,Sound.class));
-//			}
+			if (manager.isLoaded(HUNTER_DEAD_FILE)) {
+				soundBank.put(HUNTER_DEAD_SOUND,manager.get(HUNTER_DEAD_FILE,Sound.class));
+			}
 
 		}
 
@@ -94,7 +94,7 @@ public class SoundController {
 				manager.unload(OWL_FILE);
 				manager.unload(WOLF_A_FILE);
 				manager.unload(PIG_S_FILE);
-//				manager.unload(HUNTER_DEAD_FILE);
+				manager.unload(HUNTER_DEAD_FILE);
 			}
 		}
 		

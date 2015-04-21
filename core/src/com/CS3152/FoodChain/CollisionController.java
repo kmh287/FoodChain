@@ -264,7 +264,7 @@ public class CollisionController implements ContactListener {
 			if (a.canEat(h)) {
 				
 				h.setAlive(false);
-				//play(SoundController.HUNTER_DEAD_SOUND);
+				play(SoundController.HUNTER_DEAD_SOUND);
 			}
 		}
 	}
