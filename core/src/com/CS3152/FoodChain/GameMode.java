@@ -45,6 +45,9 @@ public class GameMode implements Screen {
 	private String levelName;
 	private PlayerController player; 
 	
+	private int numPigs;
+	private int numWolves;
+	
 	private boolean start;
 
     protected InputController[] controls;
@@ -152,7 +155,7 @@ public class GameMode implements Screen {
         
         createHunter(map.getHunterStartingCoordinate());
         
-        trapController = new TrapController(collisionController);
+        trapController = new TrapController(collisionController,numPigs,numWolves);
         
         canvas.getUIControllerStage().setTrapController(trapController);
         
@@ -177,8 +180,8 @@ public class GameMode implements Screen {
 
 	private String formatObjective(String obj){
 		String[] goals = obj.split("&");
-		int numPigs = Integer.parseInt(goals[0]);
-		int numWolves = Integer.parseInt(goals[1]);
+		numPigs = Integer.parseInt(goals[0]);
+		numWolves = Integer.parseInt(goals[1]);
 		String pig = (numPigs == 1) ? "pig" : "pigs";
 		String wolf = (numWolves == 1) ? "wolf" : "wolves";
 		return "Your goal in this level is to catch " + numPigs + " " + pig + 
@@ -386,6 +389,16 @@ public class GameMode implements Screen {
 				}
 				else{
 					((Pig) an).setStillFrame();
+				}
+			}
+			if(an instanceof Wolf){
+				if(controls[i].getAction()!=InputController.NO_ACTION){
+					if(ticks%10==0){
+						((Wolf) an).updateWalkFrame();
+					}
+				}
+				else{
+					((Wolf) an).setStillFrame();
 				}
 			}
 			i++;

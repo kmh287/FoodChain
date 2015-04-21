@@ -13,25 +13,35 @@ public class TrapController {
     private HashMap<String, List<Trap>> inventory;
     private Trap selectedTrap = null;
     
-    public TrapController(CollisionController collisionController){
+    public TrapController(CollisionController collisionController, int numPigs, int numWolves){
     	inventory= new HashMap<String, List<Trap>>();
     	
     	//need to add multiple dynamic traps functionality
     	inventory.put("REGULAR_TRAP", new ArrayList<Trap>());
     	inventory.put("SHEEP_TRAP", new ArrayList<Trap>());
     	inventory.put("WOLF_TRAP", new ArrayList<Trap>());
-    	
-	    Trap tmp = new RegularTrap();
-	    tmp.setSensor(true);
-	    tmp.setBodyType(BodyDef.BodyType.StaticBody);
-	    collisionController.addObject(tmp);
-	    this.addToInventory(tmp);
-	    tmp = new SheepTrap();
-	    tmp.setInInventory(false);
-	    tmp.setSensor(true);
-	    tmp.setBodyType(BodyDef.BodyType.StaticBody);
-	    collisionController.addObject(tmp);
-	    this.addToInventory(tmp);
+    	int max;
+    	if(numPigs>numWolves){
+    		max =numPigs;
+    	}
+    	else{
+    		max = numWolves;
+    	}
+    	for(int i =0;i<max;i++){
+    	    Trap tmp = new RegularTrap();
+    	    tmp.setSensor(true);
+    	    tmp.setBodyType(BodyDef.BodyType.StaticBody);
+    	    collisionController.addObject(tmp);
+    	    this.addToInventory(tmp);
+    	}
+    	for(int i =0;i<max;i++){
+    	    Trap tmp = new SheepTrap();
+    	    tmp.setSensor(true);
+    	    tmp.setBodyType(BodyDef.BodyType.StaticBody);
+    	    tmp.setInInventory(false);
+    	    collisionController.addObject(tmp);
+    	    this.addToInventory(tmp);
+    	}
     }
 
 
