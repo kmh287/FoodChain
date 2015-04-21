@@ -348,9 +348,14 @@ public class UIControllerStage {
     	
     	trap_1_1_container.setVisible(false);
     	trap_1_2_container.setVisible(false);
+    	trap_1_3_container.setVisible(false);
+    	trap_1_4_container.setVisible(false);
+    	trap_1_5_container.setVisible(false);
     	trap_2_1_container.setVisible(false);
     	trap_2_2_container.setVisible(false);
-    	trap_1_1_container.setVisible(false);
+    	trap_2_3_container.setVisible(false);
+    	trap_2_4_container.setVisible(false);
+    	trap_2_5_container.setVisible(false);
     	select__trap_1_container.setVisible(false);
     	select__trap_2_container.setVisible(false);
     	regularCount = 0;
