@@ -30,7 +30,7 @@ public class Hunter extends Actor {
     protected static Texture deathTex = null;
     
     //how far forward the hunter can move in a turn. 
-    private static final float MOVE_SPEED = 10.0f;
+    private static final float MOVE_SPEED = 4.0f;
     /** How far the hunter can lay a trap from itself */
     private static final float TRAP_RADIUS = 1.0f;
     
