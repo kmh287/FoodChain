@@ -63,3 +63,11 @@ build/
 ## OS Specific
 .DS_Store
 /bin/
+
+core/src/com/CS3152/FoodChain/AnimalCopy.java
+
+core/src/com/CS3152/FoodChain/OwlCopy.java
+
+core/src/com/CS3152/FoodChain/PigCopy.java
+
+core/src/com/CS3152/FoodChain/WolfCopy.java

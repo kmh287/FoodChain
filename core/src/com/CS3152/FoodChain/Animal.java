@@ -1,5 +1,11 @@
 package com.CS3152.FoodChain;
 
+import com.badlogic.gdx.ai.steer.Steerable;
+import com.badlogic.gdx.ai.steer.SteeringAcceleration;
+import com.badlogic.gdx.ai.steer.SteeringBehavior;
+import com.badlogic.gdx.ai.tests.steer.box2d.Box2dLocation;
+import com.badlogic.gdx.ai.tests.steer.box2d.Box2dSteeringUtils;
+import com.badlogic.gdx.ai.utils.Location;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -7,7 +13,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
-public abstract class Animal extends Actor {
+public abstract class Animal extends Actor{
 
 	// Whether the animal is caught in a trap
 	private boolean trapped = false;
@@ -63,7 +69,10 @@ public abstract class Animal extends Actor {
 		updateLOS(0);
 		setTexWidth(tr.getRegionWidth());
 		setTexHeight(tr.getRegionHeight());
+		this.tagged = false;
 	}
+	
+	public abstract void createSteeringBehaviors();
 	
 	public void setPos(float x, float y){
 		
@@ -224,9 +233,11 @@ public abstract class Animal extends Actor {
 	public void drawSight(GameCanvas canvas) {
 		if (getAlive()) {
 			tmp.set(getPosition());
-			canvas.drawLine(Color.YELLOW, getPosition(), tmp.add(getLeftSectorLine()));
+			tmp.add(getLeftSectorLine());
+			canvas.drawLine(Color.YELLOW, getPosition(), tmp);
 			tmp.set(getPosition());
-			canvas.drawLine(Color.YELLOW, getPosition(), tmp.add(getRightSectorLine()));
+			tmp.add(getRightSectorLine());
+			canvas.drawLine(Color.YELLOW, getPosition(), tmp);
 		}
 	}
 	
@@ -235,5 +246,11 @@ public abstract class Animal extends Actor {
 		if (getAlive()) {
 			super.draw(canvas);
 		}
+	}
+	
+	@Override
+	public void update(float delta) {
+		updateLOS(getAngle() + (float)Math.PI/2.0f);
+		super.update(delta);
 	}
 }

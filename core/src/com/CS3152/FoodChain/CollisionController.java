@@ -92,86 +92,8 @@ public class CollisionController implements ContactListener {
 	public PooledList<SimplePhysicsObject> getObjects() {
 		return objects;
 	}
-	
-	/**
-	 * Checks to see if it is possible to move, if not, then move player back. 
-	 * Collision physics are modeled after first programming lab.
-	 * 
-	 * @param hunter the hunter
-	 * 
-	 * TODO have to decide how to handle multiple collisions and which collisions to process first. like animal or tiles
-	 */
-	private void move(Hunter actor) {
-		actor.setLinearVelocity(controls[0].getAction().scl(actor.getMoveSpeed()));
-		actor.setFacing(controls[0].getAction());
-	}
-	
-
-	//Pass the object to the correct handler
-	private void move(PhysicsObject o){
-		if (o instanceof Hunter){
-			move((Hunter) o);
-		}
-		else if (o instanceof Animal){
-			if (!(((Animal) o).getTrapped())) {
-				move((Animal) o);
-			}
-			else {
-				boolean trapped = true;
-			}
-		}
-	}
-
-	private void move(Animal actor,int index) {
-		if (actor.getAlive()) {
-			if (actor instanceof Owl) {
-				//System.out.println("yo");
-			}
-			actor.setLinearVelocity(controls[index].getAction().scl(actor.getMoveSpeed() + 100*AIController.getPanicPercentage()));
-			float angle = ((AIController)controls[index]).getAngle();
-			actor.updateLOS(angle);
-			//actor.setAngle(((AIController)controls[index]).getAngle());
-			actor.setFacing(((AIController) controls[index]).getAction());
-		}
-	}
-	
-	private void moveOwl(Animal actor,int index) {
-		if (actor.getAlive()) {
-			//actor.setLinearVelocity(controls[index].getAction());
-			//actor.updateLOS(angle);
-			//actor.setAngle(((AIController)controls[index]).getAngle());
-			actor.setFacing(((AIController) controls[index]).getAction());
-		}
-	}
-
 
 	public void update() {
-		//world.step(1/60f, 3, 3);
-		
-		//Updates the animals' actions
-		//i is the index of each animal AI in controls
-		int i = 1;
-		//System.out.println(objects.size());
-		for(PhysicsObject o : objects) {
-			
-			if (o instanceof Hunter){
-				
-				move((Hunter)o);
-			}
-			//unsure about order of objects.
-			else if (o instanceof Animal){
-				if (o instanceof Owl) {
-					//System.out.println ("instanceof"); 
-					moveOwl((Owl) o, i); 
-				}
-				else {
-					move((Animal)o,i);
-				
-				}
-				i++;
-			}
-			//System.out.println(o.getPosition().toString());
-		}
 		world.step(1/100f, 3, 3);
 		//checkTrapped();
 		
