@@ -7,6 +7,7 @@ import java.util.Random;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import com.CS3152.FoodChain.Tile.tileType;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Contact;
@@ -41,12 +42,19 @@ public class CollisionController implements ContactListener {
 	
 	private Trap trapOver = null;
 	
+	private Sound sound;
+	/** The associated sound cue (if ship is making a sound). */
+	private long sndcue;
+	
 	public CollisionController(){
 		//no gravity for top down
 		this.world = new World(new Vector2(0,0), false);
 		world.setContactListener(this);
 		this.tmp = new Vector2();
 		trapLocationToAdd = new Vector2();
+		
+		sound = null;
+		sndcue = -1;
 	}
 	
 	/**
@@ -323,7 +331,9 @@ public class CollisionController implements ContactListener {
 			Hunter h = (Hunter) bd1;
 			
 			if (a.canEat(h)) {
+				play(SoundController.HUNTER_DEAD_SOUND);
 				h.setAlive(false);
+				
 			}
 		}
 		if (bd1 instanceof Animal && bd2 instanceof Hunter) {
@@ -331,6 +341,7 @@ public class CollisionController implements ContactListener {
 			Hunter h = (Hunter) bd2;
 			
 			if (a.canEat(h)) {
+				play(SoundController.HUNTER_DEAD_SOUND);
 				h.setAlive(false);
 			}
 		}
@@ -373,6 +384,14 @@ public class CollisionController implements ContactListener {
 		// TODO Auto-generated method stub
 		
 	}
+	
+	 public void play(String sound) {
+			if (sndcue != -1) {
+				this.sound.stop(sndcue);
+			}
+			this.sound = SoundController.get(sound);
+			sndcue = this.sound.loop(); 
+		}
 	
 	public World getWorld() {
 		return this.world;

@@ -18,9 +18,9 @@ public class Trap extends BoxObject {
 	}
 	
 	/** File for the regular trap */
-	private static String REGULAR_TRAP = "assets/REGULAR_TRAP.png";
+	private static String REGULAR_TRAP = "assets/pig_trap_new.png";
 	/** File for the sheep trap */
-	private static String SHEEP_TRAP = "assets/SHEEP_TRAP.png";
+	private static String SHEEP_TRAP = "assets/wolf_trap_new.png";
 	/** File for the wolf trap */
 	private static String WOLF_TRAP = "assets/WOLF_TRAP.png";
 	/** The texture for the regular trap */
@@ -56,6 +56,8 @@ public class Trap extends BoxObject {
 		setWell = false;
 		this.type=type;
 		isOver= false;
+		drawScale.x = .6f; 
+		drawScale.y = .6f; 
 	}
 	
 	/** 
