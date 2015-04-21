@@ -757,4 +757,10 @@ public class AIController implements InputController {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public int levelPressed() {
+		// TODO Auto-generated method stub
+		return -1;
+	}
 }
