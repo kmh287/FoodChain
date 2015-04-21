@@ -26,8 +26,15 @@ public class UIControllerStage {
 	private static final String TRAPS_DESELECT = "assets/all_deselect.png";
     private static final String TRAP_ONE_ONE = "assets/trap1_1.png";
     private static final String TRAP_ONE_TWO = "assets/trap1_2.png";
+    private static final String TRAP_ONE_THREE = "assets/trap1_3.png";
+    private static final String TRAP_ONE_FOUR = "assets/trap1_4.png";
+    private static final String TRAP_ONE_FIVE = "assets/trap1_5.png";
     private static final String TRAP_TWO_ONE = "assets/trap2_1.png";
     private static final String TRAP_TWO_TWO = "assets/trap2_2.png";
+    private static final String TRAP_TWO_THREE = "assets/trap2_3.png";
+    private static final String TRAP_TWO_FOUR = "assets/trap2_4.png";
+    private static final String TRAP_TWO_FIVE = "assets/trap2_5.png";
+    
     private static final String SELECT = "assets/select.png";
     private static final String BLACK_SPACE = "assets/black_space.png";
     private static final String RED_BAR = "assets/red-small.png";
@@ -41,8 +48,14 @@ public class UIControllerStage {
     private static Texture allDeselect = null;
     private static Texture trap_1_1_texture = null;
     private static Texture trap_1_2_texture = null;
+    private static Texture trap_1_3_texture = null;
+    private static Texture trap_1_4_texture = null;
+    private static Texture trap_1_5_texture = null;
     private static Texture trap_2_1_texture = null;
     private static Texture trap_2_2_texture = null;
+    private static Texture trap_2_3_texture = null;
+    private static Texture trap_2_4_texture = null;
+    private static Texture trap_2_5_texture = null;
     private static Texture blackSpace_texture = null;
     private static Texture select_texture = null;
     private static Texture select_texture_2 = null;
@@ -59,8 +72,14 @@ public class UIControllerStage {
 	Image select2;
 	Image trap_1_1;
 	Image trap_1_2;
+	Image trap_1_3;
+	Image trap_1_4;
+	Image trap_1_5;
 	Image trap_2_1;
 	Image trap_2_2;
+	Image trap_2_3;
+	Image trap_2_4;
+	Image trap_2_5;
 	Image blackSpace;
 	Image panic_meter;
 	Image red_bar;
@@ -71,8 +90,15 @@ public class UIControllerStage {
 	Table select__trap_2_container;
 	Table trap_1_1_container;
 	Table trap_1_2_container;
+	Table trap_1_3_container;
+	Table trap_1_4_container;
+	Table trap_1_5_container;
 	Table trap_2_1_container;
 	Table trap_2_2_container;
+	Table trap_2_3_container;
+	Table trap_2_4_container;
+	Table trap_2_5_container;
+	
 	Table blackSpace_container;
 	Table panic_meter_container;
 	Table red_bar_container;
@@ -90,8 +116,14 @@ public class UIControllerStage {
             manager.load(TRAPS_DESELECT, Texture.class);
             manager.load(TRAP_ONE_ONE, Texture.class);
             manager.load(TRAP_ONE_TWO, Texture.class);
+            manager.load(TRAP_ONE_THREE, Texture.class);
+            manager.load(TRAP_ONE_FOUR, Texture.class);
+            manager.load(TRAP_ONE_FIVE, Texture.class);
             manager.load(TRAP_TWO_ONE, Texture.class);
             manager.load(TRAP_TWO_TWO, Texture.class);
+            manager.load(TRAP_TWO_THREE, Texture.class);
+            manager.load(TRAP_TWO_FOUR, Texture.class);
+            manager.load(TRAP_TWO_FIVE, Texture.class);
             manager.load(SELECT,Texture.class);
             manager.load(PANIC_BAR,Texture.class);
             manager.load(RED_BAR,Texture.class);
@@ -101,8 +133,14 @@ public class UIControllerStage {
             	allDeselect = manager.get(TRAPS_DESELECT);
             	trap_1_1_texture = manager.get(TRAP_ONE_ONE);
             	trap_1_2_texture = manager.get(TRAP_ONE_TWO);
+            	trap_1_3_texture = manager.get(TRAP_ONE_THREE);
+            	trap_1_4_texture = manager.get(TRAP_ONE_FOUR);
+            	trap_1_5_texture = manager.get(TRAP_ONE_FIVE);
             	trap_2_1_texture = manager.get(TRAP_TWO_ONE);
             	trap_2_2_texture = manager.get(TRAP_TWO_TWO);
+            	trap_2_3_texture = manager.get(TRAP_TWO_THREE);
+            	trap_2_4_texture = manager.get(TRAP_TWO_FOUR);
+            	trap_2_5_texture = manager.get(TRAP_TWO_FIVE);
             	select_texture = manager.get(SELECT);
             	select_texture_2 = manager.get(SELECT);
             	panic_meter_texture = manager.get(PANIC_BAR);
@@ -127,8 +165,14 @@ public class UIControllerStage {
     	select2 = new Image();
     	trap_1_1 = new Image();
     	trap_1_2 = new Image();
+    	trap_1_3 = new Image();
+    	trap_1_4 = new Image();
+    	trap_1_5 = new Image();
     	trap_2_1 = new Image();
     	trap_2_2 = new Image();
+    	trap_2_3 = new Image();
+    	trap_2_4 = new Image();
+    	trap_2_5 = new Image();
     	blackSpace = new Image();
     	panic_meter = new Image();
     	red_bar = new Image();
@@ -139,8 +183,14 @@ public class UIControllerStage {
     	select__trap_2_container = new Table();
     	trap_1_1_container = new Table();
     	trap_1_2_container = new Table();
+    	trap_1_3_container = new Table();
+    	trap_1_4_container = new Table();
+    	trap_1_5_container = new Table();
     	trap_2_1_container = new Table();
     	trap_2_2_container = new Table();
+    	trap_2_3_container = new Table();
+    	trap_2_4_container = new Table();
+    	trap_2_5_container = new Table();
     	blackSpace_container = new Table();
     	panic_meter_container = new Table();
     	red_bar_container = new Table();
@@ -177,7 +227,25 @@ public class UIControllerStage {
         trap_1_2_container.setFillParent(true);
         trap_1_2_container.center().bottom(); 
         trap_1_2_container.row();
+        
+        trap_1_3.setDrawable(new TextureRegionDrawable(new TextureRegion(trap_1_3_texture)));
+        trap_1_3_container.add(trap_1_3).width(9f).height(9f).padBottom(2f).padRight(10f);
+        trap_1_3_container.setFillParent(true);
+        trap_1_3_container.center().bottom(); 
+        trap_1_3_container.row();
 
+        trap_1_4.setDrawable(new TextureRegionDrawable(new TextureRegion(trap_1_4_texture)));
+        trap_1_4_container.add(trap_1_4).width(9f).height(9f).padBottom(2f).padRight(10f);
+        trap_1_4_container.setFillParent(true);
+        trap_1_4_container.center().bottom(); 
+        trap_1_4_container.row();
+        
+        trap_1_5.setDrawable(new TextureRegionDrawable(new TextureRegion(trap_1_5_texture)));
+        trap_1_5_container.add(trap_1_5).width(9f).height(9f).padBottom(2f).padRight(10f);
+        trap_1_5_container.setFillParent(true);
+        trap_1_5_container.center().bottom(); 
+        trap_1_5_container.row();
+        
         trap_2_1.setDrawable(new TextureRegionDrawable(new TextureRegion(trap_2_1_texture)));
         trap_2_1_container.add(trap_2_1).width(9f).height(9f).padBottom(2f).padLeft(11f);
         trap_2_1_container.setFillParent(true);
@@ -189,6 +257,24 @@ public class UIControllerStage {
         trap_2_2_container.setFillParent(true);
         trap_2_2_container.center().bottom(); 
         trap_2_2_container.row();
+        
+        trap_2_3.setDrawable(new TextureRegionDrawable(new TextureRegion(trap_2_3_texture)));
+        trap_2_3_container.add(trap_2_3).width(9f).height(9f).padBottom(2f).padLeft(11f);
+        trap_2_3_container.setFillParent(true);
+        trap_2_3_container.center().bottom(); 
+        trap_2_3_container.row();
+        
+        trap_2_4.setDrawable(new TextureRegionDrawable(new TextureRegion(trap_2_4_texture)));
+        trap_2_4_container.add(trap_2_4).width(9f).height(9f).padBottom(2f).padLeft(11f);
+        trap_2_4_container.setFillParent(true);
+        trap_2_4_container.center().bottom(); 
+        trap_2_4_container.row();
+        
+        trap_2_5.setDrawable(new TextureRegionDrawable(new TextureRegion(trap_2_5_texture)));
+        trap_2_5_container.add(trap_2_5).width(9f).height(9f).padBottom(2f).padLeft(11f);
+        trap_2_5_container.setFillParent(true);
+        trap_2_5_container.center().bottom(); 
+        trap_2_5_container.row();
         
         blackSpace_container.setBackground(new TextureRegionDrawable(new TextureRegion(blackSpace_texture)));
         blackSpace_container.setFillParent(true);
@@ -215,7 +301,14 @@ public class UIControllerStage {
     	stage.addActor(deselect_container);
     	stage.addActor(trap_1_1_container);
     	stage.addActor(trap_1_2_container);
+    	stage.addActor(trap_1_3_container);
+    	stage.addActor(trap_1_4_container);
+    	stage.addActor(trap_1_5_container);
     	stage.addActor(trap_2_1_container);
+    	stage.addActor(trap_2_2_container);
+    	stage.addActor(trap_2_3_container);
+    	stage.addActor(trap_2_4_container);
+    	stage.addActor(trap_2_5_container);
     	stage.addActor(trap_2_2_container);
     	stage.addActor(select__trap_1_container);
     	stage.addActor(select__trap_2_container);
@@ -225,9 +318,15 @@ public class UIControllerStage {
     	stage.addActor(panic_circle_container);
     	trap_1_1_container.setVisible(false);
     	trap_1_2_container.setVisible(false);
+    	trap_1_3_container.setVisible(false);
+    	trap_1_4_container.setVisible(false);
+    	trap_1_5_container.setVisible(false);
     	trap_2_1_container.setVisible(false);
     	trap_2_2_container.setVisible(false);
-    	trap_1_1_container.setVisible(false);
+    	trap_2_2_container.setVisible(false);
+    	trap_2_3_container.setVisible(false);
+    	trap_2_4_container.setVisible(false);
+    	trap_2_5_container.setVisible(false);
     	select__trap_1_container.setVisible(false);
     	select__trap_2_container.setVisible(false);
     	blackSpace_container.setVisible(false);
@@ -274,12 +373,31 @@ public class UIControllerStage {
         else if(regularCount==2){
         	trap_1_2_container.setVisible(true);
         }
+        else if(regularCount==3){
+        	trap_1_3_container.setVisible(true);
+        }
+        else if(regularCount==4){
+        	trap_1_4_container.setVisible(true);
+        }
+        else if(regularCount==5){
+        	trap_1_5_container.setVisible(true);
+        }
         if(sheepCount==1){
         	trap_2_1_container.setVisible(true);
         }
         else if(sheepCount==2){
         	trap_2_2_container.setVisible(true);
         }
+        else if(sheepCount==3){
+        	trap_2_3_container.setVisible(true);
+        }
+        else if(sheepCount==4){
+        	trap_2_4_container.setVisible(true);
+        }
+        else if(sheepCount==5){
+        	trap_2_5_container.setVisible(true);
+        }
+        
         
         //draw highlighted selected trap
         if(trapController.getSelectedTrap().getInInventory()){
