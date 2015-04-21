@@ -31,6 +31,7 @@ public class TrapController {
     	    Trap tmp = new RegularTrap();
     	    tmp.setSensor(true);
     	    tmp.setBodyType(BodyDef.BodyType.StaticBody);
+    	    tmp.setInInventory(true);
     	    collisionController.addObject(tmp);
     	    this.addToInventory(tmp);
     	}
@@ -59,13 +60,6 @@ public class TrapController {
     	}
     	if(twoSelect){
     		for (Trap trap : inventory.get("SHEEP_TRAP")) {
-    			if(trap.getInInventory()){
-    				selectedTrap = trap;
-    			}
-    		}
-    	}
-    	if(threeSelect){
-    		for (Trap trap : inventory.get("WOLF_TRAP")) {
     			if(trap.getInInventory()){
     				selectedTrap = trap;
     			}
@@ -143,6 +137,7 @@ public class TrapController {
     		selectedTrap.setPosition(hunter.getPosition().x - 30.0f, hunter.getPosition().y + 30.0f);
     		selectedTrap.setInInventory(false);
     	}
+//    	selectedTrap.setOnMap(true);
 
     	//set selectedTrap to next available trap inInventory of same type
     	//if no free trap then selectedTrap does not change and player can't put down another
@@ -163,14 +158,6 @@ public class TrapController {
     
     public Trap getSelectedTrap(){
     	return selectedTrap;
-    }
-
-    /**
-     * 
-     * @param trap the trap to remove from the inventory
-     */
-    public void removeFromInventory(Trap trap) {
-    	inventory.get(trap.getType()).remove(trap);
     }
 
 }

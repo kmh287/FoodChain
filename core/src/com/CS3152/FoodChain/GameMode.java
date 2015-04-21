@@ -496,20 +496,23 @@ public class GameMode implements Screen {
 	        	canvas.pan(player.getClickPos());
 	        }
             }
-    	
-        //hunter.drawDebug(canvas);
-    	 //Draw the hunter
-    	//Draw the animals
+        
+    	//need to modify this and wolf code once wolf death animation is done
         for (Animal animal : animals){
-            if (!animal.getTrapped()|| animal.getFinishedDeatAnimation()==false) {
+        	if( animal instanceof Pig){
+        		if (!animal.getTrapped()|| animal.getFinishedDeatAnimation()==false) {
             		animal.draw(canvas);
-            }
+        		}
+        	}
+        	else{
+        		if (!animal.getTrapped()) {
+            		animal.draw(canvas);
+        		}
+        	}
+            
             //animal.drawDebug(canvas);
         }
         hunter.draw(canvas);
-//        if (hunter.getAlive()) {
-//        		hunter.draw(canvas);
-//        }
 
         canvas.end();
         /*if (player.isMousePressed()) {
