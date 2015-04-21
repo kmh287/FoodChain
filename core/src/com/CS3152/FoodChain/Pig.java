@@ -45,7 +45,7 @@ public class Pig extends Animal {
         super(new TextureRegion(tex), Actor.actorType.PIG, x, y, 
               prey, InputController.EAST);
         sprite = new FilmStrip(tex,1,4,4);
-        spriteDeath = new FilmStrip(deathTex,1,3,3);
+        spriteDeath = new FilmStrip(deathTex,1,7,7);
         drawScale.x=scaleXDrawSheep;
         drawScale.y=scaleYDrawSheep;
         SIGHT_LENGTH = 120;
@@ -135,7 +135,7 @@ public class Pig extends Animal {
         drawScale.x=scaleXDrawSheepDead;
         drawScale.y=scaleYDrawSheepDead;
     	int frame = spriteDeath.getFrame();
-    	if(frame<2){
+    	if(frame<6){
     		frame++;
     		
     	}
