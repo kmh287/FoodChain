@@ -7,6 +7,7 @@ import java.util.HashMap;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -36,7 +37,10 @@ public class Hunter extends Actor {
     
     private FilmStrip sprite;
     
-
+    /** The sound currently associated with the hunter */
+	private Sound sound;
+	/** The associated sound cue (if hunter is making a sound). */
+	private long sndcue;
 	
 	private Vector2 tmp;
     
@@ -65,6 +69,8 @@ public class Hunter extends Actor {
             }
         }
         */
+        sound = null;
+		sndcue = -1;
         
 
 
@@ -127,5 +133,18 @@ public class Hunter extends Actor {
     	super.setTexture(sprite);
     }
    
+    /**
+	 * Plays the given sound.  
+	 *
+	 * Each ship can only play one sound at a time.  If a sound is currently playing,
+	 * it will be stopped.
+	 */
+	public void play(String sound) {
+		if (sndcue != -1) {
+			this.sound.stop(sndcue);
+		}
+		this.sound = SoundController.get(sound);
+		sndcue = this.sound.play();
+	}
 
 }
