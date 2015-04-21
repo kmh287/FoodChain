@@ -4,6 +4,7 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Contact;
 
 public class Trap extends BoxObject {
 	
@@ -17,9 +18,9 @@ public class Trap extends BoxObject {
 	}
 	
 	/** File for the regular trap */
-	private static String REGULAR_TRAP = "assets/REGULAR_TRAP.png";
+	private static String REGULAR_TRAP = "assets/pig_trap_new.png";
 	/** File for the sheep trap */
-	private static String SHEEP_TRAP = "assets/SHEEP_TRAP.png";
+	private static String SHEEP_TRAP = "assets/wolf_trap_new.png";
 	/** File for the wolf trap */
 	private static String WOLF_TRAP = "assets/WOLF_TRAP.png";
 	/** The texture for the regular trap */
@@ -39,6 +40,8 @@ public class Trap extends BoxObject {
 	private boolean isSelected;
 	/** The type of the trap */
 	private String type;
+	/*Resolve picking up traps*/
+	private boolean isOver;
 	
 	/**
 	 * Creates a new trap of a given type at point 0.0, 0.0 on the map.
@@ -52,6 +55,9 @@ public class Trap extends BoxObject {
 		onMap = false;
 		setWell = false;
 		this.type=type;
+		isOver= false;
+		drawScale.x = .6f; 
+		drawScale.y = .6f; 
 	}
 	
 	/** 
@@ -185,6 +191,14 @@ public class Trap extends BoxObject {
 	public boolean getSetWell(){
 			return setWell;
 	}
+	
+	public boolean getisOver(){
+		return isOver;
+	}
+	
+	public void setisOver(boolean b){
+		isOver = b;
+	}
     
     /**
      * Draws the trap on the GameCanvas if it is on the map
@@ -197,4 +211,5 @@ public class Trap extends BoxObject {
         	super.draw(canvas);
         }	
     }
+    
 }

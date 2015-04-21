@@ -7,6 +7,7 @@ import java.util.Random;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import com.CS3152.FoodChain.Tile.tileType;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Contact;
@@ -39,12 +40,21 @@ public class CollisionController implements ContactListener {
 	private String trapToAdd = null;
 	private Vector2 trapLocationToAdd;
 	
+	private Trap trapOver = null;
+	
+	private Sound sound;
+	/** The associated sound cue (if ship is making a sound). */
+	private long sndcue;
+	
 	public CollisionController(){
 		//no gravity for top down
 		this.world = new World(new Vector2(0,0), false);
 		world.setContactListener(this);
 		this.tmp = new Vector2();
 		trapLocationToAdd = new Vector2();
+		
+		sound = null;
+		sndcue = -1;
 	}
 	
 	/**
@@ -82,88 +92,21 @@ public class CollisionController implements ContactListener {
 	public PooledList<SimplePhysicsObject> getObjects() {
 		return objects;
 	}
-	
-	/**
-	 * Checks to see if it is possible to move, if not, then move player back. 
-	 * Collision physics are modeled after first programming lab.
-	 * 
-	 * @param hunter the hunter
-	 * 
-	 * TODO have to decide how to handle multiple collisions and which collisions to process first. like animal or tiles
-	 */
-	private void move(Hunter actor) {
-		actor.setLinearVelocity(controls[0].getAction().scl(actor.getMoveSpeed()));
-		actor.setFacing(controls[0].getAction());
-	}
-	
-
-	//Pass the object to the correct handler
-	private void move(PhysicsObject o){
-		if (o instanceof Hunter){
-			move((Hunter) o);
-		}
-		else if (o instanceof Animal){
-			if (!(((Animal) o).getTrapped())) {
-				move((Animal) o);
-			}
-			else {
-				boolean trapped = true;
-			}
-		}
-	}
-
-	private void move(Animal actor,int index) {
-		if (actor.getAlive()) {
-			if (actor instanceof Owl) {
-				//System.out.println("yo");
-			}
-			actor.setLinearVelocity(controls[index].getAction().scl(actor.getMoveSpeed() + 100*AIController.getPanicPercentage()));
-			float angle = ((AIController)controls[index]).getAngle();
-			actor.updateLOS(angle);
-			//actor.setAngle(((AIController)controls[index]).getAngle());
-			actor.setFacing(((AIController) controls[index]).getAction());
-		}
-	}
-	
-	private void moveOwl(Animal actor,int index) {
-		if (actor.getAlive()) {
-			//actor.setLinearVelocity(controls[index].getAction());
-			//actor.updateLOS(angle);
-			//actor.setAngle(((AIController)controls[index]).getAngle());
-			actor.setFacing(((AIController) controls[index]).getAction());
-		}
-	}
-
 
 	public void update() {
-		//world.step(1/60f, 3, 3);
-		
-		//Updates the animals' actions
-		//i is the index of each animal AI in controls
-		int i = 1;
-		//System.out.println(objects.size());
-		for(PhysicsObject o : objects) {
-			
-			if (o instanceof Hunter){
-				
-				move((Hunter)o);
-			}
-			//unsure about order of objects.
-			else if (o instanceof Animal){
-				if (o instanceof Owl) {
-					//System.out.println ("instanceof"); 
-					moveOwl((Owl) o, i); 
-				}
-				else {
-					move((Animal)o,i);
-				
-				}
-				i++;
-			}
-			//System.out.println(o.getPosition().toString());
-		}
 		world.step(1/100f, 3, 3);
 		//checkTrapped();
+		
+		//shit
+		if (trapOver!= null && trapOver.getisOver() && trapOver.getOnMap()) {
+			if (trapOver.getSetWell() && controls[0].isSpaceHeldDown() && trapOver.getisOver()){
+				trapOver.setOnMap(false);
+				trapOver.setInInventory(true);
+			}
+			else{
+				trapOver.setSetWell(true);
+			}
+		}
 	}
 	
 
@@ -223,7 +166,11 @@ public class CollisionController implements ContactListener {
 		
 		if (bd1 instanceof Hunter && bd2 instanceof Trap) {
 			Trap trap = (Trap) bd2;
-			if (trap.getOnMap()) {
+			if (trap.getOnMap() ){
+				trapOver = trap;
+				trap.setisOver(true);
+			}
+			if (trap.getOnMap() && controls[0].isSpaceHeldDown()) {
 				trap.setOnMap(false);
 				trap.setInInventory(true);
 			}
@@ -231,7 +178,9 @@ public class CollisionController implements ContactListener {
 		if (bd1 instanceof Trap && bd2 instanceof Hunter) {
 			Trap trap = (Trap) bd1;
 			if (trap.getOnMap()) {
-				if (trap.getSetWell()){
+				trap.setisOver(true);
+				trapOver = trap;
+				if (trap.getSetWell() && controls[0].isSpaceHeldDown()){
 					trap.setOnMap(false);
 					trap.setInInventory(true);
 				}
@@ -305,6 +254,7 @@ public class CollisionController implements ContactListener {
 			
 			if (a.canEat(h)) {
 				h.setAlive(false);
+				
 			}
 		}
 		if (bd1 instanceof Animal && bd2 instanceof Hunter) {
@@ -312,14 +262,36 @@ public class CollisionController implements ContactListener {
 			Hunter h = (Hunter) bd2;
 			
 			if (a.canEat(h)) {
+				
 				h.setAlive(false);
+				play(SoundController.HUNTER_DEAD_SOUND);
 			}
 		}
 	}
 
 	@Override
 	public void endContact(Contact contact) {
-		// TODO Auto-generated method stub
+		Fixture fix1 = contact.getFixtureA();
+		Fixture fix2 = contact.getFixtureB();
+
+		Body body1 = fix1.getBody();
+		Body body2 = fix2.getBody();
+
+		Object fd1 = fix1.getUserData();
+		Object fd2 = fix2.getUserData();
+		
+		Object bd1 = body1.getUserData();
+		Object bd2 = body2.getUserData();
+		
+		if (bd1 instanceof Hunter && bd2 instanceof Trap) {
+			Trap trap = (Trap) bd2;
+			trap.setisOver(false);
+		}
+		if (bd1 instanceof Trap && bd2 instanceof Hunter) {
+
+			Trap trap = (Trap) bd1;
+			trap.setisOver(false);
+		}
 		
 	}
 
@@ -334,6 +306,14 @@ public class CollisionController implements ContactListener {
 		// TODO Auto-generated method stub
 		
 	}
+	
+	 public void play(String sound) {
+			if (sndcue != -1) {
+				this.sound.stop(sndcue);
+			}
+			this.sound = SoundController.get(sound);
+			sndcue = this.sound.play(); 
+		}
 	
 	public World getWorld() {
 		return this.world;

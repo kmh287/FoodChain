@@ -44,11 +44,15 @@ public interface InputController {
 	*/
 	public Vector2 getAction();
 	
-	public boolean isClicked();
+	public boolean isSpacePressed();
+	
+	public boolean isSpaceHeldDown();
 	
 	public boolean resetPressed();
 	
 	public Vector2 getClickPos();
 	
 	public int getNum();
+
+	public void update();
 }

@@ -63,6 +63,7 @@ public class GameCanvas {
 		
 	/** Camera for the underlying SpriteBatch */
 	private OrthographicCamera camera;
+	private PlayerController player; 
 	
 	private Viewport viewport; 
 	private Viewport viewportS; 
@@ -106,10 +107,11 @@ public class GameCanvas {
 	    viewport = new FitViewport((float) (Gdx.graphics.getWidth()/1.3), (float) (Gdx.graphics.getHeight()/1.3), camera);
 	    viewport.apply(); 
 	    ui = new UIControllerStage(); 
-
+	    player = new PlayerController(); 
+	    
 	    stage = new Stage(new ExtendViewport(100, 100));
 	    //stage = new Stage(new StretchViewport(viewport.getScreenWidth()), viewport.getScreenHeight());
-
+	    
 	    ui.setStage(stage);
 	    	
 		spriteBatch.setProjectionMatrix(camera.combined);
@@ -366,9 +368,20 @@ public class GameCanvas {
 	 *
 	 * Nothing is flushed to the graphics card until the method end() is called.
 	*/
+    public void pan(Vector2 pos) {
+		/*float x_mouse = pos.x;
+		float y_mouse = pos.y;
+		moveCamera(x_mouse, y_mouse);*/
+    	Vector3 touchpos = new Vector3();
+    	 touchpos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
+         camera.unproject(touchpos);
+		camera.translate(pos);
+		camera.update(); 
+    }
     public void beginCam(float x, float y) {
-    	
+    	 
     	moveCamera(x,y);
+    	
     	ui.drawStage();
     	spriteBatch.setProjectionMatrix(camera.combined);
     	spriteBatch.begin();
@@ -377,6 +390,7 @@ public class GameCanvas {
     
     //first time cam draws it will center over hunter and not perform lazy scroll
 	public void beginCamStart(float x, float y) {
+
 		camera.position.set(x, y, 0);
        	global.setTranslation(x, y, 0);
         camera.update();        
