@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 
 import com.CS3152.FoodChain.Actor.actorType;
 import com.badlogic.gdx.Screen;
@@ -55,6 +56,8 @@ public class GameMode implements Screen {
 	private boolean start;
 
     protected InputController[] controls;
+    
+    public static final Random random = new Random();
     
 //  /** Cache attribute for calculations */
 //	private Vector2 tmp;

@@ -64,24 +64,24 @@ public class Pig extends Animal {
         
         RadiusProximity proximity = new RadiusProximity<Vector2>(this, steerArray, 2.0f);
         collisionAvoidanceSB = new CollisionAvoidance<Vector2>(this, proximity);
-        collisionAvoidanceSB.setLimiter(new LinearAccelerationLimiter(375));
-        
-        fleeSB = new Flee<Vector2>(this);
-        fleeSB.setLimiter(new LinearAccelerationLimiter(10));
+        LinearAccelerationLimiter limiter = new LinearAccelerationLimiter(2.0f);
+        //limiter.setMaxLinearSpeed(2.0f);
+        collisionAvoidanceSB.setLimiter(limiter);
         
         wanderSB = new Wander<Vector2>(this)
         		// Don't use Face internally because independent facing is off
 				.setFaceEnabled(false) //
 				// We don't need a limiter supporting angular components because Face is not used
 				// No need to call setAlignTolerance, setDecelerationRadius and setTimeToTarget for the same reason
-				.setLimiter(new LinearAccelerationLimiter(10)) //
+				.setLimiter(limiter) //
 				.setWanderOffset(1) //
 				.setWanderOrientation(1) //
 				.setWanderRadius(1) //
 				.setWanderRate(MathUtils.PI / 10);
         
-        
-        
+        limiter.setMaxLinearAcceleration(3.0f);
+        fleeSB = new Flee<Vector2>(this);
+        fleeSB.setLimiter(limiter);
     }
 
     /* (non-Javadoc)
