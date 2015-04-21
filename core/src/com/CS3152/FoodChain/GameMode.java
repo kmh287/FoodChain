@@ -123,7 +123,7 @@ public class GameMode implements Screen {
         PreLoadContent(manager);
         manager.finishLoading();
         LoadContent(manager);
-        initializeLevel(canvas, "alphaLevel2");
+        initializeLevel(canvas, "BetaLevel3");
         
 	}
         
