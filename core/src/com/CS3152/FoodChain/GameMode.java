@@ -423,9 +423,14 @@ public class GameMode implements Screen {
 		int i = 1;
 		for (Animal an : animals) {
 			an.update(delta);
-			//need to update wolf once we have animations
+			//need to update wolf death once we have animations
 			if(an instanceof Pig){
-				if(controls[i].getAction()!=InputController.NO_ACTION){
+				if( an.getAlive()==false){
+					if(ticks%10==0){
+						((Pig)an).updateDeadFrame();
+					}
+				}
+				else if(controls[i].getAction()!=InputController.NO_ACTION){
 					if(ticks%10==0){
 						((Pig) an).updateWalkFrame();
 					}
@@ -514,7 +519,7 @@ public class GameMode implements Screen {
     	 //Draw the hunter
     	//Draw the animals
         for (Animal animal : animals){
-            if (!animal.getTrapped()) {
+            if (!animal.getTrapped()|| animal.getFinishedDeatAnimation()==false) {
             		animal.draw(canvas);
             }
             //animal.drawDebug(canvas);
