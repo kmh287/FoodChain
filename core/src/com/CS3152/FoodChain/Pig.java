@@ -57,14 +57,14 @@ public class Pig extends Animal {
         Array<Animal> animalArray = new Array<Animal>(animals);
         
         RadiusProximity proximity = new RadiusProximity<Vector2>(this, animalArray, 100.0f);
-        CollisionAvoidance<Vector2> collisionAvoidanceSB = new CollisionAvoidance<Vector2>(this, proximity);
+        collisionAvoidanceSB = new CollisionAvoidance<Vector2>(this, proximity);
         
         Hunter hunter = GameMode.hunter;
         
-        //Flee<Vector2> fleeSB = new Flee<Vector2>(this, GameMode.hunter);
-        //fleeSB.setLimiter(new LinearAccelerationLimiter(250));
+        fleeSB = new Flee<Vector2>(this);
+        fleeSB.setLimiter(new LinearAccelerationLimiter(250));
         
-        Wander<Vector2> wanderSB = new Wander<Vector2>(this)
+        wanderSB = new Wander<Vector2>(this)
         		// Don't use Face internally because independent facing is off
 				.setFaceEnabled(false) //
 				// We don't need a limiter supporting angular components because Face is not used
@@ -75,11 +75,6 @@ public class Pig extends Animal {
 				.setWanderRadius(160) //
 				.setWanderRate(MathUtils.PI);
         
-        PrioritySteering<Vector2> prioritySteering = new PrioritySteering<Vector2>(this);
-        prioritySteering.add(collisionAvoidanceSB);
-        //prioritySteering.add(fleeSB);
-        prioritySteering.add(wanderSB);
-        setSteeringBehavior(prioritySteering);
     }
 
     /* (non-Javadoc)

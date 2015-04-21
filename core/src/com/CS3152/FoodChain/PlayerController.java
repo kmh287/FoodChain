@@ -42,7 +42,7 @@ public class PlayerController implements InputController{
 	* moves diagonally to the south east direction, it returns SOUTHEST 
 	*@return the action of the player 
 	*/
-    public Vector2 getAction() {
+    public Vector2 getAction(float delta) {
 		PlayerAction = NO_ACTION; 
 			// Directional controls
 

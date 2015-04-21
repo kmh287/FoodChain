@@ -109,7 +109,7 @@ public class GameMode implements Screen {
         PreLoadContent(manager);
         manager.finishLoading();
         LoadContent(manager);
-        initializeLevel(canvas, "alphaLevel2");
+        initializeLevel(canvas, "blah");
 	}
         
  	private void initializeLevel(GameCanvas canvas, String levelName){
@@ -367,7 +367,7 @@ public class GameMode implements Screen {
 		}
 		
 		//if WASD pressed, then update frame
-		if(controls[0].getAction()!=InputController.NO_ACTION){
+		if(controls[0].getAction(delta)!=InputController.NO_ACTION){
 			if(ticks%10==0){
 				hunter.updateWalkFrame();
 			}
@@ -383,7 +383,7 @@ public class GameMode implements Screen {
 			an.update(delta);
 			//need to update wolf once we have animations
 			if(an instanceof Pig){
-				if(controls[i].getAction()!=InputController.NO_ACTION){
+				if(controls[i].getAction(delta)!=InputController.NO_ACTION){
 					if(ticks%10==0){
 						((Pig) an).updateWalkFrame();
 					}
@@ -393,7 +393,7 @@ public class GameMode implements Screen {
 				}
 			}
 			if(an instanceof Wolf){
-				if(controls[i].getAction()!=InputController.NO_ACTION){
+				if(controls[i].getAction(delta)!=InputController.NO_ACTION){
 					if(ticks%10==0){
 						((Wolf) an).updateWalkFrame();
 					}

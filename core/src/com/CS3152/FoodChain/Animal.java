@@ -3,6 +3,8 @@ package com.CS3152.FoodChain;
 import com.badlogic.gdx.ai.steer.Steerable;
 import com.badlogic.gdx.ai.steer.SteeringAcceleration;
 import com.badlogic.gdx.ai.steer.SteeringBehavior;
+import com.badlogic.gdx.ai.steer.behaviors.Flee;
+import com.badlogic.gdx.ai.steer.behaviors.Seek;
 import com.badlogic.gdx.ai.tests.steer.box2d.Box2dLocation;
 import com.badlogic.gdx.ai.tests.steer.box2d.Box2dSteeringUtils;
 import com.badlogic.gdx.ai.utils.Location;
@@ -18,8 +20,7 @@ public abstract class Animal extends Actor{
 	// Whether the animal is caught in a trap
 	private boolean trapped = false;
 	
-	// The way points for an animal's patrol path
-	private Array<Vector2> patrolPath;
+	private AIController.State state;
 	
 	// Vector that runs from the center of the animal diagonally leftward some length
     // RELATIVE TO ANIMAL'S POSITION
@@ -42,6 +43,13 @@ public abstract class Animal extends Actor{
     protected double SIGHT_ANGLE = 0.35;
     // How long the animal's line of sight is
     protected float SIGHT_LENGTH;
+    
+    protected float MIN_STEERING = 0.001f;
+    
+    protected SteeringBehavior<Vector2> collisionAvoidanceSB;
+    protected SteeringBehavior<Vector2> wanderSB;
+    protected SteeringBehavior<Vector2> fleeSB;
+    protected SteeringBehavior<Vector2> seekSB;
 	
 	/** Protected constructor for the animal type. 
 	 * 
@@ -62,7 +70,7 @@ public abstract class Animal extends Actor{
 		this.leftSectorLine = new Vector2();
 		this.rightSectorLine = new Vector2();
 		
-		patrolPath = new Array();
+		this.state = AIController.State.WANDER;
 
 		this.tmp = new Vector2();
 
@@ -222,14 +230,6 @@ public abstract class Animal extends Actor{
 		return this.rightSectorLine;
 	}
 	
-	public Array<Vector2> getPatrolPath() {
-		return patrolPath;
-	}
-	
-	public void setPatrolPath(Array<Vector2> path) {
-		patrolPath = path;
-	}
-	
 	public void drawSight(GameCanvas canvas) {
 		if (getAlive()) {
 			tmp.set(getPosition());
@@ -250,7 +250,61 @@ public abstract class Animal extends Actor{
 	
 	@Override
 	public void update(float delta) {
-		updateLOS(getAngle() + (float)Math.PI/2.0f);
 		super.update(delta);
+		updateLOS(getAngle() + (float)Math.PI/2.0f);
+	}
+	
+	@Override
+	public void calculateSteering() {
+		float minSteeringSquared = MIN_STEERING * MIN_STEERING;
+		
+		collisionAvoidanceSB.calculateSteering(steeringOutput);
+		if (steeringOutput.calculateSquareMagnitude() > minSteeringSquared) {
+			return; 
+		}
+		
+		switch (state) {
+		case WANDER:
+			wanderSB.calculateSteering(steeringOutput);
+			break;
+		case CHASE:
+			seekSB.calculateSteering(steeringOutput);
+			break;
+		case FLEE:
+			fleeSB.calculateSteering(steeringOutput);
+			break;
+		case KILL:
+			steeringOutput.setZero();
+			break;
+		}
+		return;
+	}
+	
+	public void applySteering(float delta) {
+		super.applySteering(steeringOutput, delta);
+	}
+	
+	public void setState(AIController.State state) {
+		this.state = state;
+	}
+	
+	public AIController.State getState() {
+		return state;
+	}
+	
+	public void setFlee(Actor actor) {
+		((Flee<Vector2>) fleeSB).setTarget(actor);
+	}
+	
+	public void resetFlee() {
+		((Flee<Vector2>) fleeSB).setTarget(null);
+	}
+	
+	public void setTarget(Actor actor) {
+		((Seek<Vector2>) seekSB).setTarget(actor);
+	}
+	
+	public void resetTarget() {
+		((Seek<Vector2>) seekSB).setTarget(null);
 	}
 }

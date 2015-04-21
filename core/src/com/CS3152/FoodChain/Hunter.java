@@ -129,4 +129,13 @@ public class Hunter extends Actor {
     	sprite.flip(false,true);
     	super.setTexture(sprite);
     }
+    
+    @Override
+    public void calculateSteering() {
+    	return;
+    }
+    
+    public void applySteering(float delta) {
+    	return;
+    }
 }

@@ -26,7 +26,7 @@ public abstract class Actor extends CircleObject implements Steerable<Vector2>{
 	
 	protected SteeringBehavior<Vector2> steeringBehavior;
 	
-	private final SteeringAcceleration<Vector2> steeringOutput = new SteeringAcceleration<Vector2>(new Vector2());
+	protected final SteeringAcceleration<Vector2> steeringOutput = new SteeringAcceleration<Vector2>(new Vector2());
 	
 	// Whether the actor is alive
 	private boolean alive = true;
@@ -323,4 +323,8 @@ public abstract class Actor extends CircleObject implements Steerable<Vector2>{
     public void setZeroLinearSpeedThreshold (float value) {
     	throw new UnsupportedOperationException();
     }
+    
+    public abstract void calculateSteering();
+    
+    public abstract void applySteering(float delta);
 }
