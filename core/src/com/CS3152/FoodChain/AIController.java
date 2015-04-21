@@ -367,11 +367,11 @@ public class AIController implements InputController {
 			    	//System.out.println(getAnimal() + " is wandering");
 			    	if (isScared()) {
 			    		animal.setState(State.FLEE);
-			    		setTurns(10000);
+			    		setTurns(1000);
 			    	}
 			    	else if (hasTarget()) {
 			        	animal.setState(State.CHASE);
-			        	setTurns(10000);
+			        	setTurns(1000);
 			        }
 			    	break;
 			    case CHASE:
@@ -387,7 +387,7 @@ public class AIController implements InputController {
 			        if (hasTarget() && !target.getAlive()) {
 			        	animal.setState(State.KILL);
 			        	setTarget(null);
-			        	setTurns(2000);
+			        	setTurns(500);
 			        }
 			        break;
 			    case FLEE:
