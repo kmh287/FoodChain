@@ -7,6 +7,7 @@ import java.util.Random;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import com.CS3152.FoodChain.Tile.tileType;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Contact;
@@ -35,11 +36,15 @@ public class CollisionController implements ContactListener {
 	private InputController[] controls;
 	private Vector2 action;
 	
-	private String trapToRemove = null;
+	private Trap trapToRemove = null;
 	private String trapToAdd = null;
 	private Vector2 trapLocationToAdd;
 	
 	private Trap trapOver = null;
+	
+	private Sound sound;
+	/** The associated sound cue (if ship is making a sound). */
+	private long sndcue;
 	
 	public CollisionController(){
 		//no gravity for top down
@@ -47,6 +52,9 @@ public class CollisionController implements ContactListener {
 		world.setContactListener(this);
 		this.tmp = new Vector2();
 		trapLocationToAdd = new Vector2();
+		
+		sound = null;
+		sndcue = -1;
 	}
 	
 	/**
@@ -120,7 +128,7 @@ public class CollisionController implements ContactListener {
     		if (trapToRemove != null
     				&& o.getBody().getUserData() instanceof Trap) {
     			Trap t = (Trap) o;
-    			if (t.getType() == trapToRemove) {
+    			if (t == trapToRemove) {
     				t.setActive(false);
     				trapToRemove = null;
     			}
@@ -128,9 +136,10 @@ public class CollisionController implements ContactListener {
     		if (trapToAdd != null
     				&& o.getBody().getUserData() instanceof Trap) {
     			Trap t = (Trap) o;
-    			if (t.getType() == trapToAdd) {
+    			if (t.getType() == trapToAdd && t.getInInventory()!=true) {
     				t.setPosition(trapLocationToAdd);
     				t.setOnMap(true);
+    				t.setInInventory(true);
     				trapToAdd = null;
     			}
     		}
@@ -189,7 +198,7 @@ public class CollisionController implements ContactListener {
 					&& animal.getType() == Actor.actorType.PIG) {
 				animal.setTrapped(true);
 				trap.setOnMap(false);
-				trapToRemove = "REGULAR_TRAP";
+				trapToRemove = trap;
 				trapToAdd = "SHEEP_TRAP";
 				trapLocationToAdd = trap.getPosition();
 				
@@ -198,7 +207,7 @@ public class CollisionController implements ContactListener {
 					&& animal.getType() == Actor.actorType.WOLF) {
 				animal.setTrapped(true);
 				trap.setOnMap(false);
-				trapToRemove = "SHEEP_TRAP";
+				trapToRemove = trap;
 				trapToAdd = "WOLF_TRAP";
 				trapLocationToAdd = trap.getPosition();
 			}
@@ -211,7 +220,7 @@ public class CollisionController implements ContactListener {
 					&& animal.getType() == Actor.actorType.PIG) {
 				animal.setTrapped(true);
 				trap.setOnMap(false);
-				trapToRemove = "REGULAR_TRAP";
+				trapToRemove = trap;
 				trapToAdd = "SHEEP_TRAP";
 				trapLocationToAdd = trap.getPosition();
 				
@@ -220,7 +229,7 @@ public class CollisionController implements ContactListener {
 					&& animal.getType() == Actor.actorType.WOLF) {
 				animal.setTrapped(true);
 				trap.setOnMap(false);
-				trapToRemove = "SHEEP_TRAP";
+				trapToRemove = trap;
 				trapToAdd = "WOLF_TRAP";
 				trapLocationToAdd = trap.getPosition();
 			}
@@ -246,6 +255,7 @@ public class CollisionController implements ContactListener {
 			
 			if (a.canEat(h)) {
 				h.setAlive(false);
+				
 			}
 		}
 		if (bd1 instanceof Animal && bd2 instanceof Hunter) {
@@ -253,7 +263,9 @@ public class CollisionController implements ContactListener {
 			Hunter h = (Hunter) bd2;
 			
 			if (a.canEat(h)) {
+				
 				h.setAlive(false);
+				play(SoundController.HUNTER_DEAD_SOUND);
 			}
 		}
 	}
@@ -295,6 +307,14 @@ public class CollisionController implements ContactListener {
 		// TODO Auto-generated method stub
 		
 	}
+	
+	 public void play(String sound) {
+			if (sndcue != -1) {
+				this.sound.stop(sndcue);
+			}
+			this.sound = SoundController.get(sound);
+			sndcue = this.sound.play(); 
+		}
 	
 	public World getWorld() {
 		return this.world;

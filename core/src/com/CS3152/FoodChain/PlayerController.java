@@ -82,6 +82,11 @@ public class PlayerController implements InputController{
 		}
 	}
 	
+	public boolean isMousePressed(){
+		return Gdx.input.isButtonPressed(Input.Buttons.LEFT); 
+	}
+
+	
 	public boolean isSpaceHeldDown(){
 		//return Gdx.input.isButtonPressed(Input.Buttons.LEFT);
 		if(spaceTicks>10){

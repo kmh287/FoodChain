@@ -10,28 +10,48 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 
 public class TrapController {
 
+	private Hunter hunter;
+	private GameMap map;
     private HashMap<String, List<Trap>> inventory;
     private Trap selectedTrap = null;
     
-    public TrapController(CollisionController collisionController){
+    private Vector2 tmp;
+    
+    public TrapController(Hunter hunter, GameMap map, CollisionController collisionController, int numPigs, int numWolves){
+    	this.hunter = hunter;
+    	this.map = map;
+    	
     	inventory= new HashMap<String, List<Trap>>();
     	
     	//need to add multiple dynamic traps functionality
     	inventory.put("REGULAR_TRAP", new ArrayList<Trap>());
     	inventory.put("SHEEP_TRAP", new ArrayList<Trap>());
     	inventory.put("WOLF_TRAP", new ArrayList<Trap>());
+    	int max;
+    	if(numPigs>numWolves){
+    		max =numPigs;
+    	}
+    	else{
+    		max = numWolves;
+    	}
+    	for(int i =0;i<max;i++){
+    	    Trap tmp = new RegularTrap();
+    	    tmp.setSensor(true);
+    	    tmp.setBodyType(BodyDef.BodyType.StaticBody);
+    	    tmp.setInInventory(true);
+    	    collisionController.addObject(tmp);
+    	    this.addToInventory(tmp);
+    	}
+    	for(int i =0;i<max;i++){
+    	    Trap tmp = new SheepTrap();
+    	    tmp.setSensor(true);
+    	    tmp.setBodyType(BodyDef.BodyType.StaticBody);
+    	    tmp.setInInventory(false);
+    	    collisionController.addObject(tmp);
+    	    this.addToInventory(tmp);
+    	}
     	
-	    Trap tmp = new RegularTrap();
-	    tmp.setSensor(true);
-	    tmp.setBodyType(BodyDef.BodyType.StaticBody);
-	    collisionController.addObject(tmp);
-	    this.addToInventory(tmp);
-	    tmp = new SheepTrap();
-	    tmp.setInInventory(false);
-	    tmp.setSensor(true);
-	    tmp.setBodyType(BodyDef.BodyType.StaticBody);
-	    collisionController.addObject(tmp);
-	    this.addToInventory(tmp);
+    	tmp = new Vector2();
     }
 
 
@@ -49,13 +69,6 @@ public class TrapController {
     	}
     	if(twoSelect){
     		for (Trap trap : inventory.get("SHEEP_TRAP")) {
-    			if(trap.getInInventory()){
-    				selectedTrap = trap;
-    			}
-    		}
-    	}
-    	if(threeSelect){
-    		for (Trap trap : inventory.get("WOLF_TRAP")) {
     			if(trap.getInInventory()){
     				selectedTrap = trap;
     			}
@@ -85,8 +98,8 @@ public class TrapController {
 	if (Math.abs(tmp.len()) <= TRAP_RADIUS && selectedTrap.getInInventory()==true) {
 		return true;
 	} */
-    	if (selectedTrap.getInInventory()==true) {
-    		return true; 
+    	if (selectedTrap.getInInventory()==true && hunter.getAlive()) {
+    		return true;
     	}
     	//tmp.set(getPosition());
     	//getFacing(); 
@@ -97,7 +110,8 @@ public class TrapController {
     public void setTrap(CircleObject hunter) {
     	//Determine which direction the hunter is facing
     	float angle = hunter.getAngle();
-
+    	tmp.set(selectedTrap.getPosition());
+    	
     	if (angle == 0.0f) {
     		selectedTrap.setPosition(hunter.getPosition().x, hunter.getPosition().y - 0.8f);
     		//update inventory
@@ -133,6 +147,14 @@ public class TrapController {
     		selectedTrap.setPosition(hunter.getPosition().x - 0.6f, hunter.getPosition().y + 0.6f);
     		selectedTrap.setInInventory(false);
     	}
+    	
+    	Vector2 trapPosition = selectedTrap.getPosition();
+    	if (!map.isSafeAt(GameMap.metersToPixels(trapPosition.x), GameMap.metersToPixels(trapPosition.y))) {
+    		selectedTrap.setOnMap(false);
+    		selectedTrap.setInInventory(true);
+    		return;
+    	}
+//    	selectedTrap.setOnMap(true);
 
     	//set selectedTrap to next available trap inInventory of same type
     	//if no free trap then selectedTrap does not change and player can't put down another
@@ -153,14 +175,6 @@ public class TrapController {
     
     public Trap getSelectedTrap(){
     	return selectedTrap;
-    }
-
-    /**
-     * 
-     * @param trap the trap to remove from the inventory
-     */
-    public void removeFromInventory(Trap trap) {
-    	inventory.get(trap.getType()).remove(trap);
     }
 
 }

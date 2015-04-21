@@ -1,6 +1,6 @@
 package com.CS3152.FoodChain;
 
-import java.io.FileNotFoundException; 
+import java.io.FileNotFoundException; 	
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -9,6 +9,7 @@ import java.util.List;
 import com.CS3152.FoodChain.Actor.actorType;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -46,6 +47,10 @@ public class GameMode implements Screen {
 	private float TIME_STEP = 1/200f;
 	private float frameTime;
 	private String levelName;
+	private PlayerController player; 
+	
+	private int numPigs;
+	private int numWolves;
 	
 	private boolean start;
 
@@ -59,7 +64,9 @@ public class GameMode implements Screen {
 	
 	private float accumulator = 0;
 	
-	
+	/**sound assets here **/
+	//private static final String TRAP_DROP_FILE = "sounds/trap_drop.mp3";
+	//protected static Sound trapSound;
     
 	/** 
 	 * Preloads the assets for this game.
@@ -75,6 +82,8 @@ public class GameMode implements Screen {
 	 */
 	public static void PreLoadContent(AssetManager manager) {
 		Trap.PreLoadContent(manager);
+		//manager.load(TRAP_DROP_FILE,Sound.class);
+		SoundController.PreLoadContent(manager);
 	}
 	
 	/** 
@@ -92,6 +101,9 @@ public class GameMode implements Screen {
 	 */
 	public static void LoadContent(AssetManager manager) {
 		Trap.LoadContent(manager);
+		//trapSound = manager.get(TRAP_DROP_FILE,  Sound.class);
+		SoundController.LoadContent(manager);
+		
 	}
 	
     /**
@@ -112,6 +124,7 @@ public class GameMode implements Screen {
         manager.finishLoading();
         LoadContent(manager);
         initializeLevel(canvas, "alphaLevel2");
+        
 	}
         
  	private void initializeLevel(GameCanvas canvas, String levelName){
@@ -148,14 +161,17 @@ public class GameMode implements Screen {
         controls = new InputController[animals.size() + 1]; 
         controls[0] = new PlayerController();
         
-        trapController = new TrapController(collisionController);
+        createHunter(map.getHunterStartingCoordinate());
+        
+        trapController = new TrapController(hunter, map, collisionController,numPigs,numWolves);
+
         
         canvas.getUIControllerStage().setTrapController(trapController);
         
 
 	    traps = (HashMap<String, List<Trap>>) trapController.getInventory();
     
-        
+	    player = new PlayerController(); 
         List<Actor> actors = new ArrayList<Actor>();
         actors.add(hunter);
         for (int i = 0; i < animals.size(); i++) {
@@ -180,8 +196,8 @@ public class GameMode implements Screen {
 
 	private String formatObjective(String obj){
 		String[] goals = obj.split("&");
-		int numPigs = Integer.parseInt(goals[0]);
-		int numWolves = Integer.parseInt(goals[1]);
+		numPigs = Integer.parseInt(goals[0]);
+		numWolves = Integer.parseInt(goals[1]);
 		String pig = (numPigs == 1) ? "pig" : "pigs";
 		String wolf = (numWolves == 1) ? "wolf" : "wolves";
 		return "Your goal in this level is to catch " + numPigs + " " + pig + 
@@ -307,6 +323,7 @@ public class GameMode implements Screen {
 			if (animal.getType() == actorType.PIG){
 				if (animal.getTrapped()){
 					numPigsCaptured++;
+					//testSound.play(); 
 				} else if (animal.isActive()){
 					numPigsOnMap++;
 				}
@@ -367,10 +384,17 @@ public class GameMode implements Screen {
 			//increment hunter frames
 			//set down in front of hunter.
 			trapController.setTrap(hunter);
+			hunter.play(SoundController.TRAP_SOUND);
 		}
 		
+		
+		if(hunter.getAlive()==false){
+			if(ticks%15==0){
+				hunter.updateDeadFrame();
+			}
+		}
 		//if WASD pressed, then update frame
-		if(controls[0].getAction(delta)!=InputController.NO_ACTION){
+		else if (controls[0].getAction(delta)!=InputController.NO_ACTION){
 			if(ticks%10==0){
 				hunter.updateWalkFrame();
 			}
@@ -384,9 +408,14 @@ public class GameMode implements Screen {
 		int i = 1;
 		for (Animal an : animals) {
 			an.update(delta);
-			//need to update wolf once we have animations
-			if(an instanceof Pig){
-				if(controls[i].getAction(delta)!=InputController.NO_ACTION){
+			//need to update wolf death once we have animations
+			if(an instanceof Pig) {
+				if( an.getAlive()==false){
+					if(ticks%10==0){
+						((Pig)an).updateDeadFrame();
+					}
+				}
+				else if(controls[i].getAction(delta)!=InputController.NO_ACTION){
 					if(ticks%10==0){
 						((Pig) an).updateWalkFrame();
 					}
@@ -426,11 +455,12 @@ public class GameMode implements Screen {
     }
     
     private void draw(float delta){
+    	//canvas.begin();
     	canvas.DrawBlack(GameMap.metersToPixels(hunter.getPosition().x), GameMap.metersToPixels(hunter.getPosition().y));
     	canvas.end();
-        canvas.begin(); 
-    	//canvas.begin();
+    	
         //Draw the map
+    	canvas.begin();
         map.draw(canvas);
       
         
@@ -451,12 +481,9 @@ public class GameMode implements Screen {
 	    			trap.draw(canvas);
 	    		}
         }
-        
-        
-        
-       
         canvas.end();
         
+        //canvas.begin();
         if(!start){
         	canvas.beginCam(GameMap.metersToPixels(hunter.getPosition().x), GameMap.metersToPixels(hunter.getPosition().y));
         }
@@ -464,29 +491,37 @@ public class GameMode implements Screen {
         	canvas.beginCamStart(GameMap.metersToPixels(hunter.getPosition().x), GameMap.metersToPixels(hunter.getPosition().y));
         	start=false;
         }
-    	
+        
         //hunter.drawDebug(canvas);
-    	 //Draw the hunter
+    	//Draw the hunter
     	//Draw the animals
+    	//need to modify this and wolf code once wolf death animation is done
         for (Animal animal : animals){
-            if (!animal.getTrapped()) {
+        	if( animal instanceof Pig){
+        		if (!animal.getTrapped() || animal.getFinishedDeatAnimation()==false) {
             		animal.draw(canvas);
-            }
+        		}
+        	}
+        	else{
+        		if (!animal.getTrapped()) {
+            		animal.draw(canvas);
+        		}
+        	}
+            
             //animal.drawDebug(canvas);
         }
-        if (hunter.getAlive()) {
-        		hunter.draw(canvas);
-        }
-
+        //if (hunter.getAlive()) {
+        hunter.draw(canvas);
+        //}
         canvas.end();
-        
+
+        //canvas.begin();
         canvas.beginCam(GameMap.metersToPixels(hunter.getPosition().x), GameMap.metersToPixels(hunter.getPosition().y));
+        canvas.end();
         //hunter.drawDebug(canvas);
 
         //ui.draw(canvas);
         //uis.drawStage(stage);
-        
-        canvas.end();
         
         /*
         canvas.beginDebug();
@@ -500,7 +535,7 @@ public class GameMode implements Screen {
         PooledList<SimplePhysicsObject> objects = collisionController.getObjects();
 		for(PhysicsObject obj : objects) {
 			if (obj instanceof Actor && ((Actor) obj).getAlive()) {
-				obj.drawDebug(canvas);
+				//obj.drawDebug(canvas);
 				if (obj instanceof Animal) {
 					Animal a = (Animal) obj;
 					if (!a.getTrapped()) {
@@ -548,6 +583,7 @@ public class GameMode implements Screen {
     @Override
     public void dispose() {
         // TODO Auto-generated method stub
+    	SoundController.UnloadContent(manager);
         
     }
 

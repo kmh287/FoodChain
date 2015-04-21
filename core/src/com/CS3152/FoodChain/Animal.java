@@ -44,13 +44,16 @@ public abstract class Animal extends Actor{
     protected double SIGHT_ANGLE = 0.35;
     // How long the animal's line of sight is
     protected float SIGHT_LENGTH;
-    
+
     protected float MIN_STEERING = 0.001f;
     
     protected SteeringBehavior<Vector2> collisionAvoidanceSB;
     protected SteeringBehavior<Vector2> wanderSB;
     protected SteeringBehavior<Vector2> fleeSB;
     protected SteeringBehavior<Vector2> seekSB;
+    
+    private boolean finishedDeatAnimation;
+
 	
 	/** Protected constructor for the animal type. 
 	 * 
@@ -80,6 +83,7 @@ public abstract class Animal extends Actor{
 		setTexWidth(GameMap.pixelsToMeters(tr.getRegionWidth()));
 		setTexHeight(GameMap.pixelsToMeters(tr.getRegionHeight()));
 		this.tagged = false;
+		finishedDeatAnimation= false;
 	}
 	
 	public abstract void createSteeringBehaviors();
@@ -249,7 +253,7 @@ public abstract class Animal extends Actor{
 	
 	@Override
 	public void draw(GameCanvas canvas) {
-		if (getAlive()) {
+		if (getFinishedDeatAnimation()==false) {
 			super.draw(canvas);
 		}
 	}
@@ -313,4 +317,12 @@ public abstract class Animal extends Actor{
 	public void resetTarget() {
 		((Seek<Vector2>) seekSB).setTarget(null);
 	}
+	
+	public boolean getFinishedDeatAnimation(){
+		return finishedDeatAnimation;
+	}
+	
+	public void setFinishedDeatAnimation(boolean b){
+		this.finishedDeatAnimation=b;
+	};
 }

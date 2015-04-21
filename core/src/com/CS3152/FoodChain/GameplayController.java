@@ -25,7 +25,7 @@ public class GameplayController {
 		int i = 1;
 		//System.out.println(objects.size());
 		for(Actor actor : actors) {
-			if (actor instanceof Animal){
+			if (actor instanceof Animal && actor.getAlive()){
 				if (actor instanceof Owl) {
 					
 				}
@@ -43,7 +43,7 @@ public class GameplayController {
 				hunter.setLinearVelocity(controls[0].getAction(delta).scl(hunter.getMoveSpeed()));
 				hunter.setFacing(controls[0].getAction(delta));
 			}
-			else {
+			else if (actor.getAlive()){
 				if (actor instanceof Owl) {
 					
 				}

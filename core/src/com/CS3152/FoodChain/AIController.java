@@ -1,17 +1,19 @@
 package com.CS3152.FoodChain;
 
-import java.util.*; 
+import java.util.*; 	
 
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 
 import com.badlogic.gdx.ai.pfa.PathSmoother;
 import com.badlogic.gdx.ai.pfa.indexed.IndexedAStarPathFinder;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
+
 
 /**
  * InputController corresponding to AI control.
@@ -83,11 +85,15 @@ public class AIController implements InputController {
     private Random random;
 
     private static float panicPercentage;
-
+    private Hunter hunter; 
     
     private Vector2 vect;
     private float angle;
-    
+
+    private Sound sound;
+	/** The associated sound cue (if ship is making a sound). */
+	private long sndcue;
+	
     /*
      * Creates an AIController for the animal
      *
@@ -132,6 +138,9 @@ public class AIController implements InputController {
         panicPercentage = 0f;
         angle = animal.getAngle();
         vect = new Vector2(animal.getPosition());
+        
+        sound = null;
+		sndcue = -1;
     }
     
     /*
@@ -171,7 +180,7 @@ public class AIController implements InputController {
     public static boolean withinRadius(Animal an, Vector2 length) {
     	return length.len() <= an.getSightLength();
     }
-    
+
     // Determine the new angle the animal wants to face
     // @return that angle.
     public float getAngle() {
@@ -304,6 +313,15 @@ public class AIController implements InputController {
     public static float getPanicPercentage() {
       return panicPercentage;
     }
+
+    public void play(String sound) {
+		if (sndcue != -1) {
+			this.sound.stop(sndcue);
+		}
+		this.sound = SoundController.get(sound);
+		sndcue = this.sound.loop(); 
+	}
+
 
 	@Override
 	public boolean resetPressed() {
