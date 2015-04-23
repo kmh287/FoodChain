@@ -8,6 +8,8 @@ import java.util.List;
 
 import com.CS3152.FoodChain.Actor.actorType;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
@@ -453,19 +455,34 @@ public class GameMode implements Screen {
        
         canvas.end();
         
+        /**beginCam with the hunter position normally. if **/
         if(!start){
-        	canvas.beginCam(hunter.getPosition().x, hunter.getPosition().y);
-        	if (player.isMousePressed()) {
+        	
+        	/*if (player.isMousePressed()) {
             	canvas.pan(player.getClickPos());
+            }*/
+        	
+            if (Gdx.input.isKeyPressed(Input.Keys.Z)) {
+            	canvas.beginCam(Gdx.input.getX(), Gdx.input.getY());
             }
+            else {
+            	canvas.beginCam(hunter.getPosition().x, hunter.getPosition().y);
+            }
+
         }
         else{
-	        canvas.beginCamStart(hunter.getPosition().x, hunter.getPosition().y);
 	       	start=false;
-	       	if (player.isMousePressed()) {
+	       	/*if (player.isMousePressed()) {
 	        	canvas.pan(player.getClickPos());
-	        }
+	        }*/
+	       	if (Gdx.input.isKeyPressed(Input.Keys.Z)) {
+            	canvas.beginCam(Gdx.input.getX(), Gdx.input.getY());
             }
+	       	else {
+		        canvas.beginCamStart(hunter.getPosition().x, hunter.getPosition().y);
+
+	       	}
+           }
     	
         //hunter.drawDebug(canvas);
     	 //Draw the hunter
@@ -487,7 +504,9 @@ public class GameMode implements Screen {
         if (player.isMousePressed()) {
         	canvas.pan(player.getClickPos());
         }
+        else {
         	canvas.beginCam(hunter.getPosition().x, hunter.getPosition().y);
+        }
         //}
         
         //hunter.drawDebug(canvas);

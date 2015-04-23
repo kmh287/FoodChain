@@ -18,6 +18,7 @@
 package com.CS3152.FoodChain;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.*;
@@ -379,7 +380,6 @@ public class GameCanvas {
 		camera.update(); 
     }
     public void beginCam(float x, float y) {
-    	 
     	moveCamera(x,y);
     	
     	ui.drawStage();
@@ -390,7 +390,7 @@ public class GameCanvas {
     
     //first time cam draws it will center over hunter and not perform lazy scroll
 	public void beginCamStart(float x, float y) {
-
+		
 		camera.position.set(x, y, 0);
        	global.setTranslation(x, y, 0);
         camera.update();        
