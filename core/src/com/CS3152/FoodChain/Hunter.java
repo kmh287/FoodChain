@@ -25,17 +25,22 @@ public class Hunter extends Actor {
     private HashMap<String, List<Trap>> inventory;
     
     private static final String PLAYER_TEX = "assets/hunter_walk_cycle.png";
+    private static final String DEATH_TEX = "assets/hunter_death.png";
     protected static Texture tex = null;
-
+    protected static Texture deathTex = null;
+    
     //how far forward the hunter can move in a turn. 
-    private static final float MOVE_SPEED = 150.0f;
+    private static final float MOVE_SPEED = 4.0f;
     /** How far the hunter can lay a trap from itself */
-    private static final float TRAP_RADIUS = 50.0f;
+    private static final float TRAP_RADIUS = 1.0f;
     
     private static float scaleXDrawHunter = 0.2f;
     private static float scaleYDrawHunter = 0.15f;
+    private static float scaleXDrawHunterDead = 0.22f;
+    private static float scaleYDrawHunterDead = 0.21f;
     
     private FilmStrip sprite;
+    private FilmStrip spriteDeath;
     
     /** The sound currently associated with the hunter */
 	private Sound sound;
@@ -51,26 +56,17 @@ public class Hunter extends Actor {
     		  40, new actorType[]{actorType.PIG});
         tmp = new Vector2();
         sprite = new FilmStrip(tex,1,4,4);
+        spriteDeath =  new FilmStrip(deathTex,1,3,3);
         drawScale.x=scaleXDrawHunter;
         drawScale.y=scaleYDrawHunter;
-        //set selected trap
-        /*
-        for (Trap trap : traps.get("REGULAR_TRAP")) {
-        	selectedTrap = trap;
-        }
-        if(selectedTrap==null){
-            for (Trap trap : traps.get("SHEEP_TRAP")) {
-            	selectedTrap = trap;
-            }
-        }
-        if(selectedTrap==null){
-            for (Trap trap : traps.get("WOLF_TRAP")) {
-            	selectedTrap = trap;
-            }
-        }
-        */
         sound = null;
 		sndcue = -1;
+        maxLinearSpeed = 500.0f;
+        maxLinearAcceleration = 0.0f;
+        independentFacing = false;
+        sound = null;
+		sndcue = -1;
+		spriteDeath.setFrame(0);
         
 
 
@@ -84,9 +80,11 @@ public class Hunter extends Actor {
     public static void loadTexture(AssetManager manager) {
         if (tex == null){
             manager.load(PLAYER_TEX, Texture.class);
+            manager.load(DEATH_TEX, Texture.class);
             manager.finishLoading();
             if (manager.isLoaded(PLAYER_TEX)){
                 tex = manager.get(PLAYER_TEX);
+                deathTex= manager.get(DEATH_TEX);
             }
         }
     }
@@ -112,6 +110,7 @@ public class Hunter extends Actor {
     		return "HUNTER";
     }
   
+    
     public void updateWalkFrame(){
     	int frame = sprite.getFrame();
     	frame++;
@@ -123,6 +122,19 @@ public class Hunter extends Actor {
     	super.setTexture(sprite);
     }
     
+    public void updateDeadFrame(){
+        drawScale.x=scaleXDrawHunterDead;
+        drawScale.y=scaleYDrawHunterDead;
+    	int frame = spriteDeath.getFrame();
+    	if(frame<2){
+    		frame++;
+    		
+    	}
+    	spriteDeath.setFrame(frame);
+    	spriteDeath.flip(false,true);
+    	super.setTexture(spriteDeath);
+    }
+    
     public FilmStrip Sprite(){
     	return sprite;
     }
@@ -131,6 +143,15 @@ public class Hunter extends Actor {
     	sprite.setFrame(0);
     	sprite.flip(false,true);
     	super.setTexture(sprite);
+    }
+    
+    @Override
+    public void calculateSteering() {
+    	return;
+    }
+    
+    public void applySteering(float delta) {
+    	return;
     }
    
     /**
@@ -146,5 +167,4 @@ public class Hunter extends Actor {
 		this.sound = SoundController.get(sound);
 		sndcue = this.sound.play();
 	}
-
 }

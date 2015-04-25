@@ -1,5 +1,13 @@
 package com.CS3152.FoodChain;
 
+import com.badlogic.gdx.ai.steer.Steerable;
+import com.badlogic.gdx.ai.steer.SteeringAcceleration;
+import com.badlogic.gdx.ai.steer.SteeringBehavior;
+import com.badlogic.gdx.ai.steer.behaviors.Flee;
+import com.badlogic.gdx.ai.steer.behaviors.Seek;
+import com.badlogic.gdx.ai.tests.steer.box2d.Box2dLocation;
+import com.badlogic.gdx.ai.tests.steer.box2d.Box2dSteeringUtils;
+import com.badlogic.gdx.ai.utils.Location;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -7,13 +15,12 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
-public abstract class Animal extends Actor {
+public abstract class Animal extends Actor{
 
 	// Whether the animal is caught in a trap
 	private boolean trapped = false;
 	
-	// The way points for an animal's patrol path
-	private Array<Vector2> patrolPath;
+	private AIController.State state;
 	
 	// Vector that runs from the center of the animal diagonally leftward some length
     // RELATIVE TO ANIMAL'S POSITION
@@ -24,6 +31,7 @@ public abstract class Animal extends Actor {
     
     // A vector used for temporary calculations
     private Vector2 tmp;
+    private Vector2 tmp2;
 
 	//texture used in getCenter and setCenter
 	private float texWidth;
@@ -31,11 +39,21 @@ public abstract class Animal extends Actor {
 	protected static final int AnimalWidth = 40;
 	protected static final int AnimalHeight = 40;
 	//how far forward an animal can move in a turn. 
-    protected static final float MOVE_SPEED = 75.0f;
+    protected static final float MOVE_SPEED = 10.0f;
     // How wide the animal's line of sight is
     protected double SIGHT_ANGLE = 0.35;
     // How long the animal's line of sight is
     protected float SIGHT_LENGTH;
+
+    protected float MIN_STEERING = 0.001f;
+    
+    protected SteeringBehavior<Vector2> collisionAvoidanceSB;
+    protected SteeringBehavior<Vector2> wanderSB;
+    protected SteeringBehavior<Vector2> fleeSB;
+    protected SteeringBehavior<Vector2> seekSB;
+    
+    private boolean finishedDeatAnimation;
+
 	
 	/** Protected constructor for the animal type. 
 	 * 
@@ -51,19 +69,24 @@ public abstract class Animal extends Actor {
 	public Animal(TextureRegion tr, actorType type, float x, float y, 
 	              actorType[] prey, Vector2 facing){
 		super(tr, type, x, y, AnimalWidth, AnimalHeight, prey);
-		this.setPos(x,y);
+		this.setPos(GameMap.pixelsToMeters(x), GameMap.pixelsToMeters(y));
 		setFacing(facing);
 		this.leftSectorLine = new Vector2();
 		this.rightSectorLine = new Vector2();
 		
-		patrolPath = new Array();
+		this.state = AIController.State.WANDER;
 
 		this.tmp = new Vector2();
+		this.tmp2 = new Vector2();
 
 		updateLOS(0);
-		setTexWidth(tr.getRegionWidth());
-		setTexHeight(tr.getRegionHeight());
+		setTexWidth(GameMap.pixelsToMeters(tr.getRegionWidth()));
+		setTexHeight(GameMap.pixelsToMeters(tr.getRegionHeight()));
+		this.tagged = false;
+		finishedDeatAnimation= false;
 	}
+	
+	public abstract void createSteeringBehaviors();
 	
 	public void setPos(float x, float y){
 		
@@ -213,27 +236,93 @@ public abstract class Animal extends Actor {
 		return this.rightSectorLine;
 	}
 	
-	public Array<Vector2> getPatrolPath() {
-		return patrolPath;
-	}
-	
-	public void setPatrolPath(Array<Vector2> path) {
-		patrolPath = path;
-	}
-	
 	public void drawSight(GameCanvas canvas) {
 		if (getAlive()) {
-			tmp.set(getPosition());
-			canvas.drawLine(Color.YELLOW, getPosition(), tmp.add(getLeftSectorLine()));
-			tmp.set(getPosition());
-			canvas.drawLine(Color.YELLOW, getPosition(), tmp.add(getRightSectorLine()));
+			Vector2 position = getPosition();
+			tmp.set(GameMap.metersToPixels(position.x), GameMap.metersToPixels(position.y));
+			tmp2.set(GameMap.metersToPixels(position.x), GameMap.metersToPixels(position.y));
+			Vector2 sectorLine = getLeftSectorLine();
+			tmp2.add(GameMap.metersToPixels(sectorLine.x), GameMap.metersToPixels(sectorLine.y));
+			canvas.drawLine(Color.YELLOW, tmp, tmp2);
+			tmp2.set(GameMap.metersToPixels(position.x), GameMap.metersToPixels(position.y));
+			sectorLine = getRightSectorLine();
+			tmp2.add(GameMap.metersToPixels(sectorLine.x), GameMap.metersToPixels(sectorLine.y));
+			canvas.drawLine(Color.YELLOW, tmp, tmp2);
 		}
 	}
 	
 	@Override
 	public void draw(GameCanvas canvas) {
-		if (getAlive()) {
+		if (getFinishedDeatAnimation()==false) {
 			super.draw(canvas);
 		}
 	}
+	
+	@Override
+	public void update(float delta) {
+		super.update(delta);
+		updateLOS(getAngle() + (float)Math.PI/2.0f);
+	}
+	
+	@Override
+	public void calculateSteering() {
+		float minSteeringSquared = MIN_STEERING * MIN_STEERING;
+		
+		collisionAvoidanceSB.calculateSteering(steeringOutput);
+		if (steeringOutput.calculateSquareMagnitude() > minSteeringSquared) {
+			return; 
+		}
+		
+		switch (state) {
+		case WANDER:
+			wanderSB.calculateSteering(steeringOutput);
+			break;
+		case CHASE:
+			seekSB.calculateSteering(steeringOutput);
+			break;
+		case FLEE:
+			fleeSB.calculateSteering(steeringOutput);
+			break;
+		case KILL:
+			steeringOutput.setZero();
+			break;
+		}
+		return;
+	}
+	
+	public void applySteering(float delta) {
+		super.applySteering(steeringOutput, delta);
+	}
+	
+	public void setState(AIController.State state) {
+		this.state = state;
+	}
+	
+	public AIController.State getState() {
+		return state;
+	}
+	
+	public void setFlee(Actor actor) {
+		((Flee<Vector2>) fleeSB).setTarget(actor);
+	}
+	
+	public void resetFlee() {
+		((Flee<Vector2>) fleeSB).setTarget(null);
+	}
+	
+	public void setTarget(Actor actor) {
+		((Seek<Vector2>) seekSB).setTarget(actor);
+	}
+	
+	public void resetTarget() {
+		((Seek<Vector2>) seekSB).setTarget(null);
+	}
+	
+	public boolean getFinishedDeatAnimation(){
+		return finishedDeatAnimation;
+	}
+	
+	public void setFinishedDeatAnimation(boolean b){
+		this.finishedDeatAnimation=b;
+	};
 }

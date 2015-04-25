@@ -1,4 +1,5 @@
 package com.CS3152.FoodChain;
+
 import com.CS3152.FoodChain.Tile.tileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ai.pfa.Connection;
@@ -21,6 +22,8 @@ public class GameMap implements IndexedGraph<MapNode> {
     //Offset for the UI at the bottom of the screen.
     private static final int UI_OFFSET = 80;
     
+    private static final float PIXEL_METER_CONV = 0.02f;
+    
     //List of animals and their coordinates
     //The i'th element of animals should be at
     //the i'th coordinate in coordinates.
@@ -41,6 +44,9 @@ public class GameMap implements IndexedGraph<MapNode> {
     //Therefore, layout should be [9][16] to match
     //Row-then-column form.
     private Tile.tileType[][] layout;
+    
+    //List of tiles on the map
+    private List<Tile> tileList;
     
     private int mapWidth;
     private int mapHeight;
@@ -164,6 +170,7 @@ public class GameMap implements IndexedGraph<MapNode> {
         this.coordinates = coordinates;
         this.hunterStartPosition = hunterStartPosition;
         this.objective = objective;
+        this.tileList = new ArrayList<Tile>();
         this.mapWidth = layout[0].length;
         this.mapHeight = layout.length;
         this.nodeCount = 0;
@@ -465,13 +472,17 @@ public class GameMap implements IndexedGraph<MapNode> {
 //    }
 
 	public void addTilesToWorld(CollisionController collisionController) {
+		this.tileList = new ArrayList<Tile>();
 		for (int i = 0; i < this.layout.length; ++i){
 			for (int j = 0; j < this.layout[0].length; ++j){
         			Tile.tileType curr = layout[i][j];
         			TextureRegion tr = new TextureRegion(getTextureFromTileType(curr));
         			Tile t = new Tile(tr, (float)mapXToScreen(j), (float)mapYToScreen(i),
-        										 (float)tr.getRegionWidth(), (float)tr.getRegionHeight(),
+        										 (float)0.9 * tr.getRegionWidth(), (float) 0.9 * tr.getRegionHeight(),
         										 curr);
+        			if (curr != Tile.tileType.GRASS && curr != Tile.tileType.DIRT) {
+        				tileList.add(t);
+        			}
         			t.setBodyType(BodyDef.BodyType.StaticBody);
         			t.setActive(false);
 				//collisionController.addObject(t, curr);
@@ -480,6 +491,15 @@ public class GameMap implements IndexedGraph<MapNode> {
 		}
 	}
 		
+	/**
+     * Function that returns list of tiles on board to be collided with.
+     * (All non-grass tiles should be collided with)
+     * @return tileList list of these Tiles
+     */
+	public List<Tile> getTileList() {
+		return tileList;
+	}
+	
 	public boolean isSafeAt(float xPos, float yPos) {
 		if (xPos >= 0 && yPos >= 0 &&
 				xPos <= getMapWidth() * 40.0 && 
@@ -532,5 +552,13 @@ public class GameMap implements IndexedGraph<MapNode> {
 	@Override
 	public int getNodeCount() {
 		return nodeCount;
+	}
+	
+	public static float pixelsToMeters(float pixels) {
+		return pixels * PIXEL_METER_CONV;
+	}
+	
+	public static float metersToPixels(float pixels) {
+		return pixels / PIXEL_METER_CONV;
 	}
 }

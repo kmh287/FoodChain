@@ -1,15 +1,17 @@
 package com.CS3152.FoodChain;
 
-import java.io.FileNotFoundException; 	
+import java.io.FileNotFoundException; 		
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 
 import com.CS3152.FoodChain.Actor.actorType;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
@@ -23,11 +25,14 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.ai.steer.Steerable;
 
 
 public class GameMode implements Screen {
 	
 	private CollisionController collisionController;
+	private GameplayController gameplayController;
     
 	private GameCanvas canvas;
    // private boolean active;
@@ -36,8 +41,10 @@ public class GameMode implements Screen {
 	
     private GameMap map;
     private AssetManager manager;
-    private List<Animal> animals;
-    private Hunter hunter;
+    public static Array<Actor> actors;
+    public static List<Animal> animals;
+    public static List<Steerable<Vector2>> steerables;
+    public static Hunter hunter;
     private Stage stage; 
     private UIControllerStage uis;
     private HashMap<String, List<Trap>> traps;
@@ -53,6 +60,8 @@ public class GameMode implements Screen {
 	private boolean start;
 
     protected InputController[] controls;
+    
+    public static final Random random = new Random();
     
 //  /** Cache attribute for calculations */
 //	private Vector2 tmp;
@@ -121,7 +130,8 @@ public class GameMode implements Screen {
         PreLoadContent(manager);
         manager.finishLoading();
         LoadContent(manager);
-        initializeLevel(canvas, "alphaLevel2");
+
+        initializeLevel(canvas, "BetaLevel3 ");
         
 	}
         
@@ -142,13 +152,17 @@ public class GameMode implements Screen {
         tmp = new Vector2();
 		*/
         collisionController = new CollisionController();
-        map.addTilesToWorld(collisionController);  
+        map.addTilesToWorld(collisionController);
+        steerables = new ArrayList<Steerable<Vector2>>();
+        steerables.addAll(map.getTileList());
         //Get the animal types from map
         //but build and keep the actual list here
         List<Actor.actorType> aTypes = 
                             map.getActorTypeList();
         List<Vector2> coordinates = map.getCoordinates();
+        createHunter(map.getHunterStartingCoordinate());
         buildAnimalList(aTypes, coordinates);
+        steerables.addAll(animals);
         
         //All the animals, plus the Hunter
         //The hunter is always first in this array
@@ -157,7 +171,9 @@ public class GameMode implements Screen {
         
         createHunter(map.getHunterStartingCoordinate());
         
-        trapController = new TrapController(collisionController,numPigs,numWolves);
+
+        trapController = new TrapController(hunter, map, collisionController,numPigs,numWolves);
+
         
         canvas.getUIControllerStage().setTrapController(trapController);
         
@@ -172,10 +188,17 @@ public class GameMode implements Screen {
         		controls[i+1] = new AIController(animals.get(i), collisionController.getWorld(),
 	    				   					   map, actors);
         }
+        
+        createSteeringBehaviors();
+        
 //        controls[1] = new AIController(animals.get(0), collisionController.getWorld(),
 //				    				   map, actors);
 //        controls[2] = new AIController(animals.get(1), collisionController.getWorld(),
 //				   					   map, actors);
+        Actor[] actorArray = new Actor[actors.size()];
+        actors.toArray(actorArray);
+        GameMode.actors = new Array<Actor>(actorArray);
+        gameplayController = new GameplayController(map, actorArray, controls);
         canvas.getUIControllerStage().setPanic(AIController.getPanicPercentage());
         collisionController.setControls(controls);
 	}
@@ -213,11 +236,8 @@ public class GameMode implements Screen {
 	private void createHunter(Vector2 startingPos/*,
 			HashMap<String, List<Trap>> startingInventory*/){
 		Hunter.loadTexture(manager);
-	    this.hunter = new Hunter(map.mapXToScreen((int)startingPos.x),
-	                             map.mapYToScreen((int)startingPos.y)
-	                             //,startingInventory
-	                             );
-
+	    GameMode.hunter = new Hunter(map.mapXToScreen((int)startingPos.x),
+	    							 map.mapYToScreen((int)startingPos.y));
 	    hunter.setDensity(DEFAULT_DENSITY);
 	    hunter.setAwake(true);
 	    hunter.setBodyType(BodyDef.BodyType.DynamicBody);
@@ -251,14 +271,15 @@ public class GameMode implements Screen {
 	            case PIG:
 	            		Pig.loadTexture(manager);
 	                newAnimal = new Pig(map.mapXToScreen((int)coord.x), 
-	                                    map.mapYToScreen((int)coord.y));
+	                		map.mapYToScreen((int)coord.y));
+	                newAnimal.setDensity(DEFAULT_DENSITY);
 	                animals.add(newAnimal);
 	                break;
 	                
 	            case WOLF:
 	            		Wolf.loadTexture(manager);
 	                newAnimal = new Wolf(map.mapXToScreen((int)coord.x), 
-                                         map.mapYToScreen((int)coord.y));
+	                					 map.mapYToScreen((int)coord.y));
 	                //See comment in sheep
 	                animals.add(newAnimal);
 	                break;
@@ -266,7 +287,7 @@ public class GameMode implements Screen {
 	            case OWL:
             			Owl.loadTexture(manager);
             			newAnimal = new Owl(map.mapXToScreen((int)coord.x), 
-                                        map.mapYToScreen((int)coord.y));
+            								map.mapYToScreen((int)coord.y));
 	                //See comment in sheep
 	                animals.add(newAnimal);
 	                break;
@@ -280,6 +301,12 @@ public class GameMode implements Screen {
 	        collisionController.addObject(newAnimal);
 	    }
 	    
+	}
+	
+	private void createSteeringBehaviors() {
+		for (Animal a : animals) {
+			a.createSteeringBehaviors();
+		}
 	}
 	
     @Override
@@ -353,6 +380,8 @@ public class GameMode implements Screen {
 	    		}
     		}
     	
+    	gameplayController.update(delta);
+    	
 		hunter.update(delta);
 		trapController.setSelectedTrap(controls[0].getNum());
 		
@@ -367,8 +396,14 @@ public class GameMode implements Screen {
 			hunter.play(SoundController.TRAP_SOUND);
 		}
 		
+		
+		if(hunter.getAlive()==false){
+			if(ticks%15==0){
+				hunter.updateDeadFrame();
+			}
+		}
 		//if WASD pressed, then update frame
-		if(controls[0].getAction()!=InputController.NO_ACTION){
+		else if (controls[0].getAction(delta)!=InputController.NO_ACTION){
 			if(ticks%10==0){
 				hunter.updateWalkFrame();
 			}
@@ -382,9 +417,14 @@ public class GameMode implements Screen {
 		int i = 1;
 		for (Animal an : animals) {
 			an.update(delta);
-			//need to update wolf once we have animations
-			if(an instanceof Pig){
-				if(controls[i].getAction()!=InputController.NO_ACTION){
+			//need to update wolf death once we have animations
+			if(an instanceof Pig) {
+				if(an.getAlive()==false){
+					if(ticks%10==0){
+						((Pig)an).updateDeadFrame();
+					}
+				}
+				else if(controls[i].getAction(delta)!=InputController.NO_ACTION){
 					if(ticks%10==0){
 						((Pig) an).updateWalkFrame();
 					}
@@ -394,7 +434,7 @@ public class GameMode implements Screen {
 				}
 			}
 			if(an instanceof Wolf){
-				if(controls[i].getAction()!=InputController.NO_ACTION){
+				if(controls[i].getAction(delta)!=InputController.NO_ACTION){
 					if(ticks%10==0){
 						((Wolf) an).updateWalkFrame();
 					}
@@ -423,110 +463,96 @@ public class GameMode implements Screen {
     	
     }
     
+
     private void draw(float delta){
-    	canvas.DrawBlack(hunter.getPosition().x, hunter.getPosition().y);
-    	canvas.end();
-        canvas.begin(); 
-    	//canvas.begin();
-        //Draw the map
-        map.draw(canvas);
-      
-        
-        for (Trap trap : traps.get("WOLF_TRAP")) {
+		canvas.DrawBlack(GameMap.metersToPixels(hunter.getPosition().x), GameMap.metersToPixels(hunter.getPosition().y));
+		canvas.end();
+		
+	    //Draw the map
+		canvas.begin();
+	    map.draw(canvas);
+	  
+	    
+	    for (Trap trap : traps.get("WOLF_TRAP")) {
 	    		if (trap != null) {
 	    			trap.draw(canvas);
 	    		}
-        }
-        
-        for (Trap trap : traps.get("REGULAR_TRAP")) {
+	    }
+	    
+	    for (Trap trap : traps.get("REGULAR_TRAP")) {
 	        	if (trap != null) {
 	    			trap.draw(canvas);
 	    		}
-        }
-        
-        for (Trap trap : traps.get("SHEEP_TRAP")) {
+	    }
+	    
+	    for (Trap trap : traps.get("SHEEP_TRAP")) {
 	        	if (trap != null) {
 	    			trap.draw(canvas);
 	    		}
-        }
-        
-        
-        
-       
-        canvas.end();
-        
-        /**beginCam with the hunter position normally. if **/
-        if(!start){
-        	
-        	/*if (player.isMousePressed()) {
-            	canvas.pan(player.getClickPos());
-            }*/
-        	
-            if (Gdx.input.isKeyPressed(Input.Keys.Z)) {
-            	canvas.beginCam(Gdx.input.getX(), Gdx.input.getY());
-            }
-            else {
-            	canvas.beginCam(hunter.getPosition().x, hunter.getPosition().y);
-            }
+	    }
+	    canvas.end();
+	    
+	    //canvas.begin();
+	    
+	    if(!start){
+	    	 if (player.isMousePressed()) {
+	         	canvas.pan(player.getClickPos()); 
+	    	 }
+	    	
+	 	    	canvas.beginCam(GameMap.metersToPixels(hunter.getPosition().x), GameMap.metersToPixels(hunter.getPosition().y));
 
+	    }
+	    else{
+	    	canvas.beginCamStart(GameMap.metersToPixels(hunter.getPosition().x), GameMap.metersToPixels(hunter.getPosition().y));
+	    	start=false;
+	    }
+	    
+	    //hunter.drawDebug(canvas);
+		//Draw the hunter
+		//Draw the animals
+		//need to modify this and wolf code once wolf death animation is done
+	    for (Animal animal : animals){
+	    	if( animal instanceof Pig){
+	    		if (!animal.getTrapped() || animal.getFinishedDeatAnimation()==false) {
+	        		animal.draw(canvas);
+	    		}
+	    	}
+	    	else{
+	    		if (!animal.getTrapped()) {
+	        		animal.draw(canvas);
+	    		}
+	    	}
+	        
+	        //animal.drawDebug(canvas);
+	    }
+	    //if (hunter.getAlive()) {
+	    hunter.draw(canvas);
+	    //}
+	    canvas.end();
+	
+	    //canvas.begin();
+	    
+	    if (player.isMousePressed()) {
+    	    canvas.pan(player.getClickPos()); 
         }
-        else{
-	       	start=false;
-	       	/*if (player.isMousePressed()) {
-	        	canvas.pan(player.getClickPos());
-	        }*/
-	       	if (Gdx.input.isKeyPressed(Input.Keys.Z)) {
-            	canvas.beginCam(Gdx.input.getX(), Gdx.input.getY());
-            }
-	       	else {
-		        canvas.beginCamStart(hunter.getPosition().x, hunter.getPosition().y);
-
-	       	}
-           }
-    	
-        //hunter.drawDebug(canvas);
-    	 //Draw the hunter
-    	//Draw the animals
-        for (Animal animal : animals){
-            if (!animal.getTrapped()) {
-            		animal.draw(canvas);
-            }
-            //animal.drawDebug(canvas);
-        }
-        if (hunter.getAlive()) {
-        		hunter.draw(canvas);
-        }
-
-        canvas.end();
-        /*if (player.isMousePressed()) {
-        	canvas.beginCam(player.getClickPos().x, player.getClickPos().y); 
-        } else { */
-        if (player.isMousePressed()) {
-        	canvas.pan(player.getClickPos());
-        }
-        else {
-        	canvas.beginCam(hunter.getPosition().x, hunter.getPosition().y);
-        }
-        //}
-        
-        //hunter.drawDebug(canvas);
-
-        //ui.draw(canvas);
-        //uis.drawStage(stage);
-        
-        canvas.end();
-        
-        /*
-        canvas.beginDebug();
-        for (Animal animal : animals) {
-        	animal.drawSight(canvas);
-        }
-        canvas.endDebug();
-        */
-        
-        canvas.beginDebug();
-        ((AIController) controls[1]).drawPath(canvas);
-        PooledList<SimplePhysicsObject> objects = collisionController.getObjects();
+       	canvas.beginCam(GameMap.metersToPixels(hunter.getPosition().x), GameMap.metersToPixels(hunter.getPosition().y));
+       	
+       	canvas.end();
+	    //hunter.drawDebug(canvas);
+	
+	    //ui.draw(canvas);
+	    //uis.drawStage(stage);
+	    
+	    /*
+	    canvas.beginDebug();
+	    for (Animal animal : animals) {
+	    	animal.drawSight(canvas);
+	    }
+	    canvas.endDebug();
+	    */
+	    
+	    canvas.beginDebug();
+	    PooledList<SimplePhysicsObject> objects = collisionController.getObjects();
 		for(PhysicsObject obj : objects) {
 			if (obj instanceof Actor && ((Actor) obj).getAlive()) {
 				//obj.drawDebug(canvas);
@@ -539,7 +565,8 @@ public class GameMode implements Screen {
 			}
 		}
 		canvas.endDebug();
-    }
+	} 
+	    
     
     @Override
     public void render(float delta) {

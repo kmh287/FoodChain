@@ -1,8 +1,18 @@
 package com.CS3152.FoodChain;
 
+import com.badlogic.gdx.ai.steer.Steerable;
+import com.badlogic.gdx.ai.steer.behaviors.CollisionAvoidance;
+import com.badlogic.gdx.ai.steer.behaviors.PrioritySteering;
+import com.badlogic.gdx.ai.steer.behaviors.Seek;
+import com.badlogic.gdx.ai.steer.behaviors.Wander;
+import com.badlogic.gdx.ai.steer.limiters.LinearAccelerationLimiter;
+import com.badlogic.gdx.ai.steer.proximities.RadiusProximity;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 
 public class Wolf extends Animal{
     
@@ -28,8 +38,37 @@ public class Wolf extends Animal{
         sprite = new FilmStrip(tex,1,4,4);
         drawScale.x = scaleXDrawWolf;
         drawScale.y = scaleYDrawWolf;
-        SIGHT_LENGTH = 1.5f*120;
-        SIGHT_ANGLE = 1.5f*0.35;
+        SIGHT_LENGTH = 2.4f;
+        SIGHT_ANGLE = 0.35;
+        maxLinearSpeed = 500.0f;
+        maxLinearAcceleration = 500.0f;
+        maxAngularSpeed = 1000.0f;
+        maxAngularAcceleration = 500.0f;
+        independentFacing = false;
+    }
+    
+    public void createSteeringBehaviors() {
+    	Steerable[] steers = new Steerable[GameMode.steerables.size()];
+        GameMode.steerables.toArray(steers);
+        Array<Steerable<Vector2>> steerArray = new Array<Steerable<Vector2>>(steers);
+        
+        RadiusProximity proximity = new RadiusProximity<Vector2>(this, steerArray, 1.0f);
+        collisionAvoidanceSB = new CollisionAvoidance<Vector2>(this, proximity);
+        collisionAvoidanceSB.setLimiter(new LinearAccelerationLimiter(2.0f));
+        
+    	seekSB = new Seek<Vector2>(this);
+    	seekSB.setLimiter(new LinearAccelerationLimiter(3.0f));
+    	
+    	wanderSB = new Wander<Vector2>(this)
+        		// Don't use Face internally because independent facing is off
+				.setFaceEnabled(false) //
+				// We don't need a limiter supporting angular components because Face is not used
+				// No need to call setAlignTolerance, setDecelerationRadius and setTimeToTarget for the same reason
+				.setLimiter(new LinearAccelerationLimiter(2.0f)) //
+				.setWanderOffset(1) //
+				.setWanderOrientation(GameMode.random.nextFloat()) //
+				.setWanderRadius(1) //
+				.setWanderRate(MathUtils.PI / 5);
     }
 
     @Override

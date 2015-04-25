@@ -50,7 +50,9 @@ public class Trap extends BoxObject {
 	 * @param type Type of trap to create
 	 */
 	public Trap(Texture texture, String type) {
-		super(new TextureRegion(texture), 0.0f, 0.0f, texture.getWidth(), texture.getHeight());
+		super(new TextureRegion(texture), GameMap.pixelsToMeters(0.0f), GameMap.pixelsToMeters(0.0f),
+				//texture.getWidth(), texture.getHeight());
+				GameMap.pixelsToMeters(texture.getWidth()), GameMap.pixelsToMeters(texture.getHeight()));
 		inInventory = true;
 		onMap = false;
 		setWell = false;

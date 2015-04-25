@@ -3,9 +3,19 @@
  */
 package com.CS3152.FoodChain;
 
+import com.badlogic.gdx.ai.steer.Steerable;
+import com.badlogic.gdx.ai.steer.behaviors.CollisionAvoidance;
+import com.badlogic.gdx.ai.steer.behaviors.Flee;
+import com.badlogic.gdx.ai.steer.behaviors.PrioritySteering;
+import com.badlogic.gdx.ai.steer.behaviors.Wander;
+import com.badlogic.gdx.ai.steer.limiters.LinearAccelerationLimiter;
+import com.badlogic.gdx.ai.steer.proximities.RadiusProximity;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 
 /**
  * @author Kevin
@@ -14,11 +24,16 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 public class Pig extends Animal {
 
     private static final String PIG_TEX = "assets/pig_walk_cycle.png";
+    private static final String DEATH_TEX = "assets/pig-death.png";
     private static Texture tex = null;
+    private static Texture deathTex = null;
     private static float scaleXDrawSheep=0.4f;
     private static float scaleYDrawSheep=0.3f;
+    private static float scaleXDrawSheepDead=.4f;
+    private static float scaleYDrawSheepDead=.3f;
     static final Actor.actorType prey[] = {};
     private FilmStrip sprite;
+    private FilmStrip spriteDeath;
     
     
     /**
@@ -30,10 +45,43 @@ public class Pig extends Animal {
         super(new TextureRegion(tex), Actor.actorType.PIG, x, y, 
               prey, InputController.EAST);
         sprite = new FilmStrip(tex,1,4,4);
+        spriteDeath = new FilmStrip(deathTex,1,7,7);
         drawScale.x=scaleXDrawSheep;
         drawScale.y=scaleYDrawSheep;
-        SIGHT_LENGTH = 120;
+        SIGHT_LENGTH = 2.4f;
         SIGHT_ANGLE = 0.35;
+        maxLinearSpeed = 2.0f;
+        maxLinearAcceleration = 0.0f;
+        maxAngularSpeed = 0.0f;
+        maxAngularAcceleration = 0.0f;
+        independentFacing = false;
+    }
+    
+    public void createSteeringBehaviors() {
+    	Steerable[] steers = new Steerable[GameMode.steerables.size()];
+        GameMode.steerables.toArray(steers);
+        Array<Steerable<Vector2>> steerArray = new Array<Steerable<Vector2>>(steers);
+        
+        RadiusProximity proximity = new RadiusProximity<Vector2>(this, steerArray, 2.0f);
+        collisionAvoidanceSB = new CollisionAvoidance<Vector2>(this, proximity);
+        LinearAccelerationLimiter limiter = new LinearAccelerationLimiter(2.0f);
+        //limiter.setMaxLinearSpeed(2.0f);
+        collisionAvoidanceSB.setLimiter(limiter);
+        
+        wanderSB = new Wander<Vector2>(this)
+        		// Don't use Face internally because independent facing is off
+				.setFaceEnabled(false) //
+				// We don't need a limiter supporting angular components because Face is not used
+				// No need to call setAlignTolerance, setDecelerationRadius and setTimeToTarget for the same reason
+				.setLimiter(limiter) //
+				.setWanderOffset(1) //
+				.setWanderOrientation(1) //
+				.setWanderRadius(1) //
+				.setWanderRate(MathUtils.PI / 10);
+        
+        limiter.setMaxLinearAcceleration(3.0f);
+        fleeSB = new Flee<Vector2>(this);
+        fleeSB.setLimiter(limiter);
     }
 
     /* (non-Javadoc)
@@ -41,7 +89,7 @@ public class Pig extends Animal {
      */
     @Override
     public String getTypeNameString() {
-        return "Sheep";
+        return "Pig";
     }
 
     public void updateLOS(float angle) {
@@ -59,9 +107,11 @@ public class Pig extends Animal {
     public static void loadTexture(AssetManager manager) {
         if (tex == null){
             manager.load(PIG_TEX, Texture.class);
+            manager.load(DEATH_TEX,Texture.class);
             manager.finishLoading();
             if (manager.isLoaded(PIG_TEX)){
                 tex = manager.get(PIG_TEX);
+                deathTex = manager.get(DEATH_TEX);
             }
         }
     }
@@ -73,8 +123,24 @@ public class Pig extends Animal {
     		frame=0;
     	}
     	sprite.setFrame(frame);
-    	sprite.flip(false,true);
+    	sprite.flip(false, true);
     	super.setTexture(sprite);
+    }
+    
+    public void updateDeadFrame(){
+        drawScale.x=scaleXDrawSheepDead;
+        drawScale.y=scaleYDrawSheepDead;
+    	int frame = spriteDeath.getFrame();
+    	if(frame<6){
+    		frame++;
+    		
+    	}
+    	else{
+    		this.setFinishedDeatAnimation(true);
+    	}
+    	spriteDeath.setFrame(frame);
+    	spriteDeath.flip(false,true);
+    	super.setTexture(spriteDeath);
     }
     
     public FilmStrip Sprite(){

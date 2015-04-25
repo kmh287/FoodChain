@@ -376,7 +376,7 @@ public class GameCanvas {
     	Vector3 touchpos = new Vector3();
     	 touchpos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
          camera.unproject(touchpos);
-		camera.translate(pos);
+		camera.translate(pos.x/2, pos.y/2);
 		camera.update(); 
     }
     public void beginCam(float x, float y) {
@@ -401,7 +401,6 @@ public class GameCanvas {
 	}
     
     public void DrawBlack(float x, float y) {
-    	
     	moveCamera(x,y);
     	ui.drawBlack();
     	spriteBatch.setProjectionMatrix(camera.combined);
