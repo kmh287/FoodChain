@@ -352,7 +352,6 @@ public class AIController implements InputController {
 			changeStateIfApplicable();
 		}
 	}
-<<<<<<< HEAD
 	
 	/*
      * Changes the animal's state depending on what it's doing and what it's seen
