@@ -33,7 +33,9 @@ public class AIController implements InputController {
         // Animal kills target
         KILL,
         // Animal is dead
-        DEAD
+        DEAD,
+        //Animal stays still
+        STAYSTILL
     }
     
     // Instance Attributes
@@ -71,6 +73,7 @@ public class AIController implements InputController {
     
     // How many more turns (1 turn = 10 frames) before the animal can stop running
     protected int turns;
+    protected int Wanderturns;
     
     // The animal's next move; a ControlCode
     protected Vector2 move;
@@ -81,8 +84,7 @@ public class AIController implements InputController {
     // Which direction to patrol
     protected int patrolTurn;
     
-    // The random number generator used by the AI
-    private Random random;
+
 
     private static float panicPercentage;
     private Hunter hunter; 
@@ -93,7 +95,9 @@ public class AIController implements InputController {
     private Sound sound;
 	/** The associated sound cue (if ship is making a sound). */
 	private long sndcue;
-	
+
+    private int WanderStopRate;
+    
     /*
      * Creates an AIController for the animal
      *
@@ -133,14 +137,14 @@ public class AIController implements InputController {
         
         this.tmp = new Vector2();
         
-        this.random = new Random(2);
-        
         panicPercentage = 0f;
         angle = animal.getAngle();
         vect = new Vector2(animal.getPosition());
         
         sound = null;
 		sndcue = -1;
+		WanderStopRate= MathUtils.random(175,225);
+		
     }
     
     /*
@@ -373,6 +377,21 @@ public class AIController implements InputController {
 			        	animal.setState(State.CHASE);
 			        	setTurns(1000);
 			        }
+			    	//stop periodically in wander
+			    	else if(Wanderturns%250>WanderStopRate){
+			    		animal.setState(State.STAYSTILL);
+			    		WanderStopRate= MathUtils.random(40,120);
+			    		Wanderturns=0;
+			    	}
+			    	Wanderturns+=1;
+			    	break;
+			    case STAYSTILL:
+			    	if(Wanderturns%250>WanderStopRate){
+			    		animal.setState(State.WANDER);
+			    		WanderStopRate= MathUtils.random(175,225);
+			    		Wanderturns=0;
+			    	}
+			    	Wanderturns+=1;
 			    	break;
 			    case CHASE:
 			    	//System.out.println(getAnimal() + " is chasing");

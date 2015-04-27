@@ -237,7 +237,7 @@ public abstract class Actor extends CircleObject implements Steerable<Vector2>{
     	// Update position and linear velocity.
     	if (!steeringOutput.linear.isZero()) {
     		//Vector2 force = steeringOutput.linear.scl(deltaTime);
-    		Vector2 force = steeringOutput.linear.scl(1);
+    		Vector2 force = steeringOutput.linear.scl(10);
     		body.applyForceToCenter(force, true);
     		//body.applyLinearImpulse(force, getPosition(), true);
     		anyAccelerations = true;
