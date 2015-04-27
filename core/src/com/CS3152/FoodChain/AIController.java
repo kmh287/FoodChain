@@ -369,14 +369,16 @@ public class AIController implements InputController {
 	        switch (animal.getState()) {
 			    case WANDER:
 			    	//System.out.println(getAnimal() + " is wandering");
-			    	if (isScared()) {
-			    		animal.setState(State.FLEE);
-			    		setTurns(1000);
-			    	}
-			    	else if (hasTarget()) {
-			        	animal.setState(State.CHASE);
-			        	setTurns(1000);
-			        }
+			    	if (hasTarget()) {
+			    	  if (animal instanceof Pig) {
+			    	    animal.setState(State.FLEE);
+			    	    setTurns(1000);
+			    	  }
+			    	  else if (animal instanceof Wolf) {
+			    	    animal.setState(State.CHASE);
+                setTurns(1000);
+			    	  }
+			      }
 			    	//stop periodically in wander
 			    	else if(Wanderturns%250>WanderStopRate){
 			    		animal.setState(State.STAYSTILL);
@@ -446,60 +448,19 @@ public class AIController implements InputController {
 	}
 	
 	private void rayCast() {
-		for (Actor a : actors) {
-	        if (a != getAnimal() && a.getAlive()) {
-	          world.rayCast(vcb, getAnimal().getPosition(), a.getPosition());
-	          Fixture fix = vcb.getFixture();
-	          if (fix != null) {
-	              Object objSeen = fix.getBody().getUserData();
-	              if (objSeen instanceof Actor) {
-	                Actor actor = (Actor) objSeen;
-	                if (panicPercentage<1 && actor.getType() != animal.getType()){
-	                  panicPercentage += 0.005;//.001
-	                }
-	                if (((Actor)objSeen).canKill(getAnimal())) {
-	                	//System.out.println("Setting " + getAnimal() + " scared");
-	                	setScared((Actor)objSeen);
-	                	//System.out.println((Actor)objSeen);
-	                	if ((Actor)objSeen instanceof Pig){
-	                      //play(SoundController.PIG_SCARED_SOUND);
-
-	                	}
-	                	//setTurns();
-	                }
-	                if (getAnimal().canKill((Actor)objSeen)) {
-	                  //setTurns();
-	 
-	                  setTarget((Actor)objSeen);
-	                  if (animal instanceof Wolf) {
-	                	  //play(SoundController.WOLF_ANGRY_SOUND);
-	                  }
-	                }
-	              }
-	              else {
-	                if (target != null) {
-	                  if (a.getType() == target.getType()) {
-	                    //turns--;
-	                  }
-	                }
-	              }
-	          }
-	          else {
-	            if (animal instanceof Owl && 
-	                a.getType() == Actor.actorType.HUNTER) {
-	            }
-	            if (target != null) {
-	              if (a.getType() == target.getType()) {
-	                //turns--;
-	              }
-	            }
-	            if (panicPercentage>0){
-	              panicPercentage -= 0.00005;
-	            }
-	          }
-	          canSettle();	
-	          //vcb.getFixture();
-	          }
-	      }
+	  for (Actor a : actors) {
+      if (a != getAnimal() && a.getAlive()) {
+        world.rayCast(vcb, getAnimal().getPosition(), a.getPosition());
+        Fixture fix = vcb.getFixture();
+        if (fix != null) {
+          Object objSeen = fix.getBody().getUserData();
+          if (objSeen instanceof Actor) {
+            if (animal.canKill((Actor) objSeen) || ((Actor) objSeen).canKill(animal)) {
+              setTarget((Actor) objSeen);
+            }
+          }
+        }
+      }
+    }
 	}
 }
