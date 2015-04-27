@@ -50,9 +50,6 @@ public class Pig extends Animal {
         drawScale.y=scaleYDrawSheep;
         SIGHT_LENGTH = 2.4f;
         SIGHT_ANGLE = 0.35;
-
-        boundingRadius = GameMap.pixelsToMeters(40.0f);
-
         maxLinearSpeed = 3.0f;
         maxLinearAcceleration = 1.0f;
         maxAngularSpeed = 100.0f;
@@ -65,7 +62,7 @@ public class Pig extends Animal {
         GameMode.steerables.toArray(steers);
         Array<Steerable<Vector2>> steerArray = new Array<Steerable<Vector2>>(steers);
         
-        RadiusProximity<Vector2> proximity = new RadiusProximity<Vector2>(this, steerArray, 0.5f);
+        RadiusProximity proximity = new RadiusProximity<Vector2>(this, steerArray, 2.0f);
         collisionAvoidanceSB = new CollisionAvoidance<Vector2>(this, proximity);
         LinearAccelerationLimiter limiter = new LinearAccelerationLimiter(2.0f);
         //limiter.setMaxLinearSpeed(2.0f);
@@ -117,11 +114,6 @@ public class Pig extends Animal {
                 deathTex = manager.get(DEATH_TEX);
             }
         }
-    }
-    
-    @Override
-    public void setTarget(Actor actor) {
-        ((Flee<Vector2>) fleeSB).setTarget(actor);
     }
     
     public void updateWalkFrame(){

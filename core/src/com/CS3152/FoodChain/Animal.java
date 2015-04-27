@@ -1,13 +1,19 @@
 package com.CS3152.FoodChain;
 
-
+import com.badlogic.gdx.ai.steer.Steerable;
 import com.badlogic.gdx.ai.steer.SteeringAcceleration;
 import com.badlogic.gdx.ai.steer.SteeringBehavior;
 import com.badlogic.gdx.ai.steer.behaviors.Flee;
 import com.badlogic.gdx.ai.steer.behaviors.Seek;
+import com.badlogic.gdx.ai.tests.steer.box2d.Box2dLocation;
+import com.badlogic.gdx.ai.tests.steer.box2d.Box2dSteeringUtils;
+import com.badlogic.gdx.ai.utils.Location;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 
 public abstract class Animal extends Actor{
 
@@ -262,8 +268,6 @@ public abstract class Animal extends Actor{
 	public void calculateSteering() {
 		float minSteeringSquared = MIN_STEERING * MIN_STEERING;
 		
-		SteeringAcceleration<Vector2> steeringOut = steeringOutput;
-		
 		collisionAvoidanceSB.calculateSteering(steeringOutput);
 		if (steeringOutput.calculateSquareMagnitude() > minSteeringSquared) {
 			return; 
@@ -282,10 +286,8 @@ public abstract class Animal extends Actor{
 		case KILL:
 			steeringOutput.setZero();
 			break;
-		case DEAD:
-		  steeringOutput.setZero();
-		  break;
-		case STAYSTILL:			
+		case STAYSTILL:
+			steeringOutput.setZero();
 			this.setLinearVelocity(new Vector2(0,0));
 			break;
 		}
