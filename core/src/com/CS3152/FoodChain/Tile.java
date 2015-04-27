@@ -15,6 +15,8 @@ public class Tile extends BoxObject implements Steerable<Vector2>{
 								   N_GRASS, NE_GRASS, E_GRASS, SE_GRASS, 
 								   S_GRASS, SW_GRASS, W_GRASS, NW_GRASS}
     public tileType type;
+    private boolean tagged;
+    private float boundingRadius;
     
     public Tile(TextureRegion texture, float x, float y, float width,
 		float height, tileType type) {
@@ -23,6 +25,8 @@ public class Tile extends BoxObject implements Steerable<Vector2>{
 					   GameMap.pixelsToMeters(width),
 					   GameMap.pixelsToMeters(height));
 		this.type = type;
+		this.tagged = false;
+    boundingRadius = GameMap.pixelsToMeters(40.0f);
 	}
     
     public tileType getType() {
@@ -76,17 +80,17 @@ public class Tile extends BoxObject implements Steerable<Vector2>{
 
 	@Override
 	public float getBoundingRadius() {
-		return 0;
+		return boundingRadius;
 	}
 
 	@Override
 	public boolean isTagged() {
-		return false;
+		return tagged;
 	}
 
 	@Override
 	public void setTagged(boolean tagged) {
-		
+		this.tagged = tagged;
 	}
 
 	@Override
