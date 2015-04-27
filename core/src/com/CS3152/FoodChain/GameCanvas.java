@@ -399,6 +399,21 @@ public class GameCanvas {
     	spriteBatch.begin();
     	active = DrawPass.STANDARD;
 	}
+	public void beginCamMouse() {
+		int x = (int) (camera.viewportWidth - Gdx.input.getX());
+		int y = (int) (camera.viewportHeight - Gdx.input.getY()); 
+		Vector3 mousepost = new Vector3 (x, y, 0);
+    	camera.unproject(mousepost);
+    	camera.position.set(x, y, 0);
+    	global.setTranslation(x, y, 0);
+        camera.update();
+    	
+    	ui.drawStage();
+    	spriteBatch.setProjectionMatrix(camera.combined);
+    	spriteBatch.begin();
+    	active = DrawPass.STANDARD;
+
+	}
     
     public void DrawBlack(float x, float y) {
     	moveCamera(x,y);

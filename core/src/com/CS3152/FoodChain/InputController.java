@@ -46,7 +46,7 @@ public interface InputController {
 	
 	public boolean isSpacePressed();
 	
-	public boolean isSpaceHeldDown();
+	public boolean isEHeldDown();
 	
 	public boolean resetPressed();
 	

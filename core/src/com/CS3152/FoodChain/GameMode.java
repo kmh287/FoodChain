@@ -131,7 +131,7 @@ public class GameMode implements Screen {
         manager.finishLoading();
         LoadContent(manager);
 
-        initializeLevel(canvas, "BetaLevel3 ");
+        initializeLevel(canvas, "BetaLevel3");
         
 	}
         
@@ -495,12 +495,15 @@ public class GameMode implements Screen {
 	    //canvas.begin();
 	    
 	    if(!start){
-	    	 if (player.isMousePressed()) {
+	    	 /*if (player.isMousePressed()) {
 	         	canvas.pan(player.getClickPos()); 
-	    	 }
-	    	
-	 	    	canvas.beginCam(GameMap.metersToPixels(hunter.getPosition().x), GameMap.metersToPixels(hunter.getPosition().y));
-
+	    	 }*/
+	    	if (Gdx.input.isKeyPressed(Input.Keys.Z)) {
+	    		canvas.beginCamMouse();
+	    	}
+	    	else {
+	    		canvas.beginCam(GameMap.metersToPixels(hunter.getPosition().x), GameMap.metersToPixels(hunter.getPosition().y));
+	    	} 
 	    }
 	    else{
 	    	canvas.beginCamStart(GameMap.metersToPixels(hunter.getPosition().x), GameMap.metersToPixels(hunter.getPosition().y));
@@ -532,11 +535,31 @@ public class GameMode implements Screen {
 	
 	    //canvas.begin();
 	    
-	    if (player.isMousePressed()) {
+	    /*if (player.isMousePressed()) {
     	    canvas.pan(player.getClickPos()); 
-        }
-       	canvas.beginCam(GameMap.metersToPixels(hunter.getPosition().x), GameMap.metersToPixels(hunter.getPosition().y));
-       	
+        }*/
+	    if (Gdx.input.isKeyPressed(Input.Keys.Z)) {
+	    	canvas.beginCam(Gdx.graphics.getWidth() - Gdx.input.getX(),Gdx.graphics.getHeight() - Gdx.input.getY());
+	    }
+	    else {
+	    	canvas.beginCam(GameMap.metersToPixels(hunter.getPosition().x), GameMap.metersToPixels(hunter.getPosition().y));
+	    }
+       	for (Animal animal : animals){
+	    	if( animal instanceof Pig){
+	    		if (!animal.getTrapped() || animal.getFinishedDeatAnimation()==false) {
+	        		animal.draw(canvas);
+	    		}
+	    	}
+	    	else{
+	    		if (!animal.getTrapped()) {
+	        		animal.draw(canvas);
+	    		}
+	    	}
+	        
+	        //animal.drawDebug(canvas);
+	    }
+	    //if (hunter.getAlive()) {
+	    hunter.draw(canvas);
        	canvas.end();
 	    //hunter.drawDebug(canvas);
 	

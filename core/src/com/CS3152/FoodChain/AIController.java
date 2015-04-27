@@ -327,11 +327,6 @@ public class AIController implements InputController {
 		return false;
 	}
 
-	@Override
-	public boolean isSpaceHeldDown() {
-		// TODO Auto-generated method stub
-		return false;
-	}
 
 	public void preUpdate() {
 		rayCast();
@@ -481,6 +476,12 @@ public class AIController implements InputController {
 		}
 		this.sound = SoundController.get(sound);
 		sndcue = this.sound.play(); 
+	}
+
+	@Override
+	public boolean isEHeldDown() {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 	
