@@ -50,10 +50,10 @@ public class Pig extends Animal {
         drawScale.y=scaleYDrawSheep;
         SIGHT_LENGTH = 2.4f;
         SIGHT_ANGLE = 0.35;
-        maxLinearSpeed = 2.0f;
-        maxLinearAcceleration = 0.0f;
-        maxAngularSpeed = 0.0f;
-        maxAngularAcceleration = 0.0f;
+        maxLinearSpeed = 3.0f;
+        maxLinearAcceleration = 1.0f;
+        maxAngularSpeed = 100.0f;
+        maxAngularAcceleration = 10.0f;
         independentFacing = false;
     }
     

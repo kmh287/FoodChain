@@ -40,8 +40,8 @@ public class Wolf extends Animal{
         drawScale.y = scaleYDrawWolf;
         SIGHT_LENGTH = 2.4f;
         SIGHT_ANGLE = 0.35;
-        maxLinearSpeed = 500.0f;
-        maxLinearAcceleration = 500.0f;
+        maxLinearSpeed = 3.0f;
+        maxLinearAcceleration = 1.0f;
         maxAngularSpeed = 1000.0f;
         maxAngularAcceleration = 500.0f;
         independentFacing = false;
