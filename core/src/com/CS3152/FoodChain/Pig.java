@@ -51,10 +51,10 @@ public class Pig extends Animal {
         SIGHT_LENGTH = 2.4f;
         SIGHT_ANGLE = 0.35;
         boundingRadius = GameMap.pixelsToMeters(40.0f);
-        maxLinearSpeed = 2.0f;
-        maxLinearAcceleration = 0.0f;
-        maxAngularSpeed = 1000.0f;
-        maxAngularAcceleration = 500.0f;
+        maxLinearSpeed = 3.0f;
+        maxLinearAcceleration = 1.0f;
+        maxAngularSpeed = 100.0f;
+        maxAngularAcceleration = 10.0f;
         independentFacing = false;
     }
     

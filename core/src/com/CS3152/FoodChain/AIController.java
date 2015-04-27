@@ -24,7 +24,9 @@ public class AIController implements InputController {
     // Animal kills target
     KILL,
     // Animal is dead
-    DEAD
+    DEAD,
+    //Animal stays still
+    STAYSTILL
   }
   
   // Instance Attributes
@@ -63,6 +65,8 @@ public class AIController implements InputController {
   // How many more turns (1 turn = 10 frames) before the animal can stop running
   protected int turns;
   
+  protected int Wanderturns;
+  
   // The animal's next move; a ControlCode
   protected Vector2 move;
 
@@ -80,59 +84,63 @@ public class AIController implements InputController {
   
   private Vector2 vect;
   private float angle;
-
-  private Sound sound;
-  /** The associated sound cue (if ship is making a sound). */
-  private long sndcue;
   
-  /*
-   * Creates an AIController for the animal
-   *
-   * @param animal The Animal being controlled
-   * @param map The game map
-   */
-  public AIController(Animal animal, World world, GameMap map, List<Actor> actors) {
-    this.animal = animal;
-    this.world = world;
-    this.map = map;
-    this.actors = actors;
-    
-    
-    this.distVctrs = new Vector2[8];
-    for (int id = 0; id < distVctrs.length; id++) {
-      distVctrs[id] = new Vector2();
-    }
-    
-    this.loc = new Vector2(map.screenXToMap(GameMap.metersToPixels(animal.getX())),
-                 map.screenYToMap(GameMap.metersToPixels(animal.getY())));
-    
-    this.target = null;
-    this.attacker = null;
-    
-    this.vcb = new VisionCallback(this);
-    //fcb = new FleeCallback(this, attacker);
-    
-    //this.state = State.PATROL;//FIND;
-    this.goal = new Vector2();
-    // To where it should start moving
-    this.move = InputController.WEST;
-    goal.set (getAnimal().getX() + 1 , getAnimal().getY());
+  private Sound sound;
+	/** The associated sound cue (if ship is making a sound). */
+	private long sndcue;
 
-    this.turns = 10;//should be 0 in future
+    private int WanderStopRate;
     
-    this.patrolTurn = 0;
-    
-    this.tmp = new Vector2();
-    
-    this.random = new Random(2);
-    
-    panicPercentage = 0f;
-    angle = animal.getAngle();
-    vect = new Vector2(animal.getPosition());
-    
-    sound = null;
-    sndcue = -1;
-  }
+    /*
+     * Creates an AIController for the animal
+     *
+     * @param animal The Animal being controlled
+     * @param map The game map
+     */
+    public AIController(Animal animal, World world, GameMap map, List<Actor> actors) {
+        this.animal = animal;
+        this.world = world;
+        this.map = map;
+        this.actors = actors;
+        
+        
+        this.distVctrs = new Vector2[8];
+        for (int id = 0; id < distVctrs.length; id++) {
+          distVctrs[id] = new Vector2();
+        }
+        
+        this.loc = new Vector2(map.screenXToMap(GameMap.metersToPixels(animal.getX())),
+                               map.screenYToMap(GameMap.metersToPixels(animal.getY())));
+        
+        this.target = null;
+        this.attacker = null;
+        
+        this.vcb = new VisionCallback(this);
+        //fcb = new FleeCallback(this, attacker);
+        
+        //this.state = State.PATROL;//FIND;
+        this.goal = new Vector2();
+        // To where it should start moving
+        this.move = InputController.WEST;
+        goal.set (getAnimal().getX() + 1 , getAnimal().getY());
+
+        this.turns = 10;//should be 0 in future
+        
+        this.patrolTurn = 0;
+        
+        this.tmp = new Vector2();
+        
+        this.random = new Random(2);
+        
+        panicPercentage = 0f;
+        angle = animal.getAngle();
+        vect = new Vector2(animal.getPosition());
+        
+        sound = null;
+		sndcue = -1;
+		WanderStopRate= MathUtils.random(175,225);
+		
+    }
   
   /*
    * Updates the animal's tile location
@@ -331,25 +339,21 @@ public class AIController implements InputController {
     return false;
   }
 
-  @Override
-  public boolean isSpaceHeldDown() {
-    return false;
-  }
-
-  public void preUpdate() {
-    rayCast();
-    animal.calculateSteering();
-  }
-  
-  public void update(float delta) {
-    if (animal instanceof Owl) {
-      
-    }
-    else {
-      animal.applySteering(delta);
-      changeStateIfApplicable();
-    }
-  }
+	public void preUpdate() {
+		rayCast();
+		animal.calculateSteering();
+	}
+	
+	public void update(float delta) {
+		// TODO Auto-generated method stub
+		if (animal instanceof Owl) {
+			
+		}
+		else {
+			animal.applySteering(delta);
+			changeStateIfApplicable();
+		}
+	}
   
   /*
    * Changes the animal's state depending on what it's doing and what it's seen
@@ -435,5 +439,11 @@ public class AIController implements InputController {
         }
       }
     }
+  }
+
+  @Override
+  public boolean isSpaceHeldDown() {
+    // TODO Auto-generated method stub
+    return false;
   }
 }

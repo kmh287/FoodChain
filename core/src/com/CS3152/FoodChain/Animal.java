@@ -283,6 +283,10 @@ public abstract class Animal extends Actor{
 			steeringOutput.setZero();
 			break;
 		case DEAD:
+		  steeringOutput.setZero();
+		  break;
+		case STAYSTILL:			
+			this.setLinearVelocity(new Vector2(0,0));
 			break;
 		}
 		return;
