@@ -2,6 +2,7 @@ package com.CS3152.FoodChain;
 
 import com.badlogic.gdx.ai.steer.Steerable;
 import com.badlogic.gdx.ai.steer.behaviors.CollisionAvoidance;
+import com.badlogic.gdx.ai.steer.behaviors.Flee;
 import com.badlogic.gdx.ai.steer.behaviors.PrioritySteering;
 import com.badlogic.gdx.ai.steer.behaviors.Seek;
 import com.badlogic.gdx.ai.steer.behaviors.Wander;
@@ -94,6 +95,11 @@ public class Wolf extends Animal{
             }
         }
     }
+    
+    public void setTarget(Actor actor) {
+        ((Seek<Vector2>) seekSB).setTarget(actor);
+    }
+    
     public void updateWalkFrame(){
     	int frame = sprite.getFrame();
     	frame++;

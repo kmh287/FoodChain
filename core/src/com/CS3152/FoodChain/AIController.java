@@ -1,98 +1,91 @@
 package com.CS3152.FoodChain;
 
-import java.util.*; 	
-
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
-
-import com.badlogic.gdx.ai.pfa.PathSmoother;
-import com.badlogic.gdx.ai.pfa.indexed.IndexedAStarPathFinder;
+import java.util.*;   
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.utils.Array;
-
 
 /**
  * InputController corresponding to AI control.
  * General controller for all animal AIs
  */
 public class AIController implements InputController {
-    /**
-     * Enumeration to encode the states of animals
-     */
-    public static enum State {
-        // Animal is wandering
-        WANDER,
-        // Animal is chasing
-        CHASE,
-        // Animal is running away
-        FLEE,
-        // Animal kills target
-        KILL,
-        // Animal is dead
-        DEAD,
-        //Animal stays still
-        STAYSTILL
-    }
-    
-    // Instance Attributes
-    // The animal controlled by this AIController
-    protected Animal animal;
-    // The world
-    protected World world;
-    // The game board; used for pathfinding
-    protected GameMap map;
-    // The animal's current state
-    protected State state;
-    // Whether or not the animal should flee
-    protected boolean scared;
-    // The animal's target (assigned when an animal crosses
-    // this animal's line of sight) (null if this animal is a sheep)
-    protected Actor target;
-    // The animal that this animal is fleeing
-    protected Actor attacker;
-    // All actors on the map
-    protected List<Actor> actors;
-    
-    protected VisionCallback vcb;
-    //protected FleeCallback fcb;
-    
-    
-    // The vector position of the animal's goal
-    protected Vector2 goal;
-    // tmp helper for subtracting from goal
-    protected Vector2 tmp;
-    // The animal's tile location
-    protected Vector2 loc;
-    // The shortest distance to run to in a situation where the animal can't run
-    // directly away
-    protected Vector2[] distVctrs;
-    
-    // How many more turns (1 turn = 10 frames) before the animal can stop running
-    protected int turns;
-    protected int Wanderturns;
-    
-    // The animal's next move; a ControlCode
-    protected Vector2 move;
+  /**
+   * Enumeration to encode the states of animals
+   */
+  public static enum State {
+    // Animal is wandering
+    WANDER,
+    // Animal is chasing
+    CHASE,
+    // Animal is running away
+    FLEE,
+    // Animal kills target
+    KILL,
+    // Animal is dead
+    DEAD,
+    //Animal stays still
+    STAYSTILL
+  }
+  
+  // Instance Attributes
+  // The animal controlled by this AIController
+  protected Animal animal;
+  // The world
+  protected World world;
+  // The game board; used for pathfinding
+  protected GameMap map;
+  // The animal's current state
+  protected State state;
+  // Whether or not the animal should flee
+  protected boolean scared;
+  // The animal's target (assigned when an animal crosses
+  // this animal's line of sight) (null if this animal is a sheep)
+  protected Actor target;
+  // The animal that this animal is fleeing
+  protected Actor attacker;
+  // All actors on the map
+  protected List<Actor> actors;
+  
+  protected VisionCallback vcb;
+  //protected FleeCallback fcb;
+  
+  
+  // The vector position of the animal's goal
+  protected Vector2 goal;
+  // tmp helper for subtracting from goal
+  protected Vector2 tmp;
+  // The animal's tile location
+  protected Vector2 loc;
+  // The shortest distance to run to in a situation where the animal can't run
+  // directly away
+  protected Vector2[] distVctrs;
+  
+  // How many more turns (1 turn = 10 frames) before the animal can stop running
+  protected int turns;
+  
+  protected int Wanderturns;
+  
+  // The animal's next move; a ControlCode
+  protected Vector2 move;
 
-    // Number of ticks since controller started
-    protected int ticks;
-    
-    // Which direction to patrol
-    protected int patrolTurn;
-    
+  // Number of ticks since controller started
+  protected int ticks;
+  
+  // Which direction to patrol
+  protected int patrolTurn;
+  
+  // The random number generator used by the AI
+  private Random random;
 
-
-    private static float panicPercentage;
-    private Hunter hunter; 
-    
-    private Vector2 vect;
-    private float angle;
-
-    private Sound sound;
+  private static float panicPercentage;
+  private Hunter hunter; 
+  
+  private Vector2 vect;
+  private float angle;
+  
+  private Sound sound;
 	/** The associated sound cue (if ship is making a sound). */
 	private long sndcue;
 
@@ -146,204 +139,203 @@ public class AIController implements InputController {
 		WanderStopRate= MathUtils.random(175,225);
 		
     }
-    
-    /*
-     * Updates the animal's tile location
-     */
-    public void updateLoc() {
-        this.loc.set(map.screenXToMap(GameMap.metersToPixels(animal.getX())),
-                     map.screenYToMap(GameMap.metersToPixels(animal.getY())));
-    }
-    
-    // Determines whether or not an actor is in the animal's line of sight
-    public static boolean withinCone(Animal an, Vector2 meToActor) {
-      return isClockwise(an.getLeftSectorLine(), meToActor) &&
-           !isClockwise(an.getRightSectorLine(), meToActor) &&
-           withinRadius(an, meToActor);
-    }
-    
-    /* Determines if meToActor is clockwise to sectorLine.
-     * The function computes the dot product between the tangent of sectorLine and
-     * meToActor. If the product is negative, then meToActor is clockwise.
-     * 
-     * @param sectorLine the line that we are measuring with respect to
-     * @param meToActor the line we are testing to be clockwise
-     * 
-     * @return true if meToActor is clockwise to sectorLine. False otherwise.
-     */
-    public static boolean isClockwise(Vector2 sectorLine, Vector2 meToActor) {
-    	return 0 >= -sectorLine.y * meToActor.x + sectorLine.x * meToActor.y;
-    }
-    
-    /* Determines if length is within the length of vision sector
-     * 
-     * @param the vector we are testing
-     * 
-     * @return true if length is at most as long as one of the vision sector lines.
-     */
-    public static boolean withinRadius(Animal an, Vector2 length) {
-    	return length.len() <= an.getSightLength();
-    }
-
-    // Determine the new angle the animal wants to face
-    // @return that angle.
-    public float getAngle() {
-    	return animal.getAngle();
-    }
-    
-  public boolean canSettle() {
-    return this.turns <= 0;
+  
+  /*
+   * Updates the animal's tile location
+   */
+  public void updateLoc() {
+    this.loc.set(map.screenXToMap(GameMap.metersToPixels(animal.getX())),
+           map.screenYToMap(GameMap.metersToPixels(animal.getY())));
   }
   
-    /*
-     * The animal this AI controls
-     *
-     * @return the animal
-     */
-    public Animal getAnimal() {
-        return this.animal;
-    }
-    
-    /*
-     * Changes the animal's state depending on what it's doing and what it's seen
-     */
-    //public abstract void changeStateIfApplicable();
-    
-    /*
-     * Marks the goal tile the animal is trying to go to
-     */
-    //public abstract void markGoal();
-    
-    /*
-     * Determines whether or not the animal sees a predator
-     *
-     * @return true if a predator is in the animal's line of sight. False otherwise
-     */
-    //public abstract boolean seesPredator();
-    
-    /*
-     * Sets the animal that this animal should flee from. Null if it shouldn't flee.
-     */
-    public void setAttacker(Actor ac) {
-        if (ac != null) {
-        	this.attacker = ac;
-        	animal.setFlee(ac);
-        }
-        else {
-        	this.attacker = null;
-        }
-    }
-    
-    /**
-     * Returns the target of the current animal AI
-     * 
-     * @return Target of the animal AI
-     */
-    public Actor getTarget() {
-      return target;
-    }
-    
-    /**
-     * Sets the animal that this animal should chase. Null if it shouldn't chase.
-     * 
-     * @param ac Actor the animal should target
-     */
-    public void setTarget(Actor ac) {
-        if (ac != null) {
-	    	this.target = ac;
-	        animal.setTarget(ac);
-        }
-        else {
-        	this.target = null;
-        }
-    }
-    
-    public boolean hasTarget() {
-      return this.target != null;
-    }
-    
-    /*
-     * Determines whether the animal controlled by this controller is seen by a predator.
-     *
-     * @return true if it is in a predator's line of sight. false otherwise
-     */
-    //public abstract boolean isSeenByPredator();
-        
-    /*
-     * Determines whether the animal sees prey.
-     *
-     * @return true if an animal's prey is in the line of sight of the animal.
-     * false otherwise.
-     */
-    //public abstract boolean seesPrey();
-    
-    /*
-     * Sets whether or not this animal should be scared. If ac is null, then
-     * it should not be scared. Otherwise it should be.
-     */
-    public void setScared(Actor ac) {
-      if (ac != null) {
-        this.scared = true;
-        setAttacker(ac);
-        return;
-      }
-      this.scared = false;
-      /*else {
-        this.scared = false;
-        setAttacker(null);
-        return;
-      }*/ 
-    }
-    
-    /*
-     * Returns whether or not this animal should run away
-     * 
-     * @return true if the animal saw a predator. False otherwise.
-     */
-    public boolean isScared() {
-      return this.scared;
-    }
-    
-    public void setTurns(int turns) {
-      this.turns = turns;
-    }
-    
-    // Should not be here, but need to finish
-    public Vector2 getClickPos() {return new Vector2();}
-    
-    public boolean isClicked() {return false;}
-    
-    public int getNum() {return 0;}
+  // Determines whether or not an actor is in the animal's line of sight
+  public static boolean withinCone(Animal an, Vector2 meToActor) {
+    return isClockwise(an.getLeftSectorLine(), meToActor) &&
+       !isClockwise(an.getRightSectorLine(), meToActor) &&
+       withinRadius(an, meToActor);
+  }
+  
+  /* Determines if meToActor is clockwise to sectorLine.
+   * The function computes the dot product between the tangent of sectorLine and
+   * meToActor. If the product is negative, then meToActor is clockwise.
+   * 
+   * @param sectorLine the line that we are measuring with respect to
+   * @param meToActor the line we are testing to be clockwise
+   * 
+   * @return true if meToActor is clockwise to sectorLine. False otherwise.
+   */
+  public static boolean isClockwise(Vector2 sectorLine, Vector2 meToActor) {
+    return 0 >= -sectorLine.y * meToActor.x + sectorLine.x * meToActor.y;
+  }
+  
+  /** Determines if length is within the length of vision sector
+   * 
+   * @param the vector we are testing
+   * 
+   * @return true if length is at most as long as one of the vision sector lines.
+   */
+  public static boolean withinRadius(Animal an, Vector2 length) {
+    return length.len() <= an.getSightLength();
+  }
 
-    public static float getPanicPercentage() {
-      return panicPercentage;
+  // Determine the new angle the animal wants to face
+  // @return that angle.
+  public float getAngle() {
+    return animal.getAngle();
+  }
+  
+  public boolean canSettle() {
+  return this.turns <= 0;
+  }
+  
+  /*
+   * The animal this AI controls
+   *
+   * @return the animal
+   */
+  public Animal getAnimal() {
+    return this.animal;
+  }
+  
+  /*
+   * Changes the animal's state depending on what it's doing and what it's seen
+   */
+  //public abstract void changeStateIfApplicable();
+  
+  /*
+   * Marks the goal tile the animal is trying to go to
+   */
+  //public abstract void markGoal();
+  
+  /*
+   * Determines whether or not the animal sees a predator
+   *
+   * @return true if a predator is in the animal's line of sight. False otherwise
+   */
+  //public abstract boolean seesPredator();
+  
+  /*
+   * Sets the animal that this animal should flee from. Null if it shouldn't flee.
+   */
+  public void setAttacker(Actor ac) {
+    if (ac != null) {
+      this.attacker = ac;
+      animal.setFlee(ac);
     }
+    else {
+      this.attacker = null;
+    }
+  }
+  
+  /**
+   * Returns the target of the current animal AI
+   * 
+   * @return Target of the animal AI
+   */
+  public Actor getTarget() {
+    return target;
+  }
+  
+  /**
+   * Sets the animal that this animal should chase. Null if it shouldn't chase.
+   * 
+   * @param ac Actor the animal should target
+   */
+  public void setTarget(Actor ac) {
+    if (ac != null) {
+      this.target = ac;
+      animal.setTarget(ac);
+    }
+    else {
+      this.target = null;
+    }
+  }
+  
+  public boolean hasTarget() {
+    return this.target != null;
+  }
+  
+  /*
+   * Determines whether the animal controlled by this controller is seen by a predator.
+   *
+   * @return true if it is in a predator's line of sight. false otherwise
+   */
+  //public abstract boolean isSeenByPredator();
+    
+  /*
+   * Determines whether the animal sees prey.
+   *
+   * @return true if an animal's prey is in the line of sight of the animal.
+   * false otherwise.
+   */
+  //public abstract boolean seesPrey();
+  
+  /*
+   * Sets whether or not this animal should be scared. If ac is null, then
+   * it should not be scared. Otherwise it should be.
+   */
+  public void setScared(Actor ac) {
+    if (ac != null) {
+    this.scared = true;
+    setAttacker(ac);
+    return;
+    }
+    this.scared = false;
+    /*else {
+    this.scared = false;
+    setAttacker(null);
+    return;
+    }*/ 
+  }
+  
+  /*
+   * Returns whether or not this animal should run away
+   * 
+   * @return true if the animal saw a predator. False otherwise.
+   */
+  public boolean isScared() {
+    return this.scared;
+  }
+  
+  public void setTurns(int turns) {
+    this.turns = turns;
+  }
+  
+  // Should not be here, but need to finish
+  public Vector2 getClickPos() {
+    return new Vector2();
+  }
+  
+  public boolean isClicked() {
+    return false;
+  }
+  
+  public int getNum() {
+    return 0;
+  }
 
-    public void play(String sound) {
-		if (sndcue != -1) {
-			this.sound.stop(sndcue);
-		}
-		this.sound = SoundController.get(sound);
-		sndcue = this.sound.loop(); 
-	}
+  public static float getPanicPercentage() {
+    return panicPercentage;
+  }
+
+  public void play(String sound) {
+    if (sndcue != -1) {
+      this.sound.stop(sndcue);
+    }
+    this.sound = SoundController.get(sound);
+    sndcue = this.sound.loop(); 
+  }
 
 
-	@Override
-	public boolean resetPressed() {
-		return false;
-	}
+  @Override
+  public boolean resetPressed() {
+    return false;
+  }
 
-	@Override
-	public boolean isSpacePressed() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean isSpaceHeldDown() {
-		// TODO Auto-generated method stub
-		return false;
-	}
+  @Override
+  public boolean isSpacePressed() {
+    return false;
+  }
 
 	public void preUpdate() {
 		rayCast();
@@ -360,6 +352,7 @@ public class AIController implements InputController {
 			changeStateIfApplicable();
 		}
 	}
+<<<<<<< HEAD
 	
 	/*
      * Changes the animal's state depending on what it's doing and what it's seen
@@ -369,14 +362,16 @@ public class AIController implements InputController {
 	        switch (animal.getState()) {
 			    case WANDER:
 			    	//System.out.println(getAnimal() + " is wandering");
-			    	if (isScared()) {
-			    		animal.setState(State.FLEE);
-			    		setTurns(1000);
-			    	}
-			    	else if (hasTarget()) {
-			        	animal.setState(State.CHASE);
-			        	setTurns(1000);
-			        }
+            if (hasTarget()) {
+              if (animal instanceof Pig) {
+                animal.setState(State.FLEE);
+                setTurns(1000);
+              }
+              else if (animal instanceof Wolf) {
+                animal.setState(State.CHASE);
+                setTurns(1000);
+             }
+            }
 			    	//stop periodically in wander
 			    	else if(Wanderturns%250>WanderStopRate){
 			    		animal.setState(State.STAYSTILL);
@@ -433,73 +428,36 @@ public class AIController implements InputController {
     	}
 	}
 
-	@Override
-	public Vector2 getAction(float delta) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+  @Override
+  public Vector2 getAction(float delta) {
+    return null;
+  }
 
-	@Override
-	public void update() {
-		// TODO Auto-generated method stub
-		
-	}
-	
-	private void rayCast() {
-		for (Actor a : actors) {
-	        if (a != getAnimal() && a.getAlive()) {
-	          world.rayCast(vcb, getAnimal().getPosition(), a.getPosition());
-	          Fixture fix = vcb.getFixture();
-	          if (fix != null) {
-	              Object objSeen = fix.getBody().getUserData();
-	              if (objSeen instanceof Actor) {
-	                Actor actor = (Actor) objSeen;
-	                if (panicPercentage<1 && actor.getType() != animal.getType()){
-	                  panicPercentage += 0.005;//.001
-	                }
-	                if (((Actor)objSeen).canKill(getAnimal())) {
-	                	//System.out.println("Setting " + getAnimal() + " scared");
-	                	setScared((Actor)objSeen);
-	                	//System.out.println((Actor)objSeen);
-	                	if ((Actor)objSeen instanceof Pig){
-	                      //play(SoundController.PIG_SCARED_SOUND);
+  @Override
+  public void update() {
+    return;
+  }
+  
+  private void rayCast() {
+    for (Actor a : actors) {
+      if (a != getAnimal() && a.getAlive()) {
+        world.rayCast(vcb, getAnimal().getPosition(), a.getPosition());
+        Fixture fix = vcb.getFixture();
+        if (fix != null) {
+          Object objSeen = fix.getBody().getUserData();
+          if (objSeen instanceof Actor) {
+            if (animal.canKill((Actor) objSeen) || ((Actor) objSeen).canKill(animal)) {
+              setTarget((Actor) objSeen);
+            }
+          }
+        }
+      }
+    }
+  }
 
-	                	}
-	                	//setTurns();
-	                }
-	                if (getAnimal().canKill((Actor)objSeen)) {
-	                  //setTurns();
-	 
-	                  setTarget((Actor)objSeen);
-	                  if (animal instanceof Wolf) {
-	                	  //play(SoundController.WOLF_ANGRY_SOUND);
-	                  }
-	                }
-	              }
-	              else {
-	                if (target != null) {
-	                  if (a.getType() == target.getType()) {
-	                    //turns--;
-	                  }
-	                }
-	              }
-	          }
-	          else {
-	            if (animal instanceof Owl && 
-	                a.getType() == Actor.actorType.HUNTER) {
-	            }
-	            if (target != null) {
-	              if (a.getType() == target.getType()) {
-	                //turns--;
-	              }
-	            }
-	            if (panicPercentage>0){
-	              panicPercentage -= 0.00005;
-	            }
-	          }
-	          canSettle();	
-	          //vcb.getFixture();
-	          }
-	      }
-	}
+  @Override
+  public boolean isSpaceHeldDown() {
+    // TODO Auto-generated method stub
+    return false;
+  }
 }
