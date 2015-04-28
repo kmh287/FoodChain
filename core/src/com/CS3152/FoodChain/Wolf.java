@@ -40,8 +40,8 @@ public class Wolf extends Animal{
         drawScale.y = scaleYDrawWolf;
         SIGHT_LENGTH = 2.4f;
         SIGHT_ANGLE = 0.35;
-        maxLinearSpeed = 500.0f;
-        maxLinearAcceleration = 500.0f;
+        maxLinearSpeed = 3.0f;
+        maxLinearAcceleration = 1.0f;
         maxAngularSpeed = 1000.0f;
         maxAngularAcceleration = 500.0f;
         independentFacing = false;
@@ -83,7 +83,7 @@ public class Wolf extends Animal{
 
 		this.rightSectorLine.set((float)(SIGHT_LENGTH*Math.cos(angle - SIGHT_ANGLE)),
 								 (float)(SIGHT_LENGTH*Math.sin(angle - SIGHT_ANGLE)));
-	}
+    }
     
     public static void loadTexture(AssetManager manager) {
         if (tex == null){
@@ -94,6 +94,11 @@ public class Wolf extends Animal{
             }
         }
     }
+   
+    public void setTarget(Actor actor) {
+      ((Seek<Vector2>) seekSB).setTarget(actor);
+    }
+    
     public void updateWalkFrame(){
     	int frame = sprite.getFrame();
     	frame++;
