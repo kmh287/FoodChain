@@ -1,5 +1,8 @@
 package com.CS3152.FoodChain;
 
+import java.util.List;
+
+import com.badlogic.gdx.ai.steer.Limiter;
 import com.badlogic.gdx.ai.steer.Steerable;
 import com.badlogic.gdx.ai.steer.SteeringAcceleration;
 import com.badlogic.gdx.ai.steer.SteeringBehavior;
@@ -72,11 +75,12 @@ public abstract class Animal extends Actor{
 	 * @param type The type of animal. Check the animalType enum for values
 	 * @param x	STARTING x-position on the map for the animal
 	 * @param y STARTING y-position on the map for the animal
+	 * @param patrol 
 	 * @param foodchainVal The food chain value for this animal. 
 	 *                     It is up to the CALLER to ensure this is correct.
 	 */
 	public Animal(TextureRegion tr, actorType type, float x, float y, 
-	              actorType[] prey, Vector2 facing){
+	              actorType[] prey, Vector2 facing, List<Vector2> patrol){
 		super(tr, type, x, y, AnimalWidth, AnimalHeight, prey);
 		this.setPos(GameMap.pixelsToMeters(x), GameMap.pixelsToMeters(y));
 		setFacing(facing);
@@ -101,12 +105,14 @@ public abstract class Animal extends Actor{
 		
 		//need to add functionality for open path
 		wayPoints=new Array<Vector2>();
-    	wayPoints.add(new Vector2(22,18));
-    	wayPoints.add(new Vector2(28,18));
-    	wayPoints.add(new Vector2(28,20));
-    	wayPoints.add(new Vector2(22,20));
+		for(int i=0;i<patrol.size();i++){
+			//wayPoints.add(patrol.get(i));
+			wayPoints.add(new Vector2((float) (GameMap.pixelsToMeters(patrol.get(i).x)+.5),(float) (GameMap.pixelsToMeters(patrol.get(i).y)+.5)));
+		}
+		
 		linePath = new LinePath<Vector2>(wayPoints, false);
-		followPathAnimal = new FollowPath<Vector2, LinePathParam>(this, linePath, 30); 
+		//.5 is the offset/farthest distance it can be away from the patrol path
+		followPathAnimal = new FollowPath<Vector2, LinePathParam>(this, linePath, (float) .5); 
 		
 	}
 	
@@ -317,6 +323,10 @@ public abstract class Animal extends Actor{
 			break;
 		case PATROL:
 			followPathAnimal.calculateSteering(steeringOutput);
+//			Limiter limiter = new Limiter();
+//			limiter.setMaxAngularAcceleration(100f);
+//			limiter.setMaxAngularSpeed(100f);
+//			followPathAnimal.setLimiter(limiter);
 			break;
 		case STAYSTILL:
 			steeringOutput.setZero();

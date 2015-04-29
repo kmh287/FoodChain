@@ -3,6 +3,8 @@
  */
 package com.CS3152.FoodChain;
 
+import java.util.List;
+
 import com.badlogic.gdx.ai.steer.Steerable;
 import com.badlogic.gdx.ai.steer.behaviors.CollisionAvoidance;
 import com.badlogic.gdx.ai.steer.behaviors.Flee;
@@ -40,10 +42,11 @@ public class Pig extends Animal {
      * Public Constructor for a sheep
      * @param x Starting x position for this sheep
      * @param y Starting y position for this sheep
+     * @param patrol 
      */
-    public Pig(float x, float y) {
+    public Pig(float x, float y, List<Vector2> patrol) {
         super(new TextureRegion(tex), Actor.actorType.PIG, x, y, 
-              prey, InputController.EAST);
+              prey, InputController.EAST,patrol);
         sprite = new FilmStrip(tex,1,4,4);
         spriteDeath = new FilmStrip(deathTex,1,7,7);
         drawScale.x=scaleXDrawSheep;
