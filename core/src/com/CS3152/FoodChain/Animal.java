@@ -4,7 +4,10 @@ import com.badlogic.gdx.ai.steer.Steerable;
 import com.badlogic.gdx.ai.steer.SteeringAcceleration;
 import com.badlogic.gdx.ai.steer.SteeringBehavior;
 import com.badlogic.gdx.ai.steer.behaviors.Flee;
+import com.badlogic.gdx.ai.steer.behaviors.FollowPath;
 import com.badlogic.gdx.ai.steer.behaviors.Seek;
+import com.badlogic.gdx.ai.steer.utils.paths.LinePath;
+import com.badlogic.gdx.ai.steer.utils.paths.LinePath.LinePathParam;
 import com.badlogic.gdx.ai.tests.steer.box2d.Box2dLocation;
 import com.badlogic.gdx.ai.tests.steer.box2d.Box2dSteeringUtils;
 import com.badlogic.gdx.ai.utils.Location;
@@ -12,6 +15,8 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
@@ -53,6 +58,10 @@ public abstract class Animal extends Actor{
     protected SteeringBehavior<Vector2> seekSB;
     
     private boolean finishedDeatAnimation;
+    
+    protected Array<Vector2> wayPoints;
+    protected LinePath<Vector2> linePath;
+    protected FollowPath<Vector2, LinePathParam> followPathAnimal;
 
 	
 	/** Protected constructor for the animal type. 
@@ -74,8 +83,12 @@ public abstract class Animal extends Actor{
 		this.leftSectorLine = new Vector2();
 		this.rightSectorLine = new Vector2();
 		
-		this.state = AIController.State.WANDER;
+		//need to determine default state of animal on initialize
+		//also when  set to patrol it crashes on restart
+		this.state = AIController.State.PATROL;
+		
 
+		
 		this.tmp = new Vector2();
 		this.tmp2 = new Vector2();
 
@@ -84,6 +97,17 @@ public abstract class Animal extends Actor{
 		setTexHeight(GameMap.pixelsToMeters(tr.getRegionHeight()));
 		this.tagged = false;
 		finishedDeatAnimation= false;
+		
+		
+		//need to add functionality for open path
+		wayPoints=new Array<Vector2>();
+    	wayPoints.add(new Vector2(22,18));
+    	wayPoints.add(new Vector2(28,18));
+    	wayPoints.add(new Vector2(28,20));
+    	wayPoints.add(new Vector2(22,20));
+		linePath = new LinePath<Vector2>(wayPoints, false);
+		followPathAnimal = new FollowPath<Vector2, LinePathParam>(this, linePath, 30); 
+		
 	}
 	
 	public abstract void createSteeringBehaviors();
@@ -214,12 +238,6 @@ public abstract class Animal extends Actor{
         return false;
 	}
 	
-//	public void draw(GameMap map, GameCanvas canvas){
-//	    canvas.begin();
-//	    canvas.draw(getTexture(), getX(), getY());
-//	    canvas.end();
-//	}
-	
 	public float getXDiamter() {
 	    return texWidth;
     }
@@ -248,6 +266,17 @@ public abstract class Animal extends Actor{
 			sectorLine = getRightSectorLine();
 			tmp2.add(GameMap.metersToPixels(sectorLine.x), GameMap.metersToPixels(sectorLine.y));
 			canvas.drawLine(Color.YELLOW, tmp, tmp2);
+			
+			//draws patrol waypoint
+			canvas.DrawPatrolPaths(GameMap.metersToPixels(followPathAnimal.getInternalTargetPosition().x), GameMap.metersToPixels(followPathAnimal.getInternalTargetPosition().y), 5, wayPoints, linePath);
+			for (int i = 0; i < wayPoints.size; i++) {
+				int next = (i + 1) % wayPoints.size;				
+				if (next != 0 || !linePath.isOpen()) {
+					canvas.drawLine(Color.GREEN, new Vector2(GameMap.metersToPixels(wayPoints.get(i).x),GameMap.metersToPixels(wayPoints.get(i).y)), new Vector2(GameMap.metersToPixels(wayPoints.get(next).x),GameMap.metersToPixels(wayPoints.get(next).y)));
+				}
+				canvas.DrawPatrolPaths(GameMap.metersToPixels(wayPoints.get(i).x), GameMap.metersToPixels(wayPoints.get(i).y), 5, wayPoints, linePath);
+			}
+		
 		}
 	}
 	
@@ -285,6 +314,9 @@ public abstract class Animal extends Actor{
 			break;
 		case KILL:
 			steeringOutput.setZero();
+			break;
+		case PATROL:
+			followPathAnimal.calculateSteering(steeringOutput);
 			break;
 		case STAYSTILL:
 			steeringOutput.setZero();
