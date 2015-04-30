@@ -89,7 +89,6 @@ public abstract class Animal extends Actor{
 		
 		//need to determine default state of animal on initialize
 		//also when  set to patrol it crashes on restart
-		this.state = AIController.State.PATROL;
 		
 
 		
@@ -103,7 +102,6 @@ public abstract class Animal extends Actor{
 		finishedDeatAnimation= false;
 		
 		
-		//need to add functionality for open path
 		wayPoints=new Array<Vector2>();
 		for(int i=0;i<patrol.size();i++){
 			//wayPoints.add(patrol.get(i));
@@ -113,6 +111,16 @@ public abstract class Animal extends Actor{
 		linePath = new LinePath<Vector2>(wayPoints, false);
 		//.5 is the offset/farthest distance it can be away from the patrol path
 		followPathAnimal = new FollowPath<Vector2, LinePathParam>(this, linePath, (float) .5); 
+
+		//if not waypoints, set to wander
+		if(wayPoints.size==0){
+			this.state = AIController.State.WANDER;
+		}
+		//else put in patrol state
+		else{
+			this.state = AIController.State.PATROL;
+		}
+		
 		
 	}
 	
@@ -273,16 +281,17 @@ public abstract class Animal extends Actor{
 			tmp2.add(GameMap.metersToPixels(sectorLine.x), GameMap.metersToPixels(sectorLine.y));
 			canvas.drawLine(Color.YELLOW, tmp, tmp2);
 			
-			//draws patrol waypoint
-			canvas.DrawPatrolPaths(GameMap.metersToPixels(followPathAnimal.getInternalTargetPosition().x), GameMap.metersToPixels(followPathAnimal.getInternalTargetPosition().y), 5, wayPoints, linePath);
-			for (int i = 0; i < wayPoints.size; i++) {
-				int next = (i + 1) % wayPoints.size;				
-				if (next != 0 || !linePath.isOpen()) {
-					canvas.drawLine(Color.GREEN, new Vector2(GameMap.metersToPixels(wayPoints.get(i).x),GameMap.metersToPixels(wayPoints.get(i).y)), new Vector2(GameMap.metersToPixels(wayPoints.get(next).x),GameMap.metersToPixels(wayPoints.get(next).y)));
+			//draws patrol waypoint if they have waypoints
+			if(wayPoints.size>0){
+				canvas.DrawPatrolPaths(GameMap.metersToPixels(followPathAnimal.getInternalTargetPosition().x), GameMap.metersToPixels(followPathAnimal.getInternalTargetPosition().y), 5, wayPoints, linePath);
+				for (int i = 0; i < wayPoints.size; i++) {
+					int next = (i + 1) % wayPoints.size;				
+					if (next != 0 || !linePath.isOpen()) {
+						canvas.drawLine(Color.GREEN, new Vector2(GameMap.metersToPixels(wayPoints.get(i).x),GameMap.metersToPixels(wayPoints.get(i).y)), new Vector2(GameMap.metersToPixels(wayPoints.get(next).x),GameMap.metersToPixels(wayPoints.get(next).y)));
+					}
+					canvas.DrawPatrolPaths(GameMap.metersToPixels(wayPoints.get(i).x), GameMap.metersToPixels(wayPoints.get(i).y), 5, wayPoints, linePath);
 				}
-				canvas.DrawPatrolPaths(GameMap.metersToPixels(wayPoints.get(i).x), GameMap.metersToPixels(wayPoints.get(i).y), 5, wayPoints, linePath);
-			}
-		
+			}		
 		}
 	}
 	
@@ -323,10 +332,6 @@ public abstract class Animal extends Actor{
 			break;
 		case PATROL:
 			followPathAnimal.calculateSteering(steeringOutput);
-//			Limiter limiter = new Limiter();
-//			limiter.setMaxAngularAcceleration(100f);
-//			limiter.setMaxAngularSpeed(100f);
-//			followPathAnimal.setLimiter(limiter);
 			break;
 		case STAYSTILL:
 			steeringOutput.setZero();
