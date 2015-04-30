@@ -235,6 +235,7 @@ public abstract class Actor extends CircleObject implements Steerable<Vector2>{
     	boolean anyAccelerations = false;
 
     	// Update position and linear velocity.
+    	float oldAngle=getAngle();
     	if (!steeringOutput.linear.isZero()) {
     		//Vector2 force = steeringOutput.linear.scl(deltaTime);
     		Vector2 force = steeringOutput.linear.scl(10);
@@ -244,24 +245,24 @@ public abstract class Actor extends CircleObject implements Steerable<Vector2>{
     	}
 
     	// Update orientation and angular velocity
-    	if (isIndependentFacing()) {
-    		if (steeringOutput.angular != 0) {
-    			body.applyTorque(steeringOutput.angular * deltaTime, true);
-    			anyAccelerations = true;
-    		}
-    	}
-    	else {
+ //   	System.out.println(getAngularVelocity());
+		//body.applyTorque(100, true);
+		
     		// If we haven't got any velocity, then we can do nothing.
     		Vector2 linVel = getLinearVelocity();
     		if (!linVel.isZero(getZeroLinearSpeedThreshold())) {
+    			
     			float newOrientation = vectorToAngle(linVel);
-    			body.setAngularVelocity((newOrientation - getAngularVelocity()) * deltaTime); // this is superfluous if independentFacing is always true
+    			//body.setAngularVelocity((newOrientation-getAngularVelocity()) * deltaTime); // this is superfluous if independentFacing is always true
+    			//body.setTransform(body.getPosition(), oldAngle+((newOrientation-oldAngle)*deltaTime*5));
     			body.setTransform(body.getPosition(), newOrientation);
     		}
-    	}
-
+ 
+    	//body.applyTorque(10, true);
+		//body.applyAngularImpulse(10, true);
     	if (anyAccelerations) {
-    		// body.activate();
+
+    		// body.setActive(true);
 
     		// TODO:
     		// Looks like truncating speeds here after applying forces doesn't work as expected.

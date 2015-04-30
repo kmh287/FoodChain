@@ -4,9 +4,11 @@ import java.util.*;
 
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
-
 import com.badlogic.gdx.ai.pfa.PathSmoother;
 import com.badlogic.gdx.ai.pfa.indexed.IndexedAStarPathFinder;
+import com.badlogic.gdx.ai.steer.behaviors.FollowPath;
+import com.badlogic.gdx.ai.steer.utils.paths.LinePath;
+import com.badlogic.gdx.ai.steer.utils.paths.LinePath.LinePathParam;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.*;
@@ -35,7 +37,8 @@ public class AIController implements InputController {
         // Animal is dead
         DEAD,
         //Animal stays still
-        STAYSTILL
+        STAYSTILL, 
+        PATROL 
     }
     
     // Instance Attributes
@@ -426,6 +429,20 @@ public class AIController implements InputController {
 			    	}
 			    	turns--;
 			    	break;
+			    case PATROL:
+			    	animal.setState(State.PATROL);
+			    	//this code is commented out until we can resolve state machine
+//			    	if (hasTarget()) {
+//				    	  if (animal instanceof Pig) {
+//				    	    animal.setState(State.FLEE);
+//				    	    setTurns(1000);
+//				    	  }
+//				    	  else if (animal instanceof Wolf) {
+//				    	    animal.setState(State.CHASE);
+//	                setTurns(1000);
+//				    	  }
+//				      }
+			    	break;
 			    case DEAD:
 			        break;
 			}
@@ -463,4 +480,5 @@ public class AIController implements InputController {
       }
     }
 	}
+	
 }
