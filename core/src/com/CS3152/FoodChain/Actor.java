@@ -235,6 +235,7 @@ public abstract class Actor extends CircleObject implements Steerable<Vector2>{
     	boolean anyAccelerations = false;
 
     	// Update position and linear velocity.
+    	float oldAngle=getAngle();
     	if (!steeringOutput.linear.isZero()) {
     		//Vector2 force = steeringOutput.linear.scl(deltaTime);
     		Vector2 force = steeringOutput.linear.scl(10);
@@ -245,14 +246,15 @@ public abstract class Actor extends CircleObject implements Steerable<Vector2>{
 
     	// Update orientation and angular velocity
  //   	System.out.println(getAngularVelocity());
-//			body.applyTorque(steeringOutput.angular, true);
+		//body.applyTorque(100, true);
 		
     		// If we haven't got any velocity, then we can do nothing.
     		Vector2 linVel = getLinearVelocity();
     		if (!linVel.isZero(getZeroLinearSpeedThreshold())) {
     			
     			float newOrientation = vectorToAngle(linVel);
-    			body.setAngularVelocity((newOrientation-getAngularVelocity()) * deltaTime); // this is superfluous if independentFacing is always true
+    			//body.setAngularVelocity((newOrientation-getAngularVelocity()) * deltaTime); // this is superfluous if independentFacing is always true
+    			//body.setTransform(body.getPosition(), oldAngle+((newOrientation-oldAngle)*deltaTime*5));
     			body.setTransform(body.getPosition(), newOrientation);
     		}
  

@@ -105,7 +105,8 @@ public abstract class Animal extends Actor{
 		wayPoints=new Array<Vector2>();
 		for(int i=0;i<patrol.size();i++){
 			//wayPoints.add(patrol.get(i));
-			wayPoints.add(new Vector2((float) (GameMap.pixelsToMeters(patrol.get(i).x)+.5),(float) (GameMap.pixelsToMeters(patrol.get(i).y)+.5)));
+			//adding .4 for offset to gamemap
+			wayPoints.add(new Vector2((float) (GameMap.pixelsToMeters(patrol.get(i).x)+.4),(float) (GameMap.pixelsToMeters(patrol.get(i).y)+.4)));
 		}
 		
 		linePath = new LinePath<Vector2>(wayPoints, false);
