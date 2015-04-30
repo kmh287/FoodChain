@@ -9,6 +9,7 @@ import java.util.Random;
 
 import com.CS3152.FoodChain.Actor.actorType;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 
@@ -29,7 +30,8 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.ai.steer.Steerable;
 
 
-public class GameMode implements Screen {
+
+public class GameMode implements Screen{
 	
 	private CollisionController collisionController;
 	private GameplayController gameplayController;
@@ -70,6 +72,16 @@ public class GameMode implements Screen {
 	private int ticks=0;
 	
 	private float accumulator = 0;
+	private ScreenListener listener;
+
+	/** Whether we have completed this level */
+	private boolean complete;
+	/** Whether we have failed at this world (and need a reset) */
+	private boolean failed;
+	/** Whether or not debug mode is active */
+	private boolean debug;
+	/** Countdown active for winning or losing */
+	private int countdown;
 	
 	/**sound assets here **/
 	//private static final String TRAP_DROP_FILE = "sounds/trap_drop.mp3";
@@ -112,6 +124,15 @@ public class GameMode implements Screen {
 		SoundController.LoadContent(manager);
 		
 	}
+	
+	/** Exit code for quitting the game */
+	public static final int EXIT_QUIT = 0;
+	/** Exit code for advancing to next level */
+	public static final int EXIT_NEXT = 1;
+	/** Exit code for jumping back to previous level */
+	public static final int EXIT_PREV = 2;
+    /** How many frames after winning/losing do we continue? */
+	public static final int EXIT_COUNT = 120;
 	
     /**
      * Temporary constructor for GameMode until we have 
@@ -309,11 +330,6 @@ public class GameMode implements Screen {
 		}
 	}
 	
-    @Override
-    public void show() {
-        // TODO Auto-generated method stub
-        
-    }
     
     private gameCondition checkObjective(){
     	
@@ -589,14 +605,36 @@ public class GameMode implements Screen {
 		}
 		canvas.endDebug();
 	} 
+    
+    public void postDraw(float delta) {
+		if (listener == null) {
+			return;
+		}
+
+		
+		// Now it is time to maybe switch screens.
+		if (PlayerController.didExit()) {
+			listener.exitScreen(this, EXIT_QUIT);
+		} /*else if (PlayerController.didAdvance()) {
+			listener.exitScreen(this, EXIT_NEXT);
+		} else if (PlayerController.didRetreat()) {
+			listener.exitScreen(this, EXIT_PREV);*/
+		else if (countdown > 0) {
+			countdown--;
+		} else if (countdown == 0) {
+			if (failed) {
+				//reset();
+			} 
+		}
+	}
 	    
     
-    @Override
+    
     public void render(float delta) {
         update(delta);
         collisionController.postUpdate(delta);
         draw(delta);
-
+        postDraw(delta);
 
     }
 
@@ -606,23 +644,6 @@ public class GameMode implements Screen {
         
     }
 
-    @Override
-    public void pause() {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    public void resume() {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    public void hide() {
-        // TODO Auto-generated method stub
-        
-    }
 
     @Override
     public void dispose() {
@@ -630,6 +651,31 @@ public class GameMode implements Screen {
     	SoundController.UnloadContent(manager);
         
     }
+
+
+	@Override
+	public void show() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void pause() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void resume() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void hide() {
+		// TODO Auto-generated method stub
+		
+	}
 
     
     /** 

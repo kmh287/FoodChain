@@ -30,7 +30,6 @@ public class GameMap implements IndexedGraph<MapNode> {
     private List<Actor.actorType> animals = null;
     private List<Vector2> coordinates = null;
 
-    
     //Player information that needs to be stored
     //in the map such as the start position and 
     //starting trap

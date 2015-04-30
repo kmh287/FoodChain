@@ -12,6 +12,9 @@ public class PlayerController implements InputController{
 	private boolean mouse;
 	private int spaceTicks = 0;
 	
+	private static boolean exitPressed;
+	private boolean exitPrevious;
+	
 	private Vector2 PlayerAction;
 
 	/**
@@ -32,6 +35,7 @@ public class PlayerController implements InputController{
 	    Vector2 vector = new Vector2((float) x, (float) y);
 	    return vector;
 	    }
+
 
 	/**
 	* Return the action of this ship (but does not process) 
@@ -94,6 +98,11 @@ public class PlayerController implements InputController{
 	
 	public boolean resetPressed(){
 		return Gdx.input.isKeyPressed(Input.Keys.R);
+	}
+	
+	public static boolean didExit() {
+		return exitPressed  = (Gdx.input.isKeyPressed(Input.Keys.ESCAPE));
+
 	}
 	
 	public int getNum(){

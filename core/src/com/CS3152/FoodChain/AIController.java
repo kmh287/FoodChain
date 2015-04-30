@@ -435,61 +435,7 @@ public class AIController implements InputController {
 	}
 	
 	private void rayCast() {
-<<<<<<< HEAD
-		for (Actor a : actors) {
-	        if (a != getAnimal() && a.getAlive()) {
-	          world.rayCast(vcb, getAnimal().getPosition(), a.getPosition());
-	          Fixture fix = vcb.getFixture();
-	          if (fix != null) {
-	              Object objSeen = fix.getBody().getUserData();
-	              if (objSeen instanceof Actor) {
-	                Actor actor = (Actor) objSeen;
-	                if (panicPercentage<1 && actor.getType() != animal.getType()){
-	                  panicPercentage += 0.005;//.001
-	                }
-	                if (((Actor)objSeen).canKill(getAnimal())) {
-	                	setScared((Actor)objSeen);
-	                	//System.out.println((Actor)objSeen);
-	                	if (getAnimal() instanceof Pig){
-	                      play(SoundController.PIG_SCARED_SOUND);
-	                	}
-	                	//setTurns();
-	                }
-	                if (getAnimal().canKill((Actor)objSeen)) {
-	                  //setTurns();
-	                	if (animal instanceof Wolf) {
-		                	  play(SoundController.WOLF_ANGRY_SOUND);
-		                 }
-	                	setTarget((Actor)objSeen);
-	                  
-	                }
-	              }
-	              else {
-	                if (target != null) {
-	                  if (a.getType() == target.getType()) {
-	                    //turns--;
-	                  }
-	                }
-	              }
-	          }
-	          else {
-	            if (animal instanceof Owl && 
-	                a.getType() == Actor.actorType.HUNTER) {
-	            }
-	            if (target != null) {
-	              if (a.getType() == target.getType()) {
-	                //turns--;
-	              }
-	            }
-	            if (panicPercentage>0){
-	              panicPercentage -= 0.00005;
-	            }
-	          }
-	          canSettle();	
-	          //vcb.getFixture();
-	          }
-	      }
-=======
+
 	  for (Actor a : actors) {
       if (a != getAnimal() && a.getAlive()) {
         world.rayCast(vcb, getAnimal().getPosition(), a.getPosition());
@@ -504,7 +450,6 @@ public class AIController implements InputController {
         }
       }
     }
->>>>>>> f89bbec85057090608cebb819b8d6b460fd70c90
 	}
 	
 	//for sound controller 		
