@@ -40,6 +40,9 @@ public class GameMap implements IndexedGraph<MapNode> {
     //Objective for this level
     private String objective = null;
     
+    //Patrol paths
+	private List<List<Vector2>> patrolPaths;
+    
     //Should be 16 tiles across, and 9 down.
     //Therefore, layout should be [9][16] to match
     //Row-then-column form.
@@ -56,6 +59,7 @@ public class GameMap implements IndexedGraph<MapNode> {
     
     // The number of nodes within the map
     private int nodeCount;
+
     
     private static final String GRASS_TEX = "assets/grass.png";
     private static final String BUSH_TEX = "assets/bush.png";
@@ -164,11 +168,13 @@ public class GameMap implements IndexedGraph<MapNode> {
                    List<Actor.actorType> animals,
                    List<Vector2> coordinates,
                    Vector2 hunterStartPosition,
+                   List<List<Vector2>> patrolPaths,
                    String objective) {
     	this.layout = layout;
         this.animals = animals;
         this.coordinates = coordinates;
         this.hunterStartPosition = hunterStartPosition;
+        this.patrolPaths = patrolPaths;
         this.objective = objective;
         this.tileList = new ArrayList<Tile>();
         this.mapWidth = layout[0].length;
@@ -464,7 +470,11 @@ public class GameMap implements IndexedGraph<MapNode> {
     }
 
 	public String getObjective(){
-			return this.objective;
+		return this.objective;
+	}
+	
+	public List<List<Vector2>> getPatrolPaths(){
+		return this.patrolPaths;
 	}
 
 //    public HashMap<String, List<Trap>> getStartingInventory() {

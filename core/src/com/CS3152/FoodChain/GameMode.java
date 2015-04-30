@@ -126,7 +126,7 @@ public class GameMode implements Screen {
         PreLoadContent(manager);
         manager.finishLoading();
         LoadContent(manager);
-        initializeLevel(canvas, "BetaLevel3");
+        initializeLevel(canvas, "PatrolTest2");
         
 	}
         
@@ -156,7 +156,7 @@ public class GameMode implements Screen {
                             map.getActorTypeList();
         List<Vector2> coordinates = map.getCoordinates();
         createHunter(map.getHunterStartingCoordinate());
-        buildAnimalList(aTypes, coordinates);
+        buildAnimalList(aTypes, coordinates,map.getPatrolPaths());
         steerables.addAll(animals);
         
         //All the animals, plus the Hunter
@@ -248,24 +248,27 @@ public class GameMode implements Screen {
 	 * 
 	 * @param aTypes The list of animal types
 	 * @param coordinates the coordinates of the animals.
+	 * @param patrolPaths 
 	 */
 	private void buildAnimalList(List<actorType> aTypes,
-	                             List<Vector2> coordinates){
+	                             List<Vector2> coordinates, List<List<Vector2>> patrolPaths){
 	    if (coordinates.size() != aTypes.size()){
 	        throw new IllegalArgumentException("Lists of unequal size");
 	    }
-	    
+	    //may need editing
 	    Iterator<actorType> aTypesIt = aTypes.iterator();
 	    Iterator<Vector2> coordIt = coordinates.iterator();
-	    while (aTypesIt.hasNext() && coordIt.hasNext()){
+	    Iterator<List<Vector2>> patrolsIT = patrolPaths.iterator();
+	    while (aTypesIt.hasNext() && coordIt.hasNext() && patrolsIT.hasNext()){
 	        actorType currType = aTypesIt.next();
 	        Vector2 coord = coordIt.next();
+	        List<Vector2> patrol = patrolsIT.next();
 	        Animal newAnimal;
 	        switch(currType){
 	            case PIG:
 	            		Pig.loadTexture(manager);
 	                newAnimal = new Pig(map.mapXToScreen((int)coord.x), 
-	                		map.mapYToScreen((int)coord.y));
+	                		map.mapYToScreen((int)coord.y),convertPatrol(patrol));
 	                newAnimal.setDensity(DEFAULT_DENSITY);
 	                animals.add(newAnimal);
 	                break;
@@ -273,7 +276,7 @@ public class GameMode implements Screen {
 	            case WOLF:
 	            		Wolf.loadTexture(manager);
 	                newAnimal = new Wolf(map.mapXToScreen((int)coord.x), 
-	                					 map.mapYToScreen((int)coord.y));
+	                					 map.mapYToScreen((int)coord.y),convertPatrol(patrol));
 	                //See comment in sheep
 	                animals.add(newAnimal);
 	                break;
@@ -297,6 +300,16 @@ public class GameMode implements Screen {
 	    
 	}
 	
+	private List<Vector2> convertPatrol(List<Vector2> patrol) {
+		List<Vector2> temp =  new ArrayList<Vector2>();;
+		for(int i = 0;i<patrol.size();i++ ){
+			temp.add(new Vector2(map.mapXToScreen((int)patrol.get(i).x), map.mapYToScreen((int)patrol.get(i).y)));
+			//temp.add(new Vector2((float) (patrol.get(i).x*.90-2), (float) (patrol.get(i).y*.9-2)));
+		}
+		
+		return temp;
+	}
+
 	private void createSteeringBehaviors() {
 		for (Animal a : animals) {
 			a.createSteeringBehaviors();
