@@ -356,21 +356,21 @@ public class GameMode implements Screen {
     			initializeLevel(canvas, levelName);
     		}
     		
-    		//DELETE THIS FOR RELEASE
-    		int levelNum = controls[0].levelPressed();
-    		if (levelNum != -1){
-    			switch(levelNum){
-    			case 1: 
-    				initializeLevel(canvas, "BetaLevel1");
-    				break;
-    			case 2:
-    				initializeLevel(canvas, "BetaLevel2");
-    				break;
-    			default:
-    				initializeLevel(canvas, "BetaLevel3");
-    				break;
-    			}
-    		}
+//    		//DELETE THIS FOR RELEASE
+//    		int levelNum = controls[0].levelPressed();
+//    		if (levelNum != -1){
+//    			switch(levelNum){
+//    			case 1: 
+//    				initializeLevel(canvas, "BetaLevel1");
+//    				break;
+//    			case 2:
+//    				initializeLevel(canvas, "BetaLevel2");
+//    				break;
+//    			default:
+//    				initializeLevel(canvas, "BetaLevel3");
+//    				break;
+//    			}
+//    		}
     		
 
     	

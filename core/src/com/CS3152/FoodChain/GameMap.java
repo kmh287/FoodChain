@@ -26,7 +26,7 @@ public class GameMap implements IndexedGraph<MapNode> {
     //the i'th coordinate in coordinates.
     private List<Actor.actorType> animals = null;
     private List<Vector2> coordinates = null;
-
+    private List<List<Vector2>> patrolPaths = null;
     
     //Player information that needs to be stored
     //in the map such as the start position and 
@@ -157,11 +157,13 @@ public class GameMap implements IndexedGraph<MapNode> {
     public GameMap(Tile.tileType[][] layout,
                    List<Actor.actorType> animals,
                    List<Vector2> coordinates,
+                   List<List<Vector2>> patrolPaths,
                    Vector2 hunterStartPosition,
                    String objective) {
     	this.layout = layout;
         this.animals = animals;
         this.coordinates = coordinates;
+        this.patrolPaths = patrolPaths;
         this.hunterStartPosition = hunterStartPosition;
         this.objective = objective;
         this.mapWidth = layout[0].length;
@@ -459,6 +461,10 @@ public class GameMap implements IndexedGraph<MapNode> {
 	public String getObjective(){
 			return this.objective;
 	}
+	
+    public List<List<Vector2>> getPatrolPaths(){
+		return this.patrolPaths;
+    }
 
 //    public HashMap<String, List<Trap>> getStartingInventory() {
 //        return this.hunterStartingInventory; 
