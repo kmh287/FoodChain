@@ -17,13 +17,17 @@
  */
 package com.CS3152.FoodChain;
 
+import java.lang.reflect.Array;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.*;
+import com.badlogic.gdx.ai.steer.utils.paths.LinePath;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.graphics.glutils.*;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
@@ -84,6 +88,7 @@ public class GameCanvas {
 	private TextureRegion holder;
 	
 	protected Hunter hunter; 
+	
 
 	/**
 	 * Creates a new GameCanvas determined by the application configuration.
@@ -1250,6 +1255,11 @@ public class GameCanvas {
 	
 	public UIControllerStage getUIControllerStage(){
 		return ui;
+	}
+	
+	public void DrawPatrolPaths(float x, float y, int radius, com.badlogic.gdx.utils.Array<Vector2> wayPoints,LinePath<Vector2> linePath){
+		//draw target
+		debugRender.circle(x, y, radius);
 	}
 
 
