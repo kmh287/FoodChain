@@ -52,6 +52,7 @@ public class Pig extends Animal {
         drawScale.x=scaleXDrawSheep;
         drawScale.y=scaleYDrawSheep;
         SIGHT_LENGTH = 2.4f;
+        SIGHT_RADIUS = 1.5f;
         SIGHT_ANGLE = 0.35;
         boundingRadius = GameMap.pixelsToMeters(40.0f);
         maxLinearSpeed = 1f;
