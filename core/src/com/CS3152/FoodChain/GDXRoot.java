@@ -41,6 +41,7 @@ public class GDXRoot extends Game implements ScreenListener {
 	private GameCanvas canvas; 
 	/** Player mode for the asset loading screen (CONTROLLER CLASS) */
 	private LoadingMode loading;
+	private LoadingMode loading_after;
 	/** Player mode for the the game proper (CONTROLLER CLASS) */
 	private GameMode    playing;
 	
@@ -119,7 +120,7 @@ public class GDXRoot extends Game implements ScreenListener {
 	 * @param exitCode The state of the screen upon exit
 	 */
 	public void exitScreen(Screen screen, int exitCode, int level) {
-		if (exitCode != 0) {
+		if (exitCode == 20) {
 			Gdx.app.error("GDXRoot", "Exit with error code "+exitCode, new RuntimeException());
 			Gdx.app.exit();
 		} else if (screen == loading) {
@@ -129,9 +130,33 @@ public class GDXRoot extends Game implements ScreenListener {
 			playing.setScreenListener(this);
 			setScreen(playing);
 			
-			loading.dispose();
+			//loading.dispose();
 			loading = null;
-		} else {
+		}
+		/*loss*/
+		else if (exitCode == 3) {
+			//LoadingMode.loadContent(manager);
+			LoadingMode loading_again = new LoadingMode(canvas, manager, 1);
+			playing = null;
+			loading_again.setScreenListener(this);
+			setScreen(loading_again);
+			
+			//playing.dispose();
+			
+		}
+		
+		else if (exitCode == 4) {
+			//LoadingMode.loadContent(manager);
+			LoadingMode loading_again = new LoadingMode(canvas, manager, 1);
+			playing = null;
+			loading_again.setScreenListener(this);
+			setScreen(loading_again);
+			
+			//playing.dispose();
+			
+		}
+
+		else {
 			// We quit the main application
 			Gdx.app.exit();
 		}
@@ -139,10 +164,8 @@ public class GDXRoot extends Game implements ScreenListener {
 
 	@Override
 	public void exitScreen(Screen screen, int exitCode) {
-		if (exitCode != 0) {
-			Gdx.app.error("GDXRoot", "Exit with error code "+exitCode, new RuntimeException());
-			Gdx.app.exit();
-		} else if (screen == loading) {
+		
+		if (screen == loading) {
 			GameMode.LoadContent(manager);
 			playing = new GameMode(canvas);
 			
@@ -151,7 +174,31 @@ public class GDXRoot extends Game implements ScreenListener {
 			
 			loading.dispose();
 			loading = null;
-		} 
+		}
+		/*loss*/
+		else if (exitCode == 3) {
+			loading_after = new LoadingMode(canvas,manager,1);
+			
+			//playing.dispose();
+			//playing = null;
+			
+		
+			loading_after.setScreenListener(this);
+			//GameMode.PreLoadContent(manager); // Load game assets statically.
+			setScreen(loading_after);
+		}
+		/*win*/
+		else if (exitCode == 4) {
+			//LoadingMode.loadContent(manager);
+			loading_after = new LoadingMode(canvas,manager,1);
+			//playing = null;
+			//playing.dispose();
+		
+			loading_after.setScreenListener(this);
+			GameMode.PreLoadContent(manager); // Load game assets statically.
+			setScreen(loading);
+		}
+
 		else {
 			// We quit the main application
 			Gdx.app.exit();

@@ -643,15 +643,15 @@ public class GameMode implements Screen{
 		} else if (checkObjective() == gameCondition.WIN) {
 			listener.exitScreen(this, EXIT_WON);
 		} else if (checkObjective() == gameCondition.LOSE) {
-			listener.exitScreen(this, EXIT_LOSS);
+			//listener.exitScreen(this, EXIT_LOSS);
 		}
-		else if (countdown > 0) {
+		/*else if (countdown > 0) {
 			countdown--;
 		} else if (countdown == 0) {
 			if (failed) {
 				//reset();
 			} 
-		}
+		}*/
 	}
 	    
     
