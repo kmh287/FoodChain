@@ -274,7 +274,7 @@ public abstract class Actor extends CircleObject implements Steerable<Vector2>{
     		// Cap the linear speed
     		Vector2 velocity = body.getLinearVelocity();
     		float currentSpeedSquare = velocity.len2();
-    		float maxLinearSpeed = getMaxLinearSpeed()+AIController.getPanicPercentage()*10;
+    		float maxLinearSpeed = getMaxLinearSpeed()+AIController.getPanicPercentage()*8;
     		if (currentSpeedSquare > maxLinearSpeed * maxLinearSpeed) {
     			body.setLinearVelocity(velocity.scl(maxLinearSpeed / (float)Math.sqrt(currentSpeedSquare)));
     		}

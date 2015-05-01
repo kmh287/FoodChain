@@ -90,6 +90,7 @@ public class AIController implements InputController {
 
 
     private static float panicPercentage;
+    private static boolean panicked;
     private Hunter hunter; 
     
     private Vector2 vect;
@@ -397,7 +398,6 @@ public class AIController implements InputController {
 			    		Wanderturns=0;
 			    	}
 			    	Wanderturns+=1;
-			    	decreasePanic();
 			    	break;
 			    case CHASE:
 			    	//System.out.println(getAnimal() + " is chasing");
@@ -414,7 +414,10 @@ public class AIController implements InputController {
 			        	setTarget(null);
 			        	setTurns(500);
 			        }
-			        increasePanic();
+			        //if chasing the hunter, then increase panic
+			        if(getTarget() instanceof Hunter){
+				        panicked = true;
+			        }
 			        break;
 			    case FLEE:
 			    	//System.out.println(getAnimal() + " is fleeing");
@@ -423,7 +426,10 @@ public class AIController implements InputController {
 			            setAttacker(null);
 			        }
 			        turns--;
-			        increasePanic();
+			        //if fleeing hunter, then increase panic
+			        if(getTarget() instanceof Hunter){
+				        panicked = true;
+			        }
 			    	break;
 			    case KILL:
 			    	//sdSystem.out.println(getAnimal() + " is killing");
@@ -431,7 +437,6 @@ public class AIController implements InputController {
 			    		animal.setState(State.WANDER);
 			    	}
 			    	turns--;
-			    	 increasePanic();
 			    	break;
 			    case PATROL:
 			    	animal.setState(State.PATROL);
@@ -446,7 +451,6 @@ public class AIController implements InputController {
 	                setTurns(1000);
 				    	  }
 				      }
-			    	decreasePanic();
 			    	break;
 			    case DEAD:
 			        break;
@@ -457,18 +461,27 @@ public class AIController implements InputController {
     	}
 	}
 
-	private void increasePanic() {
-		if(this.panicPercentage<1f){
-			this.panicPercentage+=.01f;
+	public static void increasePanic() {
+		if(panicPercentage<1f){
+			panicPercentage+=.005f;
 		}
 	}
 	
-	private void decreasePanic() {
-		if(this.panicPercentage>0){
-			this.panicPercentage-=.001f;
+	public static void decreasePanic() {
+		if(panicPercentage>0){
+			panicPercentage-=.002f;
 		}
 	}
-
+	
+	public static boolean AtLeastOneAnimalPanic(){
+		return panicked;
+	}
+	
+	public static void resetPanicFlag(){
+		panicked = false;
+	}
+	
+	
 	@Override
 	public Vector2 getAction(float delta) {
 		// TODO Auto-generated method stub
