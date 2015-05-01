@@ -126,7 +126,7 @@ public class GameMode implements Screen {
         PreLoadContent(manager);
         manager.finishLoading();
         LoadContent(manager);
-        initializeLevel(canvas, "PatrolTest2");
+        initializeLevel(canvas, "PatrolTest3");
         
 	}
         
@@ -304,7 +304,6 @@ public class GameMode implements Screen {
 		List<Vector2> temp =  new ArrayList<Vector2>();;
 		for(int i = 0;i<patrol.size();i++ ){
 			temp.add(new Vector2(map.mapXToScreen((int)patrol.get(i).x), map.mapYToScreen((int)patrol.get(i).y)));
-			//temp.add(new Vector2((float) (patrol.get(i).x*.90-2), (float) (patrol.get(i).y*.9-2)));
 		}
 		
 		return temp;
@@ -454,6 +453,15 @@ public class GameMode implements Screen {
 		}
 		ticks++;
 
+		//update panic meter
+		if(AIController.AtLeastOneAnimalPanic()){
+			AIController.increasePanic();
+		}
+		else{
+			AIController.decreasePanic();
+		}
+		AIController.resetPanicFlag();
+		
 	    // fixed time step
 	    frameTime = Math.min(delta, 1/60f);
 	    accumulator += frameTime;
