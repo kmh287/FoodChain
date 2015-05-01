@@ -16,6 +16,8 @@ public abstract class Actor extends CircleObject implements Steerable<Vector2>{
 	
 	float boundingRadius;
 	
+	AIController ai;
+	
 	boolean tagged;
 	
 	float maxLinearSpeed;
@@ -254,8 +256,8 @@ public abstract class Actor extends CircleObject implements Steerable<Vector2>{
     			
     			float newOrientation = vectorToAngle(linVel);
     			//body.setAngularVelocity((newOrientation-getAngularVelocity()) * deltaTime); // this is superfluous if independentFacing is always true
-    			//body.setTransform(body.getPosition(), oldAngle+((newOrientation-oldAngle)*deltaTime*5));
-    			body.setTransform(body.getPosition(), newOrientation);
+    			body.setTransform(body.getPosition(), oldAngle+((newOrientation-oldAngle)*deltaTime*5));
+    			//body.setTransform(body.getPosition(), newOrientation);
     		}
  
     	//body.applyTorque(10, true);
@@ -272,7 +274,7 @@ public abstract class Actor extends CircleObject implements Steerable<Vector2>{
     		// Cap the linear speed
     		Vector2 velocity = body.getLinearVelocity();
     		float currentSpeedSquare = velocity.len2();
-    		float maxLinearSpeed = getMaxLinearSpeed();
+    		float maxLinearSpeed = getMaxLinearSpeed()+AIController.getPanicPercentage()*8;
     		if (currentSpeedSquare > maxLinearSpeed * maxLinearSpeed) {
     			body.setLinearVelocity(velocity.scl(maxLinearSpeed / (float)Math.sqrt(currentSpeedSquare)));
     		}
