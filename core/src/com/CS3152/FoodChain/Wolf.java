@@ -42,6 +42,7 @@ public class Wolf extends Animal{
         drawScale.x = scaleXDrawWolf;
         drawScale.y = scaleYDrawWolf;
         SIGHT_LENGTH = 2.4f;
+        SIGHT_RADIUS = 1.5f;
         SIGHT_ANGLE = 0.35;
         maxLinearSpeed = 3.0f;
         maxLinearAcceleration = 1.0f;

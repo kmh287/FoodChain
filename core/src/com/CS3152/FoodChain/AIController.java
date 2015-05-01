@@ -162,7 +162,7 @@ public class AIController implements InputController {
     public static boolean withinCone(Animal an, Vector2 meToActor) {
       return isClockwise(an.getLeftSectorLine(), meToActor) &&
            !isClockwise(an.getRightSectorLine(), meToActor) &&
-           withinRadius(an, meToActor);
+           meToActor.len() <= an.getSightLength();
     }
     
     /* Determines if meToActor is clockwise to sectorLine.
@@ -185,7 +185,7 @@ public class AIController implements InputController {
      * @return true if length is at most as long as one of the vision sector lines.
      */
     public static boolean withinRadius(Animal an, Vector2 length) {
-    	return length.len() <= an.getSightLength();
+    	return length.len() <= an.getSightRadius();
     }
 
     // Determine the new angle the animal wants to face
