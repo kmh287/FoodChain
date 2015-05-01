@@ -1,7 +1,28 @@
-
+/*
+ * LoadingMode.java
+ *
+ * Asset loading is a really tricky problem.  If you have a lot of sound or images,
+ * it can take a long time to decompress them and load them into memory.  If you just
+ * have code at the start to load all your assets, your game will look like it is hung
+ * at the start.
+ *
+ * The alternative is asynchronous asset loading.  In asynchronous loading, you load a
+ * little bit of the assets at a time, but still animate the game while you are loading.
+ * This way the player knows the game is not hung, even though he or she cannot do 
+ * anything until loading is complete. You know those loading screens with the inane tips 
+ * that want to be helpful?  That is asynchronous loading.  
+ *
+ * This player mode provides a basic loading screen.  While you could adapt it for
+ * between level loading, it is currently designed for loading all assets at the 
+ * start of the game.
+ *
+ * Author: Walker M. White
+ * Based on original Optimization Lab by Don Holden, 2007
+ * LibGDX version, 2/2/2015
+ */
 package com.CS3152.FoodChain;
 
-import com.badlogic.gdx.*;	
+import com.badlogic.gdx.*;
 import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.assets.*;
 import com.badlogic.gdx.graphics.*;
@@ -23,15 +44,20 @@ import com.badlogic.gdx.controllers.*;
  */
 public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 	// Textures necessary to support the loading screen 
-	private static final String BACKGROUND_FILE = "level_select.png";
-	//private static final String PROGRESS_FILE = "level_select.png";
-	private static final String PLAY_BTN_FILE = "level1select.png";
+	private static final String BACKGROUND_FILE = "assets/level_select.png";
+	//private static final String PROGRESS_FILE = "assets/level1select.png";
+	private static final String PLAY1_BTN_FILE = "assets/level1select.png";
+	private static final String PLAY2_BTN_FILE = "assets/level2select.png";
+	private static final String PLAY3_BTN_FILE = "assets/level3select.png";
+
 	
 	/** Background texture for start-up */
 	private Texture background;
 	/** Play button to display when done */
-	private Texture playButton;
-		
+	private Texture playButton1;
+	private Texture playButton2;
+	private Texture playButton3;
+
 
 	/** Default budget for asset loader (do nothing but load 60 fps) */
 	private static int DEFAULT_BUDGET = 15;
@@ -43,40 +69,52 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 	private static float BAR_WIDTH_RATIO  = 0.66f;
 	/** Ration of the bar height to the screen */
 	private static float BAR_HEIGHT_RATIO = 0.25f;	
-	
-	/** Amount to scale the play button */
+	/** Height of the progress bar */
+	private static int PROGRESS_HEIGHT = 30;
+	/** Width of the rounded cap on left or right */
+	private static int PROGRESS_CAP    = 15;
+	/** Width of the middle portion in texture atlas */
+	private static int PROGRESS_MIDDLE = 200;
 	private static float BUTTON_SCALE  = 0.75f;
 	
 	/** Start button for XBox controller on Windows */
 	private static int WINDOWS_START = 7;
 	/** Start button for XBox controller on Mac OS X */
 	private static int MAC_OS_X_START = 4;
-	
-	private int centerY;
-	/** The x-coordinate of the center of the progress bar */
-	private int centerX;
-	private int width;
+
 	/** AssetManager to be loading in the background */
 	private AssetManager manager;
 	/** Reference to GameCanvas created by the root */
 	private GameCanvas canvas;
-	private GameMode gMode; 
 	/** Listener that will update the player mode when we are done */
 	private ScreenListener listener;
 
-	
+	/** The width of the progress bar */	
+	private int width;
+	/** The y-coordinate of the center of the progress bar */
+	private int centerY;
+	/** The x-coordinate of the center of the progress bar */
+	private int centerX;
 	/** The height of the canvas window (necessary since sprite origin != screen origin) */
 	private int heightY;
 	/** Scaling factor for when the student changes the resolution. */
 	private float scale;
 	
-	
+	/** Current progress (0 to 1) of the asset manager */
+	private float progress;
 	/** The current state of the play button */
-	private int   pressLevel1;
+	private int   pressState1;
+	private int   pressState2;
+	private int   pressState3;
+	//private int   pressState4;
 	/** The amount of time to devote to loading assets (as opposed to on screen hints, etc.) */
 	private int   budget;
 	/** Support for the X-Box start button in place of play button */
-	private int   startButton;
+	private int   startLevel1Button;
+	private int   startLevel2Button;
+	private int   startLevel3Button;
+	//private int   startLevel4Button;
+
 	/** Whether or not this player mode is still active */
 	private boolean active;
 
@@ -114,9 +152,23 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 	 * @return true if the player is ready to go
 	 */
 	public boolean isReady() {
-		return pressLevel1 == 2;
+		return pressState1 == 2 || pressState2 == 2 || pressState3 == 2;
 	}
 	
+	public int whichLevelisReady() {
+		if (pressState1 == 2) {
+			return 1;
+		}
+		if (pressState2 == 2) {
+			return 2;
+		}
+		if (pressState3 == 2) {
+			return 3;
+		}
+		
+		return 0; 
+		
+	}
 	/**
 	 * Creates a LoadingMode with the default budget, size and position.
 	 *
@@ -146,23 +198,26 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 		resize(canvas.getWidth(),canvas.getHeight());
 
 		// Load the next two images immediately.
-		playButton = null;
+		playButton1 = null;
+		playButton2 = null;
+		playButton3 = null;
+
 		background = new Texture(BACKGROUND_FILE);
 		
-		// No progress so far.		
-		
-		pressLevel1 = 0;
+		pressState1 = 0;
+		pressState2 = 0;
+		pressState3 = 0; 
 		active = false;
 
-		// Break up the status bar texture into region
+		startLevel1Button = (System.getProperty("os.name").equals("Mac OS X") ? MAC_OS_X_START : WINDOWS_START);
+		startLevel2Button = (System.getProperty("os.name").equals("Mac OS X") ? MAC_OS_X_START : WINDOWS_START);
+		startLevel3Button = (System.getProperty("os.name").equals("Mac OS X") ? MAC_OS_X_START : WINDOWS_START);
 
-		startButton = (System.getProperty("os.name").equals("Mac OS X") ? MAC_OS_X_START : WINDOWS_START);
 		Gdx.input.setInputProcessor(this);
-		// Let any controller start the game
+		// Let ANY connected controller start the game.
 		for(Controller controller : Controllers.getControllers()) {
 			controller.addListener(this);
 		}
-		
 		active = true;
 	}
 	
@@ -170,13 +225,19 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 	 * Called when this screen should release all resources.
 	 */
 	public void dispose() {
-		
-
 		 background.dispose();
 		 background = null;
-		 if (playButton != null) {
-			 playButton.dispose();
-			 playButton = null;
+		 if (playButton1 != null) {
+			 playButton1.dispose();
+			 playButton1 = null;
+		 }
+		 if (playButton2 != null) {
+			 playButton2.dispose();
+			 playButton2 = null;
+		 }
+		 if (playButton3 != null) {
+			 playButton3.dispose();
+			 playButton3 = null;
 		 }
 	}
 	
@@ -190,12 +251,16 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 	 * @param delta Number of seconds since last animation frame
 	 */
 	private void update(float delta) {
-		if (playButton == null) {
+		if (playButton1 == null && playButton2 == null && playButton3 == null) {
 			manager.update(budget);
-			
-			playButton = new Texture(PLAY_BTN_FILE);
-			}
+			//this.progress = manager.getProgress();
+			//if (progress >= 1.0f) {
+				//this.progress = 1.0f;
+				playButton1 = new Texture(PLAY1_BTN_FILE);
+				playButton2 = new Texture(PLAY2_BTN_FILE);
+				playButton3 = new Texture(PLAY3_BTN_FILE);
 		}
+	}
 
 	/**
 	 * Draw the status of this player mode.
@@ -207,12 +272,21 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 	private void draw() {
 		canvas.begin();
 		canvas.draw(background, 0, 0);
-		if (playButton == null) {
+		if (playButton1 == null) {
 			//drawProgress(canvas);
-		} else {
-			Color tint = (pressLevel1 == 1 ? Color.GRAY: Color.WHITE);
-			canvas.draw(playButton, tint, playButton.getWidth()/2, playButton.getHeight()/2, 
-						centerX, centerY, 0, BUTTON_SCALE*scale, BUTTON_SCALE*scale);
+		} 
+		else {
+			Color tint1 = (pressState1 == 1 ? Color.GRAY: Color.WHITE);
+			canvas.draw(playButton1, tint1, playButton1.getWidth()/2, playButton1.getHeight()/2, 
+						centerX, 2 * centerY, 0, BUTTON_SCALE*scale, BUTTON_SCALE*scale);
+		
+			Color tint2 = (pressState2 == 1 ? Color.GRAY: Color.WHITE);
+			canvas.draw(playButton2, tint2, playButton2.getWidth()/2, playButton2.getHeight()/2, 
+						4 *(centerX/3), 2*(centerY), 0, BUTTON_SCALE*scale, BUTTON_SCALE*scale);
+		
+			Color tint3 = (pressState3 == 1 ? Color.GRAY: Color.WHITE);
+			canvas.draw(playButton3, tint3, playButton3.getWidth()/2, playButton3.getHeight()/2, 
+						5 * (centerX/3), (2*centerY), 0, BUTTON_SCALE*scale, BUTTON_SCALE*scale);
 		}
 		canvas.end();
 	}
@@ -226,7 +300,20 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 	 *
 	 * @param canvas The drawing context
 	 */	
-	
+	/*private void drawProgress(GameCanvas canvas) {	
+		canvas.draw(statusBkgLeft,   centerX-width/2, centerY, scale*PROGRESS_CAP, scale*PROGRESS_HEIGHT);
+		canvas.draw(statusBkgRight,  centerX+width/2-scale*PROGRESS_CAP, centerY, scale*PROGRESS_CAP, scale*PROGRESS_HEIGHT);
+		canvas.draw(statusBkgMiddle, centerX-width/2+scale*PROGRESS_CAP, centerY, width-2*scale*PROGRESS_CAP, scale*PROGRESS_HEIGHT);
+
+		canvas.draw(statusFrgLeft,   centerX-width/2, centerY, scale*PROGRESS_CAP, scale*PROGRESS_HEIGHT);
+		if (progress > 0) {
+			float span = progress*(width-2*scale*PROGRESS_CAP)/2.0f;
+			canvas.draw(statusFrgRight,  centerX-width/2+scale*PROGRESS_CAP+span, centerY, scale*PROGRESS_CAP, scale*PROGRESS_HEIGHT);
+			canvas.draw(statusFrgMiddle, centerX-width/2+scale*PROGRESS_CAP, centerY, span, scale*PROGRESS_HEIGHT);
+		} else {
+			canvas.draw(statusFrgRight,  centerX-width/2+scale*PROGRESS_CAP, centerY, scale*PROGRESS_CAP, scale*PROGRESS_HEIGHT);
+		}
+	}*/
 
 	// ADDITIONAL SCREEN METHODS
 	/**
@@ -244,8 +331,7 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 
 			// We are are ready, notify our listener
 			if (isReady() && listener != null) {
-				System.out.println("we are ready to switch screens");
-				listener.exitScreen(this, 0);
+				listener.exitScreen(this, 0, whichLevelisReady());
 			}
 		}
 	}
@@ -331,7 +417,8 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 	 * @return whether to hand the event to other listeners. 
 	 */
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		if (playButton == null || pressLevel1 == 2) {
+		if ((playButton1 == null || pressState1 == 2) || (playButton2 == null || pressState2 == 2) || 
+				(playButton3 == null || pressState3 == 2)) {
 			return true;
 		}
 		
@@ -340,10 +427,22 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 		
 		// TODO: Fix scaling
 		// Play button is a circle.
-		float radius = BUTTON_SCALE*scale*playButton.getWidth()/2.0f;
-		float dist = (screenX-centerX)*(screenX-centerX)+(screenY-centerY)*(screenY-centerY);
-		if (dist < radius*radius) {
-			pressLevel1 = 1;
+		float radius1 = BUTTON_SCALE*scale*playButton1.getWidth();
+		float radius2 = BUTTON_SCALE*scale*playButton2.getWidth();
+		float radius3 = BUTTON_SCALE*scale*playButton3.getWidth();
+		float dist1 = (screenX-centerX)*(screenX-centerX)+(screenY-(2*centerY))*(screenY-(2*centerY));
+		float dist2 = (screenX-(4*centerX/3))*(screenX-(4*centerX/3))+(screenY-2*(centerY))*(screenY-2*(centerY));
+		float dist3 = (screenX-(5*centerX/3))*(screenX-(5*centerX/3))+(screenY-2*(centerY))*(screenY-2*(centerY));
+
+
+		if (dist1 < radius1*radius1) {
+			pressState1 = 1;
+		}
+		if (dist2 < radius2*radius2) {
+			pressState2 = 1;
+		}
+		if (dist3 < radius3*radius3) {
+			pressState3 = 1;
 		}
 		return false;
 	}
@@ -360,8 +459,16 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 	 * @return whether to hand the event to other listeners. 
 	 */	
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) { 
-		if (pressLevel1 == 1) {
-			pressLevel1 = 2;
+		if (pressState1 == 1) {
+			pressState1 = 2;
+			return false;
+		}
+		if (pressState2 == 1) {
+			pressState2 = 2;
+			return false;
+		}
+		if (pressState3 == 1) {
+			pressState3 = 2;
 			return false;
 		}
 		return true;
@@ -379,8 +486,16 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 	 * @return whether to hand the event to other listeners. 
 	 */
 	public boolean buttonDown (Controller controller, int buttonCode) {
-		if (buttonCode == startButton && pressLevel1 == 0) {
-			pressLevel1 = 1;
+		if (buttonCode == startLevel1Button && pressState1 == 0) {
+			pressState1 = 1;
+			return false;
+		}
+		if (buttonCode == startLevel2Button && pressState2 == 0) {
+			pressState2 = 1;
+			return false;
+		}
+		if (buttonCode == startLevel3Button && pressState3 == 0) {
+			pressState3 = 1;
 			return false;
 		}
 		return true;
@@ -398,8 +513,16 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 	 * @return whether to hand the event to other listeners. 
 	 */
 	public boolean buttonUp (Controller controller, int buttonCode) {
-		if (pressLevel1 == 1 && buttonCode == startButton) {
-			pressLevel1 = 2;
+		if (pressState1 == 1 && buttonCode == startLevel1Button) {
+			pressState1 = 2;
+			return false;
+		}
+		if (pressState2 == 1 && buttonCode == startLevel2Button) {
+			pressState2 = 2;
+			return false;
+		}
+		if (pressState3 == 1 && buttonCode == startLevel3Button) {
+			pressState3 = 2;
 			return false;
 		}
 		return true;
@@ -428,18 +551,12 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 	}
 
 	/** 
-	 * Called when a key is released.
-	 * 
-	 * We allow key commands to start the game this time.
+	 * Called when a key is released (UNSUPPORTED)
 	 *
 	 * @param keycode the key released
 	 * @return whether to hand the event to other listeners. 
 	 */	
 	public boolean keyUp(int keycode) { 
-		if (keycode == Input.Keys.N || keycode == Input.Keys.P) {
-			pressLevel1 = 2;
-			return false;			
-		}
 		return true; 
 	}
 	

@@ -133,6 +133,8 @@ public class GameMode implements Screen{
 	public static final int EXIT_PREV = 2;
     /** How many frames after winning/losing do we continue? */
 	public static final int EXIT_COUNT = 120;
+	private static final int EXIT_LOSS = 3;
+	private static final int EXIT_WON = 4;
 	
     /**
      * Temporary constructor for GameMode until we have 
@@ -153,6 +155,29 @@ public class GameMode implements Screen{
         LoadContent(manager);
 
         initializeLevel(canvas, "BetaLevel3");
+        
+	}
+	
+	public GameMode(GameCanvas canvas, int level) {
+		
+		this.canvas = canvas;
+		this.stage = stage;
+		start=true;
+        //active = false;
+        manager = new AssetManager();
+        PreLoadContent(manager);
+        manager.finishLoading();
+        LoadContent(manager);
+        
+        if (level == 1) {
+            initializeLevel(canvas, "BetaLevel4");
+        }
+        if (level == 2) {
+            initializeLevel(canvas, "BetaLevel2");
+        }
+        if (level == 3) {
+            initializeLevel(canvas, "BetaLevel3");
+        }
         
 	}
         
@@ -615,10 +640,11 @@ public class GameMode implements Screen{
 		// Now it is time to maybe switch screens.
 		if (PlayerController.didExit()) {
 			listener.exitScreen(this, EXIT_QUIT);
-		} /*else if (PlayerController.didAdvance()) {
-			listener.exitScreen(this, EXIT_NEXT);
-		} else if (PlayerController.didRetreat()) {
-			listener.exitScreen(this, EXIT_PREV);*/
+		} else if (checkObjective() == gameCondition.WIN) {
+			listener.exitScreen(this, EXIT_WON);
+		} else if (checkObjective() == gameCondition.LOSE) {
+			listener.exitScreen(this, EXIT_LOSS);
+		}
 		else if (countdown > 0) {
 			countdown--;
 		} else if (countdown == 0) {
@@ -677,6 +703,9 @@ public class GameMode implements Screen{
 		
 	}
 
+	public void setScreenListener(ScreenListener listener) {
+		this.listener = listener;
+	}
     
     /** 
 	 * Invokes the controller for the character.

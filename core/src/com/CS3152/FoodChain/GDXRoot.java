@@ -1,5 +1,23 @@
-package com.CS3152.FoodChain;
+/*
+ * GDXRoot.java
+ *
+ * This is the primary class file for running the game.  It is the "static main" of
+ * LibGDX.  In the first lab, we extended ApplicationAdapter.  In previous lab
+ * we extended Game.  This is because of a weird graphical artifact that we do not
+ * understand.  Transparencies (in 3D only) is failing when we use ApplicationAdapter. 
+ * There must be some undocumented OpenGL code in setScreen.
+ *
+ * This time we shown how to use Game with player modes.  The player modes are 
+ * implemented by screens.  Player modes handle their own rendering (instead of the
+ * root class calling render for them).  When a player mode is ready to quit, it
+ * notifies the root class through the ScreenListener interface.
+ *
+ * Author: Walker M. White
+ * Based on original Optimization Lab by Don Holden, 2007
+ * LibGDX version, 2/2/2015
+ */
 
+package com.CS3152.FoodChain;
 
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.assets.*;
@@ -23,12 +41,8 @@ public class GDXRoot extends Game implements ScreenListener {
 	private GameCanvas canvas; 
 	/** Player mode for the asset loading screen (CONTROLLER CLASS) */
 	private LoadingMode loading;
-	private int current;
-
-	/**The GameMode */
-	private GameMode gMode; 
-	//private WorldController[] controllers;
-
+	/** Player mode for the the game proper (CONTROLLER CLASS) */
+	private GameMode    playing;
 	
 	/**
 	 * Creates a new game from the configuration settings.
@@ -39,9 +53,13 @@ public class GDXRoot extends Game implements ScreenListener {
 	public GDXRoot() {
 		// Start loading with the asset manager
 		manager = new AssetManager();
-				
+		
+		// Add font support to the asset manager
+		/*FileHandleResolver resolver = new InternalFileHandleResolver();
+		manager.setLoader(FreeTypeFontGenerator.class, new FreeTypeFontGeneratorLoader(resolver));
+		manager.setLoader(BitmapFont.class, ".ttf", new FreetypeFontLoader(resolver));*/
 	}
-
+	
 	/** 
 	 * Called when the Application is first created.
 	 * 
@@ -51,11 +69,10 @@ public class GDXRoot extends Game implements ScreenListener {
 	public void create() {
 		canvas  = new GameCanvas();
 		loading = new LoadingMode(canvas,manager,1);
-		gMode = new GameMode(canvas);
-
-		//controllers[ii].preLoadContent(manager);
-		gMode.PreLoadContent(manager);
+		playing = null;
+		
 		loading.setScreenListener(this);
+		GameMode.PreLoadContent(manager); // Load game assets statically.
 		setScreen(loading);
 	}
 
@@ -66,16 +83,14 @@ public class GDXRoot extends Game implements ScreenListener {
 	 */
 	public void dispose() {
 		// Call dispose on our children
+		Screen screen = getScreen();
 		setScreen(null);
-		/*for(int ii = 0; ii < controllers.length; ii++) {
-			controllers[ii].unloadContent(manager);
-			controllers[ii].dispose();
-		}*/
-
+		screen.dispose();
 		canvas.dispose();
 		canvas = null;
 	
 		// Unload all of the resources
+		//GameMode.UnloadContent(manager);
 		manager.clear();
 		manager.dispose();
 		super.dispose();
@@ -103,23 +118,45 @@ public class GDXRoot extends Game implements ScreenListener {
 	 * @param screen   The screen requesting to exit
 	 * @param exitCode The state of the screen upon exit
 	 */
-	public void exitScreen(Screen screen, int exitCode) {
-		if (screen == loading) {
-
-				gMode.LoadContent(manager);
-				//setScreen(gMode);
-				//gMode.setCanvas(canvas);
-		
-			//controllers[current].reset();
-			setScreen(gMode);
+	public void exitScreen(Screen screen, int exitCode, int level) {
+		if (exitCode != 0) {
+			Gdx.app.error("GDXRoot", "Exit with error code "+exitCode, new RuntimeException());
+			Gdx.app.exit();
+		} else if (screen == loading) {
+			GameMode.LoadContent(manager);
+			playing = new GameMode(canvas, level);
+			
+			playing.setScreenListener(this);
+			setScreen(playing);
 			
 			loading.dispose();
 			loading = null;
-	
-		} 
-		else if (exitCode == GameMode.EXIT_QUIT) {
-			// We quit the main application/
+		} else {
+			// We quit the main application
 			Gdx.app.exit();
 		}
 	}
+
+	@Override
+	public void exitScreen(Screen screen, int exitCode) {
+		if (exitCode != 0) {
+			Gdx.app.error("GDXRoot", "Exit with error code "+exitCode, new RuntimeException());
+			Gdx.app.exit();
+		} else if (screen == loading) {
+			GameMode.LoadContent(manager);
+			playing = new GameMode(canvas);
+			
+			playing.setScreenListener(this);
+			setScreen(playing);
+			
+			loading.dispose();
+			loading = null;
+		} 
+		else {
+			// We quit the main application
+			Gdx.app.exit();
+		}
+	}
+		
 }
+
