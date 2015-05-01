@@ -164,7 +164,6 @@ public class GameMode implements Screen {
         controls = new InputController[animals.size() + 1]; 
         controls[0] = new PlayerController();
         
-        createHunter(map.getHunterStartingCoordinate());
         
         trapController = new TrapController(hunter, map, collisionController,numPigs,numWolves);
 
