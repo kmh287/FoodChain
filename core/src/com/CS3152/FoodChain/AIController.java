@@ -93,6 +93,7 @@ public class AIController implements InputController {
 
 
     private static float panicPercentage;
+    private static boolean panicked;
     private Hunter hunter; 
     
     private Vector2 vect;
@@ -165,7 +166,7 @@ public class AIController implements InputController {
     public static boolean withinCone(Animal an, Vector2 meToActor) {
       return isClockwise(an.getLeftSectorLine(), meToActor) &&
            !isClockwise(an.getRightSectorLine(), meToActor) &&
-           withinRadius(an, meToActor);
+           meToActor.len() <= an.getSightLength();
     }
     
     /* Determines if meToActor is clockwise to sectorLine.
@@ -188,7 +189,7 @@ public class AIController implements InputController {
      * @return true if length is at most as long as one of the vision sector lines.
      */
     public static boolean withinRadius(Animal an, Vector2 length) {
-    	return length.len() <= an.getSightLength();
+    	return length.len() <= an.getSightRadius();
     }
 
     // Determine the new angle the animal wants to face
@@ -427,6 +428,10 @@ public class AIController implements InputController {
 			        	setTarget(null);
 			        	setTurns(500);
 			        }
+			        //if chasing the hunter, then increase panic
+			        if(getTarget() instanceof Hunter){
+				        panicked = true;
+			        }
 			        break;
 			    case FLEE:
 			    	//System.out.println(getAnimal() + " is fleeing");
@@ -435,6 +440,10 @@ public class AIController implements InputController {
 			            setAttacker(null);
 			        }
 			        turns--;
+			        //if fleeing hunter, then increase panic
+			        if(getTarget() instanceof Hunter){
+				        panicked = true;
+			        }
 			    	break;
 			    case KILL:
 			    	//sdSystem.out.println(getAnimal() + " is killing");
@@ -467,17 +476,38 @@ public class AIController implements InputController {
 				    		  animal.setState(State.CHASE);
 				    		  setTurns(1000);
 				    	  }
-				    } 
+				    }
 			    	break;
 			    case DEAD:
 			        break;
-			}
+	        }
     	}
     	else {
     		animal.setState(State.DEAD);
     	}
 	}
 
+	public static void increasePanic() {
+		if(panicPercentage<1f){
+			panicPercentage+=.005f;
+		}
+	}
+	
+	public static void decreasePanic() {
+		if(panicPercentage>0){
+			panicPercentage-=.002f;
+		}
+	}
+	
+	public static boolean AtLeastOneAnimalPanic(){
+		return panicked;
+	}
+	
+	public static void resetPanicFlag(){
+		panicked = false;
+	}
+	
+	
 	@Override
 	public Vector2 getAction(float delta) {
 		// TODO Auto-generated method stub

@@ -495,7 +495,6 @@ public class GameMap implements IndexedGraph<MapNode> {
         			}
         			t.setBodyType(BodyDef.BodyType.StaticBody);
         			t.setActive(false);
-				//collisionController.addObject(t, curr);
 				collisionController.addObject(t);
 			}
 		}

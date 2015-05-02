@@ -53,6 +53,7 @@ public abstract class Animal extends Actor{
     protected double SIGHT_ANGLE = 0.35;
     // How long the animal's line of sight is
     protected float SIGHT_LENGTH;
+    protected float SIGHT_RADIUS;
 
     protected float MIN_STEERING = 0.001f;
     
@@ -276,6 +277,10 @@ public abstract class Animal extends Actor{
 	public float getSightLength() {
 		return SIGHT_LENGTH;
 	}
+	
+	public float getSightRadius() {
+    return SIGHT_RADIUS;
+  }
 	
 	public Vector2 getLeftSectorLine() {
 		return this.leftSectorLine;
