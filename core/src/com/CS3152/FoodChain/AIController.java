@@ -87,6 +87,9 @@ public class AIController implements InputController {
     // Which direction to patrol
     protected int patrolTurn;
     
+    //this is the delay when animals switch from flee to wander to patrol
+    private int stateDelay = 200;
+    
 
 
     private static float panicPercentage;
@@ -376,11 +379,12 @@ public class AIController implements InputController {
 			    	if (hasTarget()) {
 			    	  if (animal instanceof Pig) {
 			    	    animal.setState(State.FLEE);
-			    	    setTurns(1000);
+			    	    System.out.println("hello");
+			    	    setTurns(stateDelay);
 			    	  }
 			    	  else if (animal instanceof Wolf) {
 			    	    animal.setState(State.CHASE);
-                setTurns(1000);
+			    	    setTurns(stateDelay);
 			    	  }
 			      }
 			    	//stop periodically in wander
@@ -424,12 +428,14 @@ public class AIController implements InputController {
 			        if (canSettle()) {
 			            animal.setState(State.WANDER);
 			            setAttacker(null);
+			            setTarget(null);
 			        }
 			        turns--;
 			        //if fleeing hunter, then increase panic
 			        if(getTarget() instanceof Hunter){
 				        panicked = true;
 			        }
+			        System.out.println(turns);
 			    	break;
 			    case KILL:
 			    	//sdSystem.out.println(getAnimal() + " is killing");
@@ -444,11 +450,11 @@ public class AIController implements InputController {
 			    	if (hasTarget()) {
 				    	  if (animal instanceof Pig) {
 				    	    animal.setState(State.FLEE);
-				    	    setTurns(1000);
+				    	    setTurns(stateDelay);
 				    	  }
 				    	  else if (animal instanceof Wolf) {
 				    	    animal.setState(State.CHASE);
-	                setTurns(1000);
+				    	    setTurns(stateDelay);
 				    	  }
 				      }
 			    	break;

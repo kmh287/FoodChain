@@ -126,7 +126,7 @@ public class GameMode implements Screen {
         PreLoadContent(manager);
         manager.finishLoading();
         LoadContent(manager);
-        initializeLevel(canvas, "PatrolTest3");
+        initializeLevel(canvas, "PatrolTest2");
         
 	}
         
@@ -162,9 +162,7 @@ public class GameMode implements Screen {
         //All the animals, plus the Hunter
         //The hunter is always first in this array
         controls = new InputController[animals.size() + 1]; 
-        controls[0] = new PlayerController();
-        
-        createHunter(map.getHunterStartingCoordinate());
+        controls[0] = new PlayerController();        
         
         trapController = new TrapController(hunter, map, collisionController,numPigs,numWolves);
 
