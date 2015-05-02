@@ -287,6 +287,9 @@ public abstract class Animal extends Actor{
 			tmp2.add(GameMap.metersToPixels(sectorLine.x), GameMap.metersToPixels(sectorLine.y));
 			canvas.drawLine(Color.YELLOW, tmp, tmp2);
 			
+			//draw cone
+			canvas.drawCone(Color.RED,  GameMap.metersToPixels(position.x),  GameMap.metersToPixels(position.y), 0, 5, 2);
+			
 			//draws patrol waypoint if they have waypoints
 			if(wayPoints.size>0){
 				canvas.DrawPatrolPaths(GameMap.metersToPixels(followPathAnimal.getInternalTargetPosition().x), GameMap.metersToPixels(followPathAnimal.getInternalTargetPosition().y), 5, wayPoints, linePath);
