@@ -37,7 +37,10 @@ public class AIController implements InputController {
         // Animal is dead
         DEAD,
         //Animal stays still
-        STAYSTILL, 
+        STAYSTILL,
+        //Animal finds waypoint
+        FIND,
+        //Animal patrols through waypoints
         PATROL 
     }
     
@@ -379,9 +382,9 @@ public class AIController implements InputController {
 			    	  }
 			    	  else if (animal instanceof Wolf) {
 			    	    animal.setState(State.CHASE);
-                setTurns(1000);
+			    	    setTurns(1000);
 			    	  }
-			      }
+			    	}
 			    	//stop periodically in wander
 			    	else if(Wanderturns%250>WanderStopRate){
 			    		animal.setState(State.STAYSTILL);
@@ -391,7 +394,18 @@ public class AIController implements InputController {
 			    	Wanderturns+=1;
 			    	break;
 			    case STAYSTILL:
-			    	if(Wanderturns%250>WanderStopRate){
+			    	if (animal.getWayPointList().size != 0) {
+			    		Vector2 goal = animal.getWayPointList().get(0);
+			    		float pixX = GameMap.metersToPixels(goal.x);
+			    		float pixY = GameMap.metersToPixels(goal.y);
+			    		int x = map.screenXToMap(pixX);
+			    		int y = map.screenYToMap(pixY);
+			    		
+			    		animal.calculatePath(map.getNode(map.calculateIndex(x,y)));
+			    		animal.getPathToPatrol();
+			    		animal.setState(State.FIND);
+			    	}
+			    	else if(Wanderturns%250>WanderStopRate){
 			    		animal.setState(State.WANDER);
 			    		WanderStopRate= MathUtils.random(175,225);
 			    		Wanderturns=0;
@@ -430,18 +444,30 @@ public class AIController implements InputController {
 			    	turns--;
 			    	break;
 			    case PATROL:
-			    	animal.setState(State.PATROL);
+			    	//animal.setState(State.PATROL);
 			    	//this code is commented out until we can resolve state machine
-//			    	if (hasTarget()) {
-//				    	  if (animal instanceof Pig) {
-//				    	    animal.setState(State.FLEE);
-//				    	    setTurns(1000);
-//				    	  }
-//				    	  else if (animal instanceof Wolf) {
-//				    	    animal.setState(State.CHASE);
-//	                setTurns(1000);
-//				    	  }
-//				      }
+			    	if (hasTarget()) {
+				    	  if (animal instanceof Pig) {
+				    	    animal.setState(State.FLEE);
+				    	    setTurns(1000);
+				    	  }
+				    	  else if (animal instanceof Wolf) {
+				    	    animal.setState(State.CHASE);
+	                		setTurns(1000);
+				    	  }
+				      }
+			    	break;
+			    case FIND:
+			    	if (hasTarget()) {
+				    	  if (animal instanceof Pig) {
+				    		  animal.setState(State.FLEE);
+				    		  setTurns(1000);
+				    	  }
+				    	  else if (animal instanceof Wolf) {
+				    		  animal.setState(State.CHASE);
+				    		  setTurns(1000);
+				    	  }
+				    } 
 			    	break;
 			    case DEAD:
 			        break;

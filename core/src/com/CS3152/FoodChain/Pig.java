@@ -5,6 +5,7 @@ package com.CS3152.FoodChain;
 
 import java.util.List;
 
+import com.badlogic.gdx.ai.pfa.indexed.IndexedAStarPathFinder;
 import com.badlogic.gdx.ai.steer.Steerable;
 import com.badlogic.gdx.ai.steer.behaviors.CollisionAvoidance;
 import com.badlogic.gdx.ai.steer.behaviors.Flee;
@@ -20,7 +21,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
 /**
- * @author Kevin
+ * @author Supreme Master Kevin
  *
  */
 public class Pig extends Animal {
@@ -44,9 +45,10 @@ public class Pig extends Animal {
      * @param y Starting y position for this sheep
      * @param patrol 
      */
-    public Pig(float x, float y, List<Vector2> patrol) {
+    public Pig(float x, float y, List<Vector2> patrol,
+    		IndexedAStarPathFinder<MapNode> pathFinder, GameMap map) {
         super(new TextureRegion(tex), Actor.actorType.PIG, x, y, 
-              prey, InputController.EAST,patrol);
+              prey, InputController.EAST,patrol, pathFinder, map);
         sprite = new FilmStrip(tex,1,4,4);
         spriteDeath = new FilmStrip(deathTex,1,7,7);
         drawScale.x=scaleXDrawSheep;

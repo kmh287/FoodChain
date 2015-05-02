@@ -2,6 +2,7 @@ package com.CS3152.FoodChain;
 
 import java.util.List;
 
+import com.badlogic.gdx.ai.pfa.indexed.IndexedAStarPathFinder;
 import com.badlogic.gdx.ai.steer.Steerable;
 import com.badlogic.gdx.ai.steer.behaviors.CollisionAvoidance;
 import com.badlogic.gdx.ai.steer.behaviors.PrioritySteering;
@@ -35,9 +36,10 @@ public class Wolf extends Animal{
      * @param y Starting y position for this wolf
      * @param patrol 
      */
-    public Wolf(float x, float y, List<Vector2> patrol) {
+    public Wolf(float x, float y, List<Vector2> patrol,
+    		IndexedAStarPathFinder<MapNode> pathFinder, GameMap map) {
         super(new TextureRegion(tex), Actor.actorType.WOLF, x, y, 
-              prey, InputController.EAST,patrol);
+              prey, InputController.EAST,patrol, pathFinder, map);
         sprite = new FilmStrip(tex,1,4,4);
         drawScale.x = scaleXDrawWolf;
         drawScale.y = scaleYDrawWolf;

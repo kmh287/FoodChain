@@ -22,6 +22,7 @@ import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.ai.pfa.indexed.IndexedAStarPathFinder;
 import com.badlogic.gdx.ai.steer.Steerable;
 
 
@@ -164,8 +165,6 @@ public class GameMode implements Screen {
         controls = new InputController[animals.size() + 1]; 
         controls[0] = new PlayerController();
         
-        createHunter(map.getHunterStartingCoordinate());
-        
         trapController = new TrapController(hunter, map, collisionController,numPigs,numWolves);
 
         
@@ -259,6 +258,7 @@ public class GameMode implements Screen {
 	    Iterator<actorType> aTypesIt = aTypes.iterator();
 	    Iterator<Vector2> coordIt = coordinates.iterator();
 	    Iterator<List<Vector2>> patrolsIT = patrolPaths.iterator();
+	    IndexedAStarPathFinder<MapNode> pathFinder = new IndexedAStarPathFinder<MapNode>(map);
 	    while (aTypesIt.hasNext() && coordIt.hasNext() && patrolsIT.hasNext()){
 	        actorType currType = aTypesIt.next();
 	        Vector2 coord = coordIt.next();
@@ -268,7 +268,8 @@ public class GameMode implements Screen {
 	            case PIG:
 	            		Pig.loadTexture(manager);
 	                newAnimal = new Pig(map.mapXToScreen((int)coord.x), 
-	                		map.mapYToScreen((int)coord.y),convertPatrol(patrol));
+	                		map.mapYToScreen((int)coord.y),convertPatrol(patrol),
+	                		pathFinder,map);
 	                newAnimal.setDensity(DEFAULT_DENSITY);
 	                animals.add(newAnimal);
 	                break;
@@ -276,7 +277,8 @@ public class GameMode implements Screen {
 	            case WOLF:
 	            		Wolf.loadTexture(manager);
 	                newAnimal = new Wolf(map.mapXToScreen((int)coord.x), 
-	                					 map.mapYToScreen((int)coord.y),convertPatrol(patrol));
+	                					 map.mapYToScreen((int)coord.y),convertPatrol(patrol),
+	                					 pathFinder,map);
 	                //See comment in sheep
 	                animals.add(newAnimal);
 	                break;
@@ -284,7 +286,7 @@ public class GameMode implements Screen {
 	            case OWL:
             			Owl.loadTexture(manager);
             			newAnimal = new Owl(map.mapXToScreen((int)coord.x), 
-            								map.mapYToScreen((int)coord.y));
+            								map.mapYToScreen((int)coord.y),pathFinder,map);
 	                //See comment in sheep
 	                animals.add(newAnimal);
 	                break;
