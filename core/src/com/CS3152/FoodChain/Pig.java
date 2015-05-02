@@ -164,4 +164,10 @@ public class Pig extends Animal {
     	sprite.flip(false,true);
     	super.setTexture(sprite);
     }
+
+	@Override
+	public void setOrientation(float arg0) {
+		// TODO Auto-generated method stub
+		
+	}
 }

@@ -2,6 +2,7 @@ package com.CS3152.FoodChain;
 
 import java.util.List;
 
+import com.badlogic.gdx.ai.pfa.DefaultGraphPath;
 import com.badlogic.gdx.ai.pfa.indexed.IndexedAStarPathFinder;
 import com.badlogic.gdx.ai.steer.Limiter;
 import com.badlogic.gdx.ai.steer.Steerable;
@@ -72,9 +73,10 @@ public abstract class Animal extends Actor{
     protected FollowPath<Vector2, LinePathParam> followPathToPatrol;
     
     protected IndexedAStarPathFinder<MapNode> pathFinder;
-	protected SmoothableMapPath<MapNode> path;
+	//protected SmoothableMapPath<MapNode> path = new SmoothableMapPath<MapNode>();
+    protected DefaultGraphPath<MapNode> path = new DefaultGraphPath<MapNode>();
     protected GameMap map;
-    protected TiledManhattanDistance heuristic;
+    protected TiledManhattanDistance<MapNode> heuristic;
     
 	/** Protected constructor for the animal type. 
 	 * 
@@ -303,6 +305,9 @@ public abstract class Animal extends Actor{
 			tmp2.add(GameMap.metersToPixels(sectorLine.x), GameMap.metersToPixels(sectorLine.y));
 			canvas.drawLine(Color.YELLOW, tmp, tmp2);
 			
+			//draw cone
+			canvas.drawCone(Color.RED,  GameMap.metersToPixels(position.x),  GameMap.metersToPixels(position.y), 0, 5, 2);
+			
 			//draws patrol waypoint if they have waypoints
 			if(wayPoints.size>0){
 				canvas.DrawPatrolPaths(GameMap.metersToPixels(followPathAnimal.getInternalTargetPosition().x), GameMap.metersToPixels(followPathAnimal.getInternalTargetPosition().y), 5, wayPoints, linePath);
@@ -408,15 +413,17 @@ public abstract class Animal extends Actor{
 	
 	public void calculatePath(MapNode goal) {
 		Vector2 pos = getPosition();
-		float pixX = map.metersToPixels(pos.x);
-		float pixY = map.metersToPixels(pos.y);
+		float pixX = GameMap.metersToPixels(pos.x);
+		float pixY = GameMap.metersToPixels(pos.y);
 		int x = map.screenXToMap(pixX);
 		int y = map.screenYToMap(pixY);
+		
 		pathFinder.searchNodePath(map.getNode(map.calculateIndex(x,y)), 
 								  goal, heuristic, path);
 	}
 	
 	public void getPathToPatrol () {
+		ptp.clear();
 		for (MapNode mn : path) {
 			int tileX = mn.getX();
 			int tileY = mn.getY();

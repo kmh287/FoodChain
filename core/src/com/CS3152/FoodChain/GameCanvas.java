@@ -1199,6 +1199,16 @@ public class GameCanvas {
     	debugRender.line(v1.x, v1.y, v2.x, v2.y);
     }
     
+    public void drawCone(Color color, float x, float y, float z, float radius, float height) {
+    	//debugRender.end();
+    	//debugRender.set(ShapeRenderer.ShapeType.);
+    	debugRender.setColor(color);
+    	debugRender.cone(x, y, 12, 1000, 10);
+    //	debugRender.circle(x, y, radius);
+    	debugRender.set(ShapeRenderer.ShapeType.Line);
+    	//debugRender.begin(ShapeRenderer.ShapeType.Line);
+    }
+    
 	/**
 	 * Compute the affine transform (and store it in local) for this image.
 	 * 
@@ -1241,6 +1251,7 @@ public class GameCanvas {
 	
 	public void DrawPatrolPaths(float x, float y, int radius, com.badlogic.gdx.utils.Array<Vector2> wayPoints,LinePath<Vector2> linePath){
 		//draw target
+		//debugRender.setColor(Color.YELLOW);
 		debugRender.circle(x, y, radius);
 	}
 

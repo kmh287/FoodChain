@@ -165,4 +165,10 @@ public class Hunter extends Actor {
 		this.sound = SoundController.get(sound);
 		sndcue = this.sound.play();
 	}
+
+	@Override
+	public void setOrientation(float arg0) {
+		// TODO Auto-generated method stub
+		
+	}
 }
