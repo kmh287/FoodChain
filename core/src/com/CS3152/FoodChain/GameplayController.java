@@ -1,5 +1,7 @@
 package com.CS3152.FoodChain;
 
+import com.badlogic.gdx.math.Vector2;
+
 /**
  * Class to process AI and player input
  *
@@ -13,13 +15,16 @@ public class GameplayController {
 	
 	protected InputController[] controls;
 	
+	protected Vector2 zeroVector;
+	
 	public GameplayController(GameMap map, Actor[] actors, InputController[] controls) {
 		this.map = map;
 		this.actors = actors;
 		this.controls = controls;
+		this.zeroVector = new Vector2(0,0);
 	}
 	
-	public void update(float delta) {
+	public void update(float delta, boolean hunterCanMove) {
 		//Updates the animals' actions
 		//i is the index of each animal AI in controls
 		int i = 1;
@@ -42,8 +47,14 @@ public class GameplayController {
 		for(Actor actor : actors) {
 			if (actor instanceof Hunter){
 				Hunter hunter = (Hunter) actor;
-				hunter.setLinearVelocity(controls[0].getAction(delta).scl(hunter.getMoveSpeed()));
-				hunter.setFacing(controls[0].getAction(delta));
+				if (hunterCanMove){
+					hunter.setLinearVelocity(controls[0].getAction(delta).scl(hunter.getMoveSpeed()));
+					hunter.setFacing(controls[0].getAction(delta));
+				}
+				else{
+					//Otherwise, the Hunter will retain the linear velocity from before and won't stop
+					hunter.setLinearVelocity(zeroVector);
+				}
 			}
 			else if (actor.getAlive()){
 				if (actor instanceof Owl) {

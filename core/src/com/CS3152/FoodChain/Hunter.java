@@ -31,6 +31,7 @@ public class Hunter extends Actor {
     
     //how far forward the hunter can move in a turn. 
     private static final float MOVE_SPEED = 9f;
+
     /** How far the hunter can lay a trap from itself */
     private static final float TRAP_RADIUS = 1.0f;
     
@@ -65,9 +66,6 @@ public class Hunter extends Actor {
         sound = null;
 		sndcue = -1;
 		spriteDeath.setFrame(0);
-        
-
-
     }
     
     /**
@@ -133,6 +131,11 @@ public class Hunter extends Actor {
     	super.setTexture(spriteDeath);
     }
     
+	public void updateTrapFrame() {
+		// TODO Auto-generated method stub
+		//Please fill this in with the trap setting animation! 
+	}
+    
     public FilmStrip Sprite(){
     	return sprite;
     }
@@ -142,7 +145,7 @@ public class Hunter extends Actor {
     	sprite.flip(false,true);
     	super.setTexture(sprite);
     }
-    
+
     @Override
     public void calculateSteering() {
     	return;
@@ -151,7 +154,7 @@ public class Hunter extends Actor {
     public void applySteering(float delta) {
     	return;
     }
-   
+
     /**
 	 * Plays the given sound.  
 	 *
@@ -166,7 +169,7 @@ public class Hunter extends Actor {
 		sndcue = this.sound.play();
 	}
 
-	@Override
+	//@Override
 	public void setOrientation(float arg0) {
 		// TODO Auto-generated method stub
 		
