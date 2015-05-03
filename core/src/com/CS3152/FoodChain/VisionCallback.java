@@ -31,7 +31,8 @@ public class VisionCallback implements RayCastCallback {
 	  tmp.set(point);
     tmp.sub(source.getAnimal().getPosition());
     // Check to see if the fixture seen is within the animal's line-of-sight
-    if (AIController.withinRadius(source.getAnimal(), tmp)) {
+    if (AIController.withinRadius(source.getAnimal(), tmp) ||
+        AIController.withinCone(source.getAnimal(), tmp)) {
       Object contact = fixture.getBody().getUserData();
       //Check if it saw its prey    
       if (contact instanceof Actor) {

@@ -127,7 +127,7 @@ public class GameMode implements Screen {
         PreLoadContent(manager);
         manager.finishLoading();
         LoadContent(manager);
-        initializeLevel(canvas, "PatrolTest2");
+        initializeLevel(canvas, "field");
 	}
         
  	private void initializeLevel(GameCanvas canvas, String levelName){
@@ -143,31 +143,32 @@ public class GameMode implements Screen {
         map.addTilesToWorld(collisionController);
         steerables = new ArrayList<Steerable<Vector2>>();
         steerables.addAll(map.getTileList());
-        
-        canvas.getUIControllerStage().loadTextures(manager);
-        
+
         //Get the animal types from map
         //but build and keep the actual list here
         animals = new ArrayList<Animal>();
         List<Actor.actorType> aTypes = 
                             map.getActorTypeList();
         List<Vector2> coordinates = map.getCoordinates();
+
+        createHunter(map.getHunterStartingCoordinate());
         buildAnimalList(aTypes, coordinates,map.getPatrolPaths());
         steerables.addAll(animals);
         
         //All the animals, plus the Hunter
         //The hunter is always first in this array
         controls = new InputController[animals.size() + 1]; 
-        controls[0] = new PlayerController();
+        controls[0] = new PlayerController();        
         
-        //Setup the hunter
-        createHunter(map.getHunterStartingCoordinate());
+        trapController = new TrapController(hunter, map, collisionController,numPigs,numWolves);
+
+        canvas.getUIControllerStage().setTrapController(trapController);
+        canvas.getUIControllerStage().loadTextures(manager);
         
         //Setup traps and the trap UI
-        trapController = new TrapController(hunter, map, collisionController,numPigs,numWolves);
 	    traps = (HashMap<String, List<Trap>>) trapController.getInventory();
-        canvas.getUIControllerStage().setTrapController(trapController);
-	    
+  
+	    player = new PlayerController(); 
         List<Actor> actors = new ArrayList<Actor>();
         actors.add(hunter);
         for (int i = 0; i < animals.size(); i++) {
@@ -218,8 +219,8 @@ public class GameMode implements Screen {
 	private void createHunter(Vector2 startingPos/*,
 			HashMap<String, List<Trap>> startingInventory*/){
 		Hunter.loadTexture(manager);
-	    hunter = new Hunter(map.mapXToScreen((int)startingPos.x),
-	    						map.mapYToScreen((int)startingPos.y));
+	    GameMode.hunter = new Hunter(map.mapXToScreen((int)startingPos.x),
+	    							 map.mapYToScreen((int)startingPos.y));
 	    hunter.setDensity(DEFAULT_DENSITY);
 	    hunter.setAwake(true);
 	    hunter.setBodyType(BodyDef.BodyType.DynamicBody);
@@ -461,13 +462,22 @@ public class GameMode implements Screen {
 		}
 		ticks++;
 
+		//update panic meter
+		if(AIController.AtLeastOneAnimalPanic()){
+			AIController.increasePanic();
+		}
+		else{
+			AIController.decreasePanic();
+		}
+		AIController.resetPanicFlag();
+		
 	    // fixed time step
-	    frameTime = Math.min(delta, 1/60f);
-	    accumulator += frameTime;
-	    while (accumulator >= TIME_STEP) {
-	    	collisionController.getWorld().step(TIME_STEP, 3, 3);
-	        accumulator -= TIME_STEP;
-	    }
+//	    frameTime = Math.min(delta, 1/60f);
+//	    accumulator += frameTime;
+//	    while (accumulator >= TIME_STEP) {
+//	    	collisionController.getWorld().step(TIME_STEP, 3, 3);
+//	        accumulator -= TIME_STEP;
+//	    }
 
 		collisionController.update();	
 		if(trapController.getSelectedTrap() == null || !trapController.canSetTrap()){
@@ -514,6 +524,7 @@ public class GameMode implements Screen {
         	canvas.beginCamStart(GameMap.metersToPixels(hunter.getPosition().x), GameMap.metersToPixels(hunter.getPosition().y));
         	start=false;
         }
+
         //hunter.drawDebug(canvas);
     	//Draw the hunter
     	//Draw the animals
@@ -528,8 +539,7 @@ public class GameMode implements Screen {
         		if (!animal.getTrapped()) {
             		animal.draw(canvas);
         		}
-        	}
-            
+        	}           
             //animal.drawDebug(canvas);
         }
         //if (hunter.getAlive()) {

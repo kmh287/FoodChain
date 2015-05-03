@@ -172,7 +172,6 @@ public class GameMap implements IndexedGraph<MapNode> {
         this.coordinates = coordinates;
         this.patrolPaths = patrolPaths;
         this.hunterStartPosition = hunterStartPosition;
-        this.patrolPaths = patrolPaths;
         this.objective = objective;
         this.tileList = new ArrayList<Tile>();
         this.mapWidth = layout[0].length;
@@ -493,7 +492,6 @@ public class GameMap implements IndexedGraph<MapNode> {
         			}
         			t.setBodyType(BodyDef.BodyType.StaticBody);
         			t.setActive(false);
-				//collisionController.addObject(t, curr);
 				collisionController.addObject(t);
 			}
 		}

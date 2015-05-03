@@ -52,6 +52,8 @@ public abstract class Animal extends Actor{
     protected double SIGHT_ANGLE = 0.35;
     // How long the animal's line of sight is
     protected float SIGHT_LENGTH;
+    
+    protected float SIGHT_RADIUS;
 
     protected float MIN_STEERING = 0.001f;
     
@@ -65,7 +67,7 @@ public abstract class Animal extends Actor{
     protected Array<Vector2> wayPoints;
     protected LinePath<Vector2> linePath;
     protected FollowPath<Vector2, LinePathParam> followPathAnimal;
-    
+
 	/** Protected constructor for the animal type. 
 	 * 
 	 * This constructor should never be called directly
@@ -259,6 +261,10 @@ public abstract class Animal extends Actor{
 		return SIGHT_LENGTH;
 	}
 	
+	public float getSightRadius() {
+    return SIGHT_RADIUS;
+  }
+	
 	public Vector2 getLeftSectorLine() {
 		return this.leftSectorLine;
 	}
@@ -279,6 +285,9 @@ public abstract class Animal extends Actor{
 			sectorLine = getRightSectorLine();
 			tmp2.add(GameMap.metersToPixels(sectorLine.x), GameMap.metersToPixels(sectorLine.y));
 			canvas.drawLine(Color.YELLOW, tmp, tmp2);
+			
+			//draw cone
+			canvas.drawCone(Color.RED,  GameMap.metersToPixels(position.x),  GameMap.metersToPixels(position.y), 0, 5, 2);
 			
 			//draws patrol waypoint if they have waypoints
 			if(wayPoints.size>0){

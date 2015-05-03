@@ -19,6 +19,7 @@ public class TrapController {
     public TrapController(Hunter hunter, GameMap map, CollisionController collisionController, int numPigs, int numWolves){
     	this.hunter = hunter;
     	this.map = map;
+    	
     	inventory= new HashMap<String, List<Trap>>();
     	
     	//need to add multiple dynamic traps functionality
