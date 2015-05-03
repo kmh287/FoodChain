@@ -108,25 +108,25 @@ public class Tile extends BoxObject implements Steerable<Vector2>{
 		return Box2dSteeringUtils.angleToVector(outVector, angle);
 	}
 
-	@Override
+	//@Override
 	public Location<Vector2> newLocation() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
+	//@Override
 	public void setOrientation(float arg0) {
 		// TODO Auto-generated method stub
 		
 	}
 
-	@Override
+	//@Override
 	public float getZeroLinearSpeedThreshold() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	@Override
+	//@Override
 	public void setZeroLinearSpeedThreshold(float arg0) {
 		// TODO Auto-generated method stub
 		

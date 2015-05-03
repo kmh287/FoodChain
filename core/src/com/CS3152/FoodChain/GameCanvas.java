@@ -1253,10 +1253,6 @@ public class GameCanvas {
 	
 	public void DrawPatrolPaths(float x, float y, int radius, com.badlogic.gdx.utils.Array<Vector2> wayPoints,LinePath<Vector2> linePath){
 		//draw target
-<<<<<<< HEAD
-=======
-		//debugRender.setColor(Color.YELLOW);
->>>>>>> master
 		debugRender.circle(x, y, radius);
 	}
 
