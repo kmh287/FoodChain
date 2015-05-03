@@ -1201,14 +1201,24 @@ public class GameCanvas {
     	debugRender.line(v1.x, v1.y, v2.x, v2.y);
     }
     
-    public void drawCone(Color color, float x, float y, float z, float radius, float height) {
-    	//debugRender.end();
-    	//debugRender.set(ShapeRenderer.ShapeType.);
+    public void drawCone(Color color, Vector2 origin, Vector2 v2, Vector2 v3, float sightRadius, double sightAngle) {
     	debugRender.setColor(color);
-    	debugRender.cone(x, y, 12, 1000, 10);
-    //	debugRender.circle(x, y, radius);
-    	debugRender.set(ShapeRenderer.ShapeType.Line);
-    	//debugRender.begin(ShapeRenderer.ShapeType.Line);
+    	
+    	float angleIncrement = (float) (sightAngle/200);
+    	float circularX, circularY;
+    	for(int i = 0; i<200 ; i++){
+        	float angle = v2.angle()+angleIncrement*i;
+        	double oppositeSideTriangle = Math.tan(angle)*sightRadius;
+        	double shortTriangleside = sightRadius-Math.cos(angle)*sightRadius;
+        	double angle2 = Math.asin(shortTriangleside/oppositeSideTriangle);
+        	
+    		circularX = (float) (Math.cos(angle2)*oppositeSideTriangle);
+    		circularY = (float) (Math.sin(angle2)*oppositeSideTriangle);
+    		System.out.println(angle);
+    		debugRender.line(origin.x, origin.y, v2.x + circularX, v2.y + circularY);
+    	}
+    	//debugRender.line(v1.x, v1.y, v2.x, v2.y);
+		
     }
     
 	/**
@@ -1253,11 +1263,8 @@ public class GameCanvas {
 	
 	public void DrawPatrolPaths(float x, float y, int radius, com.badlogic.gdx.utils.Array<Vector2> wayPoints,LinePath<Vector2> linePath){
 		//draw target
-<<<<<<< HEAD
-=======
-		//debugRender.setColor(Color.YELLOW);
->>>>>>> master
 		debugRender.circle(x, y, radius);
+
 	}
 
 
