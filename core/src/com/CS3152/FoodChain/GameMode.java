@@ -71,7 +71,7 @@ public class GameMode implements Screen {
 	private float accumulator = 0;
 	
 	//Trpa set delay
-	int TRAP_SETUP_FRAMES = 90; //60FPS so this is 1.5s
+	int TRAP_SETUP_FRAMES = 30; //60FPS so this is 0.5s
 	boolean settingTrap;
 	int trapSetProgress;
 	
@@ -164,7 +164,7 @@ public class GameMode implements Screen {
         List<Vector2> coordinates = map.getCoordinates();
 
         createHunter(map.getHunterStartingCoordinate());
-        buildAnimalList(aTypes, coordinates,map.getPatrolPaths());
+        buildAnimalList(aTypes,coordinates,map.getPatrolPaths());
         steerables.addAll(animals);
         
         //All the animals, plus the Hunter
@@ -438,11 +438,13 @@ public class GameMode implements Screen {
 			}
 		}
 		
-		if (controls[0].isSpacePressed()  && trapController.canSetTrap() && !settingTrap) {
-			
-			//Begin the trap set process
-			settingTrap = true;
-			trapSetProgress = 0;
+		if (controls[0].isSpacePressed()  && trapController.canSetTrap() && 
+			!settingTrap && hunter.getAlive()) {
+	    		Vector2 trapPosition = trapController.getTrapPositionFromHunter(hunter);
+	    		if (map.isSafeAt(GameMap.metersToPixels(trapPosition.x), GameMap.metersToPixels(trapPosition.y))) 
+				//Begin the trap set process
+				settingTrap = true;
+				trapSetProgress = 0;
 		}
 		
 		
