@@ -151,7 +151,6 @@ public class AIController implements InputController {
         sound = null;
 		sndcue = -1;
 		WanderStopRate= MathUtils.random(175,225);
-		
     }
     
     /*
@@ -189,7 +188,7 @@ public class AIController implements InputController {
      * @return true if length is at most as long as one of the vision sector lines.
      */
     public static boolean withinRadius(Animal an, Vector2 length) {
-    	return length.len() <= an.getSightRadius();
+    		return length.len() <= an.getSightRadius();
     }
 
     // Determine the new angle the animal wants to face
@@ -333,7 +332,6 @@ public class AIController implements InputController {
 		this.sound = SoundController.get(sound);
 		sndcue = this.sound.loop(); 
 	}
-
 
 	@Override
 	public boolean resetPressed() {
@@ -487,7 +485,6 @@ public class AIController implements InputController {
 		panicked = false;
 	}
 	
-	
 	@Override
 	public Vector2 getAction(float delta) {
 		// TODO Auto-generated method stub
@@ -516,5 +513,4 @@ public class AIController implements InputController {
       }
     }
 	}
-	
 }

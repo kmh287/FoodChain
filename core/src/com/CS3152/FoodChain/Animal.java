@@ -52,6 +52,7 @@ public abstract class Animal extends Actor{
     protected double SIGHT_ANGLE = 0.35;
     // How long the animal's line of sight is
     protected float SIGHT_LENGTH;
+    
     protected float SIGHT_RADIUS;
 
     protected float MIN_STEERING = 0.001f;
@@ -67,7 +68,6 @@ public abstract class Animal extends Actor{
     protected LinePath<Vector2> linePath;
     protected FollowPath<Vector2, LinePathParam> followPathAnimal;
 
-	
 	/** Protected constructor for the animal type. 
 	 * 
 	 * This constructor should never be called directly
@@ -101,7 +101,6 @@ public abstract class Animal extends Actor{
 		setTexHeight(GameMap.pixelsToMeters(tr.getRegionHeight()));
 		this.tagged = false;
 		finishedDeatAnimation= false;
-		
 		
 		wayPoints=new Array<Vector2>();
 		for(int i=0;i<patrol.size();i++){
@@ -377,7 +376,7 @@ public abstract class Animal extends Actor{
 	public void resetTarget() {
 		((Seek<Vector2>) seekSB).setTarget(null);
 	}
-	
+
 	public boolean getFinishedDeatAnimation(){
 		return finishedDeatAnimation;
 	}

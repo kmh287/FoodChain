@@ -162,8 +162,17 @@ public class CollisionController implements ContactListener {
 		Object fd1 = fix1.getUserData();
 		Object fd2 = fix2.getUserData();
 		
+		//System.out.println("Collision!!!");
+		
 		Object bd1 = body1.getUserData();
 		Object bd2 = body2.getUserData();
+		
+//		System.out.println(bd1.toString());
+//		System.out.println(bd2.toString());
+		
+//		if (bd1 instanceof Hunter && bd2 instanceof Hunter){
+//			System.out.println("uh oh");
+//		}
 		
 		if (bd1 instanceof Hunter && bd2 instanceof Trap) {
 			Trap trap = (Trap) bd2;

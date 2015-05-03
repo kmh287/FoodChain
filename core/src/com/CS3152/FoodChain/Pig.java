@@ -70,6 +70,7 @@ public class Pig extends Animal {
         RadiusProximity proximity = new RadiusProximity<Vector2>(this, steerArray, .1f);
         collisionAvoidanceSB = new CollisionAvoidance<Vector2>(this, proximity);
         LinearAccelerationLimiter limiter = new LinearAccelerationLimiter(maxLinearAcceleration);
+        
         //limiter.setMaxLinearSpeed(2.0f);
         collisionAvoidanceSB.setLimiter(limiter);
         
@@ -163,7 +164,7 @@ public class Pig extends Animal {
     	super.setTexture(sprite);
     }
 
-	@Override
+	//@Override
 	public void setOrientation(float arg0) {
 		// TODO Auto-generated method stub
 		

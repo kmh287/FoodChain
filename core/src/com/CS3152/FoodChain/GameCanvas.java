@@ -385,6 +385,7 @@ public class GameCanvas {
     }
     public void beginCam(float x, float y) {
     	moveCamera(x,y);
+    	
     	ui.drawStage();
     	spriteBatch.setProjectionMatrix(camera.combined);
     	spriteBatch.begin();
@@ -393,6 +394,7 @@ public class GameCanvas {
     
     //first time cam draws it will center over hunter and not perform lazy scroll
 	public void beginCamStart(float x, float y) {
+
 		camera.position.set(x, y, 0);
        	global.setTranslation(x, y, 0);
         camera.update();        
@@ -1251,7 +1253,10 @@ public class GameCanvas {
 	
 	public void DrawPatrolPaths(float x, float y, int radius, com.badlogic.gdx.utils.Array<Vector2> wayPoints,LinePath<Vector2> linePath){
 		//draw target
+<<<<<<< HEAD
+=======
 		//debugRender.setColor(Color.YELLOW);
+>>>>>>> master
 		debugRender.circle(x, y, radius);
 	}
 
