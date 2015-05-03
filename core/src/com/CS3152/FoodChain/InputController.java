@@ -50,8 +50,6 @@ public interface InputController {
 	
 	public boolean resetPressed();
 	
-	public int levelPressed();
-	
 	public Vector2 getClickPos();
 	
 	public int getNum();

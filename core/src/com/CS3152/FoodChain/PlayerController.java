@@ -117,12 +117,12 @@ public class PlayerController implements InputController{
 		}
 	}
 
-	@Override
-	public int levelPressed() {
-		int returnVal = -1;
-		if (Gdx.input.isKeyPressed(Input.Keys.NUM_8)) returnVal = 1;
-		if (Gdx.input.isKeyPressed(Input.Keys.NUM_9)) returnVal = 2;
-		if (Gdx.input.isKeyPressed(Input.Keys.NUM_0)) returnVal = 3;
-		return returnVal;
-	}
+//	@Override
+//	public int levelPressed() {
+//		int returnVal = -1;
+//		if (Gdx.input.isKeyPressed(Input.Keys.NUM_8)) returnVal = 1;
+//		if (Gdx.input.isKeyPressed(Input.Keys.NUM_9)) returnVal = 2;
+//		if (Gdx.input.isKeyPressed(Input.Keys.NUM_0)) returnVal = 3;
+//		return returnVal;
+//	}
 }
