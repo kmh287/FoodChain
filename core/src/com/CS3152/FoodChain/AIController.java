@@ -88,7 +88,7 @@ public class AIController implements InputController {
     protected int patrolTurn;
     
     //this is the delay when animals switch from flee to wander to patrol
-    private int stateDelay = 200;
+    private int stateDelay = 300;
     
 
 
@@ -375,11 +375,9 @@ public class AIController implements InputController {
     	if (getAnimal().getAlive()) {
 	        switch (animal.getState()) {
 			    case WANDER:
-			    	//System.out.println(getAnimal() + " is wandering");
 			    	if (hasTarget()) {
 			    	  if (animal instanceof Pig) {
 			    	    animal.setState(State.FLEE);
-			    	    System.out.println("hello");
 			    	    setTurns(stateDelay);
 			    	  }
 			    	  else if (animal instanceof Wolf) {
@@ -404,7 +402,6 @@ public class AIController implements InputController {
 			    	Wanderturns+=1;
 			    	break;
 			    case CHASE:
-			    	//System.out.println(getAnimal() + " is chasing");
 			        if (turns <= 0) {
 			        	animal.setState(State.WANDER);
 			        	setTarget(null);
@@ -416,7 +413,7 @@ public class AIController implements InputController {
 			        if (hasTarget() && !target.getAlive()) {
 			        	animal.setState(State.KILL);
 			        	setTarget(null);
-			        	setTurns(500);
+			        	setTurns(stateDelay);
 			        }
 			        //if chasing the hunter, then increase panic
 			        if(getTarget() instanceof Hunter){
@@ -435,10 +432,8 @@ public class AIController implements InputController {
 			        if(getTarget() instanceof Hunter){
 				        panicked = true;
 			        }
-			        System.out.println(turns);
 			    	break;
 			    case KILL:
-			    	//sdSystem.out.println(getAnimal() + " is killing");
 			    	if (turns <= 0) {
 			    		animal.setState(State.WANDER);
 			    	}
@@ -446,7 +441,6 @@ public class AIController implements InputController {
 			    	break;
 			    case PATROL:
 			    	animal.setState(State.PATROL);
-			    	//this code is commented out until we can resolve state machine
 			    	if (hasTarget()) {
 				    	  if (animal instanceof Pig) {
 				    	    animal.setState(State.FLEE);

@@ -70,7 +70,7 @@ public class Pig extends Animal {
         RadiusProximity proximity = new RadiusProximity<Vector2>(this, steerArray, .1f);
         collisionAvoidanceSB = new CollisionAvoidance<Vector2>(this, proximity);
         LinearAccelerationLimiter limiter = new LinearAccelerationLimiter(maxLinearAcceleration);
-        //limiter.setMaxLinearSpeed(2.0f);
+        limiter.setMaxLinearAcceleration(maxLinearAcceleration);
         collisionAvoidanceSB.setLimiter(limiter);
         
         wanderSB = new Wander<Vector2>(this)
@@ -82,9 +82,9 @@ public class Pig extends Animal {
 				.setWanderOffset(1) //
 				.setWanderOrientation(1) //
 				.setWanderRadius(1) //
-				.setWanderRate(MathUtils.PI / 10);
+				.setWanderRate(.1f);
         
-        limiter.setMaxLinearAcceleration(maxLinearAcceleration);
+
         fleeSB = new Flee<Vector2>(this);
         fleeSB.setLimiter(limiter);
     }

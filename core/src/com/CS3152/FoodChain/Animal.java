@@ -40,6 +40,7 @@ public abstract class Animal extends Actor{
     // A vector used for temporary calculations
     private Vector2 tmp;
     private Vector2 tmp2;
+    private Vector2 tmp3;
 
 	//texture used in getCenter and setCenter
 	private float texWidth;
@@ -95,6 +96,7 @@ public abstract class Animal extends Actor{
 		
 		this.tmp = new Vector2();
 		this.tmp2 = new Vector2();
+		this.tmp3 = new Vector2();
 
 		updateLOS(0);
 		setTexWidth(GameMap.pixelsToMeters(tr.getRegionWidth()));
@@ -282,13 +284,13 @@ public abstract class Animal extends Actor{
 			Vector2 sectorLine = getLeftSectorLine();
 			tmp2.add(GameMap.metersToPixels(sectorLine.x), GameMap.metersToPixels(sectorLine.y));
 			canvas.drawLine(Color.YELLOW, tmp, tmp2);
-			tmp2.set(GameMap.metersToPixels(position.x), GameMap.metersToPixels(position.y));
+			tmp3.set(GameMap.metersToPixels(position.x), GameMap.metersToPixels(position.y));
 			sectorLine = getRightSectorLine();
-			tmp2.add(GameMap.metersToPixels(sectorLine.x), GameMap.metersToPixels(sectorLine.y));
-			canvas.drawLine(Color.YELLOW, tmp, tmp2);
+			tmp3.add(GameMap.metersToPixels(sectorLine.x), GameMap.metersToPixels(sectorLine.y));
+			canvas.drawLine(Color.YELLOW, tmp, tmp3);
 			
 			//draw cone
-			canvas.drawCone(Color.RED,  GameMap.metersToPixels(position.x),  GameMap.metersToPixels(position.y), 0, 5, 2);
+			//canvas.drawCone(Color.YELLOW, tmp, tmp2, tmp3,SIGHT_RADIUS,SIGHT_ANGLE);
 			
 			//draws patrol waypoint if they have waypoints
 			if(wayPoints.size>0){
