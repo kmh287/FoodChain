@@ -246,10 +246,10 @@ public abstract class Actor extends CircleObject implements Steerable<Vector2>{
     		anyAccelerations = true;
     	}
 
-    	// Update orientation and angular velocity
     	// If we haven't got any velocity, then we can do nothing.
     		Vector2 linVel = getLinearVelocity();
     		if (!linVel.isZero(getZeroLinearSpeedThreshold())) {
+    			
     			float newOrientation = vectorToAngle(linVel);
     			//body.setAngularVelocity((newOrientation-getAngularVelocity()) * deltaTime); // this is superfluous if independentFacing is always true
     			//body.setTransform(body.getPosition(), oldAngle+((newOrientation-oldAngle)*deltaTime*5));
@@ -257,7 +257,6 @@ public abstract class Actor extends CircleObject implements Steerable<Vector2>{
     		}
  
     	if (anyAccelerations) {
-
 
     		// TODO:
     		// Looks like truncating speeds here after applying forces doesn't work as expected.

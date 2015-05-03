@@ -126,7 +126,7 @@ public class Wolf extends Animal{
     	super.setTexture(sprite);
     }
 
-	@Override
+	//@Override
 	public void setOrientation(float arg0) {
 		// TODO Auto-generated method stub
 		

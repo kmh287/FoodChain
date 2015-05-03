@@ -64,7 +64,8 @@ public class GameMode implements Screen {
 //	private Vector2 tmp;
 	private static final float DEFAULT_DENSITY = 1.0f;
 	
-	private int ticks=0;
+	private int ticks = 0;
+	private int lastResetTicks = 0; //Prevent restart spamming
 	
 	private float accumulator = 0;
 	
@@ -127,8 +128,7 @@ public class GameMode implements Screen {
         PreLoadContent(manager);
         manager.finishLoading();
         LoadContent(manager);
-        initializeLevel(canvas, "PatrolTest2");
-        
+        initializeLevel(canvas, "field");
 	}
         
  	private void initializeLevel(GameCanvas canvas, String levelName){
@@ -140,22 +140,18 @@ public class GameMode implements Screen {
         map.setDimensions();
         map.createGraph();
         map.LoadContent(manager);
-        canvas.getUIControllerStage().loadTextures(manager);
-        animals = new ArrayList<Animal>();
-        /*size of animal list + the player 
-        controls = new InputController[animals.size() + 1]; 
-        controls[0] = new PlayerController();
-        tmp = new Vector2();
-		*/
         collisionController = new CollisionController();
         map.addTilesToWorld(collisionController);
         steerables = new ArrayList<Steerable<Vector2>>();
         steerables.addAll(map.getTileList());
+
         //Get the animal types from map
         //but build and keep the actual list here
+        animals = new ArrayList<Animal>();
         List<Actor.actorType> aTypes = 
                             map.getActorTypeList();
         List<Vector2> coordinates = map.getCoordinates();
+
         createHunter(map.getHunterStartingCoordinate());
         buildAnimalList(aTypes, coordinates,map.getPatrolPaths());
         steerables.addAll(animals);
@@ -167,12 +163,12 @@ public class GameMode implements Screen {
         
         trapController = new TrapController(hunter, map, collisionController,numPigs,numWolves);
 
-        
         canvas.getUIControllerStage().setTrapController(trapController);
+        canvas.getUIControllerStage().loadTextures(manager);
         
-
+        //Setup traps and the trap UI
 	    traps = (HashMap<String, List<Trap>>) trapController.getInventory();
-    
+  
 	    player = new PlayerController(); 
         List<Actor> actors = new ArrayList<Actor>();
         actors.add(hunter);
@@ -183,11 +179,6 @@ public class GameMode implements Screen {
         }
         
         createSteeringBehaviors();
-        
-//        controls[1] = new AIController(animals.get(0), collisionController.getWorld(),
-//				    				   map, actors);
-//        controls[2] = new AIController(animals.get(1), collisionController.getWorld(),
-//				   					   map, actors);
         Actor[] actorArray = new Actor[actors.size()];
         actors.toArray(actorArray);
         GameMode.actors = new Array<Actor>(actorArray);
@@ -250,8 +241,9 @@ public class GameMode implements Screen {
 	 * @param patrolPaths 
 	 */
 	private void buildAnimalList(List<actorType> aTypes,
-	                             List<Vector2> coordinates, List<List<Vector2>> patrolPaths){
-	    if (coordinates.size() != aTypes.size()){
+	                             List<Vector2> coordinates, 
+	                             List<List<Vector2>> patrolPaths){
+	    if (coordinates.size() != aTypes.size() || patrolPaths.size() != aTypes.size()){
 	        throw new IllegalArgumentException("Lists of unequal size");
 	    }
 	    //may need editing
@@ -266,28 +258,26 @@ public class GameMode implements Screen {
 	        Animal newAnimal;
 	        switch(currType){
 	            case PIG:
-	            		Pig.loadTexture(manager);
+	            	Pig.loadTexture(manager);
 	                newAnimal = new Pig(map.mapXToScreen((int)coord.x), 
-	                		map.mapYToScreen((int)coord.y),convertPatrol(patrol),
-	                		pathFinder,map);
+	                					map.mapYToScreen((int)coord.y),convertPatrol(patrol),
+	                					pathFinder,map);
 	                newAnimal.setDensity(DEFAULT_DENSITY);
 	                animals.add(newAnimal);
 	                break;
 	                
 	            case WOLF:
-	            		Wolf.loadTexture(manager);
+	            	Wolf.loadTexture(manager);
 	                newAnimal = new Wolf(map.mapXToScreen((int)coord.x), 
 	                					 map.mapYToScreen((int)coord.y),convertPatrol(patrol),
 	                					 pathFinder,map);
-	                //See comment in sheep
 	                animals.add(newAnimal);
 	                break;
 	                
 	            case OWL:
-            			Owl.loadTexture(manager);
-            			newAnimal = new Owl(map.mapXToScreen((int)coord.x), 
-            								map.mapYToScreen((int)coord.y),pathFinder,map);
-	                //See comment in sheep
+            		Owl.loadTexture(manager);
+            		newAnimal = new Owl(map.mapXToScreen((int)coord.x), 
+            							map.mapYToScreen((int)coord.y),pathFinder,map);
 	                animals.add(newAnimal);
 	                break;
 	            default:
@@ -296,7 +286,6 @@ public class GameMode implements Screen {
 	        }
 	        newAnimal.setDensity(DEFAULT_DENSITY);
 	        newAnimal.setBodyType(BodyDef.BodyType.DynamicBody);
-	        //collisionController.addObject(newAnimal, currType);
 	        collisionController.addObject(newAnimal);
 	    }
 	    
@@ -373,8 +362,30 @@ public class GameMode implements Screen {
     		
     		//Check if reset has been pressed
     		if (controls[0].resetPressed()){
-    			initializeLevel(canvas, levelName);
+    			//Only allow the player to reset if they last reset over a second ago
+    			if (ticks - lastResetTicks > 60){
+    				initializeLevel(canvas, levelName);
+    				lastResetTicks = ticks;
+    			}
     		}
+    		
+//    		//DELETE THIS FOR RELEASE
+//    		int levelNum = controls[0].levelPressed();
+//    		if (levelNum != -1){
+//    			switch(levelNum){
+//    			case 1: 
+//    				initializeLevel(canvas, "BetaLevel1");
+//    				break;
+//    			case 2:
+//    				initializeLevel(canvas, "BetaLevel2");
+//    				break;
+//    			default:
+//    				initializeLevel(canvas, "BetaLevel3");
+//    				break;
+//    			}
+//    		}
+    		
+
     	
     		//Check the objective every second, end the game if the player has won or if the objective
     		//cannot be achieved
@@ -517,7 +528,7 @@ public class GameMode implements Screen {
         	canvas.beginCamStart(GameMap.metersToPixels(hunter.getPosition().x), GameMap.metersToPixels(hunter.getPosition().y));
         	start=false;
         }
-        
+
         //hunter.drawDebug(canvas);
     	//Draw the hunter
     	//Draw the animals
@@ -532,8 +543,7 @@ public class GameMode implements Screen {
         		if (!animal.getTrapped()) {
             		animal.draw(canvas);
         		}
-        	}
-            
+        	}           
             //animal.drawDebug(canvas);
         }
         //if (hunter.getAlive()) {
