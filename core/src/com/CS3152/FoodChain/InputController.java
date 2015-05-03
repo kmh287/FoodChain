@@ -42,7 +42,7 @@ public interface InputController {
 	* 
 	* @return the action of this ship 
 	*/
-	public Vector2 getAction();
+	public Vector2 getAction(float delta);
 	
 	public boolean isSpacePressed();
 	

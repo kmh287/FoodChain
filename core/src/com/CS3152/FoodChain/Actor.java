@@ -1,5 +1,6 @@
 package com.CS3152.FoodChain;
 
+
 import com.badlogic.gdx.ai.steer.Steerable;
 import com.badlogic.gdx.ai.steer.SteeringAcceleration;
 import com.badlogic.gdx.ai.steer.SteeringBehavior;
@@ -26,7 +27,7 @@ public abstract class Actor extends CircleObject implements Steerable<Vector2>{
 	
 	protected SteeringBehavior<Vector2> steeringBehavior;
 	
-	private final SteeringAcceleration<Vector2> steeringOutput = new SteeringAcceleration<Vector2>(new Vector2());
+	protected final SteeringAcceleration<Vector2> steeringOutput = new SteeringAcceleration<Vector2>(new Vector2());
 	
 	// Whether the actor is alive
 	private boolean alive = true;
@@ -62,7 +63,7 @@ public abstract class Actor extends CircleObject implements Steerable<Vector2>{
     
     public Actor(TextureRegion tr, actorType type, float x, float y, float width, 
     		     float height, actorType[] victims) {
-	    super(tr,x,y, height/2);
+	    super(tr, GameMap.pixelsToMeters(x), GameMap.pixelsToMeters(y), GameMap.pixelsToMeters(height/2));
 	    this.type = type;
 	    this.tr = tr;
         this.facing = new Vector2();
@@ -234,33 +235,34 @@ public abstract class Actor extends CircleObject implements Steerable<Vector2>{
     	boolean anyAccelerations = false;
 
     	// Update position and linear velocity.
+    	float oldAngle=getAngle();
     	if (!steeringOutput.linear.isZero()) {
     		//Vector2 force = steeringOutput.linear.scl(deltaTime);
-    		Vector2 force = steeringOutput.linear.scl(1);
-    		//body.applyForceToCenter(force, true);
-    		body.applyLinearImpulse(force, getPosition(), true);
+    		Vector2 force = steeringOutput.linear.scl(10);
+    		body.applyForceToCenter(force, true);
+    		//body.applyLinearImpulse(force, getPosition(), true);
     		anyAccelerations = true;
     	}
 
     	// Update orientation and angular velocity
-    	if (isIndependentFacing()) {
-    		if (steeringOutput.angular != 0) {
-    			body.applyTorque(steeringOutput.angular * deltaTime, true);
-    			anyAccelerations = true;
-    		}
-    	}
-    	else {
+ //   	System.out.println(getAngularVelocity());
+		//body.applyTorque(100, true);
+		
     		// If we haven't got any velocity, then we can do nothing.
     		Vector2 linVel = getLinearVelocity();
     		if (!linVel.isZero(getZeroLinearSpeedThreshold())) {
+    			
     			float newOrientation = vectorToAngle(linVel);
-    			body.setAngularVelocity((newOrientation - getAngularVelocity()) * deltaTime); // this is superfluous if independentFacing is always true
+    			//body.setAngularVelocity((newOrientation-getAngularVelocity()) * deltaTime); // this is superfluous if independentFacing is always true
+    			//body.setTransform(body.getPosition(), oldAngle+((newOrientation-oldAngle)*deltaTime*5));
     			body.setTransform(body.getPosition(), newOrientation);
     		}
-    	}
-
+ 
+    	//body.applyTorque(10, true);
+		//body.applyAngularImpulse(10, true);
     	if (anyAccelerations) {
-    		// body.activate();
+
+    		// body.setActive(true);
 
     		// TODO:
     		// Looks like truncating speeds here after applying forces doesn't work as expected.
@@ -326,4 +328,8 @@ public abstract class Actor extends CircleObject implements Steerable<Vector2>{
     public void setZeroLinearSpeedThreshold (float value) {
     	throw new UnsupportedOperationException();
     }
+    
+    public abstract void calculateSteering();
+    
+    public abstract void applySteering(float delta);
 }

@@ -25,60 +25,59 @@ public class GameplayController {
 		int i = 1;
 		//System.out.println(objects.size());
 		for(Actor actor : actors) {
-			
-			if (actor instanceof Hunter){
-				
-				move((Hunter) actor);
-			}
-			//unsure about order of objects.
-			else if (actor instanceof Animal){
-				/**if (actor instanceof Owl) {
-					//System.out.println ("instanceof"); 
-					moveOwl((Owl) actor, i); 
+			if (actor instanceof Animal && actor.getAlive()){
+				if (actor instanceof Owl) {
+					
 				}
 				else {
-					move((Animal) actor,i);
-				
-				}*/
-				actor.update(delta);
+					((AIController) controls[i]).preUpdate();
+				}
+			}
+			if (!(actor instanceof Hunter)) {
 				i++;
 			}
-			//System.out.println(o.getPosition().toString());
+		}
+		
+		i = 1;
+		for(Actor actor : actors) {
+			if (actor instanceof Hunter){
+				Hunter hunter = (Hunter) actor;
+				hunter.setLinearVelocity(controls[0].getAction(delta).scl(hunter.getMoveSpeed()));
+				hunter.setFacing(controls[0].getAction(delta));
+			}
+			else if (actor.getAlive()){
+				if (actor instanceof Owl) {
+					
+				}
+				else {
+					((AIController) controls[i]).update(delta);
+				}
+			}
+			if (!(actor instanceof Hunter)) {
+				i++;
+			}
 		}
 	}
 	
-	/**
-	 * Checks to see if it is possible to move, if not, then move player back. 
-	 * Collision physics are modeled after first programming lab.
-	 * 
-	 * @param hunter the hunter
-	 * 
-	 * TODO have to decide how to handle multiple collisions and which collisions to process first. like animal or tiles
-	 */
-	private void move(Hunter actor) {
-		actor.setLinearVelocity(controls[0].getAction().scl(actor.getMoveSpeed()));
-		actor.setFacing(controls[0].getAction());
-	}
-	
-	private void move(Animal actor,int index) {
+	private void move(Animal actor, int index, float delta) {
 		if (actor.getAlive()) {
 			if (actor instanceof Owl) {
 				//System.out.println("yo");
 			}
-			actor.setLinearVelocity(controls[index].getAction().scl(actor.getMoveSpeed() + 100*AIController.getPanicPercentage()));
+			actor.setLinearVelocity(controls[index].getAction(delta).scl(actor.getMoveSpeed() + 100*AIController.getPanicPercentage()));
 			float angle = ((AIController)controls[index]).getAngle();
 			actor.updateLOS(angle);
 			//actor.setAngle(((AIController)controls[index]).getAngle());
-			actor.setFacing(((AIController) controls[index]).getAction());
+			actor.setFacing(((AIController) controls[index]).getAction(delta));
 		}
 	}
 	
-	private void moveOwl(Animal actor,int index) {
+	private void moveOwl(Animal actor,int index, float delta) {
 		if (actor.getAlive()) {
 			//actor.setLinearVelocity(controls[index].getAction());
 			//actor.updateLOS(angle);
 			//actor.setAngle(((AIController)controls[index]).getAngle());
-			actor.setFacing(((AIController) controls[index]).getAction());
+			actor.setFacing(((AIController) controls[index]).getAction(delta));
 		}
 	}
 }

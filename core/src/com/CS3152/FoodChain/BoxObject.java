@@ -212,14 +212,19 @@ public class BoxObject extends SimplePhysicsObject {
 	 * @param canvas Drawing context
 	 */
 	public void draw(GameCanvas canvas) {
-		canvas.draw(texture,Color.WHITE,origin.x,origin.y,getX(),getY(),getAngle(),drawScale.x,drawScale.y);
+		float testx = GameMap.metersToPixels(getX());
+		float testy = GameMap.metersToPixels(getY());
+		canvas.draw(texture,Color.WHITE,origin.x,origin.y,
+				GameMap.metersToPixels(getX()),
+				GameMap.metersToPixels(getY()),
+				getAngle(),drawScale.x,drawScale.y);
 	}
 
 	@Override
 	public void drawDebug(GameCanvas canvas) {
 		// TODO Auto-generated method stub
-		canvas.drawPhysics(shapeScaled,Color.YELLOW,PhysicsScaler.metersToPixels(getBody().getPosition().x), 
-				PhysicsScaler.metersToPixels(getBody().getPosition().y),getAngle());
+		canvas.drawPhysics(shapeScaled,Color.YELLOW,GameMap.metersToPixels(getBody().getPosition().x), 
+				GameMap.metersToPixels(getBody().getPosition().y),getAngle());
 	}
 	
 

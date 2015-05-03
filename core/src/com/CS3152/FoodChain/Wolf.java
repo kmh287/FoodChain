@@ -1,14 +1,20 @@
 package com.CS3152.FoodChain;
 
+import java.util.List;
+
+import com.badlogic.gdx.ai.steer.Steerable;
+import com.badlogic.gdx.ai.steer.behaviors.CollisionAvoidance;
 import com.badlogic.gdx.ai.steer.behaviors.PrioritySteering;
 import com.badlogic.gdx.ai.steer.behaviors.Seek;
 import com.badlogic.gdx.ai.steer.behaviors.Wander;
 import com.badlogic.gdx.ai.steer.limiters.LinearAccelerationLimiter;
+import com.badlogic.gdx.ai.steer.proximities.RadiusProximity;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 
 public class Wolf extends Animal{
     
@@ -27,41 +33,45 @@ public class Wolf extends Animal{
      * Public Constructor for a wolf
      * @param x Starting x position for this wolf
      * @param y Starting y position for this wolf
+     * @param patrol 
      */
-    public Wolf(float x, float y) {
+    public Wolf(float x, float y, List<Vector2> patrol) {
         super(new TextureRegion(tex), Actor.actorType.WOLF, x, y, 
-              prey, InputController.EAST);
+              prey, InputController.EAST,patrol);
         sprite = new FilmStrip(tex,1,4,4);
         drawScale.x = scaleXDrawWolf;
         drawScale.y = scaleYDrawWolf;
-        SIGHT_LENGTH = 1.5f*120;
-        SIGHT_ANGLE = 1.5f*0.35;
-        maxLinearSpeed = 500.0f;
-        maxLinearAcceleration = 0.0f;
-        maxAngularSpeed = 500.0f;
-        maxAngularAcceleration = 500.0f;
+        SIGHT_LENGTH = 2.4f;
+        SIGHT_ANGLE = 0.35;
+        maxLinearSpeed = 3.0f;
+        maxLinearAcceleration = 1.0f;
+        maxAngularSpeed = 20.0f;
+        maxAngularAcceleration = 20.0f;
         independentFacing = false;
     }
     
     public void createSteeringBehaviors() {
-    	Seek<Vector2> seekSB = new Seek<Vector2>(this, GameMode.hunter);
-    	seekSB.setLimiter(new LinearAccelerationLimiter(250));
+    	Steerable[] steers = new Steerable[GameMode.steerables.size()];
+        GameMode.steerables.toArray(steers);
+        Array<Steerable<Vector2>> steerArray = new Array<Steerable<Vector2>>(steers);
+        
+        RadiusProximity proximity = new RadiusProximity<Vector2>(this, steerArray, 1.0f);
+        collisionAvoidanceSB = new CollisionAvoidance<Vector2>(this, proximity);
+        collisionAvoidanceSB.setLimiter(new LinearAccelerationLimiter(2.0f));
+        
+    	seekSB = new Seek<Vector2>(this);
+    	seekSB.setLimiter(new LinearAccelerationLimiter(3.0f));
     	
-    	Wander<Vector2> wanderSB = new Wander<Vector2>(this)
+    	wanderSB = new Wander<Vector2>(this)
         		// Don't use Face internally because independent facing is off
 				.setFaceEnabled(false) //
 				// We don't need a limiter supporting angular components because Face is not used
 				// No need to call setAlignTolerance, setDecelerationRadius and setTimeToTarget for the same reason
-				.setLimiter(new LinearAccelerationLimiter(500)) //
-				.setWanderOffset(500) //
-				.setWanderOrientation(10) //
-				.setWanderRadius(100) //
+				.setLimiter(new LinearAccelerationLimiter(2.0f)) //
+				.setWanderOffset(1) //
+				.setWanderOrientation(GameMode.random.nextFloat()) //
+				.setWanderRadius(1) //
 				.setWanderRate(MathUtils.PI / 5);
-        
-        PrioritySteering<Vector2> prioritySteering = new PrioritySteering<Vector2>(this);
-        //prioritySteering.add(seekSB);
-        prioritySteering.add(wanderSB);
-        setSteeringBehavior(prioritySteering);
     }
 
     @Override
@@ -76,7 +86,7 @@ public class Wolf extends Animal{
 
 		this.rightSectorLine.set((float)(SIGHT_LENGTH*Math.cos(angle - SIGHT_ANGLE)),
 								 (float)(SIGHT_LENGTH*Math.sin(angle - SIGHT_ANGLE)));
-	}
+    }
     
     public static void loadTexture(AssetManager manager) {
         if (tex == null){
@@ -87,6 +97,11 @@ public class Wolf extends Animal{
             }
         }
     }
+   
+    public void setTarget(Actor actor) {
+      ((Seek<Vector2>) seekSB).setTarget(actor);
+    }
+    
     public void updateWalkFrame(){
     	int frame = sprite.getFrame();
     	frame++;

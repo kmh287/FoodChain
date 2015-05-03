@@ -3,6 +3,8 @@
  */
 package com.CS3152.FoodChain;
 
+import java.util.List;
+
 import com.badlogic.gdx.ai.steer.Steerable;
 import com.badlogic.gdx.ai.steer.behaviors.CollisionAvoidance;
 import com.badlogic.gdx.ai.steer.behaviors.Flee;
@@ -40,52 +42,50 @@ public class Pig extends Animal {
      * Public Constructor for a sheep
      * @param x Starting x position for this sheep
      * @param y Starting y position for this sheep
+     * @param patrol 
      */
-    public Pig(float x, float y) {
+    public Pig(float x, float y, List<Vector2> patrol) {
         super(new TextureRegion(tex), Actor.actorType.PIG, x, y, 
-              prey, InputController.EAST);
+              prey, InputController.EAST,patrol);
         sprite = new FilmStrip(tex,1,4,4);
         spriteDeath = new FilmStrip(deathTex,1,7,7);
         drawScale.x=scaleXDrawSheep;
         drawScale.y=scaleYDrawSheep;
-        SIGHT_LENGTH = 120;
+        SIGHT_LENGTH = 2.4f;
         SIGHT_ANGLE = 0.35;
-        maxLinearSpeed = 1000.0f;
-        maxLinearAcceleration = 0.0f;
-        maxAngularSpeed = 500.0f;
-        maxAngularAcceleration = 500.0f;
+        boundingRadius = GameMap.pixelsToMeters(40.0f);
+        maxLinearSpeed = 1f;
+        maxLinearAcceleration = 10.0f;
+        maxAngularSpeed = 100f;
+        maxAngularAcceleration = 100f;
         independentFacing = false;
     }
     
     public void createSteeringBehaviors() {
-    	Animal[] animals = new Animal[GameMode.animals.size()];
-        GameMode.animals.toArray(animals);
-        Array<Animal> animalArray = new Array<Animal>(animals);
+    	Steerable[] steers = new Steerable[GameMode.steerables.size()];
+        GameMode.steerables.toArray(steers);
+        Array<Steerable<Vector2>> steerArray = new Array<Steerable<Vector2>>(steers);
         
-        RadiusProximity proximity = new RadiusProximity<Vector2>(this, animalArray, 100.0f);
-        CollisionAvoidance<Vector2> collisionAvoidanceSB = new CollisionAvoidance<Vector2>(this, proximity);
+        RadiusProximity proximity = new RadiusProximity<Vector2>(this, steerArray, .00001f);
+        collisionAvoidanceSB = new CollisionAvoidance<Vector2>(this, proximity);
+        LinearAccelerationLimiter limiter = new LinearAccelerationLimiter(2.0f);
+        //limiter.setMaxLinearSpeed(2.0f);
+        collisionAvoidanceSB.setLimiter(limiter);
         
-        Hunter hunter = GameMode.hunter;
-        
-        //Flee<Vector2> fleeSB = new Flee<Vector2>(this, GameMode.hunter);
-        //fleeSB.setLimiter(new LinearAccelerationLimiter(250));
-        
-        Wander<Vector2> wanderSB = new Wander<Vector2>(this)
+        wanderSB = new Wander<Vector2>(this)
         		// Don't use Face internally because independent facing is off
 				.setFaceEnabled(false) //
 				// We don't need a limiter supporting angular components because Face is not used
 				// No need to call setAlignTolerance, setDecelerationRadius and setTimeToTarget for the same reason
-				.setLimiter(new LinearAccelerationLimiter(500)) //
-				.setWanderOffset(120) //
-				.setWanderOrientation(10) //
-				.setWanderRadius(160) //
-				.setWanderRate(MathUtils.PI);
+				.setLimiter(limiter) //
+				.setWanderOffset(1) //
+				.setWanderOrientation(1) //
+				.setWanderRadius(1) //
+				.setWanderRate(MathUtils.PI / 10);
         
-        PrioritySteering<Vector2> prioritySteering = new PrioritySteering<Vector2>(this);
-        prioritySteering.add(collisionAvoidanceSB);
-        //prioritySteering.add(fleeSB);
-        prioritySteering.add(wanderSB);
-        setSteeringBehavior(prioritySteering);
+        limiter.setMaxLinearAcceleration(3.0f);
+        fleeSB = new Flee<Vector2>(this);
+        fleeSB.setLimiter(limiter);
     }
 
     /* (non-Javadoc)
@@ -118,6 +118,11 @@ public class Pig extends Animal {
                 deathTex = manager.get(DEATH_TEX);
             }
         }
+    }
+    
+    @Override
+    public void setTarget(Actor actor) {
+        ((Flee<Vector2>) fleeSB).setTarget(actor);
     }
     
     public void updateWalkFrame(){
