@@ -37,6 +37,8 @@ public class GameMode implements Screen {
 	
     private GameMap map;
     private AssetManager manager;
+    private List<String> levelList;
+    private Iterator<String> levelListIt;
     public static Array<Actor> actors;
     public static List<Animal> animals;
     public static List<Steerable<Vector2>> steerables;
@@ -67,6 +69,11 @@ public class GameMode implements Screen {
 	private int lastResetTicks = 0; //Prevent restart spamming
 	
 	private float accumulator = 0;
+	
+	//Trpa set delay
+	int TRAP_SETUP_FRAMES = 90; //60FPS so this is 1.5s
+	boolean settingTrap;
+	int trapSetProgress;
 	
 	/**sound assets here **/
 	//private static final String TRAP_DROP_FILE = "sounds/trap_drop.mp3";
@@ -117,17 +124,22 @@ public class GameMode implements Screen {
      * 
      * @param canvas The singular instance of GameCanvas
      */
-	public GameMode(GameCanvas canvas) {
+	public GameMode(GameCanvas canvas, List<String> levelList) {
 		
 		this.canvas = canvas;
 		this.stage = stage;
+		this.levelList = levelList;
+		this.levelListIt = levelList.iterator();
+		if (levelList.size() == 0){
+			throw new IllegalArgumentException("At least one level must be in passed in level set");
+		}
 		start=true;
         //active = false;
         manager = new AssetManager();
         PreLoadContent(manager);
         manager.finishLoading();
         LoadContent(manager);
-        initializeLevel(canvas, "field");
+        initializeLevel(canvas, levelListIt.next());
 	}
         
  	private void initializeLevel(GameCanvas canvas, String levelName){
@@ -161,6 +173,8 @@ public class GameMode implements Screen {
         controls[0] = new PlayerController();        
         
         trapController = new TrapController(hunter, map, collisionController,numPigs,numWolves);
+        settingTrap = false;
+        trapSetProgress = 0;
 
         canvas.getUIControllerStage().setTrapController(trapController);
         canvas.getUIControllerStage().loadTextures(manager);
@@ -388,14 +402,19 @@ public class GameMode implements Screen {
     		if (ticks % 60 == 0){
 	    		gameCondition con = checkObjective();
 	    		if (con == gameCondition.WIN){
-	    			//System.out.println("You win!");
+	    			if (levelListIt.hasNext()){
+	    				initializeLevel(canvas, levelListIt.next());
+	    			}
 	    		}
 	    		else if (con == gameCondition.LOSE){
-	    			//System.out.println("You lose");
+	    			//RESET -- maybe add a timer and some onscreen indication.
+    				initializeLevel(canvas, levelName);
+    				lastResetTicks = ticks;
 	    		}
     		}
     	
-    	gameplayController.update(delta);
+    		//The hunter can move when not setting a trap
+    		gameplayController.update(delta, !settingTrap);
     	
 		hunter.update(delta);
 		trapController.setSelectedTrap(controls[0].getNum());
@@ -404,11 +423,26 @@ public class GameMode implements Screen {
 		
 		controls[0].update();
 		
-		if (controls[0].isSpacePressed()  && trapController.canSetTrap()) {
-			//increment hunter frames
-			//set down in front of hunter.
-			trapController.setTrap(hunter);
-			hunter.play(SoundController.TRAP_SOUND);
+		if (settingTrap){
+			if (trapSetProgress >= TRAP_SETUP_FRAMES){
+				trapSetProgress = 0;
+				settingTrap = false;
+				trapController.setTrap(hunter);
+				hunter.play(SoundController.TRAP_SOUND);
+			}
+			else{
+				trapSetProgress++;
+				//This method is an unimplemented stub at the moment
+				//Please fill it in, then delete this comment
+				hunter.updateTrapFrame();
+			}
+		}
+		
+		if (controls[0].isSpacePressed()  && trapController.canSetTrap() && !settingTrap) {
+			
+			//Begin the trap set process
+			settingTrap = true;
+			trapSetProgress = 0;
 		}
 		
 		
@@ -418,7 +452,7 @@ public class GameMode implements Screen {
 			}
 		}
 		//if WASD pressed, then update frame
-		else if (controls[0].getAction(delta)!=InputController.NO_ACTION){
+		else if (controls[0].getAction(delta)!=InputController.NO_ACTION && !settingTrap){
 			if(ticks%10==0){
 				hunter.updateWalkFrame();
 			}

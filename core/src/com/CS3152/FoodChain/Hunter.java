@@ -131,6 +131,11 @@ public class Hunter extends Actor {
     	super.setTexture(spriteDeath);
     }
     
+	public void updateTrapFrame() {
+		// TODO Auto-generated method stub
+		//Please fill this in with the trap setting animation! 
+	}
+    
     public FilmStrip Sprite(){
     	return sprite;
     }
