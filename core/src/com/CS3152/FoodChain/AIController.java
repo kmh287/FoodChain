@@ -373,8 +373,6 @@ public class AIController implements InputController {
 			angle += Math.PI/100;
 			animal.setAngle(angle);
 			animal.updateLOS(angle);
-			vect.set(vect.x + (float)Math.cos(angle), vect.y + (float)Math.sin(angle));
-			goal.set(vect.x, vect.y);
 			Vector2 tmp = goal;
 			tmp.sub(getAnimal().getPosition());
 			//changeStateIfApplicable();
