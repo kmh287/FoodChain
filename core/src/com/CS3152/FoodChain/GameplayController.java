@@ -32,7 +32,7 @@ public class GameplayController {
 		for(Actor actor : actors) {
 			if (actor instanceof Animal && actor.getAlive()){
 				if (actor instanceof Owl) {
-					
+					((AIController) controls[i]).preUpdate();
 				}
 				else {
 					((AIController) controls[i]).preUpdate();
@@ -57,12 +57,7 @@ public class GameplayController {
 				}
 			}
 			else if (actor.getAlive()){
-				if (actor instanceof Owl) {
-					
-				}
-				else {
-					((AIController) controls[i]).update(delta);
-				}
+				((AIController) controls[i]).update(delta);
 			}
 			if (!(actor instanceof Hunter)) {
 				i++;

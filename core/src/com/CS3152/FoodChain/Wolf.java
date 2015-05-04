@@ -2,6 +2,7 @@ package com.CS3152.FoodChain;
 
 import java.util.List;
 
+import com.badlogic.gdx.ai.pfa.indexed.IndexedAStarPathFinder;
 import com.badlogic.gdx.ai.steer.Steerable;
 import com.badlogic.gdx.ai.steer.behaviors.CollisionAvoidance;
 import com.badlogic.gdx.ai.steer.behaviors.PrioritySteering;
@@ -44,15 +45,16 @@ public class Wolf extends Animal{
      * @param y Starting y position for this wolf
      * @param patrol 
      */
-    public Wolf(float x, float y, List<Vector2> patrol) {
+    public Wolf(float x, float y, List<Vector2> patrol,
+    		IndexedAStarPathFinder<MapNode> pathFinder, GameMap map, TiledManhattanDistance heuristic) {
         super(new TextureRegion(tex), Actor.actorType.WOLF, x, y, 
-              prey, InputController.EAST,patrol);
+              prey, InputController.EAST,patrol, pathFinder, map, heuristic);
         sprite = new FilmStrip(tex,1,4,4);
         spriteDeathTrap = new FilmStrip(deathTexTrap,1,8,8);
         drawScale.x = scaleXDrawWolf;
         drawScale.y = scaleYDrawWolf;
         SIGHT_LENGTH = 2.4f;
-        SIGHT_RADIUS = 1.5f;
+        SIGHT_RADIUS = 0f;
         SIGHT_ANGLE = 0.35;
         maxLinearSpeed = 4f;
         maxLinearAcceleration = 10.0f;
@@ -66,8 +68,8 @@ public class Wolf extends Animal{
         GameMode.steerables.toArray(steers);
         Array<Steerable<Vector2>> steerArray = new Array<Steerable<Vector2>>(steers);
         
-        RadiusProximity proximity = new RadiusProximity<Vector2>(this, steerArray, 0.01f);
-        collisionAvoidanceSB = new CollisionAvoidance<Vector2>(this, proximity);
+        RadiusProximity proximity = new RadiusProximity<Vector2>(this, steerArray, 0.0001f);
+        collisionAvoidanceSB = new CollisionAvoidance2<Vector2>(this, proximity);
         collisionAvoidanceSB.setLimiter(new LinearAccelerationLimiter(maxLinearAcceleration));
         
     	seekSB = new Seek<Vector2>(this);

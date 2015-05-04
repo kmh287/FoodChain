@@ -477,7 +477,7 @@ public class GameMap implements IndexedGraph<MapNode> {
 //    public HashMap<String, List<Trap>> getStartingInventory() {
 //        return this.hunterStartingInventory; 
 //    }
-
+	
 	public void addTilesToWorld(CollisionController collisionController) {
 		this.tileList = new ArrayList<Tile>();
 		for (int i = 0; i < this.layout.length; ++i){
@@ -487,7 +487,13 @@ public class GameMap implements IndexedGraph<MapNode> {
         			Tile t = new Tile(tr, (float)mapXToScreen(j), (float)mapYToScreen(i),
         										 (float)0.9 * tr.getRegionWidth(), (float) 0.9 * tr.getRegionHeight(),
         										 curr);
-        			if (curr != Tile.tileType.GRASS && curr != Tile.tileType.DIRT) {
+        			if (curr == tileType.BUSH || curr == tileType.TREE ||
+        				curr == tileType.WATER || curr == tileType.N_SHORE ||
+        				curr == tileType.NE_SHORE || curr == tileType.E_SHORE ||
+        				curr == tileType.SE_SHORE || curr == tileType.S_SHORE ||
+        				curr == tileType.SW_SHORE || curr == tileType.W_SHORE ||
+        				curr == tileType.NW_SHORE) {
+        				
         				tileList.add(t);
         			}
         			t.setBodyType(BodyDef.BodyType.StaticBody);
