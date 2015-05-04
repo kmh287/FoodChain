@@ -361,7 +361,14 @@ public class AIController implements InputController {
 	public void update(float delta) {
 		// TODO Auto-generated method stub
 		if (animal instanceof Owl) {
-			
+			float angle = animal.getAngle();
+			angle += Math.PI/800;
+			animal.updateLOS(angle);
+			vect.set(vect.x + (float)Math.cos(angle), vect.y + (float)Math.sin(angle));
+			goal.set(vect.x, vect.y);
+			Vector2 tmp = goal;
+			tmp.sub(getAnimal().getPosition());
+			animal.setFacing(tmp);
 		}
 		else {
 			animal.applySteering(delta);
@@ -452,12 +459,7 @@ public class AIController implements InputController {
 			    	turns--;
 			    	break;
 			    case PATROL:
-<<<<<<< HEAD
-			    	//animal.setState(State.PATROL);
-			    	//this code is commented out until we can resolve state machine
-=======
 			    	animal.setState(State.PATROL);
->>>>>>> 3d0fb71ad1b989eb49a74881c413643bfd51e6e8
 			    	if (hasTarget()) {
 				    	  if (animal instanceof Pig) {
 				    	    animal.setState(State.FLEE);

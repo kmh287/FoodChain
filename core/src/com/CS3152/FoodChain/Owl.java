@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import java.util.*;
 
 public class Owl extends Animal {
 	
@@ -15,12 +16,12 @@ public class Owl extends Animal {
 	private static float scaleXDrawOwl = .23f;
 	private static float scaleYDrawOwl = .23f;
 	
-    static final Actor.actorType prey[] = {Actor.actorType.PIG,
-    									   Actor.actorType.WOLF, Actor.actorType.HUNTER};
+    static final Actor.actorType prey[] = {Actor.actorType.HUNTER};
     
-    public Owl(float x, float y, IndexedAStarPathFinder<MapNode> pathFinder, GameMap map) {
-        super(new TextureRegion(tex), Actor.actorType.OWL, x, y, 
-              prey, InputController.EAST, pathFinder, map);
+    public Owl(float x, float y, IndexedAStarPathFinder<MapNode> pathFinder, GameMap map,
+    		   List<Vector2> nullWaypoints) {
+    	super(new TextureRegion(tex), Actor.actorType.OWL, x, y, 
+              prey, InputController.EAST, nullWaypoints, pathFinder, map);
         drawScale.x = scaleXDrawOwl;
         drawScale.y = scaleYDrawOwl;
         SIGHT_LENGTH = 2.4f;
@@ -55,4 +56,10 @@ public class Owl extends Animal {
             }
         }
     }
+	
+	//@Override
+	public void setOrientation(float arg0) {
+		// TODO Auto-generated method stub
+			
+	}
 }

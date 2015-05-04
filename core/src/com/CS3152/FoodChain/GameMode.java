@@ -290,8 +290,12 @@ public class GameMode implements Screen {
 	                
 	            case OWL:
             		Owl.loadTexture(manager);
+            		List<Vector2> nullWaypoints = new ArrayList<Vector2>();
+                    nullWaypoints.add(new Vector2(0,0));
+                    nullWaypoints.add(nullWaypoints.get(0));
             		newAnimal = new Owl(map.mapXToScreen((int)coord.x), 
-            							map.mapYToScreen((int)coord.y),pathFinder,map);
+            							map.mapYToScreen((int)coord.y),pathFinder,map,
+            							nullWaypoints);
 	                animals.add(newAnimal);
 	                break;
 	            default:

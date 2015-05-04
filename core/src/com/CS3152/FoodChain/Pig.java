@@ -54,7 +54,7 @@ public class Pig extends Animal {
         drawScale.x=scaleXDrawSheep;
         drawScale.y=scaleYDrawSheep;
         SIGHT_LENGTH = 2.4f;
-        SIGHT_RADIUS = 1.5f;
+        SIGHT_RADIUS = 1f;
         SIGHT_ANGLE = 0.35;
         boundingRadius = GameMap.pixelsToMeters(40.0f);
         maxLinearSpeed = 3f;
@@ -69,7 +69,7 @@ public class Pig extends Animal {
         GameMode.steerables.toArray(steers);
         Array<Steerable<Vector2>> steerArray = new Array<Steerable<Vector2>>(steers);
         
-        RadiusProximity proximity = new RadiusProximity<Vector2>(this, steerArray, .1f);
+        RadiusProximity proximity = new RadiusProximity<Vector2>(this, steerArray, .0001f);
         collisionAvoidanceSB = new CollisionAvoidance<Vector2>(this, proximity);
         LinearAccelerationLimiter limiter = new LinearAccelerationLimiter(maxLinearAcceleration);
         limiter.setMaxLinearAcceleration(maxLinearAcceleration);

@@ -10,7 +10,7 @@ public class GDXRoot extends Game {
     
 	private List<String> buildLevelList(){
 		List<String> levelList = new ArrayList<String>();
-		levelList.add("kpatroltest");
+		levelList.add("Cycle");
 		levelList.add("kpatroltest2");
 		return levelList;
 	}
