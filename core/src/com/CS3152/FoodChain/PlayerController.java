@@ -72,14 +72,8 @@ public class PlayerController implements InputController{
 	    
 	} 
 	
-	public boolean isSpacePressed(){
-		//if space bar is held down for long time, then do not register
-		if(spaceTicks>1){
-			return false;
-		}
-		else{
-			return Gdx.input.isKeyPressed(Input.Keys.SPACE); 
-		}
+	public boolean isTrapSetPressed(){
+		return Gdx.input.isKeyPressed(Input.Keys.E); 
 	}
 	
 	public boolean isMousePressed(){
@@ -87,12 +81,8 @@ public class PlayerController implements InputController{
 	}
 
 	
-	public boolean isSpaceHeldDown(){
-		//return Gdx.input.isButtonPressed(Input.Buttons.LEFT);
-		if(spaceTicks>10){
-			return true;
-		}
-		return false;
+	public boolean isTrapPickupHeldDown(){
+		return Gdx.input.isKeyPressed(Input.Keys.Q);
 	}
 	
 	public boolean resetPressed(){

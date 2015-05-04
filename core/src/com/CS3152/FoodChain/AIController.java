@@ -344,13 +344,13 @@ public class AIController implements InputController {
 	}
 
 	@Override
-	public boolean isSpacePressed() {
+	public boolean isTrapSetPressed() {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
-	public boolean isSpaceHeldDown() {
+	public boolean isTrapPickupHeldDown() {
 		// TODO Auto-generated method stub
 		return false;
 	}
