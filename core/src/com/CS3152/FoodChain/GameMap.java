@@ -1,6 +1,6 @@
 package com.CS3152.FoodChain;
 
-import com.CS3152.FoodChain.Tile.tileType;
+import com.CS3152.FoodChain.Tile.tileType;	
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ai.pfa.Connection;
 import com.badlogic.gdx.ai.pfa.DefaultConnection;
@@ -8,12 +8,15 @@ import com.badlogic.gdx.ai.pfa.indexed.IndexedGraph;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.utils.Array;
 import com.google.gson.Gson;
+import com.badlogic.gdx.graphics.g2d.freetype.*;
+
 
 import java.util.*;
 
@@ -29,6 +32,7 @@ public class GameMap implements IndexedGraph<MapNode> {
     //the i'th coordinate in coordinates.
     private List<Actor.actorType> animals = null;
     private List<Vector2> coordinates = null;
+
     private List<List<Vector2>> patrolPaths = null;
     
     //Player information that needs to be stored
@@ -56,6 +60,8 @@ public class GameMap implements IndexedGraph<MapNode> {
     
     // The number of nodes within the map
     private int nodeCount;
+    private static String FONT_FILE = "shared/RetroGame.ttf";
+	private static int FONT_SIZE = 64;
 
     
     private static final String GRASS_TEX = "assets/grass.png";
@@ -125,6 +131,7 @@ public class GameMap implements IndexedGraph<MapNode> {
     		for (int i = 0; i < textureNameArray.length; ++i){
     			 manager.load(textureNameArray[i],Texture.class);
     		}
+ 
     		
         manager.finishLoading();
         

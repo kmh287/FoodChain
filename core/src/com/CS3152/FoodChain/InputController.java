@@ -46,6 +46,7 @@ public interface InputController {
 	
 	public boolean isTrapSetPressed();
 	
+
 	public boolean isTrapPickupHeldDown();
 	
 	public boolean resetPressed();
