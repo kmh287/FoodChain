@@ -498,8 +498,8 @@ public class GameMode implements Screen{
 	    		}
     		}
     	
-    		//The hunter can move when not setting a trap
-    		gameplayController.update(delta, !settingTrap);
+    	//The hunter can move when not setting a trap
+    	gameplayController.update(delta, !settingTrap);
     	
 		hunter.update(delta);
 		trapController.setSelectedTrap(controls[0].getNum());
@@ -659,11 +659,11 @@ public class GameMode implements Screen{
     	//Draw the animals
     	//need to modify this and wolf code once wolf death animation is done
         for (Animal animal : animals){
-    		if (!animal.getTrapped() || animal.getFinishedDeatAnimation()==false) {
-        		animal.draw(canvas);
+          if (animal.getFinishedDeatAnimation()==false) {
         		if(!animal.getTrapped() && animal.getAlive()){
         			animal.drawCone(canvas);
         		}
+        		animal.draw(canvas);
     		}          
             //animal.drawDebug(canvas);
         }
@@ -677,36 +677,27 @@ public class GameMode implements Screen{
         //}
         canvas.end();
 
-        //canvas.begin();
         canvas.beginCam(GameMap.metersToPixels(hunter.getPosition().x), GameMap.metersToPixels(hunter.getPosition().y));
         canvas.end();
-        //hunter.drawDebug(canvas);
 
-        //ui.draw(canvas);
-        //uis.drawStage(stage);
         
-        /*
-        canvas.beginDebug();
-        for (Animal animal : animals) {
-        	animal.drawSight(canvas);
-        }
-        canvas.endDebug();
-        */
+
         
-        canvas.beginDebug();
-        PooledList<SimplePhysicsObject> objects = collisionController.getObjects();
-		for(PhysicsObject obj : objects) {
-			if (obj instanceof Actor && ((Actor) obj).getAlive()) {
-				//obj.drawDebug(canvas);
-				if (obj instanceof Animal) {
-					Animal a = (Animal) obj;
-					if (!a.getTrapped()) {
-						//((Animal) obj).drawDebugSight(canvas);
-					}
-				}
-			}
-		}
-		canvas.endDebug();
+//        canvas.beginDebug();
+//        PooledList<SimplePhysicsObject> objects = collisionController.getObjects();
+//		for(PhysicsObject obj : objects) {
+//			if (obj instanceof Actor && ((Actor) obj).getAlive()) {
+//				//obj.drawDebug(canvas);
+//				if (obj instanceof Animal) {
+//					Animal a = (Animal) obj;
+//					if (!a.getTrapped()) {
+//						//uncomment this to see lines
+//						//((Animal) obj).drawDebugSight(canvas);
+//					}
+//				}
+//			}
+//		}
+//		canvas.endDebug();
 	} 
     
     public void postDraw(float delta) {
