@@ -14,7 +14,6 @@ public class TrapController {
 	private GameMap map;
     private HashMap<String, List<Trap>> inventory;
     private Trap selectedTrap = null;
-    
     private Vector2 tmp;
     
     public TrapController(Hunter hunter, GameMap map, CollisionController collisionController, int numPigs, int numWolves){
@@ -50,7 +49,6 @@ public class TrapController {
     	    collisionController.addObject(tmp);
     	    this.addToInventory(tmp);
     	}
-    	
     	tmp = new Vector2();
     }
 

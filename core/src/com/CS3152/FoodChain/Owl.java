@@ -1,6 +1,7 @@
 package com.CS3152.FoodChain;
 
 import com.CS3152.FoodChain.Actor.actorType;
+import com.badlogic.gdx.ai.pfa.indexed.IndexedAStarPathFinder;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -17,9 +18,9 @@ public class Owl extends Animal {
     static final Actor.actorType prey[] = {Actor.actorType.PIG,
     									   Actor.actorType.WOLF, Actor.actorType.HUNTER};
     
-    public Owl(float x, float y) {
+    public Owl(float x, float y, IndexedAStarPathFinder<MapNode> pathFinder, GameMap map) {
         super(new TextureRegion(tex), Actor.actorType.OWL, x, y, 
-              prey, InputController.EAST);
+              prey, InputController.EAST, pathFinder, map);
         drawScale.x = scaleXDrawOwl;
         drawScale.y = scaleYDrawOwl;
         SIGHT_LENGTH = 2.4f;

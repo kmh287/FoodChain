@@ -2,6 +2,7 @@ package com.CS3152.FoodChain;
 
 import java.util.List;
 
+import com.badlogic.gdx.ai.pfa.indexed.IndexedAStarPathFinder;
 import com.badlogic.gdx.ai.steer.Steerable;
 import com.badlogic.gdx.ai.steer.behaviors.CollisionAvoidance;
 import com.badlogic.gdx.ai.steer.behaviors.PrioritySteering;
@@ -35,17 +36,18 @@ public class Wolf extends Animal{
      * @param y Starting y position for this wolf
      * @param patrol 
      */
-    public Wolf(float x, float y, List<Vector2> patrol) {
+    public Wolf(float x, float y, List<Vector2> patrol,
+    		IndexedAStarPathFinder<MapNode> pathFinder, GameMap map) {
         super(new TextureRegion(tex), Actor.actorType.WOLF, x, y, 
-              prey, InputController.EAST,patrol);
+              prey, InputController.EAST,patrol, pathFinder, map);
         sprite = new FilmStrip(tex,1,4,4);
         drawScale.x = scaleXDrawWolf;
         drawScale.y = scaleYDrawWolf;
         SIGHT_LENGTH = 2.4f;
         SIGHT_RADIUS = 1.5f;
         SIGHT_ANGLE = 0.35;
-        maxLinearSpeed = 3.0f;
-        maxLinearAcceleration = 1.0f;
+        maxLinearSpeed = 4f;
+        maxLinearAcceleration = 10.0f;
         maxAngularSpeed = 20.0f;
         maxAngularAcceleration = 20.0f;
         independentFacing = false;
@@ -56,19 +58,19 @@ public class Wolf extends Animal{
         GameMode.steerables.toArray(steers);
         Array<Steerable<Vector2>> steerArray = new Array<Steerable<Vector2>>(steers);
         
-        RadiusProximity proximity = new RadiusProximity<Vector2>(this, steerArray, 1.0f);
+        RadiusProximity proximity = new RadiusProximity<Vector2>(this, steerArray, 0.01f);
         collisionAvoidanceSB = new CollisionAvoidance<Vector2>(this, proximity);
-        collisionAvoidanceSB.setLimiter(new LinearAccelerationLimiter(2.0f));
+        collisionAvoidanceSB.setLimiter(new LinearAccelerationLimiter(maxLinearAcceleration));
         
     	seekSB = new Seek<Vector2>(this);
-    	seekSB.setLimiter(new LinearAccelerationLimiter(3.0f));
+    	seekSB.setLimiter(new LinearAccelerationLimiter(maxLinearAcceleration));
     	
     	wanderSB = new Wander<Vector2>(this)
         		// Don't use Face internally because independent facing is off
 				.setFaceEnabled(false) //
 				// We don't need a limiter supporting angular components because Face is not used
 				// No need to call setAlignTolerance, setDecelerationRadius and setTimeToTarget for the same reason
-				.setLimiter(new LinearAccelerationLimiter(2.0f)) //
+				.setLimiter(new LinearAccelerationLimiter(maxLinearAcceleration)) //
 				.setWanderOffset(1) //
 				.setWanderOrientation(GameMode.random.nextFloat()) //
 				.setWanderRadius(1) //
@@ -123,4 +125,10 @@ public class Wolf extends Animal{
     	sprite.flip(false,true);
     	super.setTexture(sprite);
     }
+
+	//@Override
+	public void setOrientation(float arg0) {
+		// TODO Auto-generated method stub
+		
+	}
 }

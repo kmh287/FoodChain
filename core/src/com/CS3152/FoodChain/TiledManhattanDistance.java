@@ -10,7 +10,7 @@ public class TiledManhattanDistance<N> implements Heuristic<MapNode> {
 		int startY = node.getY();
 		int endX = endNode.getX();
 		int endY = endNode.getY();
-		return Math.abs(startX - endX) + Math.abs(startY - endY);
+		return Math.abs(endX - startX) + Math.abs(endY - startY);
 	}
 
 }

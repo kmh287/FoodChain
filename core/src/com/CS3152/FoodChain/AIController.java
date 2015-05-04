@@ -37,7 +37,10 @@ public class AIController implements InputController {
         // Animal is dead
         DEAD,
         //Animal stays still
-        STAYSTILL, 
+        STAYSTILL,
+        //Animal finds waypoint
+        FIND,
+        //Animal patrols through waypoints
         PATROL 
     }
     
@@ -86,6 +89,9 @@ public class AIController implements InputController {
     
     // Which direction to patrol
     protected int patrolTurn;
+    
+    //this is the delay when animals switch from flee to wander to patrol
+    private int stateDelay = 300;
     
 
 
@@ -148,7 +154,6 @@ public class AIController implements InputController {
         sound = null;
 		sndcue = -1;
 		WanderStopRate= MathUtils.random(175,225);
-		
     }
     
     /*
@@ -186,7 +191,7 @@ public class AIController implements InputController {
      * @return true if length is at most as long as one of the vision sector lines.
      */
     public static boolean withinRadius(Animal an, Vector2 length) {
-    	return length.len() <= an.getSightRadius();
+    		return length.len() <= an.getSightRadius();
     }
 
     // Determine the new angle the animal wants to face
@@ -331,7 +336,6 @@ public class AIController implements InputController {
 		sndcue = this.sound.loop(); 
 	}
 
-
 	@Override
 	public boolean resetPressed() {
 		return false;
@@ -372,17 +376,16 @@ public class AIController implements InputController {
     	if (getAnimal().getAlive()) {
 	        switch (animal.getState()) {
 			    case WANDER:
-			    	//System.out.println(getAnimal() + " is wandering");
 			    	if (hasTarget()) {
 			    	  if (animal instanceof Pig) {
 			    	    animal.setState(State.FLEE);
-			    	    setTurns(1000);
+			    	    setTurns(stateDelay);
 			    	  }
 			    	  else if (animal instanceof Wolf) {
 			    	    animal.setState(State.CHASE);
-                setTurns(1000);
+			    	    setTurns(stateDelay);
 			    	  }
-			      }
+			    	}
 			    	//stop periodically in wander
 			    	else if(Wanderturns%250>WanderStopRate){
 			    		animal.setState(State.STAYSTILL);
@@ -392,7 +395,18 @@ public class AIController implements InputController {
 			    	Wanderturns+=1;
 			    	break;
 			    case STAYSTILL:
-			    	if(Wanderturns%250>WanderStopRate){
+			    	if (animal.getWayPointList().size != 0) {
+			    		Vector2 goal = animal.getWayPointList().get(0);
+			    		float pixX = GameMap.metersToPixels(goal.x);
+			    		float pixY = GameMap.metersToPixels(goal.y);
+			    		int x = map.screenXToMap(pixX);
+			    		int y = map.screenYToMap(pixY);
+			    		
+			    		animal.calculatePath(map.getNode(map.calculateIndex(x,y)));
+			    		animal.getPathToPatrol();
+			    		animal.setState(State.FIND);
+			    	}
+			    	else if(Wanderturns%250>WanderStopRate){
 			    		animal.setState(State.WANDER);
 			    		WanderStopRate= MathUtils.random(175,225);
 			    		Wanderturns=0;
@@ -400,7 +414,6 @@ public class AIController implements InputController {
 			    	Wanderturns+=1;
 			    	break;
 			    case CHASE:
-			    	//System.out.println(getAnimal() + " is chasing");
 			        if (turns <= 0) {
 			        	animal.setState(State.WANDER);
 			        	setTarget(null);
@@ -412,7 +425,7 @@ public class AIController implements InputController {
 			        if (hasTarget() && !target.getAlive()) {
 			        	animal.setState(State.KILL);
 			        	setTarget(null);
-			        	setTurns(500);
+			        	setTurns(stateDelay);
 			        }
 			        //if chasing the hunter, then increase panic
 			        if(getTarget() instanceof Hunter){
@@ -425,6 +438,7 @@ public class AIController implements InputController {
 			            //animal.setState(State.WANDER);
 			            animal.setState(State.PATROL);
 			            setAttacker(null);
+			            setTarget(null);
 			        }
 			        turns--;
 			        //if fleeing hunter, then increase panic
@@ -433,29 +447,44 @@ public class AIController implements InputController {
 			        }
 			    	break;
 			    case KILL:
-			    	//sdSystem.out.println(getAnimal() + " is killing");
 			    	if (turns <= 0) {
 			    		animal.setState(State.WANDER);
 			    	}
 			    	turns--;
 			    	break;
 			    case PATROL:
-			    	animal.setState(State.PATROL);
+<<<<<<< HEAD
+			    	//animal.setState(State.PATROL);
 			    	//this code is commented out until we can resolve state machine
+=======
+			    	animal.setState(State.PATROL);
+>>>>>>> 3d0fb71ad1b989eb49a74881c413643bfd51e6e8
 			    	if (hasTarget()) {
 				    	  if (animal instanceof Pig) {
 				    	    animal.setState(State.FLEE);
-				    	    setTurns(1000);
+				    	    setTurns(stateDelay);
 				    	  }
 				    	  else if (animal instanceof Wolf) {
 				    	    animal.setState(State.CHASE);
-	                setTurns(1000);
+				    	    setTurns(stateDelay);
 				    	  }
 				      }
 			    	break;
+			    case FIND:
+			    	if (hasTarget()) {
+				    	  if (animal instanceof Pig) {
+				    		  animal.setState(State.FLEE);
+				    		  setTurns(1000);
+				    	  }
+				    	  else if (animal instanceof Wolf) {
+				    		  animal.setState(State.CHASE);
+				    		  setTurns(1000);
+				    	  }
+				    }
+			    	break;
 			    case DEAD:
 			        break;
-			}
+	        }
     	}
     	else {
     		animal.setState(State.DEAD);
@@ -481,7 +510,6 @@ public class AIController implements InputController {
 	public static void resetPanicFlag(){
 		panicked = false;
 	}
-	
 	
 	@Override
 	public Vector2 getAction(float delta) {
@@ -511,5 +539,10 @@ public class AIController implements InputController {
       }
     }
 	}
-	
+
+//	@Override
+//	public int levelPressed() {
+//		// TODO Auto-generated method stub
+//		return 0;
+//	}
 }

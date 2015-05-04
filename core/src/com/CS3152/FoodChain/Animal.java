@@ -2,6 +2,8 @@ package com.CS3152.FoodChain;
 
 import java.util.List;
 
+import com.badlogic.gdx.ai.pfa.DefaultGraphPath;
+import com.badlogic.gdx.ai.pfa.indexed.IndexedAStarPathFinder;
 import com.badlogic.gdx.ai.steer.Limiter;
 import com.badlogic.gdx.ai.steer.Steerable;
 import com.badlogic.gdx.ai.steer.SteeringAcceleration;
@@ -40,6 +42,7 @@ public abstract class Animal extends Actor{
     // A vector used for temporary calculations
     private Vector2 tmp;
     private Vector2 tmp2;
+    private Vector2 tmp3;
 
 	//texture used in getCenter and setCenter
 	private float texWidth;
@@ -52,6 +55,7 @@ public abstract class Animal extends Actor{
     protected double SIGHT_ANGLE = 0.35;
     // How long the animal's line of sight is
     protected float SIGHT_LENGTH;
+    
     protected float SIGHT_RADIUS;
 
     protected float MIN_STEERING = 0.001f;
@@ -65,9 +69,18 @@ public abstract class Animal extends Actor{
     
     protected Array<Vector2> wayPoints;
     protected LinePath<Vector2> linePath;
+    protected LinePath<Vector2> pathToPatrol;
+    protected Array<Vector2> ptp;
     protected FollowPath<Vector2, LinePathParam> followPathAnimal;
 
-	
+    protected FollowPath<Vector2, LinePathParam> followPathToPatrol;
+    
+    protected IndexedAStarPathFinder<MapNode> pathFinder;
+	//protected SmoothableMapPath<MapNode> path = new SmoothableMapPath<MapNode>();
+    protected DefaultGraphPath<MapNode> path = new DefaultGraphPath<MapNode>();
+    protected GameMap map;
+    protected TiledManhattanDistance<MapNode> heuristic;
+    
 	/** Protected constructor for the animal type. 
 	 * 
 	 * This constructor should never be called directly
@@ -81,7 +94,8 @@ public abstract class Animal extends Actor{
 	 *                     It is up to the CALLER to ensure this is correct.
 	 */
 	public Animal(TextureRegion tr, actorType type, float x, float y, 
-	              actorType[] prey, Vector2 facing, List<Vector2> patrol){
+	              actorType[] prey, Vector2 facing, List<Vector2> patrol,
+	              IndexedAStarPathFinder<MapNode> pathFinder, GameMap map){
 		super(tr, type, x, y, AnimalWidth, AnimalHeight, prey);
 		this.setPos(GameMap.pixelsToMeters(x), GameMap.pixelsToMeters(y));
 		setFacing(facing);
@@ -95,6 +109,7 @@ public abstract class Animal extends Actor{
 		
 		this.tmp = new Vector2();
 		this.tmp2 = new Vector2();
+		this.tmp3 = new Vector2();
 
 		updateLOS(0);
 		setTexWidth(GameMap.pixelsToMeters(tr.getRegionWidth()));
@@ -102,18 +117,25 @@ public abstract class Animal extends Actor{
 		this.tagged = false;
 		finishedDeatAnimation= false;
 		
-		
+		this.pathFinder = pathFinder;
+		this.map = map;
+
 		wayPoints=new Array<Vector2>();
 		for(int i=0;i<patrol.size();i++){
 			//wayPoints.add(patrol.get(i));
 			//adding .4 for offset to gamemap
 			wayPoints.add(new Vector2((float) (GameMap.pixelsToMeters(patrol.get(i).x)+.4),(float) (GameMap.pixelsToMeters(patrol.get(i).y)+.4)));
 		}
-		
+	
 		linePath = new LinePath<Vector2>(wayPoints, false);
+		ptp = new Array<Vector2>();
+		ptp.add(this.getPosition());
+		ptp.add(ptp.get(0));
+		pathToPatrol = new LinePath<Vector2>(ptp, false);
 		//.5 is the offset/farthest distance it can be away from the patrol path
-		followPathAnimal = new FollowPath<Vector2, LinePathParam>(this, linePath, (float) .5); 
-
+		followPathAnimal = new FollowPath<Vector2, LinePathParam>(this, linePath, (float) .5);
+		followPathToPatrol = new FollowPath<Vector2, LinePathParam>(this, pathToPatrol, (float) .5);
+		
 		//if not waypoints, set to wander
 		if(wayPoints.size==0){
 			this.state = AIController.State.WANDER;
@@ -282,10 +304,13 @@ public abstract class Animal extends Actor{
 			Vector2 sectorLine = getLeftSectorLine();
 			tmp2.add(GameMap.metersToPixels(sectorLine.x), GameMap.metersToPixels(sectorLine.y));
 			canvas.drawLine(Color.YELLOW, tmp, tmp2);
-			tmp2.set(GameMap.metersToPixels(position.x), GameMap.metersToPixels(position.y));
+			tmp3.set(GameMap.metersToPixels(position.x), GameMap.metersToPixels(position.y));
 			sectorLine = getRightSectorLine();
-			tmp2.add(GameMap.metersToPixels(sectorLine.x), GameMap.metersToPixels(sectorLine.y));
-			canvas.drawLine(Color.YELLOW, tmp, tmp2);
+			tmp3.add(GameMap.metersToPixels(sectorLine.x), GameMap.metersToPixels(sectorLine.y));
+			canvas.drawLine(Color.YELLOW, tmp, tmp3);
+			
+			//draw cone
+			//canvas.drawCone(Color.YELLOW, tmp, tmp2, tmp3,SIGHT_RADIUS,SIGHT_ANGLE);
 			
 			//draws patrol waypoint if they have waypoints
 			if(wayPoints.size>0){
@@ -343,8 +368,15 @@ public abstract class Animal extends Actor{
 			steeringOutput.setZero();
 			this.setLinearVelocity(new Vector2(0,0));
 			break;
+		case FIND:
+			followPathToPatrol.calculateSteering(steeringOutput);
+			break;
 		}
 		return;
+	}
+	
+	public Array<Vector2> getWayPointList() {
+		return wayPoints;
 	}
 	
 	public void applySteering(float delta) {
@@ -374,12 +406,38 @@ public abstract class Animal extends Actor{
 	public void resetTarget() {
 		((Seek<Vector2>) seekSB).setTarget(null);
 	}
-	
+
 	public boolean getFinishedDeatAnimation(){
 		return finishedDeatAnimation;
 	}
 	
 	public void setFinishedDeatAnimation(boolean b){
 		this.finishedDeatAnimation=b;
-	};
+	}
+	
+	public void calculatePath(MapNode goal) {
+		Vector2 pos = getPosition();
+		float pixX = GameMap.metersToPixels(pos.x);
+		float pixY = GameMap.metersToPixels(pos.y);
+		int x = map.screenXToMap(pixX);
+		int y = map.screenYToMap(pixY);
+		
+		pathFinder.searchNodePath(map.getNode(map.calculateIndex(x,y)), 
+								  goal, heuristic, path);
+	}
+	
+	public void getPathToPatrol () {
+		ptp.clear();
+		for (MapNode mn : path) {
+			int tileX = mn.getX();
+			int tileY = mn.getY();
+			float pixX = map.mapXToScreen(tileX);
+			float pixY = map.mapYToScreen(tileY);
+			float x = GameMap.pixelsToMeters(pixX);
+			float y = GameMap.pixelsToMeters(pixY);
+			ptp.add(new Vector2(x,y));
+		}
+		pathToPatrol.createPath(ptp);
+		followPathToPatrol.setPath(pathToPatrol);
+	}
 }
