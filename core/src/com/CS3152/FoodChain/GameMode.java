@@ -661,7 +661,7 @@ public class GameMode implements Screen{
         for (Animal animal : animals){
     		if (!animal.getTrapped() || animal.getFinishedDeatAnimation()==false) {
         		animal.draw(canvas);
-        		if(!animal.getTrapped()){
+        		if(!animal.getTrapped() && animal.getAlive()){
         			animal.drawCone(canvas);
         		}
     		}          
