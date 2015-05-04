@@ -39,6 +39,8 @@ public class CollisionController implements ContactListener {
 	private Trap trapToRemove = null;
 	private String trapToAdd = null;
 	private Vector2 trapLocationToAdd;
+	private Animal animalToTrap = null;
+	private float animalToTrapAngle = 0;
 	
 	private Trap trapOver = null;
 	
@@ -143,6 +145,11 @@ public class CollisionController implements ContactListener {
     				trapToAdd = null;
     			}
     		}
+    		if(animalToTrap!=null){
+    			animalToTrap.setPosition(trapLocationToAdd);
+    			animalToTrap.setAngle((float)(animalToTrapAngle-1.9f));
+    			animalToTrap=null;
+    		}
     	}
     }
 
@@ -162,8 +169,17 @@ public class CollisionController implements ContactListener {
 		Object fd1 = fix1.getUserData();
 		Object fd2 = fix2.getUserData();
 		
+		//System.out.println("Collision!!!");
+		
 		Object bd1 = body1.getUserData();
 		Object bd2 = body2.getUserData();
+		
+//		System.out.println(bd1.toString());
+//		System.out.println(bd2.toString());
+		
+//		if (bd1 instanceof Hunter && bd2 instanceof Hunter){
+//			System.out.println("uh oh");
+//		}
 		
 		if (bd1 instanceof Hunter && bd2 instanceof Trap) {
 			Trap trap = (Trap) bd2;
@@ -197,6 +213,8 @@ public class CollisionController implements ContactListener {
 			if (trap.getOnMap() && trap.getType() == "REGULAR_TRAP"
 					&& animal.getType() == Actor.actorType.PIG) {
 				animal.setTrapped(true);
+				animalToTrap = animal;
+				animalToTrapAngle= animal.getAngle();
 				trap.setOnMap(false);
 				trapToRemove = trap;
 				trapToAdd = "SHEEP_TRAP";
@@ -205,6 +223,8 @@ public class CollisionController implements ContactListener {
 			}
 			else if (trap.getOnMap() && trap.getType() == "SHEEP_TRAP"
 					&& animal.getType() == Actor.actorType.WOLF) {
+				animalToTrap = animal;
+				animalToTrapAngle= animal.getAngle();
 				animal.setTrapped(true);
 				trap.setOnMap(false);
 				trapToRemove = trap;
@@ -218,6 +238,8 @@ public class CollisionController implements ContactListener {
 			
 			if (trap.getOnMap() && trap.getType() == "REGULAR_TRAP"
 					&& animal.getType() == Actor.actorType.PIG) {
+				animalToTrap = animal;
+				animalToTrapAngle= animal.getAngle();
 				animal.setTrapped(true);
 				trap.setOnMap(false);
 				trapToRemove = trap;
@@ -228,6 +250,8 @@ public class CollisionController implements ContactListener {
 			else if (trap.getOnMap() && trap.getType() == "SHEEP_TRAP"
 					&& animal.getType() == Actor.actorType.WOLF) {
 				animal.setTrapped(true);
+				animalToTrap = animal;
+				animalToTrapAngle= animal.getAngle();
 				trap.setOnMap(false);
 				trapToRemove = trap;
 				trapToAdd = "WOLF_TRAP";

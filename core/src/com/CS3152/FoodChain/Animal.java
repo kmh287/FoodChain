@@ -40,6 +40,7 @@ public abstract class Animal extends Actor{
     // A vector used for temporary calculations
     private Vector2 tmp;
     private Vector2 tmp2;
+    private Vector2 tmp3;
 
 	//texture used in getCenter and setCenter
 	private float texWidth;
@@ -52,6 +53,7 @@ public abstract class Animal extends Actor{
     protected double SIGHT_ANGLE = 0.35;
     // How long the animal's line of sight is
     protected float SIGHT_LENGTH;
+    
     protected float SIGHT_RADIUS;
 
     protected float MIN_STEERING = 0.001f;
@@ -67,7 +69,6 @@ public abstract class Animal extends Actor{
     protected LinePath<Vector2> linePath;
     protected FollowPath<Vector2, LinePathParam> followPathAnimal;
 
-	
 	/** Protected constructor for the animal type. 
 	 * 
 	 * This constructor should never be called directly
@@ -95,13 +96,13 @@ public abstract class Animal extends Actor{
 		
 		this.tmp = new Vector2();
 		this.tmp2 = new Vector2();
+		this.tmp3 = new Vector2();
 
 		updateLOS(0);
 		setTexWidth(GameMap.pixelsToMeters(tr.getRegionWidth()));
 		setTexHeight(GameMap.pixelsToMeters(tr.getRegionHeight()));
 		this.tagged = false;
 		finishedDeatAnimation= false;
-		
 		
 		wayPoints=new Array<Vector2>();
 		for(int i=0;i<patrol.size();i++){
@@ -276,16 +277,17 @@ public abstract class Animal extends Actor{
 	
 	public void drawSight(GameCanvas canvas) {
 		if (getAlive()) {
-			Vector2 position = getPosition();
-			tmp.set(GameMap.metersToPixels(position.x), GameMap.metersToPixels(position.y));
-			tmp2.set(GameMap.metersToPixels(position.x), GameMap.metersToPixels(position.y));
-			Vector2 sectorLine = getLeftSectorLine();
-			tmp2.add(GameMap.metersToPixels(sectorLine.x), GameMap.metersToPixels(sectorLine.y));
-			canvas.drawLine(Color.YELLOW, tmp, tmp2);
-			tmp2.set(GameMap.metersToPixels(position.x), GameMap.metersToPixels(position.y));
-			sectorLine = getRightSectorLine();
-			tmp2.add(GameMap.metersToPixels(sectorLine.x), GameMap.metersToPixels(sectorLine.y));
-			canvas.drawLine(Color.YELLOW, tmp, tmp2);
+			//old code that draws vision lines to scale
+//			Vector2 position = getPosition();
+//			tmp.set(GameMap.metersToPixels(position.x), GameMap.metersToPixels(position.y));
+//			tmp2.set(GameMap.metersToPixels(position.x), GameMap.metersToPixels(position.y));
+//			Vector2 sectorLine = getLeftSectorLine();
+//			tmp2.add(GameMap.metersToPixels(sectorLine.x), GameMap.metersToPixels(sectorLine.y));
+//			canvas.drawLine(Color.YELLOW, tmp, tmp2);
+//			tmp3.set(GameMap.metersToPixels(position.x), GameMap.metersToPixels(position.y));
+//			sectorLine = getRightSectorLine();
+//			tmp3.add(GameMap.metersToPixels(sectorLine.x), GameMap.metersToPixels(sectorLine.y));
+//			canvas.drawLine(Color.YELLOW, tmp, tmp3);
 			
 			//draws patrol waypoint if they have waypoints
 			if(wayPoints.size>0){
@@ -299,6 +301,43 @@ public abstract class Animal extends Actor{
 				}
 			}		
 		}
+	}
+	
+	
+    public static enum State {
+        // Animal is wandering
+        WANDER,
+        // Animal is chasing
+        CHASE,
+        // Animal is running away
+        FLEE,
+        // Animal kills target
+        KILL,
+        // Animal is dead
+        DEAD,
+        //Animal stays still
+        STAYSTILL, 
+        PATROL 
+    }
+	public void drawCone(GameCanvas canvas){
+		Vector2 position = getPosition();
+		tmp.set(GameMap.metersToPixels(position.x), GameMap.metersToPixels(position.y));
+		tmp2.set(GameMap.metersToPixels(position.x), GameMap.metersToPixels(position.y));
+		Vector2 sectorLine = getLeftSectorLine();
+		tmp2.add(GameMap.metersToPixels(sectorLine.x), GameMap.metersToPixels(sectorLine.y));
+		tmp3.set(GameMap.metersToPixels(position.x), GameMap.metersToPixels(position.y));
+		sectorLine = getRightSectorLine();
+		tmp3.add(GameMap.metersToPixels(sectorLine.x), GameMap.metersToPixels(sectorLine.y));
+		//draw cone
+		//if patrolling, staying still, or wandering, then draw yellow cone
+
+		if(getState()==AIController.State.PATROL || getState()==AIController.State.STAYSTILL|| getState()==AIController.State.WANDER){
+			canvas.drawCone(false, tmp, body.getAngle());
+		}
+		else{
+			canvas.drawCone(true, tmp, body.getAngle());
+		}
+		
 	}
 	
 	@Override
@@ -374,7 +413,7 @@ public abstract class Animal extends Actor{
 	public void resetTarget() {
 		((Seek<Vector2>) seekSB).setTarget(null);
 	}
-	
+
 	public boolean getFinishedDeatAnimation(){
 		return finishedDeatAnimation;
 	}

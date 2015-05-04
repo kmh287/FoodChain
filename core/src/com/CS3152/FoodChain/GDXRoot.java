@@ -1,15 +1,25 @@
 package com.CS3152.FoodChain;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.badlogic.gdx.Game;
 
 
 public class GDXRoot extends Game {
     
+	private List<String> buildLevelList(){
+		List<String> levelList = new ArrayList<String>();
+		levelList.add("tutorial1");
+		levelList.add("tutorial2");
+		return levelList;
+	}
+	
     @Override
     public void create() {
-        // TODO Auto-generated method stub
         GameCanvas canvas = new GameCanvas();
-        GameMode gMode = new GameMode(canvas);
+        List<String> levelList = buildLevelList();
+        GameMode gMode = new GameMode(canvas, levelList);
         setScreen(gMode);
     }
 }

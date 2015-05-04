@@ -88,6 +88,13 @@ public class GameCanvas {
 	
 	protected Hunter hunter; 
 	
+	private static String YELLOW_CONE = "assets/YellowCone.png";
+	private static String RED_CONE = "assets/RedCone.png";
+	protected static Texture yellowCone = null;
+	protected static TextureRegion yellowConeRegion = null;
+	protected static Texture redCone = null;
+	protected static TextureRegion redConeRegion = null;
+	
 
 	/**
 	 * Creates a new GameCanvas determined by the application configuration.
@@ -128,6 +135,35 @@ public class GameCanvas {
 		global = new Matrix4();
 		vertex = new Vector2();
 	}
+	
+	public static void PreLoadContent(AssetManager manager) {
+		manager.load(YELLOW_CONE,Texture.class);
+		manager.load(RED_CONE,Texture.class);
+	}
+	
+	/**
+     * Load the texture for the player
+     * This must be called before any calls to Player.draw()
+     * 
+     * @param manager an AssetManager
+     */
+	public static void LoadContent(AssetManager manager) {
+		if (manager.isLoaded(YELLOW_CONE)) {
+			yellowCone = manager.get(YELLOW_CONE,Texture.class);
+			yellowCone.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+			yellowConeRegion= new TextureRegion(yellowCone);
+		} else {
+			yellowCone = null;  // Failed to load
+		}
+		if (manager.isLoaded(RED_CONE)) {
+			redCone = manager.get(RED_CONE,Texture.class);
+			redCone.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+			redConeRegion= new TextureRegion(yellowCone);
+		} else {
+			redCone = null;  // Failed to load
+		}
+	}
+	
 		
     /**
      * Eliminate any resources that should be garbage collected manually.
@@ -385,6 +421,7 @@ public class GameCanvas {
     }
     public void beginCam(float x, float y) {
     	moveCamera(x,y);
+    	
     	ui.drawStage();
     	spriteBatch.setProjectionMatrix(camera.combined);
     	spriteBatch.begin();
@@ -393,6 +430,7 @@ public class GameCanvas {
     
     //first time cam draws it will center over hunter and not perform lazy scroll
 	public void beginCamStart(float x, float y) {
+
 		camera.position.set(x, y, 0);
        	global.setTranslation(x, y, 0);
         camera.update();        
@@ -728,7 +766,9 @@ public class GameCanvas {
 	 * @param sy 	The y-axis scaling factor
 	 */	
 	public void draw(TextureRegion region, Color tint, float ox, float oy, 
-					 float x, float y, float angle, float sx, float sy) {
+					 float x, float y, float angle, float sx, float sy) {				
+				
+				
 		if (active != DrawPass.STANDARD) {
 			Gdx.app.error("GameCanvas", "Cannot draw without active begin()", new IllegalStateException());
 			return;
@@ -1199,6 +1239,32 @@ public class GameCanvas {
     	debugRender.line(v1.x, v1.y, v2.x, v2.y);
     }
     
+    public void drawCone(boolean alerted, Vector2 origin, float angle) {
+    	angle=(float) (angle-Math.PI/2);
+    	//the weird math is because it draws the cone in the center of the pig
+    	if(alerted){
+        	this.draw(redConeRegion, 
+        			Color.RED,GameMap.pixelsToMeters(origin.x), 
+        			GameMap.pixelsToMeters(origin.y),  
+        			(float)(origin.x+Math.sin(angle)*20-Math.cos(angle)*100), 
+        			(float)(origin.y-Math.cos(angle)*20-Math.sin(angle)*100), 
+        			(float)(angle), 
+        			1f, 
+        			1f);
+    	}
+    	else{
+        	this.draw(yellowConeRegion, 
+        			Color.YELLOW,GameMap.pixelsToMeters(origin.x), 
+        			GameMap.pixelsToMeters(origin.y),  
+        			(float)(origin.x+Math.sin(angle)*20-Math.cos(angle)*100), 
+        			(float)(origin.y-Math.cos(angle)*20-Math.sin(angle)*100), 
+        			(float)(angle), 
+        			1f, 
+        			1f);
+    	}
+
+    }
+    
 	/**
 	 * Compute the affine transform (and store it in local) for this image.
 	 * 
@@ -1242,6 +1308,7 @@ public class GameCanvas {
 	public void DrawPatrolPaths(float x, float y, int radius, com.badlogic.gdx.utils.Array<Vector2> wayPoints,LinePath<Vector2> linePath){
 		//draw target
 		debugRender.circle(x, y, radius);
+
 	}
 
 
