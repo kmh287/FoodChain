@@ -51,10 +51,10 @@ public class Pig extends Animal {
         SIGHT_LENGTH = 2.4f;
         SIGHT_ANGLE = 0.35;
         boundingRadius = GameMap.pixelsToMeters(40.0f);
-        maxLinearSpeed = 3.0f;
-        maxLinearAcceleration = 1.0f;
-        maxAngularSpeed = 100.0f;
-        maxAngularAcceleration = 10.0f;
+        maxLinearSpeed = 3f;
+        maxLinearAcceleration = 10.0f;
+        maxAngularSpeed = 100f;
+        maxAngularAcceleration = 100f;
         independentFacing = false;
     }
     
@@ -63,10 +63,10 @@ public class Pig extends Animal {
         GameMode.steerables.toArray(steers);
         Array<Steerable<Vector2>> steerArray = new Array<Steerable<Vector2>>(steers);
         
-        RadiusProximity proximity = new RadiusProximity<Vector2>(this, steerArray, 0.5f);
+        RadiusProximity proximity = new RadiusProximity<Vector2>(this, steerArray, .1f);
         collisionAvoidanceSB = new CollisionAvoidance<Vector2>(this, proximity);
-        LinearAccelerationLimiter limiter = new LinearAccelerationLimiter(2.0f);
-        //limiter.setMaxLinearSpeed(2.0f);
+        LinearAccelerationLimiter limiter = new LinearAccelerationLimiter(maxLinearAcceleration);
+        limiter.setMaxLinearAcceleration(maxLinearAcceleration);
         collisionAvoidanceSB.setLimiter(limiter);
         
         wanderSB = new Wander<Vector2>(this)
@@ -78,9 +78,9 @@ public class Pig extends Animal {
 				.setWanderOffset(1) //
 				.setWanderOrientation(1) //
 				.setWanderRadius(1) //
-				.setWanderRate(MathUtils.PI / 10);
+				.setWanderRate(.1f);
         
-        limiter.setMaxLinearAcceleration(3.0f);
+
         fleeSB = new Flee<Vector2>(this);
         fleeSB.setLimiter(limiter);
     }
@@ -158,4 +158,11 @@ public class Pig extends Animal {
     	sprite.flip(false,true);
     	super.setTexture(sprite);
     }
+
+
+	//@Override
+	public void setOrientation(float arg0) {
+		// TODO Auto-generated method stub
+		
+	}
 }

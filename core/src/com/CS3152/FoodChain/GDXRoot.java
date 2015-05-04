@@ -19,6 +19,9 @@
 
 package com.CS3152.FoodChain;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.assets.*;
 import com.badlogic.gdx.graphics.g2d.*;
@@ -205,5 +208,13 @@ public class GDXRoot extends Game implements ScreenListener {
 		}
 	}
 		
+    
+	private List<String> buildLevelList(){
+		List<String> levelList = new ArrayList<String>();
+		levelList.add("tutorial1");
+		levelList.add("tutorial2");
+		return levelList;
+	}
+	
 }
 

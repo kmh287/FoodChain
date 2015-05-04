@@ -1217,6 +1217,26 @@ public class GameCanvas {
     	debugRender.line(v1.x, v1.y, v2.x, v2.y);
     }
     
+    public void drawCone(Color color, Vector2 origin, Vector2 v2, Vector2 v3, float sightRadius, double sightAngle) {
+    	debugRender.setColor(color);
+    	
+    	float angleIncrement = (float) (sightAngle/200);
+    	float circularX, circularY;
+    	for(int i = 0; i<200 ; i++){
+        	float angle = v2.angle()+angleIncrement*i;
+        	double oppositeSideTriangle = Math.tan(angle)*sightRadius;
+        	double shortTriangleside = sightRadius-Math.cos(angle)*sightRadius;
+        	double angle2 = Math.asin(shortTriangleside/oppositeSideTriangle);
+        	
+    		circularX = (float) (Math.cos(angle2)*oppositeSideTriangle);
+    		circularY = (float) (Math.sin(angle2)*oppositeSideTriangle);
+    		System.out.println(angle);
+    		debugRender.line(origin.x, origin.y, v2.x + circularX, v2.y + circularY);
+    	}
+    	//debugRender.line(v1.x, v1.y, v2.x, v2.y);
+		
+    }
+    
 	/**
 	 * Compute the affine transform (and store it in local) for this image.
 	 * 
@@ -1260,6 +1280,7 @@ public class GameCanvas {
 	public void DrawPatrolPaths(float x, float y, int radius, com.badlogic.gdx.utils.Array<Vector2> wayPoints,LinePath<Vector2> linePath){
 		//draw target
 		debugRender.circle(x, y, radius);
+
 	}
 
 

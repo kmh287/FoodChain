@@ -4,9 +4,11 @@ import java.util.*;
 
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
-
 import com.badlogic.gdx.ai.pfa.PathSmoother;
 import com.badlogic.gdx.ai.pfa.indexed.IndexedAStarPathFinder;
+import com.badlogic.gdx.ai.steer.behaviors.FollowPath;
+import com.badlogic.gdx.ai.steer.utils.paths.LinePath;
+import com.badlogic.gdx.ai.steer.utils.paths.LinePath.LinePathParam;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.*;
@@ -35,7 +37,8 @@ public class AIController implements InputController {
         // Animal is dead
         DEAD,
         //Animal stays still
-        STAYSTILL
+        STAYSTILL, 
+        PATROL 
     }
     
     // Instance Attributes
@@ -84,16 +87,20 @@ public class AIController implements InputController {
     // Which direction to patrol
     protected int patrolTurn;
     
+    //this is the delay when animals switch from flee to wander to patrol
+    private int stateDelay = 300;
+    
 
 
     private static float panicPercentage;
+    private static boolean panicked;
     private Hunter hunter; 
     
     private Vector2 vect;
     private float angle;
 
     private Sound sound;
-	/** The associated sound cue (if animal is making a sound). */
+	/** The associated sound cue (if ship is making a sound). */
 	private long sndcue;
 
     private int WanderStopRate;
@@ -144,7 +151,6 @@ public class AIController implements InputController {
         sound = null;
 		sndcue = -1;
 		WanderStopRate= MathUtils.random(175,225);
-		
     }
     
     /*
@@ -159,7 +165,7 @@ public class AIController implements InputController {
     public static boolean withinCone(Animal an, Vector2 meToActor) {
       return isClockwise(an.getLeftSectorLine(), meToActor) &&
            !isClockwise(an.getRightSectorLine(), meToActor) &&
-           withinRadius(an, meToActor);
+           meToActor.len() <= an.getSightLength();
     }
     
     /* Determines if meToActor is clockwise to sectorLine.
@@ -182,7 +188,7 @@ public class AIController implements InputController {
      * @return true if length is at most as long as one of the vision sector lines.
      */
     public static boolean withinRadius(Animal an, Vector2 length) {
-    	return length.len() <= an.getSightLength();
+    		return length.len() <= an.getSightRadius();
     }
 
     // Determine the new angle the animal wants to face
@@ -319,6 +325,13 @@ public class AIController implements InputController {
       return panicPercentage;
     }
 
+    public void play(String sound) {
+		if (sndcue != -1) {
+			this.sound.stop(sndcue);
+		}
+		this.sound = SoundController.get(sound);
+		sndcue = this.sound.loop(); 
+	}
 
 	@Override
 	public boolean resetPressed() {
@@ -355,15 +368,14 @@ public class AIController implements InputController {
     	if (getAnimal().getAlive()) {
 	        switch (animal.getState()) {
 			    case WANDER:
-			    	//System.out.println(getAnimal() + " is wandering");
 			    	if (hasTarget()) {
 			    	  if (animal instanceof Pig) {
 			    	    animal.setState(State.FLEE);
-			    	    setTurns(1000);
+			    	    setTurns(stateDelay);
 			    	  }
 			    	  else if (animal instanceof Wolf) {
 			    	    animal.setState(State.CHASE);
-                setTurns(1000);
+			    	    setTurns(stateDelay);
 			    	  }
 			      }
 			    	//stop periodically in wander
@@ -383,7 +395,6 @@ public class AIController implements InputController {
 			    	Wanderturns+=1;
 			    	break;
 			    case CHASE:
-			    	//System.out.println(getAnimal() + " is chasing");
 			        if (turns <= 0) {
 			        	animal.setState(State.WANDER);
 			        	setTarget(null);
@@ -395,7 +406,11 @@ public class AIController implements InputController {
 			        if (hasTarget() && !target.getAlive()) {
 			        	animal.setState(State.KILL);
 			        	setTarget(null);
-			        	setTurns(500);
+			        	setTurns(stateDelay);
+			        }
+			        //if chasing the hunter, then increase panic
+			        if(getTarget() instanceof Hunter){
+				        panicked = true;
 			        }
 			        break;
 			    case FLEE:
@@ -403,15 +418,32 @@ public class AIController implements InputController {
 			        if (canSettle()) {
 			            animal.setState(State.WANDER);
 			            setAttacker(null);
+			            setTarget(null);
 			        }
 			        turns--;
+			        //if fleeing hunter, then increase panic
+			        if(getTarget() instanceof Hunter){
+				        panicked = true;
+			        }
 			    	break;
 			    case KILL:
-			    	//sdSystem.out.println(getAnimal() + " is killing");
 			    	if (turns <= 0) {
 			    		animal.setState(State.WANDER);
 			    	}
 			    	turns--;
+			    	break;
+			    case PATROL:
+			    	animal.setState(State.PATROL);
+			    	if (hasTarget()) {
+				    	  if (animal instanceof Pig) {
+				    	    animal.setState(State.FLEE);
+				    	    setTurns(stateDelay);
+				    	  }
+				    	  else if (animal instanceof Wolf) {
+				    	    animal.setState(State.CHASE);
+				    	    setTurns(stateDelay);
+				    	  }
+				      }
 			    	break;
 			    case DEAD:
 			        break;
@@ -422,6 +454,26 @@ public class AIController implements InputController {
     	}
 	}
 
+	public static void increasePanic() {
+		if(panicPercentage<1f){
+			panicPercentage+=.005f;
+		}
+	}
+	
+	public static void decreasePanic() {
+		if(panicPercentage>0){
+			panicPercentage-=.002f;
+		}
+	}
+	
+	public static boolean AtLeastOneAnimalPanic(){
+		return panicked;
+	}
+	
+	public static void resetPanicFlag(){
+		panicked = false;
+	}
+	
 	@Override
 	public Vector2 getAction(float delta) {
 		// TODO Auto-generated method stub
@@ -435,7 +487,6 @@ public class AIController implements InputController {
 	}
 	
 	private void rayCast() {
-
 	  for (Actor a : actors) {
       if (a != getAnimal() && a.getAlive()) {
         world.rayCast(vcb, getAnimal().getPosition(), a.getPosition());
@@ -451,15 +502,6 @@ public class AIController implements InputController {
       }
     }
 	}
-	
-	//for sound controller 		
-	public void play(String sound) {
-		if (sndcue != -1) {
-			this.sound.stop(sndcue);
-		}
-		this.sound = SoundController.get(sound);
-		sndcue = this.sound.play(); 
-	}
 
 	@Override
 	public boolean isEHeldDown() {
@@ -467,5 +509,9 @@ public class AIController implements InputController {
 		return false;
 	}
 
-	
+//	@Override
+//	public int levelPressed() {
+//		// TODO Auto-generated method stub
+//		return 0;
+//	}
 }

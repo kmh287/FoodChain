@@ -2,6 +2,7 @@ package com.CS3152.FoodChain;
 
 import com.badlogic.gdx.ai.steer.Steerable;
 import com.badlogic.gdx.ai.tests.steer.box2d.Box2dSteeringUtils;
+import com.badlogic.gdx.ai.utils.Location;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -93,7 +94,6 @@ public class Tile extends BoxObject implements Steerable<Vector2>{
 		this.tagged = tagged;
 	}
 
-	@Override
 	public Vector2 newVector() {
 		return new Vector2();
 	}
@@ -106,5 +106,29 @@ public class Tile extends BoxObject implements Steerable<Vector2>{
 	@Override
 	public Vector2 angleToVector(Vector2 outVector, float angle) {
 		return Box2dSteeringUtils.angleToVector(outVector, angle);
+	}
+
+	//@Override
+	public Location<Vector2> newLocation() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	//@Override
+	public void setOrientation(float arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	//@Override
+	public float getZeroLinearSpeedThreshold() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	//@Override
+	public void setZeroLinearSpeedThreshold(float arg0) {
+		// TODO Auto-generated method stub
+		
 	}
 }

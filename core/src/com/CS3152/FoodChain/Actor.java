@@ -16,12 +16,16 @@ public abstract class Actor extends CircleObject implements Steerable<Vector2>{
 	
 	float boundingRadius;
 	
+	AIController ai;
+	
 	boolean tagged;
 	
 	float maxLinearSpeed;
 	float maxLinearAcceleration;
 	float maxAngularSpeed;
 	float maxAngularAcceleration;
+	
+	private static final float PanicSpeedScale = 8;
 	
 	boolean independentFacing;
 	
@@ -237,18 +241,12 @@ public abstract class Actor extends CircleObject implements Steerable<Vector2>{
     	// Update position and linear velocity.
     	float oldAngle=getAngle();
     	if (!steeringOutput.linear.isZero()) {
-    		//Vector2 force = steeringOutput.linear.scl(deltaTime);
     		Vector2 force = steeringOutput.linear.scl(10);
     		body.applyForceToCenter(force, true);
-    		//body.applyLinearImpulse(force, getPosition(), true);
     		anyAccelerations = true;
     	}
 
-    	// Update orientation and angular velocity
- //   	System.out.println(getAngularVelocity());
-		//body.applyTorque(100, true);
-		
-    		// If we haven't got any velocity, then we can do nothing.
+    	// If we haven't got any velocity, then we can do nothing.
     		Vector2 linVel = getLinearVelocity();
     		if (!linVel.isZero(getZeroLinearSpeedThreshold())) {
     			
@@ -258,11 +256,7 @@ public abstract class Actor extends CircleObject implements Steerable<Vector2>{
     			body.setTransform(body.getPosition(), newOrientation);
     		}
  
-    	//body.applyTorque(10, true);
-		//body.applyAngularImpulse(10, true);
     	if (anyAccelerations) {
-
-    		// body.setActive(true);
 
     		// TODO:
     		// Looks like truncating speeds here after applying forces doesn't work as expected.
@@ -272,7 +266,7 @@ public abstract class Actor extends CircleObject implements Steerable<Vector2>{
     		// Cap the linear speed
     		Vector2 velocity = body.getLinearVelocity();
     		float currentSpeedSquare = velocity.len2();
-    		float maxLinearSpeed = getMaxLinearSpeed();
+    		float maxLinearSpeed = getMaxLinearSpeed()+AIController.getPanicPercentage()*PanicSpeedScale;
     		if (currentSpeedSquare > maxLinearSpeed * maxLinearSpeed) {
     			body.setLinearVelocity(velocity.scl(maxLinearSpeed / (float)Math.sqrt(currentSpeedSquare)));
     		}
@@ -285,10 +279,6 @@ public abstract class Actor extends CircleObject implements Steerable<Vector2>{
     	}
     }
     
-    //
-    // Limiter implementation
-    //
-
     public float getMaxLinearSpeed () {
     	return maxLinearSpeed;
     }
