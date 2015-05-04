@@ -269,7 +269,10 @@ public class CollisionController implements ContactListener {
 				trapToRemove = trap;
 				trapToAdd = "WOLF_TRAP";
 				trapLocationToAdd = trap.getPosition();
+<<<<<<< HEAD
 
+=======
+>>>>>>> Kevin
 				//trapToAdd.setType("WOLF_TRAP");
 				//trapToAdd.setInInventory(true);
 			}
