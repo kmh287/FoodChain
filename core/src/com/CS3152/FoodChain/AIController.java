@@ -359,7 +359,12 @@ public class AIController implements InputController {
 		if (!(animal instanceof Owl)){
 			animal.calculateSteering();
 		}
-		rayCast();
+		if (animal instanceof Owl) {
+		  rayCast();
+		}
+		else {
+		  rayCast();
+		}
 	}
 	
 	public void update(float delta) {
@@ -372,7 +377,7 @@ public class AIController implements InputController {
 			goal.set(vect.x, vect.y);
 			Vector2 tmp = goal;
 			tmp.sub(getAnimal().getPosition());
-			changeStateIfApplicable();
+			//changeStateIfApplicable();
 		}
 		else {
 			animal.applySteering(delta);
@@ -558,7 +563,7 @@ public class AIController implements InputController {
         world.rayCast(vcb, getAnimal().getPosition(), a.getPosition());
         Fixture fix = vcb.getFixture();
         if (fix != null) {
-        		System.out.println("2");
+        	System.out.println("2");
           Object objSeen = fix.getBody().getUserData();
           if (objSeen instanceof Actor) {
         	  	System.out.println("3");

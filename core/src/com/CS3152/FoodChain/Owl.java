@@ -17,6 +17,7 @@ public class Owl extends Animal {
 	private static Texture tex = null;
 	private static float scaleXDrawOwl = .23f;
 	private static float scaleYDrawOwl = .23f;
+	private Actor target;
 	
     static final Actor.actorType prey[] = {Actor.actorType.HUNTER};
     
@@ -63,5 +64,9 @@ public class Owl extends Animal {
 	public void setOrientation(float arg0) {
 		// TODO Auto-generated method stub
 			
+	}
+	
+	public void setTarget(Actor actor) {
+	  this.target = actor;
 	}
 }
