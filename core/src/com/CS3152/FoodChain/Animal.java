@@ -288,9 +288,6 @@ public abstract class Animal extends Actor{
 			tmp3.add(GameMap.metersToPixels(sectorLine.x), GameMap.metersToPixels(sectorLine.y));
 			canvas.drawLine(Color.YELLOW, tmp, tmp3);
 			
-			//draw cone
-			//canvas.drawCone(Color.YELLOW, tmp, tmp2, tmp3,SIGHT_RADIUS,SIGHT_ANGLE);
-			
 			//draws patrol waypoint if they have waypoints
 			if(wayPoints.size>0){
 				canvas.DrawPatrolPaths(GameMap.metersToPixels(followPathAnimal.getInternalTargetPosition().x), GameMap.metersToPixels(followPathAnimal.getInternalTargetPosition().y), 5, wayPoints, linePath);
@@ -303,6 +300,19 @@ public abstract class Animal extends Actor{
 				}
 			}		
 		}
+	}
+	
+	public void drawCone(GameCanvas canvas){
+		Vector2 position = getPosition();
+		tmp.set(GameMap.metersToPixels(position.x), GameMap.metersToPixels(position.y));
+		tmp2.set(GameMap.metersToPixels(position.x), GameMap.metersToPixels(position.y));
+		Vector2 sectorLine = getLeftSectorLine();
+		tmp2.add(GameMap.metersToPixels(sectorLine.x), GameMap.metersToPixels(sectorLine.y));
+		tmp3.set(GameMap.metersToPixels(position.x), GameMap.metersToPixels(position.y));
+		sectorLine = getRightSectorLine();
+		tmp3.add(GameMap.metersToPixels(sectorLine.x), GameMap.metersToPixels(sectorLine.y));
+		//draw cone
+		canvas.drawCone(Color.YELLOW, tmp, tmp2,tmp3);
 	}
 	
 	@Override
