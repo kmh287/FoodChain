@@ -568,14 +568,14 @@ public class GameMode implements Screen {
         for (Animal animal : animals){
         	if( animal instanceof Pig){
         		if (!animal.getTrapped() || animal.getFinishedDeatAnimation()==false) {
-            		animal.draw(canvas);
             		animal.drawCone(canvas);
+            		animal.draw(canvas);
         		}
         	}
         	else{
         		if (!animal.getTrapped()) {
-            		animal.draw(canvas);
             		animal.drawCone(canvas);
+            		animal.draw(canvas);
         		}
         	}           
             //animal.drawDebug(canvas);

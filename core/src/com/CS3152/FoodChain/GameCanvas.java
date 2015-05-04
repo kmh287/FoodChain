@@ -1228,10 +1228,17 @@ public class GameCanvas {
     	debugRender.line(v1.x, v1.y, v2.x, v2.y);
     }
     
-    public void drawCone(Color color, Vector2 origin, Vector2 v2, Vector2 v3) {
-    	float angle=(v2.angle()+v3.angle())/2;
-				 
-    	this.draw(yellowConeRegion, Color.YELLOW,GameMap.pixelsToMeters(origin.x), GameMap.pixelsToMeters(origin.y),  origin.x, origin.y, angle, .5f, .5f);
+    public void drawCone(Color color, Vector2 origin, float angle) {
+    	angle=(float) (angle-Math.PI/2);
+    	//the weird math is because it draws the cone in the center of the pig
+    	this.draw(yellowConeRegion, 
+    			Color.YELLOW,GameMap.pixelsToMeters(origin.x), 
+    			GameMap.pixelsToMeters(origin.y),  
+    			(float)(origin.x+Math.sin(angle)*20-Math.cos(angle)*100), 
+    			(float)(origin.y-Math.cos(angle)*20-Math.sin(angle)*100), 
+    			(float)(angle), 
+    			1f, 
+    			1f);
     }
     
 	/**
