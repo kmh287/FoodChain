@@ -72,7 +72,7 @@ public class GameMode implements Screen {
 	private float accumulator = 0;
 	
 	//Trpa set delay
-	int TRAP_SETUP_FRAMES = 90; //60FPS so this is 1.5s
+	int TRAP_SETUP_FRAMES = 30; //60FPS so this is 0.5s
 	boolean settingTrap;
 	int trapSetProgress;
 	
@@ -94,7 +94,7 @@ public class GameMode implements Screen {
 	 */
 	public static void PreLoadContent(AssetManager manager) {
 		Trap.PreLoadContent(manager);
-		//manager.load(TRAP_DROP_FILE,Sound.class);
+		GameCanvas.PreLoadContent(manager);
 		SoundController.PreLoadContent(manager);
 	}
 	
@@ -113,7 +113,7 @@ public class GameMode implements Screen {
 	 */
 	public static void LoadContent(AssetManager manager) {
 		Trap.LoadContent(manager);
-		//trapSound = manager.get(TRAP_DROP_FILE,  Sound.class);
+		GameCanvas.LoadContent(manager);
 		SoundController.LoadContent(manager);
 		
 	}
@@ -165,7 +165,7 @@ public class GameMode implements Screen {
         List<Vector2> coordinates = map.getCoordinates();
 
         createHunter(map.getHunterStartingCoordinate());
-        buildAnimalList(aTypes, coordinates,map.getPatrolPaths());
+        buildAnimalList(aTypes,coordinates,map.getPatrolPaths());
         steerables.addAll(animals);
         
         //All the animals, plus the Hunter
@@ -291,12 +291,9 @@ public class GameMode implements Screen {
 	                
 	            case OWL:
             		Owl.loadTexture(manager);
-            		List<Vector2> nullWaypoints = new ArrayList<Vector2>();
-                    nullWaypoints.add(new Vector2(0,0));
-                    nullWaypoints.add(nullWaypoints.get(0));
             		newAnimal = new Owl(map.mapXToScreen((int)coord.x), 
             							map.mapYToScreen((int)coord.y),pathFinder,map,
-            							nullWaypoints, heuristic);
+            							convertPatrol(patrol), heuristic);
 	                animals.add(newAnimal);
 	                break;
 	            default:
@@ -448,11 +445,13 @@ public class GameMode implements Screen {
 			}
 		}
 		
-		if (controls[0].isSpacePressed()  && trapController.canSetTrap() && !settingTrap) {
-			
-			//Begin the trap set process
-			settingTrap = true;
-			trapSetProgress = 0;
+		if (controls[0].isSpacePressed()  && trapController.canSetTrap() && 
+			!settingTrap && hunter.getAlive()) {
+	    		Vector2 trapPosition = trapController.getTrapPositionFromHunter(hunter);
+	    		if (map.isSafeAt(GameMap.metersToPixels(trapPosition.x), GameMap.metersToPixels(trapPosition.y))) 
+				//Begin the trap set process
+				settingTrap = true;
+				trapSetProgress = 0;
 		}
 		
 		
@@ -576,11 +575,13 @@ public class GameMode implements Screen {
         for (Animal animal : animals){
         	if( animal instanceof Pig){
         		if (!animal.getTrapped() || animal.getFinishedDeatAnimation()==false) {
+            		animal.drawCone(canvas);
             		animal.draw(canvas);
         		}
         	}
         	else{
         		if (!animal.getTrapped()) {
+            		animal.drawCone(canvas);
             		animal.draw(canvas);
         		}
         	}           

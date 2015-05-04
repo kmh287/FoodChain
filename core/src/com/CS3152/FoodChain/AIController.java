@@ -154,6 +154,8 @@ public class AIController implements InputController {
         sound = null;
 		sndcue = -1;
 		WanderStopRate= MathUtils.random(175,225);
+		
+		angle = 0f;
     }
     
     /*
@@ -354,23 +356,23 @@ public class AIController implements InputController {
 	}
 
 	public void preUpdate() {
-		//if (animal.getState() != State.KILL) {
-		  rayCast();
-		//}
-		animal.calculateSteering();
+		if (!(animal instanceof Owl)){
+			animal.calculateSteering();
+		}
+		rayCast();
 	}
 	
 	public void update(float delta) {
 		// TODO Auto-generated method stub
 		if (animal instanceof Owl) {
-			float angle = animal.getAngle();
-			angle += Math.PI/800;
+			angle += Math.PI/100;
+			animal.setAngle(angle);
 			animal.updateLOS(angle);
 			vect.set(vect.x + (float)Math.cos(angle), vect.y + (float)Math.sin(angle));
 			goal.set(vect.x, vect.y);
 			Vector2 tmp = goal;
 			tmp.sub(getAnimal().getPosition());
-			animal.setFacing(tmp);
+			changeStateIfApplicable();
 		}
 		else {
 			animal.applySteering(delta);
@@ -394,7 +396,10 @@ public class AIController implements InputController {
 			    	    animal.setState(State.CHASE);
 			    	    setTurns(stateDelay);
 			    	  }
-			    	}
+			    	  else if (animal instanceof Owl){
+			    		  System.out.println("Hello World");
+			    	  }
+			      }
 			    	//stop periodically in wander
 			    	else if(Wanderturns%250>WanderStopRate){
 			    		animal.setState(State.STAYSTILL);
@@ -547,12 +552,16 @@ public class AIController implements InputController {
 	
 	private void rayCast() {
 	  for (Actor a : actors) {
+		  System.out.println(a.getTypeNameString());
       if (a != getAnimal() && a.getAlive()) {
+    	  	System.out.println("1");
         world.rayCast(vcb, getAnimal().getPosition(), a.getPosition());
         Fixture fix = vcb.getFixture();
         if (fix != null) {
+        		System.out.println("2");
           Object objSeen = fix.getBody().getUserData();
           if (objSeen instanceof Actor) {
+        	  	System.out.println("3");
             if (animal.canKill((Actor) objSeen) || ((Actor) objSeen).canKill(animal)) {
               setTarget((Actor) objSeen);
             }

@@ -1,5 +1,7 @@
 package com.CS3152.FoodChain;
 
+import java.util.List;
+
 import com.CS3152.FoodChain.Actor.actorType;
 import com.badlogic.gdx.ai.pfa.indexed.IndexedAStarPathFinder;
 import com.badlogic.gdx.assets.AssetManager;
@@ -19,12 +21,12 @@ public class Owl extends Animal {
     static final Actor.actorType prey[] = {Actor.actorType.HUNTER};
     
     public Owl(float x, float y, IndexedAStarPathFinder<MapNode> pathFinder, GameMap map,
-    		   List<Vector2> nullWaypoints, TiledManhattanDistance heuristic) {
+    		   List<Vector2> patrol, TiledManhattanDistance heuristic) {
     	super(new TextureRegion(tex), Actor.actorType.OWL, x, y, 
-              prey, InputController.EAST, nullWaypoints, pathFinder, map, heuristic);
+              prey, InputController.EAST, patrol, pathFinder, map, heuristic);
         drawScale.x = scaleXDrawOwl;
         drawScale.y = scaleYDrawOwl;
-        SIGHT_LENGTH = 2.4f;
+        SIGHT_LENGTH = 10f;
         SIGHT_ANGLE = 0.35;
     }
 

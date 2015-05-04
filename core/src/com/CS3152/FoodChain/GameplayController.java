@@ -57,12 +57,7 @@ public class GameplayController {
 				}
 			}
 			else if (actor.getAlive()){
-				if (actor instanceof Owl) {
-					
-				}
-				else {
-					((AIController) controls[i]).update(delta);
-				}
+				((AIController) controls[i]).update(delta);
 			}
 			if (!(actor instanceof Hunter)) {
 				i++;

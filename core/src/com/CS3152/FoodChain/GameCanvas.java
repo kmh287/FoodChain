@@ -88,6 +88,10 @@ public class GameCanvas {
 	
 	protected Hunter hunter; 
 	
+	private static String YELLOW_CONE = "assets/YellowCone.png";
+	protected static Texture yellowCone = null;
+	protected static TextureRegion yellowConeRegion = null;
+	
 
 	/**
 	 * Creates a new GameCanvas determined by the application configuration.
@@ -128,6 +132,27 @@ public class GameCanvas {
 		global = new Matrix4();
 		vertex = new Vector2();
 	}
+	
+	public static void PreLoadContent(AssetManager manager) {
+		manager.load(YELLOW_CONE,Texture.class);
+	}
+	
+	/**
+     * Load the texture for the player
+     * This must be called before any calls to Player.draw()
+     * 
+     * @param manager an AssetManager
+     */
+	public static void LoadContent(AssetManager manager) {
+		if (manager.isLoaded(YELLOW_CONE)) {
+			yellowCone = manager.get(YELLOW_CONE,Texture.class);
+			yellowCone.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+			yellowConeRegion= new TextureRegion(yellowCone);
+		} else {
+			yellowCone = null;  // Failed to load
+		}
+	}
+	
 		
     /**
      * Eliminate any resources that should be garbage collected manually.
@@ -730,7 +755,9 @@ public class GameCanvas {
 	 * @param sy 	The y-axis scaling factor
 	 */	
 	public void draw(TextureRegion region, Color tint, float ox, float oy, 
-					 float x, float y, float angle, float sx, float sy) {
+					 float x, float y, float angle, float sx, float sy) {				
+				
+				
 		if (active != DrawPass.STANDARD) {
 			Gdx.app.error("GameCanvas", "Cannot draw without active begin()", new IllegalStateException());
 			return;
@@ -1201,24 +1228,17 @@ public class GameCanvas {
     	debugRender.line(v1.x, v1.y, v2.x, v2.y);
     }
     
-    public void drawCone(Color color, Vector2 origin, Vector2 v2, Vector2 v3, float sightRadius, double sightAngle) {
-    	debugRender.setColor(color);
-    	
-    	float angleIncrement = (float) (sightAngle/200);
-    	float circularX, circularY;
-    	for(int i = 0; i<200 ; i++){
-        	float angle = v2.angle()+angleIncrement*i;
-        	double oppositeSideTriangle = Math.tan(angle)*sightRadius;
-        	double shortTriangleside = sightRadius-Math.cos(angle)*sightRadius;
-        	double angle2 = Math.asin(shortTriangleside/oppositeSideTriangle);
-        	
-    		circularX = (float) (Math.cos(angle2)*oppositeSideTriangle);
-    		circularY = (float) (Math.sin(angle2)*oppositeSideTriangle);
-    		System.out.println(angle);
-    		debugRender.line(origin.x, origin.y, v2.x + circularX, v2.y + circularY);
-    	}
-    	//debugRender.line(v1.x, v1.y, v2.x, v2.y);
-		
+    public void drawCone(Color color, Vector2 origin, float angle) {
+    	angle=(float) (angle-Math.PI/2);
+    	//the weird math is because it draws the cone in the center of the pig
+    	this.draw(yellowConeRegion, 
+    			Color.YELLOW,GameMap.pixelsToMeters(origin.x), 
+    			GameMap.pixelsToMeters(origin.y),  
+    			(float)(origin.x+Math.sin(angle)*20-Math.cos(angle)*100), 
+    			(float)(origin.y-Math.cos(angle)*20-Math.sin(angle)*100), 
+    			(float)(angle), 
+    			1f, 
+    			1f);
     }
     
 	/**
