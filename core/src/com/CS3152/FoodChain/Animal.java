@@ -330,6 +330,7 @@ public abstract class Animal extends Actor{
 		tmp3.add(GameMap.metersToPixels(sectorLine.x), GameMap.metersToPixels(sectorLine.y));
 		//draw cone
 		//if patrolling, staying still, or wandering, then draw yellow cone
+
 		if(getState()==AIController.State.PATROL || getState()==AIController.State.STAYSTILL|| getState()==AIController.State.WANDER){
 			canvas.drawCone(false, tmp, body.getAngle());
 		}
