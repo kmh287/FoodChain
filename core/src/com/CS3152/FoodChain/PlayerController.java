@@ -73,16 +73,15 @@ public class PlayerController implements InputController{
 	} 
 	
 	public boolean isTrapSetPressed(){
-		return Gdx.input.isKeyPressed(Input.Keys.E); 
+		return Gdx.input.isKeyPressed(Input.Keys.J); 
 	}
 	
 	public boolean isMousePressed(){
 		return Gdx.input.isButtonPressed(Input.Buttons.LEFT); 
 	}
-
 	
 	public boolean isTrapPickupHeldDown(){
-		return Gdx.input.isKeyPressed(Input.Keys.Q);
+		return Gdx.input.isKeyPressed(Input.Keys.K);
 	}
 	
 	public boolean resetPressed(){
