@@ -277,19 +277,17 @@ public abstract class Animal extends Actor{
 	
 	public void drawSight(GameCanvas canvas) {
 		if (getAlive()) {
-			Vector2 position = getPosition();
-			tmp.set(GameMap.metersToPixels(position.x), GameMap.metersToPixels(position.y));
-			tmp2.set(GameMap.metersToPixels(position.x), GameMap.metersToPixels(position.y));
-			Vector2 sectorLine = getLeftSectorLine();
-			tmp2.add(GameMap.metersToPixels(sectorLine.x), GameMap.metersToPixels(sectorLine.y));
-			canvas.drawLine(Color.YELLOW, tmp, tmp2);
-			tmp3.set(GameMap.metersToPixels(position.x), GameMap.metersToPixels(position.y));
-			sectorLine = getRightSectorLine();
-			tmp3.add(GameMap.metersToPixels(sectorLine.x), GameMap.metersToPixels(sectorLine.y));
-			canvas.drawLine(Color.YELLOW, tmp, tmp3);
-			
-			//draw cone
-			//canvas.drawCone(Color.YELLOW, tmp, tmp2, tmp3,SIGHT_RADIUS,SIGHT_ANGLE);
+			//old code that draws vision lines to scale
+//			Vector2 position = getPosition();
+//			tmp.set(GameMap.metersToPixels(position.x), GameMap.metersToPixels(position.y));
+//			tmp2.set(GameMap.metersToPixels(position.x), GameMap.metersToPixels(position.y));
+//			Vector2 sectorLine = getLeftSectorLine();
+//			tmp2.add(GameMap.metersToPixels(sectorLine.x), GameMap.metersToPixels(sectorLine.y));
+//			canvas.drawLine(Color.YELLOW, tmp, tmp2);
+//			tmp3.set(GameMap.metersToPixels(position.x), GameMap.metersToPixels(position.y));
+//			sectorLine = getRightSectorLine();
+//			tmp3.add(GameMap.metersToPixels(sectorLine.x), GameMap.metersToPixels(sectorLine.y));
+//			canvas.drawLine(Color.YELLOW, tmp, tmp3);
 			
 			//draws patrol waypoint if they have waypoints
 			if(wayPoints.size>0){
@@ -303,6 +301,19 @@ public abstract class Animal extends Actor{
 				}
 			}		
 		}
+	}
+	
+	public void drawCone(GameCanvas canvas){
+		Vector2 position = getPosition();
+		tmp.set(GameMap.metersToPixels(position.x), GameMap.metersToPixels(position.y));
+		tmp2.set(GameMap.metersToPixels(position.x), GameMap.metersToPixels(position.y));
+		Vector2 sectorLine = getLeftSectorLine();
+		tmp2.add(GameMap.metersToPixels(sectorLine.x), GameMap.metersToPixels(sectorLine.y));
+		tmp3.set(GameMap.metersToPixels(position.x), GameMap.metersToPixels(position.y));
+		sectorLine = getRightSectorLine();
+		tmp3.add(GameMap.metersToPixels(sectorLine.x), GameMap.metersToPixels(sectorLine.y));
+		//draw cone
+		canvas.drawCone(Color.YELLOW, tmp, body.getAngle());
 	}
 	
 	@Override
