@@ -468,7 +468,6 @@ public class GameMode implements Screen {
 		int i = 1;
 		for (Animal an : animals) {
 			an.update(delta);
-			//need to update wolf death once we have animations
 			if(an instanceof Pig) {
 				if(an.getAlive()==false){
 					if(ticks%10==0){
@@ -485,7 +484,12 @@ public class GameMode implements Screen {
 				}
 			}
 			if(an instanceof Wolf){
-				if(controls[i].getAction(delta)!=InputController.NO_ACTION){
+				if(an.getAlive()==false){
+					if(ticks%10==0){
+						((Wolf)an).updateDeadFrame();
+					}
+				}
+				else if(controls[i].getAction(delta)!=InputController.NO_ACTION){
 					if(ticks%10==0){
 						((Wolf) an).updateWalkFrame();
 					}
@@ -566,18 +570,12 @@ public class GameMode implements Screen {
     	//Draw the animals
     	//need to modify this and wolf code once wolf death animation is done
         for (Animal animal : animals){
-        	if( animal instanceof Pig){
-        		if (!animal.getTrapped() || animal.getFinishedDeatAnimation()==false) {
-            		animal.drawCone(canvas);
-            		animal.draw(canvas);
+    		if (!animal.getTrapped() || animal.getFinishedDeatAnimation()==false) {
+        		animal.draw(canvas);
+        		if(!animal.getTrapped()){
+        			animal.drawCone(canvas);
         		}
-        	}
-        	else{
-        		if (!animal.getTrapped()) {
-            		animal.drawCone(canvas);
-            		animal.draw(canvas);
-        		}
-        	}           
+    		}          
             //animal.drawDebug(canvas);
         }
         //if (hunter.getAlive()) {
