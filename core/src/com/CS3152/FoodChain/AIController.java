@@ -445,7 +445,7 @@ public class AIController implements InputController {
 			    	//System.out.println(getAnimal() + " is fleeing");
 			        if (canSettle()) {
 			            //animal.setState(State.WANDER);
-			            animal.setState(State.PATROL);
+			            animal.setState(State.WANDER);
 			            setAttacker(null);
 			            setTarget(null);
 			        }

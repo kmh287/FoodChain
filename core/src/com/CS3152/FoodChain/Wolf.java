@@ -59,7 +59,7 @@ public class Wolf extends Animal{
         Array<Steerable<Vector2>> steerArray = new Array<Steerable<Vector2>>(steers);
         
         RadiusProximity proximity = new RadiusProximity<Vector2>(this, steerArray, 0.0001f);
-        collisionAvoidanceSB = new CollisionAvoidance<Vector2>(this, proximity);
+        collisionAvoidanceSB = new CollisionAvoidance2<Vector2>(this, proximity);
         collisionAvoidanceSB.setLimiter(new LinearAccelerationLimiter(maxLinearAcceleration));
         
     	seekSB = new Seek<Vector2>(this);

@@ -346,9 +346,9 @@ public abstract class Animal extends Actor{
 		
 		if (state != AIController.State.FIND) {
 		collisionAvoidanceSB.calculateSteering(steeringOutput);
-		if (steeringOutput.calculateSquareMagnitude() > minSteeringSquared) {
-			return; 
-		}
+		  if (steeringOutput.calculateSquareMagnitude() > minSteeringSquared) {
+			  return; 
+		  }
 		}
 		
 		switch (state) {
