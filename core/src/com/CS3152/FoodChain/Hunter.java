@@ -45,7 +45,7 @@ public class Hunter extends Actor {
     private static float scaleYDrawHunterDead = 0.21f;
     private static float scaleXDrawPigTrap = 0.40f;
     private static float scaleYDrawPigTrap = 0.30f;
-    
+    public boolean hunterFinishedDeath; 
     private FilmStrip sprite;
     private FilmStrip spriteDeath;
     private FilmStrip spritePigTrap;
@@ -70,12 +70,16 @@ public class Hunter extends Actor {
         spriteWolfTrap = new FilmStrip(wolfTrapTex,1,5,5);
         drawScale.x=scaleXDrawHunter;
         drawScale.y=scaleYDrawHunter;
+        sound = null;
+		sndcue = -1;
         maxLinearSpeed = 500.0f;
         maxLinearAcceleration = 0.0f;
         independentFacing = false;
         sound = null;
 		sndcue = -1;
 		spriteDeath.setFrame(0);
+		
+		hunterFinishedDeath = false; 
     }
     
     /**
@@ -165,6 +169,9 @@ public class Hunter extends Actor {
     	if(frame<2){
     		frame++;
     	}
+    	else {
+    		setFinishedDeatAnimation(true);
+    	}
     	spriteDeath.setFrame(frame);
     	spriteDeath.flip(false,true);
     	super.setTexture(spriteDeath);
@@ -201,6 +208,14 @@ public class Hunter extends Actor {
     public void applySteering(float delta) {
     	return;
     }
+   
+    public boolean getFinishedDeatAnimation(){
+		return hunterFinishedDeath;
+	}
+	
+	public void setFinishedDeatAnimation(boolean b){
+		this.hunterFinishedDeath=b;
+	};
 
     /**
 	 * Plays the given sound.  

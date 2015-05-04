@@ -1,11 +1,15 @@
 package com.CS3152.FoodChain;
 
+import java.util.List;
+
 import com.CS3152.FoodChain.Actor.actorType;
+import com.badlogic.gdx.ai.pfa.indexed.IndexedAStarPathFinder;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import java.util.*;
 
 public class Owl extends Animal {
 	
@@ -13,17 +17,18 @@ public class Owl extends Animal {
 	private static Texture tex = null;
 	private static float scaleXDrawOwl = .23f;
 	private static float scaleYDrawOwl = .23f;
+	private Actor target;
 	
-    static final Actor.actorType prey[] = {Actor.actorType.PIG,
-    									   Actor.actorType.WOLF, Actor.actorType.HUNTER};
+    static final Actor.actorType prey[] = {Actor.actorType.HUNTER};
     
-    public Owl(float x, float y) {
-        super(new TextureRegion(tex), Actor.actorType.OWL, x, y, 
-              prey, InputController.EAST);
+    public Owl(float x, float y, IndexedAStarPathFinder<MapNode> pathFinder, GameMap map,
+    		   List<Vector2> patrol, TiledManhattanDistance heuristic) {
+    	super(new TextureRegion(tex), Actor.actorType.OWL, x, y, 
+              prey, InputController.EAST, patrol, pathFinder, map, heuristic);
         drawScale.x = scaleXDrawOwl;
         drawScale.y = scaleYDrawOwl;
-        SIGHT_LENGTH = 2.4f;
-        SIGHT_ANGLE = 0.35;
+        SIGHT_LENGTH = 4.8f;
+        SIGHT_ANGLE = 1.18;
     }
 
     public void createSteeringBehaviors() {
@@ -54,4 +59,18 @@ public class Owl extends Animal {
             }
         }
     }
+	
+	//@Override
+	public void setOrientation(float arg0) {
+		// TODO Auto-generated method stub
+			
+	}
+	
+	public void setTarget(Actor actor) {
+	  this.target = actor;
+	}
+	
+	public Actor getTarget() {
+	  return target;
+	}
 }

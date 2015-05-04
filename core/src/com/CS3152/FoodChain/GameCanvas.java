@@ -20,6 +20,7 @@ package com.CS3152.FoodChain;
 import java.lang.reflect.Array;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.ai.steer.utils.paths.LinePath;
 import com.badlogic.gdx.assets.AssetManager;
@@ -416,7 +417,7 @@ public class GameCanvas {
     	Vector3 touchpos = new Vector3();
     	 touchpos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
          camera.unproject(touchpos);
-		camera.translate(pos);
+		camera.translate(pos.x/2, pos.y/2);
 		camera.update(); 
     }
     public void beginCam(float x, float y) {
@@ -430,7 +431,7 @@ public class GameCanvas {
     
     //first time cam draws it will center over hunter and not perform lazy scroll
 	public void beginCamStart(float x, float y) {
-
+		
 		camera.position.set(x, y, 0);
        	global.setTranslation(x, y, 0);
         camera.update();        
@@ -438,6 +439,21 @@ public class GameCanvas {
     	spriteBatch.setProjectionMatrix(camera.combined);
     	spriteBatch.begin();
     	active = DrawPass.STANDARD;
+	}
+	public void beginCamMouse() {
+		int x = (int) (camera.viewportWidth - Gdx.input.getX());
+		int y = (int) (camera.viewportHeight - Gdx.input.getY()); 
+		Vector3 mousepost = new Vector3 (x, y, 0);
+    	camera.unproject(mousepost);
+    	camera.position.set(x, y, 0);
+    	global.setTranslation(x, y, 0);
+        camera.update();
+    	
+    	ui.drawStage();
+    	spriteBatch.setProjectionMatrix(camera.combined);
+    	spriteBatch.begin();
+    	active = DrawPass.STANDARD;
+
 	}
     
     public void DrawBlack(float x, float y) {
