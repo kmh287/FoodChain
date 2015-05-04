@@ -137,12 +137,12 @@ public class GDXRoot extends Game implements ScreenListener {
 		else if (exitCode == 3) {
 			//LoadingMode.loadContent(manager);
 			LoadingMode loading_again = new LoadingMode(canvas, manager, 1);
-			playing = null;
+			playing.dispose();
+			playing = null; 
+			
 			loading_again.setScreenListener(this);
 			setScreen(loading_again);
-			
-			//playing.dispose();
-			
+						
 		}
 		
 		else if (exitCode == 4) {

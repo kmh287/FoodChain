@@ -178,6 +178,9 @@ public class GameMode implements Screen{
         if (level == 3) {
             initializeLevel(canvas, "BetaLevel3");
         }
+        if (level == 4) {
+            initializeLevel(canvas, "BetaLevel2");
+        }
         
 	}
         
@@ -643,7 +646,9 @@ public class GameMode implements Screen{
 		} else if (checkObjective() == gameCondition.WIN) {
 			listener.exitScreen(this, EXIT_WON);
 		} else if (checkObjective() == gameCondition.LOSE) {
-			//listener.exitScreen(this, EXIT_LOSS);
+			if (hunter.getFinishedDeatAnimation() == true){
+				listener.exitScreen(this, EXIT_LOSS);
+			}
 		}
 		/*else if (countdown > 0) {
 			countdown--;
@@ -663,6 +668,10 @@ public class GameMode implements Screen{
         postDraw(delta);
 
     }
+    
+    public boolean isFailure( ) {
+		return failed;
+	}
 
     @Override
     public void resize(int width, int height) {
