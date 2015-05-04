@@ -44,7 +44,7 @@ public class Wolf extends Animal{
         drawScale.x = scaleXDrawWolf;
         drawScale.y = scaleYDrawWolf;
         SIGHT_LENGTH = 2.4f;
-        SIGHT_RADIUS = 1.5f;
+        SIGHT_RADIUS = 0f;
         SIGHT_ANGLE = 0.35;
         maxLinearSpeed = 4f;
         maxLinearAcceleration = 10.0f;
@@ -58,7 +58,7 @@ public class Wolf extends Animal{
         GameMode.steerables.toArray(steers);
         Array<Steerable<Vector2>> steerArray = new Array<Steerable<Vector2>>(steers);
         
-        RadiusProximity proximity = new RadiusProximity<Vector2>(this, steerArray, 0.01f);
+        RadiusProximity proximity = new RadiusProximity<Vector2>(this, steerArray, 0.0001f);
         collisionAvoidanceSB = new CollisionAvoidance<Vector2>(this, proximity);
         collisionAvoidanceSB.setLimiter(new LinearAccelerationLimiter(maxLinearAcceleration));
         

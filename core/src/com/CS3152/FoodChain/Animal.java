@@ -137,7 +137,7 @@ public abstract class Animal extends Actor{
 		followPathToPatrol = new FollowPath<Vector2, LinePathParam>(this, pathToPatrol, (float) .5);
 		
 		//if not waypoints, set to wander
-		if(wayPoints.size==0){
+		if(this instanceof Owl){
 			this.state = AIController.State.WANDER;
 		}
 		//else put in patrol state
@@ -285,8 +285,8 @@ public abstract class Animal extends Actor{
 	}
 	
 	public float getSightRadius() {
-    return SIGHT_RADIUS;
-  }
+		return SIGHT_RADIUS;
+	}
 	
 	public Vector2 getLeftSectorLine() {
 		return this.leftSectorLine;
