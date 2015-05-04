@@ -27,8 +27,8 @@ public class Owl extends Animal {
               prey, InputController.EAST, patrol, pathFinder, map, heuristic);
         drawScale.x = scaleXDrawOwl;
         drawScale.y = scaleYDrawOwl;
-        SIGHT_LENGTH = 10f;
-        SIGHT_ANGLE = 0.35;
+        SIGHT_LENGTH = 4.8f;
+        SIGHT_ANGLE = 1.18;
     }
 
     public void createSteeringBehaviors() {

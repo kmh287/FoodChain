@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.badlogic.gdx.ai.pfa.DefaultGraphPath;
 import com.badlogic.gdx.ai.pfa.indexed.IndexedAStarPathFinder;
+import com.badlogic.gdx.ai.steer.GroupBehavior;
 import com.badlogic.gdx.ai.steer.Limiter;
 import com.badlogic.gdx.ai.steer.Steerable;
 import com.badlogic.gdx.ai.steer.SteeringAcceleration;
@@ -11,6 +12,7 @@ import com.badlogic.gdx.ai.steer.SteeringBehavior;
 import com.badlogic.gdx.ai.steer.behaviors.Flee;
 import com.badlogic.gdx.ai.steer.behaviors.FollowPath;
 import com.badlogic.gdx.ai.steer.behaviors.Seek;
+import com.badlogic.gdx.ai.steer.proximities.RadiusProximity;
 import com.badlogic.gdx.ai.steer.utils.paths.LinePath;
 import com.badlogic.gdx.ai.steer.utils.paths.LinePath.LinePathParam;
 import com.badlogic.gdx.ai.tests.steer.box2d.Box2dLocation;
@@ -297,7 +299,7 @@ public abstract class Animal extends Actor{
 		return this.rightSectorLine;
 	}
 	
-	public void drawSight(GameCanvas canvas) {
+	public void drawDebugSight(GameCanvas canvas) {
 		if (getAlive()) {
 			//old code that draws vision lines to scale
 //			Vector2 position = getPosition();
@@ -321,7 +323,17 @@ public abstract class Animal extends Actor{
 					}
 					canvas.DrawPatrolPaths(GameMap.metersToPixels(wayPoints.get(i).x), GameMap.metersToPixels(wayPoints.get(i).y), 5, wayPoints, linePath);
 				}
-			}		
+			}
+			Vector2 position = getPosition();
+      tmp.set(GameMap.metersToPixels(position.x), GameMap.metersToPixels(position.y));
+      tmp2.set(GameMap.metersToPixels(position.x), GameMap.metersToPixels(position.y));
+      Vector2 sectorLine = getLeftSectorLine();
+      tmp2.add(GameMap.metersToPixels(sectorLine.x), GameMap.metersToPixels(sectorLine.y));
+      canvas.drawLine(Color.YELLOW, tmp, tmp2);
+      tmp2.set(GameMap.metersToPixels(position.x), GameMap.metersToPixels(position.y));
+      sectorLine = getRightSectorLine();
+      tmp2.add(GameMap.metersToPixels(sectorLine.x), GameMap.metersToPixels(sectorLine.y));
+      canvas.drawLine(Color.YELLOW, tmp, tmp2);
 		}
 	}
 	
@@ -477,5 +489,10 @@ public abstract class Animal extends Actor{
 		}
 		pathToPatrol.createPath(ptp);
 		followPathToPatrol.setPath(pathToPatrol);
+	}
+	
+	public void setProximityRadius(float radius) {
+	  RadiusProximity<Vector2> proximity = (RadiusProximity<Vector2>) ((GroupBehavior<Vector2>) collisionAvoidanceSB).getProximity();
+	  proximity.setRadius(radius);
 	}
 }

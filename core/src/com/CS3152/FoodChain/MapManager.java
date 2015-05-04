@@ -24,6 +24,7 @@ public class MapManager {
         FileReader fr = new FileReader(inPath);
         BufferedReader br = new BufferedReader(fr);
         return gson.fromJson(br,GameMap.class);
+        
     }
     /**
      * Given a map, write it to a json 
