@@ -46,9 +46,9 @@ public class Pig extends Animal {
      * @param patrol 
      */
     public Pig(float x, float y, List<Vector2> patrol,
-    		IndexedAStarPathFinder<MapNode> pathFinder, GameMap map) {
+    		IndexedAStarPathFinder<MapNode> pathFinder, GameMap map, TiledManhattanDistance heuristic) {
         super(new TextureRegion(tex), Actor.actorType.PIG, x, y, 
-              prey, InputController.EAST,patrol, pathFinder, map);
+              prey, InputController.EAST,patrol, pathFinder, map, heuristic);
         sprite = new FilmStrip(tex,1,4,4);
         spriteDeath = new FilmStrip(deathTex,1,7,7);
         drawScale.x=scaleXDrawSheep;

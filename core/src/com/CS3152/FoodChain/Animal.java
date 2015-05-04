@@ -95,8 +95,9 @@ public abstract class Animal extends Actor{
 	 */
 	public Animal(TextureRegion tr, actorType type, float x, float y, 
 	              actorType[] prey, Vector2 facing, List<Vector2> patrol,
-	              IndexedAStarPathFinder<MapNode> pathFinder, GameMap map){
+	              IndexedAStarPathFinder<MapNode> pathFinder, GameMap map, TiledManhattanDistance heuristic){
 		super(tr, type, x, y, AnimalWidth, AnimalHeight, prey);
+		this.heuristic = heuristic;
 		this.setPos(GameMap.pixelsToMeters(x), GameMap.pixelsToMeters(y));
 		setFacing(facing);
 		this.leftSectorLine = new Vector2();
@@ -343,9 +344,11 @@ public abstract class Animal extends Actor{
 	public void calculateSteering() {
 		float minSteeringSquared = MIN_STEERING * MIN_STEERING;
 		
+		if (state != AIController.State.FIND) {
 		collisionAvoidanceSB.calculateSteering(steeringOutput);
 		if (steeringOutput.calculateSquareMagnitude() > minSteeringSquared) {
 			return; 
+		}
 		}
 		
 		switch (state) {
@@ -433,8 +436,8 @@ public abstract class Animal extends Actor{
 			int tileY = mn.getY();
 			float pixX = map.mapXToScreen(tileX);
 			float pixY = map.mapYToScreen(tileY);
-			float x = GameMap.pixelsToMeters(pixX);
-			float y = GameMap.pixelsToMeters(pixY);
+			float x = GameMap.pixelsToMeters(pixX + 20.0f);
+			float y = GameMap.pixelsToMeters(pixY + 20.0f);
 			ptp.add(new Vector2(x,y));
 		}
 		pathToPatrol.createPath(ptp);

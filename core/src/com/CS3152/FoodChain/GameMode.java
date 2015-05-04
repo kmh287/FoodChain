@@ -265,6 +265,7 @@ public class GameMode implements Screen {
 	    Iterator<Vector2> coordIt = coordinates.iterator();
 	    Iterator<List<Vector2>> patrolsIT = patrolPaths.iterator();
 	    IndexedAStarPathFinder<MapNode> pathFinder = new IndexedAStarPathFinder<MapNode>(map);
+	    TiledManhattanDistance<MapNode> heuristic = new TiledManhattanDistance<MapNode>();
 	    while (aTypesIt.hasNext() && coordIt.hasNext() && patrolsIT.hasNext()){
 	        actorType currType = aTypesIt.next();
 	        Vector2 coord = coordIt.next();
@@ -275,7 +276,7 @@ public class GameMode implements Screen {
 	            	Pig.loadTexture(manager);
 	                newAnimal = new Pig(map.mapXToScreen((int)coord.x), 
 	                					map.mapYToScreen((int)coord.y),convertPatrol(patrol),
-	                					pathFinder,map);
+	                					pathFinder,map,heuristic);
 	                newAnimal.setDensity(DEFAULT_DENSITY);
 	                animals.add(newAnimal);
 	                break;
@@ -284,7 +285,7 @@ public class GameMode implements Screen {
 	            	Wolf.loadTexture(manager);
 	                newAnimal = new Wolf(map.mapXToScreen((int)coord.x), 
 	                					 map.mapYToScreen((int)coord.y),convertPatrol(patrol),
-	                					 pathFinder,map);
+	                					 pathFinder,map,heuristic);
 	                animals.add(newAnimal);
 	                break;
 	                
@@ -295,7 +296,7 @@ public class GameMode implements Screen {
                     nullWaypoints.add(nullWaypoints.get(0));
             		newAnimal = new Owl(map.mapXToScreen((int)coord.x), 
             							map.mapYToScreen((int)coord.y),pathFinder,map,
-            							nullWaypoints);
+            							nullWaypoints, heuristic);
 	                animals.add(newAnimal);
 	                break;
 	            default:
@@ -415,6 +416,7 @@ public class GameMode implements Screen {
 	    			}
 	    		}
 	    		else if (con == gameCondition.LOSE){
+	    		  System.out.println("You Lost");
 	    			//RESET -- maybe add a timer and some onscreen indication.
     				initializeLevel(canvas, levelName);
     				lastResetTicks = ticks;

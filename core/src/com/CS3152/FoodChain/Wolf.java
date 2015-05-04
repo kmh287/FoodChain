@@ -37,9 +37,9 @@ public class Wolf extends Animal{
      * @param patrol 
      */
     public Wolf(float x, float y, List<Vector2> patrol,
-    		IndexedAStarPathFinder<MapNode> pathFinder, GameMap map) {
+    		IndexedAStarPathFinder<MapNode> pathFinder, GameMap map, TiledManhattanDistance heuristic) {
         super(new TextureRegion(tex), Actor.actorType.WOLF, x, y, 
-              prey, InputController.EAST,patrol, pathFinder, map);
+              prey, InputController.EAST,patrol, pathFinder, map, heuristic);
         sprite = new FilmStrip(tex,1,4,4);
         drawScale.x = scaleXDrawWolf;
         drawScale.y = scaleYDrawWolf;

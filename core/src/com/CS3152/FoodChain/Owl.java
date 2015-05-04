@@ -19,9 +19,9 @@ public class Owl extends Animal {
     static final Actor.actorType prey[] = {Actor.actorType.HUNTER};
     
     public Owl(float x, float y, IndexedAStarPathFinder<MapNode> pathFinder, GameMap map,
-    		   List<Vector2> nullWaypoints) {
+    		   List<Vector2> nullWaypoints, TiledManhattanDistance heuristic) {
     	super(new TextureRegion(tex), Actor.actorType.OWL, x, y, 
-              prey, InputController.EAST, nullWaypoints, pathFinder, map);
+              prey, InputController.EAST, nullWaypoints, pathFinder, map, heuristic);
         drawScale.x = scaleXDrawOwl;
         drawScale.y = scaleYDrawOwl;
         SIGHT_LENGTH = 2.4f;

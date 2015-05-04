@@ -354,7 +354,9 @@ public class AIController implements InputController {
 	}
 
 	public void preUpdate() {
-		rayCast();
+		//if (animal.getState() != State.KILL) {
+		  rayCast();
+		//}
 		animal.calculateSteering();
 	}
 	
@@ -483,6 +485,9 @@ public class AIController implements InputController {
 				    		  setTurns(1000);
 				    	  }
 				    }
+			    	else if (canPatrol()) {
+			    	  animal.setState(State.PATROL);
+			    	}
 			    	break;
 			    case DEAD:
 			        break;
@@ -493,7 +498,22 @@ public class AIController implements InputController {
     	}
 	}
 
-	public static void increasePanic() {
+	private boolean canPatrol() {
+      Vector2 position = animal.getPosition();
+      int tileX = map.screenXToMap(GameMap.metersToPixels(position.x));
+      int tileY = map.screenYToMap(GameMap.metersToPixels(position.y));
+      Vector2 firstWaypoint = animal.getWayPointList().get(0);
+      int wayX = map.screenXToMap(GameMap.metersToPixels(firstWaypoint.x));
+      int wayY = map.screenYToMap(GameMap.metersToPixels(firstWaypoint.y));
+      if (tileX == wayX && tileY == wayY) {
+        return true;
+      }
+      else {
+        return false;
+      }
+    }
+
+  public static void increasePanic() {
 		if(panicPercentage<1f){
 			panicPercentage+=.005f;
 		}
