@@ -445,7 +445,7 @@ public class GameMode implements Screen {
 			}
 		}
 		
-		if (controls[0].isSpacePressed()  && trapController.canSetTrap() && 
+		if (controls[0].isTrapSetPressed()  && trapController.canSetTrap() && 
 			!settingTrap && hunter.getAlive()) {
 	    		Vector2 trapPosition = trapController.getTrapPositionFromHunter(hunter);
 	    		if (map.isSafeAt(GameMap.metersToPixels(trapPosition.x), GameMap.metersToPixels(trapPosition.y))) 

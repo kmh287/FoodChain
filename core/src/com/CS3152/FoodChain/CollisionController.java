@@ -101,7 +101,7 @@ public class CollisionController implements ContactListener {
 		
 		//shit
 		if (trapOver!= null && trapOver.getisOver() && trapOver.getOnMap()) {
-			if (trapOver.getSetWell() && controls[0].isSpaceHeldDown() && trapOver.getisOver()){
+			if (trapOver.getSetWell() && controls[0].isTrapPickupHeldDown() && trapOver.getisOver()){
 				trapOver.setOnMap(false);
 				trapOver.setInInventory(true);
 			}
@@ -187,7 +187,7 @@ public class CollisionController implements ContactListener {
 				trapOver = trap;
 				trap.setisOver(true);
 			}
-			if (trap.getOnMap() && controls[0].isSpaceHeldDown()) {
+			if (trap.getOnMap() && controls[0].isTrapPickupHeldDown()) {
 				trap.setOnMap(false);
 				trap.setInInventory(true);
 			}
@@ -197,7 +197,7 @@ public class CollisionController implements ContactListener {
 			if (trap.getOnMap()) {
 				trap.setisOver(true);
 				trapOver = trap;
-				if (trap.getSetWell() && controls[0].isSpaceHeldDown()){
+				if (trap.getSetWell() && controls[0].isTrapPickupHeldDown()){
 					trap.setOnMap(false);
 					trap.setInInventory(true);
 				}
