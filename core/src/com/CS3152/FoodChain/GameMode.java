@@ -272,7 +272,8 @@ public class GameMode implements Screen {
 	            case PIG:
 	            		Pig.loadTexture(manager);
 	                newAnimal = new Pig(map.mapXToScreen((int)coord.x), 
-	                		map.mapYToScreen((int)coord.y),convertPatrol(patrol));
+	                						map.mapYToScreen((int)coord.y),
+	                						convertPatrol(patrol));
 	                newAnimal.setDensity(DEFAULT_DENSITY);
 	                animals.add(newAnimal);
 	                break;
@@ -280,14 +281,16 @@ public class GameMode implements Screen {
 	            case WOLF:
 	            		Wolf.loadTexture(manager);
 	                newAnimal = new Wolf(map.mapXToScreen((int)coord.x), 
-	                					 map.mapYToScreen((int)coord.y),convertPatrol(patrol));
+	                					 	 map.mapYToScreen((int)coord.y),
+	                					 	 convertPatrol(patrol));
 	                animals.add(newAnimal);
 	                break;
 	                
 	            case OWL:
             			Owl.loadTexture(manager);
             			newAnimal = new Owl(map.mapXToScreen((int)coord.x), 
-            								map.mapYToScreen((int)coord.y));
+            								map.mapYToScreen((int)coord.y),
+            								convertPatrol(patrol));
 	                animals.add(newAnimal);
 	                break;
 	            default:

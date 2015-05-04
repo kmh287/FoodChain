@@ -116,7 +116,7 @@ public abstract class Animal extends Actor{
 		followPathAnimal = new FollowPath<Vector2, LinePathParam>(this, linePath, (float) .5); 
 
 		//if not waypoints, set to wander
-		if(wayPoints.size==0){
+		if(this instanceof Owl){
 			this.state = AIController.State.WANDER;
 		}
 		//else put in patrol state

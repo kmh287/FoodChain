@@ -1,5 +1,7 @@
 package com.CS3152.FoodChain;
 
+import java.util.List;
+
 import com.CS3152.FoodChain.Actor.actorType;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
@@ -17,12 +19,12 @@ public class Owl extends Animal {
     static final Actor.actorType prey[] = {Actor.actorType.PIG,
     									   Actor.actorType.WOLF, Actor.actorType.HUNTER};
     
-    public Owl(float x, float y) {
+    public Owl(float x, float y, List<Vector2> patrol) {
         super(new TextureRegion(tex), Actor.actorType.OWL, x, y, 
-              prey, InputController.EAST);
+              prey, InputController.EAST, patrol);
         drawScale.x = scaleXDrawOwl;
         drawScale.y = scaleYDrawOwl;
-        SIGHT_LENGTH = 2.4f;
+        SIGHT_LENGTH = 10f;
         SIGHT_ANGLE = 0.35;
     }
 

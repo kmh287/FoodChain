@@ -151,6 +151,8 @@ public class AIController implements InputController {
         sound = null;
 		sndcue = -1;
 		WanderStopRate= MathUtils.random(175,225);
+		
+		angle = 0f;
     }
     
     /*
@@ -351,14 +353,23 @@ public class AIController implements InputController {
 	}
 
 	public void preUpdate() {
+		if (!(animal instanceof Owl)){
+			animal.calculateSteering();
+		}
 		rayCast();
-		animal.calculateSteering();
 	}
 	
 	public void update(float delta) {
 		// TODO Auto-generated method stub
 		if (animal instanceof Owl) {
-			
+			angle += Math.PI/100;
+			animal.setAngle(angle);
+			animal.updateLOS(angle);
+			vect.set(vect.x + (float)Math.cos(angle), vect.y + (float)Math.sin(angle));
+			goal.set(vect.x, vect.y);
+			Vector2 tmp = goal;
+			tmp.sub(getAnimal().getPosition());
+			changeStateIfApplicable();
 		}
 		else {
 			animal.applySteering(delta);
@@ -381,6 +392,9 @@ public class AIController implements InputController {
 			    	  else if (animal instanceof Wolf) {
 			    	    animal.setState(State.CHASE);
 			    	    setTurns(stateDelay);
+			    	  }
+			    	  else if (animal instanceof Owl){
+			    		  System.out.println("Hello World");
 			    	  }
 			      }
 			    	//stop periodically in wander
@@ -493,12 +507,16 @@ public class AIController implements InputController {
 	
 	private void rayCast() {
 	  for (Actor a : actors) {
+		  System.out.println(a.getTypeNameString());
       if (a != getAnimal() && a.getAlive()) {
+    	  	System.out.println("1");
         world.rayCast(vcb, getAnimal().getPosition(), a.getPosition());
         Fixture fix = vcb.getFixture();
         if (fix != null) {
+        		System.out.println("2");
           Object objSeen = fix.getBody().getUserData();
           if (objSeen instanceof Actor) {
+        	  	System.out.println("3");
             if (animal.canKill((Actor) objSeen) || ((Actor) objSeen).canKill(animal)) {
               setTarget((Actor) objSeen);
             }

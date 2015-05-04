@@ -67,7 +67,7 @@ public class Pig extends Animal {
         GameMode.steerables.toArray(steers);
         Array<Steerable<Vector2>> steerArray = new Array<Steerable<Vector2>>(steers);
         
-        RadiusProximity proximity = new RadiusProximity<Vector2>(this, steerArray, .1f);
+        RadiusProximity proximity = new RadiusProximity<Vector2>(this, steerArray, .0001f);
         collisionAvoidanceSB = new CollisionAvoidance<Vector2>(this, proximity);
         LinearAccelerationLimiter limiter = new LinearAccelerationLimiter(maxLinearAcceleration);
         limiter.setMaxLinearAcceleration(maxLinearAcceleration);
@@ -94,7 +94,7 @@ public class Pig extends Animal {
      */
     @Override
     public String getTypeNameString() {
-        return "Sheep";
+        return "PIG";
     }
 
     public void updateLOS(float angle) {

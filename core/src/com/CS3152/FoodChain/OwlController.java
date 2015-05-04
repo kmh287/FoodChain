@@ -76,8 +76,8 @@ public class OwlController extends AIController {
 	     * @param map The game map
 	     */
 	    public OwlController(Owl owl, World world, GameMap map, List<Actor> actors) {
-	        super(animal, world, map, actors);
-	    	this.owl = owl;
+	        super(owl, world, map, actors);
+	    		this.owl = owl;
 	        this.world = world;
 	        this.map = map;
 	        this.actors = actors;
@@ -458,14 +458,4 @@ public class OwlController extends AIController {
 	    public boolean isClicked() {return false;}
 	    
 	    public int getNum() {return 0;}
-	}
-
-
-
-
-
-
-
 } 
-
-}
