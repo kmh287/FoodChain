@@ -453,12 +453,7 @@ public class AIController implements InputController {
 			    	turns--;
 			    	break;
 			    case PATROL:
-<<<<<<< HEAD
-			    	//animal.setState(State.PATROL);
-			    	//this code is commented out until we can resolve state machine
-=======
 			    	animal.setState(State.PATROL);
->>>>>>> 3d0fb71ad1b989eb49a74881c413643bfd51e6e8
 			    	if (hasTarget()) {
 				    	  if (animal instanceof Pig) {
 				    	    animal.setState(State.FLEE);
