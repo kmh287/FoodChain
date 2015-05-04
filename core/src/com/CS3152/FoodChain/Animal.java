@@ -358,8 +358,17 @@ public abstract class Animal extends Actor{
 		tmp.set(GameMap.metersToPixels(position.x), GameMap.metersToPixels(position.y));
 		//draw cone
 		//if patrolling, staying still, or wandering, then draw yellow cone
-
-		if(getState()==AIController.State.PATROL || getState()==AIController.State.STAYSTILL|| getState()==AIController.State.WANDER){
+		
+		if (this instanceof Owl) {
+			if (getTarget() != null) {
+				canvas.drawCone(true, tmp, body.getAngle(),this.getType());
+			}
+			else {
+				canvas.drawCone(false, tmp, body.getAngle(),this.getType());
+			}
+		}
+		else if(getState()==AIController.State.PATROL ||
+				getState()==AIController.State.STAYSTILL|| getState()==AIController.State.WANDER){
 			canvas.drawCone(false, tmp, body.getAngle(),this.getType());
 		}
 		else{
@@ -489,4 +498,6 @@ public abstract class Animal extends Actor{
 	  RadiusProximity<Vector2> proximity = (RadiusProximity<Vector2>) ((GroupBehavior<Vector2>) collisionAvoidanceSB).getProximity();
 	  proximity.setRadius(radius);
 	}
+	
+	public abstract Actor getTarget();
 }

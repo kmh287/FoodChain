@@ -260,12 +260,18 @@ public class AIController implements InputController {
      * @param ac Actor the animal should target
      */
     public void setTarget(Actor ac) {
-        if (ac != null) {
-	    	this.target = ac;
-	        animal.setTarget(ac);
+        if (animal instanceof Owl) {
+        	animal.setTarget(ac);
+        	this.target = ac;
         }
         else {
-        	this.target = null;
+	        if (ac != null) {
+		    	this.target = ac;
+		        animal.setTarget(ac);
+	        }
+	        else {
+	        	this.target = null;
+	        }
         }
     }
     
@@ -402,7 +408,6 @@ public class AIController implements InputController {
 			    	    setTurns(stateDelay);
 			    	  }
 			    	  else if (animal instanceof Owl){
-			    		  System.out.println("Hello World");
 			    	  }
 			      }
 			    	//stop periodically in wander

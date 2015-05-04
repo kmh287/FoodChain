@@ -1287,21 +1287,21 @@ public class GameCanvas {
             	this.draw(redConeRegionLarge, 
             			Color.RED,GameMap.pixelsToMeters(origin.x), 
             			GameMap.pixelsToMeters(origin.y),  
-            			(float)(origin.x+Math.sin(angle)*20-Math.cos(angle)*100), 
-            			(float)(origin.y-Math.cos(angle)*20-Math.sin(angle)*100), 
+            			(float)(origin.x+Math.sin(angle)*200-Math.cos(angle)*220), 
+            			(float)(origin.y-Math.cos(angle)*200-Math.sin(angle)*220), 
             			(float)(angle), 
-            			1f, 
-            			1f);
+            			1.2f, 
+            			1.2f);
         	}
         	else{
             	this.draw(yellowConeRegionLarge, 
             			Color.YELLOW,GameMap.pixelsToMeters(origin.x), 
             			GameMap.pixelsToMeters(origin.y),  
-            			(float)(origin.x+Math.sin(angle)*20-Math.cos(angle)*100), 
-            			(float)(origin.y-Math.cos(angle)*20-Math.sin(angle)*100), 
+            			(float)(origin.x+Math.sin(angle)*200-Math.cos(angle)*220), 
+            			(float)(origin.y-Math.cos(angle)*200-Math.sin(angle)*220), 
             			(float)(angle), 
-            			1f, 
-            			1f);
+            			1.2f, 
+            			1.2f);
         	}
     	}
     	else{
