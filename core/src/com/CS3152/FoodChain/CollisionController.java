@@ -240,8 +240,6 @@ public class CollisionController implements ContactListener {
 				trapToAdd = "WOLF_TRAP";
 				trapLocationToAdd = trap.getPosition();
 
-
-
 			}
 		}
 		if (bd1 instanceof Trap && bd2 instanceof Animal) {
