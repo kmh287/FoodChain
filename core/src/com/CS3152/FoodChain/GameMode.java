@@ -93,7 +93,7 @@ public class GameMode implements Screen {
 	 */
 	public static void PreLoadContent(AssetManager manager) {
 		Trap.PreLoadContent(manager);
-		//manager.load(TRAP_DROP_FILE,Sound.class);
+		GameCanvas.PreLoadContent(manager);
 		SoundController.PreLoadContent(manager);
 	}
 	
@@ -112,7 +112,7 @@ public class GameMode implements Screen {
 	 */
 	public static void LoadContent(AssetManager manager) {
 		Trap.LoadContent(manager);
-		//trapSound = manager.get(TRAP_DROP_FILE,  Sound.class);
+		GameCanvas.LoadContent(manager);
 		SoundController.LoadContent(manager);
 		
 	}
@@ -568,11 +568,13 @@ public class GameMode implements Screen {
         for (Animal animal : animals){
         	if( animal instanceof Pig){
         		if (!animal.getTrapped() || animal.getFinishedDeatAnimation()==false) {
+            		animal.drawCone(canvas);
             		animal.draw(canvas);
         		}
         	}
         	else{
         		if (!animal.getTrapped()) {
+            		animal.drawCone(canvas);
             		animal.draw(canvas);
         		}
         	}           
