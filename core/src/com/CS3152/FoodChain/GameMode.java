@@ -27,7 +27,11 @@ import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.ai.pfa.indexed.IndexedAStarPathFinder;
 import com.badlogic.gdx.ai.steer.Steerable;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+//import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader;
 
 
 
@@ -94,7 +98,12 @@ public class GameMode implements Screen{
 	boolean settingTrap;
 	int trapSetProgress;
 	
-	private boolean playing; 
+	private boolean playing;
+	
+	//temporary for final pres.
+	private static String FONT_FILE = "assets/LightPixel7.ttf";
+	private static int FONT_SIZE = 64;
+	protected static BitmapFont displayFont;
 	
 	/**sound assets here **/
 	//private static final String TRAP_DROP_FILE = "sounds/trap_drop.mp3";
@@ -116,6 +125,11 @@ public class GameMode implements Screen{
 		Trap.PreLoadContent(manager);
 		GameCanvas.PreLoadContent(manager);
 		SoundController.PreLoadContent(manager);
+		
+		/*FreetypeFontLoader.FreeTypeFontLoaderParameter size2Params = new FreetypeFontLoader.FreeTypeFontLoaderParameter();
+		size2Params.fontFileName = FONT_FILE;
+		size2Params.fontParameters.size = FONT_SIZE;
+		manager.load(FONT_FILE, BitmapFont.class, size2Params);*/
 	}
 	
 	/** 
@@ -135,6 +149,13 @@ public class GameMode implements Screen{
 		Trap.LoadContent(manager);
 		GameCanvas.LoadContent(manager);
 		SoundController.LoadContent(manager);
+		
+        /*if (manager.isLoaded(FONT_FILE)) {
+			displayFont = manager.get(FONT_FILE,BitmapFont.class);
+		} else {
+			displayFont = null;
+		}*/
+		
 		
 	}
 	
@@ -242,6 +263,7 @@ public class GameMode implements Screen{
         gameplayController = new GameplayController(map, actorArray, controls);
         canvas.getUIControllerStage().setPanic(AIController.getPanicPercentage());
         collisionController.setControls(controls);
+        
 	}
 
 	private String formatObjective(String obj){
@@ -271,6 +293,7 @@ public class GameMode implements Screen{
         }
         System.out.println(formatObjective(map.getObjective()));
         return map;
+        
 	}
 	
 
@@ -296,53 +319,58 @@ public class GameMode implements Screen{
 	 * @param aTypes The list of animal types
 	 * @param coordinates the coordinates of the animals.
 	 */
-	private void buildAnimalList(List<actorType> aTypes,
-		            List<Vector2> coordinates, 
-		            List<List<Vector2>> patrolPaths){
-		if (coordinates.size() != aTypes.size() || patrolPaths.size() != aTypes.size()){
-		throw new IllegalArgumentException("Lists of unequal size");
-		}
-		//may need editing
-		Iterator<actorType> aTypesIt = aTypes.iterator();
-		Iterator<Vector2> coordIt = coordinates.iterator();
-		Iterator<List<Vector2>> patrolsIT = patrolPaths.iterator();
-		while (aTypesIt.hasNext() && coordIt.hasNext() && patrolsIT.hasNext()){
-		actorType currType = aTypesIt.next();
-		Vector2 coord = coordIt.next();
-		List<Vector2> patrol = patrolsIT.next();
-		Animal newAnimal;
-		switch(currType){
-		case PIG:
-			Pig.loadTexture(manager);
-		newAnimal = new Pig(map.mapXToScreen((int)coord.x), 
-				map.mapYToScreen((int)coord.y),convertPatrol(patrol));
-		newAnimal.setDensity(DEFAULT_DENSITY);
-		animals.add(newAnimal);
-		break;
-		
-		case WOLF:
-			Wolf.loadTexture(manager);
-		newAnimal = new Wolf(map.mapXToScreen((int)coord.x), 
-							 map.mapYToScreen((int)coord.y),convertPatrol(patrol));
-		animals.add(newAnimal);
-		break;
-		
-		case OWL:
-			Owl.loadTexture(manager);
-			newAnimal = new Owl(map.mapXToScreen((int)coord.x), 
-								map.mapYToScreen((int)coord.y));
-		animals.add(newAnimal);
-		break;
-		default:
-		System.out.println(currType);
-		throw new IllegalArgumentException("Unexpected animal type");
-		}
-		newAnimal.setDensity(DEFAULT_DENSITY);
-		newAnimal.setBodyType(BodyDef.BodyType.DynamicBody);
-		collisionController.addObject(newAnimal);
-		}
-		
-		}
+	private void buildAnimalList(List<actorType> aTypes,List<Vector2> coordinates, 
+	                             List<List<Vector2>> patrolPaths){
+	    if (coordinates.size() != aTypes.size() || patrolPaths.size() != aTypes.size()){
+	        throw new IllegalArgumentException("Lists of unequal size");
+	    }
+	    //may need editing
+	    Iterator<actorType> aTypesIt = aTypes.iterator();
+	    Iterator<Vector2> coordIt = coordinates.iterator();
+	    Iterator<List<Vector2>> patrolsIT = patrolPaths.iterator();
+	    IndexedAStarPathFinder<MapNode> pathFinder = new IndexedAStarPathFinder<MapNode>(map);
+	    TiledManhattanDistance<MapNode> heuristic = new TiledManhattanDistance<MapNode>();
+	    while (aTypesIt.hasNext() && coordIt.hasNext() && patrolsIT.hasNext()){
+	        actorType currType = aTypesIt.next();
+	        Vector2 coord = coordIt.next();
+	        List<Vector2> patrol = patrolsIT.next();
+	        Animal newAnimal;
+	        switch(currType){
+	            case PIG:
+	            	Pig.loadTexture(manager);
+	                newAnimal = new Pig(map.mapXToScreen((int)coord.x), 
+	                					map.mapYToScreen((int)coord.y),convertPatrol(patrol),
+	                					pathFinder,map,heuristic);
+	                newAnimal.setDensity(DEFAULT_DENSITY);
+	                animals.add(newAnimal);
+	                break;
+	                
+	            case WOLF:
+	            	Wolf.loadTexture(manager);
+	                newAnimal = new Wolf(map.mapXToScreen((int)coord.x), 
+	                					 map.mapYToScreen((int)coord.y),convertPatrol(patrol),
+	                					 pathFinder,map,heuristic);
+	                animals.add(newAnimal);
+	                break;
+	                
+	            case OWL:
+            		Owl.loadTexture(manager);
+            		newAnimal = new Owl(map.mapXToScreen((int)coord.x), 
+            							map.mapYToScreen((int)coord.y),pathFinder,map,
+            							convertPatrol(patrol), heuristic);
+	                animals.add(newAnimal);
+	                break;
+	            default:
+	                System.out.println(currType);
+	                throw new IllegalArgumentException("Unexpected animal type");
+	        }
+	        newAnimal.setDensity(DEFAULT_DENSITY);
+	        newAnimal.setBodyType(BodyDef.BodyType.DynamicBody);
+	        collisionController.addObject(newAnimal);
+	    }
+	    
+	}
+	
 	private List<Vector2> convertPatrol(List<Vector2> patrol) {
 		List<Vector2> temp =  new ArrayList<Vector2>();;
 		for(int i = 0;i<patrol.size();i++ ){
@@ -451,20 +479,23 @@ public class GameMode implements Screen{
 	    			}
 	    		}
 	    		else if (con == gameCondition.LOSE){
+	    		  System.out.println("You Lost");
 	    			//RESET -- maybe add a timer and some onscreen indication.
-    				/*if (hunterLife == 0){
-    					System.out.println("you lost all 3 lives, make a loading screen!");
+    				if (hunterLife == 0){
+    					/*System.out.println("you lost all 3 lives, make a loading screen!");
     					playing = false; 
-	    				root.gameOverScreen();
+	    				root.gameOverScreen();*/
+    					
     				}
     				// hunter life > 0 
-    				else {*/
+    				else {
     					
     					initializeLevel(canvas, levelName);
 	    				lastResetTicks = ticks;
-	    				//hunterLife --; 
-    			}
+	    				hunterLife --; 
+    				}
     				
+	    		}
     		}
     	
     		//The hunter can move when not setting a trap
@@ -492,7 +523,7 @@ public class GameMode implements Screen{
 			}
 		}
 		
-		if (controls[0].isSpacePressed()  && trapController.canSetTrap() && 
+		if (controls[0].isTrapSetPressed()  && trapController.canSetTrap() && 
 			!settingTrap && hunter.getAlive()) {
 	    		Vector2 trapPosition = trapController.getTrapPositionFromHunter(hunter);
 	    		if (map.isSafeAt(GameMap.metersToPixels(trapPosition.x), GameMap.metersToPixels(trapPosition.y))) 
@@ -522,7 +553,6 @@ public class GameMode implements Screen{
 		int i = 1;
 		for (Animal an : animals) {
 			an.update(delta);
-			//need to update wolf death once we have animations
 			if(an instanceof Pig) {
 				if(an.getAlive()==false){
 					if(ticks%10==0){
@@ -539,7 +569,12 @@ public class GameMode implements Screen{
 				}
 			}
 			if(an instanceof Wolf){
-				if(controls[i].getAction(delta)!=InputController.NO_ACTION){
+				if(an.getAlive()==false){
+					if(ticks%10==0){
+						((Wolf)an).updateDeadFrame();
+					}
+				}
+				else if(controls[i].getAction(delta)!=InputController.NO_ACTION){
 					if(ticks%10==0){
 						((Wolf) an).updateWalkFrame();
 					}
@@ -621,18 +656,12 @@ public class GameMode implements Screen{
     	//Draw the animals
     	//need to modify this and wolf code once wolf death animation is done
         for (Animal animal : animals){
-        	if( animal instanceof Pig){
-        		if (!animal.getTrapped() || animal.getFinishedDeatAnimation()==false) {
-            		animal.drawCone(canvas);
-            		animal.draw(canvas);
+    		if (!animal.getTrapped() || animal.getFinishedDeatAnimation()==false) {
+        		animal.draw(canvas);
+        		if(!animal.getTrapped()){
+        			animal.drawCone(canvas);
         		}
-        	}
-        	else{
-        		if (!animal.getTrapped()) {
-            		animal.drawCone(canvas);
-            		animal.draw(canvas);
-        		}
-        	}           
+    		}          
             //animal.drawDebug(canvas);
         }
         //if (hunter.getAlive()) {

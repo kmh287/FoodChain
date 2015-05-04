@@ -44,9 +44,10 @@ public interface InputController {
 	*/
 	public Vector2 getAction(float delta);
 	
-	public boolean isSpacePressed();
+	public boolean isTrapSetPressed();
 	
-	public boolean isEHeldDown();
+
+	public boolean isTrapPickupHeldDown();
 	
 	public boolean resetPressed();
 	
