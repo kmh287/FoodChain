@@ -11,6 +11,7 @@ import com.badlogic.gdx.ai.steer.SteeringBehavior;
 import com.badlogic.gdx.ai.steer.behaviors.Flee;
 import com.badlogic.gdx.ai.steer.behaviors.FollowPath;
 import com.badlogic.gdx.ai.steer.behaviors.Seek;
+import com.badlogic.gdx.ai.steer.proximities.RadiusProximity;
 import com.badlogic.gdx.ai.steer.utils.paths.LinePath;
 import com.badlogic.gdx.ai.steer.utils.paths.LinePath.LinePathParam;
 import com.badlogic.gdx.ai.tests.steer.box2d.Box2dLocation;
@@ -64,6 +65,7 @@ public abstract class Animal extends Actor{
     protected SteeringBehavior<Vector2> wanderSB;
     protected SteeringBehavior<Vector2> fleeSB;
     protected SteeringBehavior<Vector2> seekSB;
+    protected RadiusProximity proximity;
     
     private boolean finishedDeatAnimation;
     
