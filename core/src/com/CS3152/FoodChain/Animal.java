@@ -498,5 +498,6 @@ public abstract class Animal extends Actor{
 	  RadiusProximity<Vector2> proximity = (RadiusProximity<Vector2>) ((GroupBehavior<Vector2>) collisionAvoidanceSB).getProximity();
 	  proximity.setRadius(radius);
 	}
+	
 	public abstract Actor getTarget();
 }
