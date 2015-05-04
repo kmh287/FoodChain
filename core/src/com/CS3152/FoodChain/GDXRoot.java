@@ -25,6 +25,7 @@ import java.util.List;
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.assets.*;
 import com.badlogic.gdx.graphics.g2d.*;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.assets.loaders.*;
 import com.badlogic.gdx.assets.loaders.resolvers.*;
 
@@ -63,7 +64,36 @@ public class GDXRoot extends Game implements ScreenListener {
 		manager.setLoader(FreeTypeFontGenerator.class, new FreeTypeFontGeneratorLoader(resolver));
 		manager.setLoader(BitmapFont.class, ".ttf", new FreetypeFontLoader(resolver));*/
 	}
-	
+	/**Build the level list corresponding to the pressed button**/
+	private List<List<String>> buildLevelLists(){
+		// Initialize all level lists
+		List<String> levelListTutorial = new ArrayList<String>();
+		List<String> levelList1 = new ArrayList<String>();
+		List<String> levelList2 = new ArrayList<String>();
+		List<String> levelList3 = new ArrayList<String>();
+		List<String> levelList4 = new ArrayList<String>();
+		//tutorial levels
+		levelListTutorial.add("tutorial2");
+		levelListTutorial.add("tutorial1");
+		//1 levels
+		levelList1.add("kpatroltest");
+		levelList1.add("kpatroltest2");
+		//2 levels
+		levelList2.add("PatrolTest1");
+		levelList2.add("PatrolTest2");
+		//3 levels
+		levelList3.add("PatrolTest1");
+		levelList3.add("PatrolTest2");
+		//4 levels
+		levelList4.add("PatrolTest1");
+		levelList4.add("PatrolTest2");
+		
+		List<List<String>> allLists = new ArrayList<List<String>>();
+		allLists.add(levelListTutorial);
+		allLists.add(levelList1);
+		allLists.add(levelList2);
+		return allLists;
+	}
 	/** 
 	 * Called when the Application is first created.
 	 * 
@@ -74,6 +104,7 @@ public class GDXRoot extends Game implements ScreenListener {
 		canvas  = new GameCanvas();
 		loading = new LoadingMode(canvas,manager,1);
 		playing = null;
+		List<List<String>> levelList = buildLevelLists();
 		
 		loading.setScreenListener(this);
 		GameMode.PreLoadContent(manager); // Load game assets statically.
@@ -113,6 +144,7 @@ public class GDXRoot extends Game implements ScreenListener {
 		canvas.resize();
 		super.resize(width,height);
 	}
+
 	
 	/**
 	 * The given screen has made a request to exit its player mode.
@@ -127,8 +159,20 @@ public class GDXRoot extends Game implements ScreenListener {
 			Gdx.app.error("GDXRoot", "Exit with error code "+exitCode, new RuntimeException());
 			Gdx.app.exit();
 		} else if (screen == loading) {
+			List<List<String>> levelLists = buildLevelLists();
 			GameMode.LoadContent(manager);
-			playing = new GameMode(canvas, level);
+			if (level == 1) {
+	            playing = new GameMode(canvas, levelLists.get(0));
+	        }
+	        if (level == 2) {
+	        	playing = new GameMode(canvas, levelLists.get(1));
+	        }
+	        if (level == 3) {
+	        	playing = new GameMode(canvas, levelLists.get(2));
+	        }
+	        if (level == 4) {
+	        	playing = new GameMode(canvas, levelLists.get(3));
+	        }
 			
 			playing.setScreenListener(this);
 			setScreen(playing);
@@ -136,7 +180,7 @@ public class GDXRoot extends Game implements ScreenListener {
 			//loading.dispose();
 			loading = null;
 		}
-		/*loss*/
+		/*loss
 		else if (exitCode == 3) {
 			//LoadingMode.loadContent(manager);
 			LoadingMode loading_again = new LoadingMode(canvas, manager, 1);
@@ -157,7 +201,7 @@ public class GDXRoot extends Game implements ScreenListener {
 			
 			//playing.dispose();
 			
-		}
+		}*/
 
 		else {
 			// We quit the main application
@@ -165,12 +209,13 @@ public class GDXRoot extends Game implements ScreenListener {
 		}
 	}
 
+
 	@Override
 	public void exitScreen(Screen screen, int exitCode) {
-		
+		/*this will never be called.*/
 		if (screen == loading) {
 			GameMode.LoadContent(manager);
-			playing = new GameMode(canvas);
+			//playing = new GameMode(canvas);
 			
 			playing.setScreenListener(this);
 			setScreen(playing);
@@ -178,7 +223,7 @@ public class GDXRoot extends Game implements ScreenListener {
 			loading.dispose();
 			loading = null;
 		}
-		/*loss*/
+		/*
 		else if (exitCode == 3) {
 			loading_after = new LoadingMode(canvas,manager,1);
 			
@@ -190,7 +235,7 @@ public class GDXRoot extends Game implements ScreenListener {
 			//GameMode.PreLoadContent(manager); // Load game assets statically.
 			setScreen(loading_after);
 		}
-		/*win*/
+		//win
 		else if (exitCode == 4) {
 			//LoadingMode.loadContent(manager);
 			loading_after = new LoadingMode(canvas,manager,1);
@@ -200,21 +245,17 @@ public class GDXRoot extends Game implements ScreenListener {
 			loading_after.setScreenListener(this);
 			GameMode.PreLoadContent(manager); // Load game assets statically.
 			setScreen(loading);
-		}
+		}*/
 
 		else {
-			// We quit the main application
+			 // We quit the main application
+			
 			Gdx.app.exit();
 		}
-	}
 		
-    
-	private List<String> buildLevelList(){
-		List<String> levelList = new ArrayList<String>();
-		levelList.add("tutorial1");
-		levelList.add("tutorial2");
-		return levelList;
 	}
+
+
 	
 }
 

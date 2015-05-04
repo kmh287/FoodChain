@@ -1,5 +1,7 @@
 package com.CS3152.FoodChain;
 
+import java.util.List;
+
 import com.badlogic.gdx.ai.steer.Steerable;
 import com.badlogic.gdx.ai.steer.behaviors.CollisionAvoidance;
 import com.badlogic.gdx.ai.steer.behaviors.PrioritySteering;
@@ -31,16 +33,17 @@ public class Wolf extends Animal{
      * Public Constructor for a wolf
      * @param x Starting x position for this wolf
      * @param y Starting y position for this wolf
+     * @param patrol 
      */
-    public Wolf(float x, float y) {
+    public Wolf(float x, float y, List<Vector2> patrol) {
         super(new TextureRegion(tex), Actor.actorType.WOLF, x, y, 
-              prey, InputController.EAST);
+              prey, InputController.EAST,patrol);
         sprite = new FilmStrip(tex,1,4,4);
         drawScale.x = scaleXDrawWolf;
         drawScale.y = scaleYDrawWolf;
         SIGHT_LENGTH = 2.4f;
+        SIGHT_RADIUS = 1.5f;
         SIGHT_ANGLE = 0.35;
-
         maxLinearSpeed = 4f;
         maxLinearAcceleration = 10.0f;
         maxAngularSpeed = 20.0f;
@@ -120,7 +123,6 @@ public class Wolf extends Animal{
     	sprite.flip(false,true);
     	super.setTexture(sprite);
     }
-
 
 	//@Override
 	public void setOrientation(float arg0) {

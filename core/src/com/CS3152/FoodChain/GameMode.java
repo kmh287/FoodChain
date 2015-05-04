@@ -152,7 +152,7 @@ public class GameMode implements Screen{
      * @param canvas The singular instance of GameCanvas
      */
 	public GameMode(GameCanvas canvas, List<String> levelList) {
-		
+		System.out.println("inGameMode levellist");
 		this.canvas = canvas;
 		this.stage = stage;
 		this.levelList = levelList;
@@ -167,11 +167,11 @@ public class GameMode implements Screen{
         manager.finishLoading();
         LoadContent(manager);
 
-
+        initializeLevel(canvas, levelListIt.next());
         //initializeLevel(canvas, "BetaLevel3");
         
 	}
-	public GameMode(GameCanvas canvas) {
+	/*public GameMode(GameCanvas canvas) {
 		
 		this.canvas = canvas;
 		this.stage = stage;
@@ -180,13 +180,13 @@ public class GameMode implements Screen{
 		if (levelList.size() == 0){
 			throw new IllegalArgumentException("At least one level must be in passed in level set");
 		}*/
-		start=true;
+		/*start=true;
         //active = false;
         manager = new AssetManager();
         PreLoadContent(manager);
         manager.finishLoading();
         LoadContent(manager);
-
+        
 
         //initializeLevel(canvas, "BetaLevel3");
         
@@ -203,28 +203,17 @@ public class GameMode implements Screen{
         manager.finishLoading();
         LoadContent(manager);
         
-        if (level == 1) {
-            initializeLevel(canvas, "BetaLevel4");
-        }
-        if (level == 2) {
-            initializeLevel(canvas, "BetaLevel2");
-        }
-        if (level == 3) {
-            initializeLevel(canvas, "BetaLevel3");
-        }
-        if (level == 4) {
-            initializeLevel(canvas, "BetaLevel2");
-        }
-        
         //initializeLevel(canvas, levelListIt.next());
-	}
+	}*/
         
  	private void initializeLevel(GameCanvas canvas, String levelName){
         //For now we will hard code the level to load
         //When we implement a UI that may ask players
         //what level to start on. This code will change
+ 		System.out.println("before level initialized " + levelName);
  		this.levelName = levelName;
         map = loadMap(levelName);
+        System.out.println("after level loaded " + levelName);
         map.setDimensions();
         map.createGraph();
         map.LoadContent(manager);
@@ -331,7 +320,7 @@ public class GameMode implements Screen{
 	 * @param aTypes The list of animal types
 	 * @param coordinates the coordinates of the animals.
 	 */
-			private void buildAnimalList(List<actorType> aTypes,
+	private void buildAnimalList(List<actorType> aTypes,
 		            List<Vector2> coordinates, 
 		            List<List<Vector2>> patrolPaths){
 		if (coordinates.size() != aTypes.size() || patrolPaths.size() != aTypes.size()){
@@ -697,7 +686,7 @@ public class GameMode implements Screen{
 
 		
 		// Now it is time to maybe switch screens.
-		if (PlayerController.didExit()) {
+		/*if (PlayerController.didExit()) {
 			listener.exitScreen(this, EXIT_QUIT);
 		} else if (checkObjective() == gameCondition.WIN) {
 			listener.exitScreen(this, EXIT_WON);

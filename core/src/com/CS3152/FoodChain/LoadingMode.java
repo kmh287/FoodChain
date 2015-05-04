@@ -268,7 +268,7 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 	 * @param delta Number of seconds since last animation frame
 	 */
 	private void update(float delta) {
-		if (playButton1 == null && playButton2 == null && playButton3 == null) {
+		if (playButton1 == null && playButton2 == null && playButton3 == null && playButton3 == null) {
 			manager.update(budget);
 			//this.progress = manager.getProgress();
 			//if (progress >= 1.0f) {
@@ -292,7 +292,7 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 		//canvas.draw(background, 0, 0);
 		int width = (int) (Gdx.graphics.getWidth() * .77);
 		int height= (int) (Gdx.graphics.getHeight() * .77);
-		canvas.draw(background, Color.WHITE, 145, 85, width, height);
+		canvas.draw(background, Color.WHITE, 145, 82, width, height);
 		if (playButton1 == null) {
 			//drawProgress(canvas);
 		} 
@@ -460,7 +460,7 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 		if (screenX < (centerX * .50)){
 			pressState1 = 1;
 		}
-		if (screenX < (centerX * .85) && screenX > (centerX * .5)){
+		if (screenX < ((centerX * .85) + radius2) && screenX > (centerX * .5)){
 			pressState2 = 1;
 		}
 		
