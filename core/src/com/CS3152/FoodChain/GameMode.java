@@ -512,6 +512,7 @@ public class GameMode implements Screen {
 		//update panic meter
 		if(AIController.AtLeastOneAnimalPanic()){
 			AIController.increasePanic();
+			AIController.resetPanicFlag();
 		}
 		else{
 			AIController.decreasePanic();

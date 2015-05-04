@@ -359,12 +359,12 @@ public class AIController implements InputController {
 		if (!(animal instanceof Owl)){
 			animal.calculateSteering();
 		}
-		if (animal instanceof Owl) {
-		  rayCast();
-		}
 		else {
-		  rayCast();
+		  if (!panicked) {
+		    setTarget(null);
+		  }
 		}
+		  rayCast();
 	}
 	
 	public void update(float delta) {
@@ -373,10 +373,9 @@ public class AIController implements InputController {
 			angle += Math.PI/100;
 			animal.setAngle(angle);
 			animal.updateLOS(angle);
-			vect.set(vect.x + (float)Math.cos(angle), vect.y + (float)Math.sin(angle));
-			goal.set(vect.x, vect.y);
-			Vector2 tmp = goal;
-			tmp.sub(getAnimal().getPosition());
+			if (hasTarget()) {
+			  panicked = true;
+			}
 			//changeStateIfApplicable();
 		}
 		else {
@@ -394,6 +393,7 @@ public class AIController implements InputController {
 			    case WANDER:
 			    	if (hasTarget()) {
 			    	  if (animal instanceof Pig) {
+			    	    animal.setProximityRadius(0.0001f);
 			    	    animal.setState(State.FLEE);
 			    	    setTurns(stateDelay);
 			    	  }
@@ -438,6 +438,7 @@ public class AIController implements InputController {
 			        	setTarget(null);
 			        }
 			        if (isScared()) {
+			          animal.setProximityRadius(0.0001f);
 			        	animal.setState(State.FLEE);
 			        }
 			        turns--;
@@ -475,6 +476,7 @@ public class AIController implements InputController {
 			    	animal.setState(State.PATROL);
 			    	if (hasTarget()) {
 				    	  if (animal instanceof Pig) {
+				    	    animal.setProximityRadius(0.0001f);
 				    	    animal.setState(State.FLEE);
 				    	    setTurns(stateDelay);
 				    	  }
@@ -487,6 +489,7 @@ public class AIController implements InputController {
 			    case FIND:
 			    	if (hasTarget()) {
 				    	  if (animal instanceof Pig) {
+				    	    animal.setProximityRadius(0.0001f);
 				    		  animal.setState(State.FLEE);
 				    		  setTurns(1000);
 				    	  }
