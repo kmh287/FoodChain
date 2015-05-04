@@ -683,21 +683,21 @@ public class GameMode implements Screen{
         
 
         
-        canvas.beginDebug();
-        PooledList<SimplePhysicsObject> objects = collisionController.getObjects();
-		for(PhysicsObject obj : objects) {
-			if (obj instanceof Actor && ((Actor) obj).getAlive()) {
-				//obj.drawDebug(canvas);
-				if (obj instanceof Animal) {
-					Animal a = (Animal) obj;
-					if (!a.getTrapped()) {
-						//uncomment this to see lines
-						//((Animal) obj).drawDebugSight(canvas);
-					}
-				}
-			}
-		}
-		canvas.endDebug();
+//        canvas.beginDebug();
+//        PooledList<SimplePhysicsObject> objects = collisionController.getObjects();
+//		for(PhysicsObject obj : objects) {
+//			if (obj instanceof Actor && ((Actor) obj).getAlive()) {
+//				//obj.drawDebug(canvas);
+//				if (obj instanceof Animal) {
+//					Animal a = (Animal) obj;
+//					if (!a.getTrapped()) {
+//						//uncomment this to see lines
+//						//((Animal) obj).drawDebugSight(canvas);
+//					}
+//				}
+//			}
+//		}
+//		canvas.endDebug();
 	} 
     
     public void postDraw(float delta) {
