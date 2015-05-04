@@ -303,6 +303,22 @@ public abstract class Animal extends Actor{
 		}
 	}
 	
+	
+    public static enum State {
+        // Animal is wandering
+        WANDER,
+        // Animal is chasing
+        CHASE,
+        // Animal is running away
+        FLEE,
+        // Animal kills target
+        KILL,
+        // Animal is dead
+        DEAD,
+        //Animal stays still
+        STAYSTILL, 
+        PATROL 
+    }
 	public void drawCone(GameCanvas canvas){
 		Vector2 position = getPosition();
 		tmp.set(GameMap.metersToPixels(position.x), GameMap.metersToPixels(position.y));
@@ -313,7 +329,14 @@ public abstract class Animal extends Actor{
 		sectorLine = getRightSectorLine();
 		tmp3.add(GameMap.metersToPixels(sectorLine.x), GameMap.metersToPixels(sectorLine.y));
 		//draw cone
-		canvas.drawCone(Color.YELLOW, tmp, body.getAngle());
+		//if patrolling, staying still, or wandering, then draw yellow cone
+		if(getState()==AIController.State.PATROL || getState()==AIController.State.STAYSTILL|| getState()==AIController.State.WANDER){
+			canvas.drawCone(false, tmp, body.getAngle());
+		}
+		else{
+			canvas.drawCone(true, tmp, body.getAngle());
+		}
+		
 	}
 	
 	@Override

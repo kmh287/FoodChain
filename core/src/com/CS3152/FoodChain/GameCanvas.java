@@ -89,8 +89,11 @@ public class GameCanvas {
 	protected Hunter hunter; 
 	
 	private static String YELLOW_CONE = "assets/YellowCone.png";
+	private static String RED_CONE = "assets/RedCone.png";
 	protected static Texture yellowCone = null;
 	protected static TextureRegion yellowConeRegion = null;
+	protected static Texture redCone = null;
+	protected static TextureRegion redConeRegion = null;
 	
 
 	/**
@@ -135,6 +138,7 @@ public class GameCanvas {
 	
 	public static void PreLoadContent(AssetManager manager) {
 		manager.load(YELLOW_CONE,Texture.class);
+		manager.load(RED_CONE,Texture.class);
 	}
 	
 	/**
@@ -150,6 +154,13 @@ public class GameCanvas {
 			yellowConeRegion= new TextureRegion(yellowCone);
 		} else {
 			yellowCone = null;  // Failed to load
+		}
+		if (manager.isLoaded(RED_CONE)) {
+			redCone = manager.get(RED_CONE,Texture.class);
+			redCone.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+			redConeRegion= new TextureRegion(yellowCone);
+		} else {
+			redCone = null;  // Failed to load
 		}
 	}
 	
@@ -1228,17 +1239,30 @@ public class GameCanvas {
     	debugRender.line(v1.x, v1.y, v2.x, v2.y);
     }
     
-    public void drawCone(Color color, Vector2 origin, float angle) {
+    public void drawCone(boolean alerted, Vector2 origin, float angle) {
     	angle=(float) (angle-Math.PI/2);
     	//the weird math is because it draws the cone in the center of the pig
-    	this.draw(yellowConeRegion, 
-    			Color.YELLOW,GameMap.pixelsToMeters(origin.x), 
-    			GameMap.pixelsToMeters(origin.y),  
-    			(float)(origin.x+Math.sin(angle)*20-Math.cos(angle)*100), 
-    			(float)(origin.y-Math.cos(angle)*20-Math.sin(angle)*100), 
-    			(float)(angle), 
-    			1f, 
-    			1f);
+    	if(alerted){
+        	this.draw(redConeRegion, 
+        			Color.RED,GameMap.pixelsToMeters(origin.x), 
+        			GameMap.pixelsToMeters(origin.y),  
+        			(float)(origin.x+Math.sin(angle)*20-Math.cos(angle)*100), 
+        			(float)(origin.y-Math.cos(angle)*20-Math.sin(angle)*100), 
+        			(float)(angle), 
+        			1f, 
+        			1f);
+    	}
+    	else{
+        	this.draw(yellowConeRegion, 
+        			Color.YELLOW,GameMap.pixelsToMeters(origin.x), 
+        			GameMap.pixelsToMeters(origin.y),  
+        			(float)(origin.x+Math.sin(angle)*20-Math.cos(angle)*100), 
+        			(float)(origin.y-Math.cos(angle)*20-Math.sin(angle)*100), 
+        			(float)(angle), 
+        			1f, 
+        			1f);
+    	}
+
     }
     
 	/**
