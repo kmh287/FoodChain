@@ -356,20 +356,23 @@ public abstract class Animal extends Actor{
 	public void drawCone(GameCanvas canvas){
 		Vector2 position = getPosition();
 		tmp.set(GameMap.metersToPixels(position.x), GameMap.metersToPixels(position.y));
-		tmp2.set(GameMap.metersToPixels(position.x), GameMap.metersToPixels(position.y));
-		Vector2 sectorLine = getLeftSectorLine();
-		tmp2.add(GameMap.metersToPixels(sectorLine.x), GameMap.metersToPixels(sectorLine.y));
-		tmp3.set(GameMap.metersToPixels(position.x), GameMap.metersToPixels(position.y));
-		sectorLine = getRightSectorLine();
-		tmp3.add(GameMap.metersToPixels(sectorLine.x), GameMap.metersToPixels(sectorLine.y));
 		//draw cone
 		//if patrolling, staying still, or wandering, then draw yellow cone
-
-		if(getState()==AIController.State.PATROL || getState()==AIController.State.STAYSTILL|| getState()==AIController.State.WANDER){
-			canvas.drawCone(false, tmp, body.getAngle());
+		
+		if (this instanceof Owl) {
+			if (getTarget() != null) {
+				canvas.drawCone(true, tmp, body.getAngle(),this.getType());
+			}
+			else {
+				canvas.drawCone(false, tmp, body.getAngle(),this.getType());
+			}
+		}
+		else if(getState()==AIController.State.PATROL ||
+				getState()==AIController.State.STAYSTILL|| getState()==AIController.State.WANDER){
+			canvas.drawCone(false, tmp, body.getAngle(),this.getType());
 		}
 		else{
-			canvas.drawCone(true, tmp, body.getAngle());
+			canvas.drawCone(true, tmp, body.getAngle(),this.getType());
 		}
 		
 	}
@@ -495,4 +498,9 @@ public abstract class Animal extends Actor{
 	  RadiusProximity<Vector2> proximity = (RadiusProximity<Vector2>) ((GroupBehavior<Vector2>) collisionAvoidanceSB).getProximity();
 	  proximity.setRadius(radius);
 	}
+<<<<<<< HEAD
+	
+=======
+>>>>>>> Kevin
+	public abstract Actor getTarget();
 }

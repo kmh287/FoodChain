@@ -72,11 +72,65 @@ public class GDXRoot extends Game implements ScreenListener {
 		List<String> levelList2 = new ArrayList<String>();
 		List<String> levelList3 = new ArrayList<String>();
 		//tutorial levels
+		//levelListTutorial.add("owlTest");
 		levelListTutorial.add("tutorial1");
 		levelListTutorial.add("tutorial2");
 		levelListTutorial.add("tutorial3");
 		levelListTutorial.add("HideAndSeek");
 		levelListTutorial.add("Cycle2");
+
+<<<<<<< HEAD
+=======
+/**
+ * Root class for a LibGDX.  
+ * 
+ * This class is technically not the ROOT CLASS. Each platform has another class above
+ * this (e.g. PC games use DesktopLauncher) which serves as the true root.  However, 
+ * those classes are unique to each platform, while this class is the same across all 
+ * plaforms. In addition, this functions as the root class all intents and purposes, 
+ * and you would draw it as a root class in an architecture specification.  
+ */
+public class GDXRoot extends Game implements ScreenListener {
+	/** AssetManager to load game assets (textures, sounds, etc.) */
+	private AssetManager manager;
+	/** Drawing context to display graphics (VIEW CLASS) */
+	private GameCanvas canvas; 
+	/** Player mode for the asset loading screen (CONTROLLER CLASS) */
+	private LoadingMode loading;
+	private LoadingMode loading_after;
+	/** Player mode for the the game proper (CONTROLLER CLASS) */
+	private GameMode    playing;
+	
+	/**
+	 * Creates a new game from the configuration settings.
+	 *
+	 * This method configures the asset manager, but does not load any assets
+	 * or assign any screen.
+	 */
+	public GDXRoot() {
+		// Start loading with the asset manager
+		manager = new AssetManager();
+		
+		// Add font support to the asset manager
+		/*FileHandleResolver resolver = new InternalFileHandleResolver();
+		manager.setLoader(FreeTypeFontGenerator.class, new FreeTypeFontGeneratorLoader(resolver));
+		manager.setLoader(BitmapFont.class, ".ttf", new FreetypeFontLoader(resolver));*/
+	}
+	/**Build the level list corresponding to the pressed button**/
+	private List<List<String>> buildLevelLists(){
+		// Initialize all level lists
+		List<String> levelListTutorial = new ArrayList<String>();
+		List<String> levelList1 = new ArrayList<String>();
+		List<String> levelList2 = new ArrayList<String>();
+		List<String> levelList3 = new ArrayList<String>();
+		//tutorial levels
+		//levelListTutorial.add("owlTest");
+		levelListTutorial.add("tutorial1");
+		levelListTutorial.add("tutorial2");
+		levelListTutorial.add("tutorial3");
+		levelListTutorial.add("Cycle2");
+
+>>>>>>> Kevin
 		//1 levels
 		levelList1.add("tutorial1");
 		levelList1.add("tutorial2");

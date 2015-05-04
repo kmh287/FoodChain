@@ -239,8 +239,6 @@ public class Hunter extends Actor {
 	
 	//needed because texture looks weird without adjustment
 	public void DrawTrapAnimation(GameCanvas canvas){
-		System.out.println(Math.sin(getAngle()*10));
-		System.out.println(GameMap.metersToPixels(getY())-Math.sin(getAngle()*100));
 		canvas.draw(texture,Color.WHITE,(origin.x),(origin.y),(float)(GameMap.metersToPixels(getX())+Math.sin(getAngle())*18+Math.cos(getAngle())*1),(float)(GameMap.metersToPixels(getY())-Math.cos(getAngle())*18+Math.sin(getAngle())*1),
 				getAngle(),drawScale.x,drawScale.y);
 	}

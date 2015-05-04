@@ -162,4 +162,10 @@ public class Wolf extends Animal{
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public Actor getTarget() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

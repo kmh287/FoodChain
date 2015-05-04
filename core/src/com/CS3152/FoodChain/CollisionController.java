@@ -225,7 +225,8 @@ public class CollisionController implements ContactListener {
 				trap.setOnMap(false);
 				trapToRemove = trap;
 				trapToAdd = "SHEEP_TRAP";
-				//trapLocationToAdd = trap.getPosition();
+				trapLocationToAdd = trap.getPosition();
+
 
 				
 			}
@@ -237,7 +238,7 @@ public class CollisionController implements ContactListener {
 				trap.setOnMap(false);
 				trapToRemove = trap;
 				trapToAdd = "WOLF_TRAP";
-
+				trapLocationToAdd = trap.getPosition();
 
 			}
 		}
@@ -253,6 +254,7 @@ public class CollisionController implements ContactListener {
 				trap.setOnMap(false);
 				trapToRemove =trap;
 				trapToAdd = "SHEEP_TRAP";
+				trapLocationToAdd = trap.getPosition();
 				//trapToAdd.setType("SHEEP_TRAP");
 				//trapToAdd.setInInventory(true);
 				
@@ -266,6 +268,11 @@ public class CollisionController implements ContactListener {
 				trap.setOnMap(false);
 				trapToRemove = trap;
 				trapToAdd = "WOLF_TRAP";
+				trapLocationToAdd = trap.getPosition();
+<<<<<<< HEAD
+
+=======
+>>>>>>> Kevin
 				//trapToAdd.setType("WOLF_TRAP");
 				//trapToAdd.setInInventory(true);
 			}
