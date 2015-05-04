@@ -37,7 +37,10 @@ public class AIController implements InputController {
         // Animal is dead
         DEAD,
         //Animal stays still
-        STAYSTILL, 
+        STAYSTILL,
+        //Animal finds waypoint
+        FIND,
+        //Animal patrols through waypoints
         PATROL 
     }
     
@@ -356,7 +359,12 @@ public class AIController implements InputController {
 		if (!(animal instanceof Owl)){
 			animal.calculateSteering();
 		}
-		rayCast();
+		if (animal instanceof Owl) {
+		  rayCast();
+		}
+		else {
+		  rayCast();
+		}
 	}
 	
 	public void update(float delta) {
@@ -369,7 +377,7 @@ public class AIController implements InputController {
 			goal.set(vect.x, vect.y);
 			Vector2 tmp = goal;
 			tmp.sub(getAnimal().getPosition());
-			changeStateIfApplicable();
+			//changeStateIfApplicable();
 		}
 		else {
 			animal.applySteering(delta);
@@ -406,7 +414,18 @@ public class AIController implements InputController {
 			    	Wanderturns+=1;
 			    	break;
 			    case STAYSTILL:
-			    	if(Wanderturns%250>WanderStopRate){
+			    	if (animal.getWayPointList().size != 0) {
+			    		Vector2 goal = animal.getWayPointList().get(0);
+			    		float pixX = GameMap.metersToPixels(goal.x);
+			    		float pixY = GameMap.metersToPixels(goal.y);
+			    		int x = map.screenXToMap(pixX);
+			    		int y = map.screenYToMap(pixY);
+			    		
+			    		animal.calculatePath(map.getNode(map.calculateIndex(x,y)));
+			    		animal.getPathToPatrol();
+			    		animal.setState(State.FIND);
+			    	}
+			    	else if(Wanderturns%250>WanderStopRate){
 			    		animal.setState(State.WANDER);
 			    		WanderStopRate= MathUtils.random(175,225);
 			    		Wanderturns=0;
@@ -435,6 +454,7 @@ public class AIController implements InputController {
 			    case FLEE:
 			    	//System.out.println(getAnimal() + " is fleeing");
 			        if (canSettle()) {
+			            //animal.setState(State.WANDER);
 			            animal.setState(State.WANDER);
 			            setAttacker(null);
 			            setTarget(null);
@@ -464,16 +484,46 @@ public class AIController implements InputController {
 				    	  }
 				      }
 			    	break;
+			    case FIND:
+			    	if (hasTarget()) {
+				    	  if (animal instanceof Pig) {
+				    		  animal.setState(State.FLEE);
+				    		  setTurns(1000);
+				    	  }
+				    	  else if (animal instanceof Wolf) {
+				    		  animal.setState(State.CHASE);
+				    		  setTurns(1000);
+				    	  }
+				    }
+			    	else if (canPatrol()) {
+			    	  animal.setState(State.PATROL);
+			    	}
+			    	break;
 			    case DEAD:
 			        break;
-			}
+	        }
     	}
     	else {
     		animal.setState(State.DEAD);
     	}
 	}
 
-	public static void increasePanic() {
+	private boolean canPatrol() {
+      Vector2 position = animal.getPosition();
+      int tileX = map.screenXToMap(GameMap.metersToPixels(position.x));
+      int tileY = map.screenYToMap(GameMap.metersToPixels(position.y));
+      Vector2 firstWaypoint = animal.getWayPointList().get(0);
+      int wayX = map.screenXToMap(GameMap.metersToPixels(firstWaypoint.x));
+      int wayY = map.screenYToMap(GameMap.metersToPixels(firstWaypoint.y));
+      if (tileX == wayX && tileY == wayY) {
+        return true;
+      }
+      else {
+        return false;
+      }
+    }
+
+  public static void increasePanic() {
 		if(panicPercentage<1f){
 			panicPercentage+=.005f;
 		}
@@ -513,7 +563,7 @@ public class AIController implements InputController {
         world.rayCast(vcb, getAnimal().getPosition(), a.getPosition());
         Fixture fix = vcb.getFixture();
         if (fix != null) {
-        		System.out.println("2");
+        	System.out.println("2");
           Object objSeen = fix.getBody().getUserData();
           if (objSeen instanceof Actor) {
         	  	System.out.println("3");

@@ -22,6 +22,7 @@ import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.ai.pfa.indexed.IndexedAStarPathFinder;
 import com.badlogic.gdx.ai.steer.Steerable;
 
 
@@ -263,6 +264,8 @@ public class GameMode implements Screen {
 	    Iterator<actorType> aTypesIt = aTypes.iterator();
 	    Iterator<Vector2> coordIt = coordinates.iterator();
 	    Iterator<List<Vector2>> patrolsIT = patrolPaths.iterator();
+	    IndexedAStarPathFinder<MapNode> pathFinder = new IndexedAStarPathFinder<MapNode>(map);
+	    TiledManhattanDistance<MapNode> heuristic = new TiledManhattanDistance<MapNode>();
 	    while (aTypesIt.hasNext() && coordIt.hasNext() && patrolsIT.hasNext()){
 	        actorType currType = aTypesIt.next();
 	        Vector2 coord = coordIt.next();
@@ -270,27 +273,27 @@ public class GameMode implements Screen {
 	        Animal newAnimal;
 	        switch(currType){
 	            case PIG:
-	            		Pig.loadTexture(manager);
+	            	Pig.loadTexture(manager);
 	                newAnimal = new Pig(map.mapXToScreen((int)coord.x), 
-	                						map.mapYToScreen((int)coord.y),
-	                						convertPatrol(patrol));
+	                					map.mapYToScreen((int)coord.y),convertPatrol(patrol),
+	                					pathFinder,map,heuristic);
 	                newAnimal.setDensity(DEFAULT_DENSITY);
 	                animals.add(newAnimal);
 	                break;
 	                
 	            case WOLF:
-	            		Wolf.loadTexture(manager);
+	            	Wolf.loadTexture(manager);
 	                newAnimal = new Wolf(map.mapXToScreen((int)coord.x), 
-	                					 	 map.mapYToScreen((int)coord.y),
-	                					 	 convertPatrol(patrol));
+	                					 map.mapYToScreen((int)coord.y),convertPatrol(patrol),
+	                					 pathFinder,map,heuristic);
 	                animals.add(newAnimal);
 	                break;
 	                
 	            case OWL:
-            			Owl.loadTexture(manager);
-            			newAnimal = new Owl(map.mapXToScreen((int)coord.x), 
-            								map.mapYToScreen((int)coord.y),
-            								convertPatrol(patrol));
+            		Owl.loadTexture(manager);
+            		newAnimal = new Owl(map.mapXToScreen((int)coord.x), 
+            							map.mapYToScreen((int)coord.y),pathFinder,map,
+            							convertPatrol(patrol), heuristic);
 	                animals.add(newAnimal);
 	                break;
 	            default:
@@ -410,6 +413,7 @@ public class GameMode implements Screen {
 	    			}
 	    		}
 	    		else if (con == gameCondition.LOSE){
+	    		  System.out.println("You Lost");
 	    			//RESET -- maybe add a timer and some onscreen indication.
     				initializeLevel(canvas, levelName);
     				lastResetTicks = ticks;
@@ -471,7 +475,6 @@ public class GameMode implements Screen {
 		int i = 1;
 		for (Animal an : animals) {
 			an.update(delta);
-			//need to update wolf death once we have animations
 			if(an instanceof Pig) {
 				if(an.getAlive()==false){
 					if(ticks%10==0){
@@ -488,7 +491,12 @@ public class GameMode implements Screen {
 				}
 			}
 			if(an instanceof Wolf){
-				if(controls[i].getAction(delta)!=InputController.NO_ACTION){
+				if(an.getAlive()==false){
+					if(ticks%10==0){
+						((Wolf)an).updateDeadFrame();
+					}
+				}
+				else if(controls[i].getAction(delta)!=InputController.NO_ACTION){
 					if(ticks%10==0){
 						((Wolf) an).updateWalkFrame();
 					}
@@ -569,18 +577,12 @@ public class GameMode implements Screen {
     	//Draw the animals
     	//need to modify this and wolf code once wolf death animation is done
         for (Animal animal : animals){
-        	if( animal instanceof Pig){
-        		if (!animal.getTrapped() || animal.getFinishedDeatAnimation()==false) {
-            		animal.drawCone(canvas);
-            		animal.draw(canvas);
+    		if (!animal.getTrapped() || animal.getFinishedDeatAnimation()==false) {
+        		animal.draw(canvas);
+        		if(!animal.getTrapped()){
+        			animal.drawCone(canvas);
         		}
-        	}
-        	else{
-        		if (!animal.getTrapped()) {
-            		animal.drawCone(canvas);
-            		animal.draw(canvas);
-        		}
-        	}           
+    		}          
             //animal.drawDebug(canvas);
         }
         //if (hunter.getAlive()) {

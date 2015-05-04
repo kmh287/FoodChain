@@ -8,19 +8,6 @@ import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.physics.box2d.World;
 
 public class OwlController extends AIController {
-	
-	    protected static enum State {
-	        // Animal determines where to go next
-	        FIND,
-	        // Animal is patrolling
-	        PATROL,
-	        // Animal is chasing
-	        CHASE,
-	        // Animal is running away
-	        FLEE,
-	        // Animal is dead
-	        DEAD
-	    }
 	    
 	    // Instance Attributes
 	    // The animal controlled by this AIController
@@ -459,3 +446,4 @@ public class OwlController extends AIController {
 	    
 	    public int getNum() {return 0;}
 } 
+
