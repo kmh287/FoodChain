@@ -15,9 +15,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.utils.Array;
 import com.google.gson.Gson;
-import com.badlogic.gdx.graphics.g2d.freetype.*;
-
-
 import java.util.*;
 
 public class GameMap implements IndexedGraph<MapNode> {

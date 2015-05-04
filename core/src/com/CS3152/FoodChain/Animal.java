@@ -299,7 +299,7 @@ public abstract class Animal extends Actor{
 		return this.rightSectorLine;
 	}
 	
-	public void drawSight(GameCanvas canvas) {
+	public void drawDebugSight(GameCanvas canvas) {
 		if (getAlive()) {
 			//old code that draws vision lines to scale
 //			Vector2 position = getPosition();

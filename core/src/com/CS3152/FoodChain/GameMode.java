@@ -94,7 +94,7 @@ public class GameMode implements Screen{
 	private int hunterLife; 
 	
 	//Trpa set delay
-	int TRAP_SETUP_FRAMES = 30; //60FPS so this is 0.5s
+	int TRAP_SETUP_FRAMES = 25; //60FPS so this is <0.5s
 	boolean settingTrap;
 	int trapSetProgress;
 	
@@ -519,7 +519,9 @@ public class GameMode implements Screen{
 				trapSetProgress++;
 				//This method is an unimplemented stub at the moment
 				//Please fill it in, then delete this comment
-				hunter.updateTrapFrame();
+				if(ticks%5==0){
+					hunter.updateTrapFrame();
+				}				
 			}
 		}
 		
@@ -544,7 +546,7 @@ public class GameMode implements Screen{
 				hunter.updateWalkFrame();
 			}
 		}
-		else{
+		else if(!settingTrap){
 			hunter.setStillFrame();
 		}
 		
@@ -666,7 +668,12 @@ public class GameMode implements Screen{
             //animal.drawDebug(canvas);
         }
         //if (hunter.getAlive()) {
-        hunter.draw(canvas);
+        if(settingTrap){
+        	hunter.DrawTrapAnimation(canvas);
+        }
+        else{
+        	 hunter.draw(canvas);
+        }
         //}
         canvas.end();
 
@@ -694,7 +701,7 @@ public class GameMode implements Screen{
 				if (obj instanceof Animal) {
 					Animal a = (Animal) obj;
 					if (!a.getTrapped()) {
-						((Animal) obj).drawSight(canvas);
+						//((Animal) obj).drawDebugSight(canvas);
 					}
 				}
 			}
