@@ -344,13 +344,13 @@ public class AIController implements InputController {
 	}
 
 	@Override
-	public boolean isSpacePressed() {
+	public boolean isTrapSetPressed() {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
-	public boolean isSpaceHeldDown() {
+	public boolean isTrapPickupHeldDown() {
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -560,16 +560,12 @@ public class AIController implements InputController {
 	
 	private void rayCast() {
 	  for (Actor a : actors) {
-		  System.out.println(a.getTypeNameString());
       if (a != getAnimal() && a.getAlive()) {
-    	  	System.out.println("1");
         world.rayCast(vcb, getAnimal().getPosition(), a.getPosition());
         Fixture fix = vcb.getFixture();
         if (fix != null) {
-        	System.out.println("2");
           Object objSeen = fix.getBody().getUserData();
           if (objSeen instanceof Actor) {
-        	  	System.out.println("3");
             if (animal.canKill((Actor) objSeen) || ((Actor) objSeen).canKill(animal)) {
               setTarget((Actor) objSeen);
             }
@@ -578,6 +574,7 @@ public class AIController implements InputController {
       }
     }
 	}
+
 
 //	@Override
 //	public int levelPressed() {
