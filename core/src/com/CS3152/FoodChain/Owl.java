@@ -69,4 +69,8 @@ public class Owl extends Animal {
 	public void setTarget(Actor actor) {
 	  this.target = actor;
 	}
+	
+	public Actor getTarget() {
+	  return target;
+	}
 }
