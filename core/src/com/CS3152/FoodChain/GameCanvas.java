@@ -19,6 +19,7 @@ package com.CS3152.FoodChain;
 
 import java.lang.reflect.Array;
 
+import com.CS3152.FoodChain.Actor.actorType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.*;
@@ -91,10 +92,16 @@ public class GameCanvas {
 	
 	private static String YELLOW_CONE = "assets/YellowCone.png";
 	private static String RED_CONE = "assets/RedCone.png";
+	private static String YELLOW_CONE_LARGE = "assets/largeVision-Cone.png";
+	private static String RED_CONE_LARGE = "assets/largeVision-Cone-Red.png";
 	protected static Texture yellowCone = null;
 	protected static TextureRegion yellowConeRegion = null;
 	protected static Texture redCone = null;
 	protected static TextureRegion redConeRegion = null;
+	protected static Texture yellowConeLarge = null;
+	protected static TextureRegion yellowConeRegionLarge = null;
+	protected static Texture redConeLarge = null;
+	protected static TextureRegion redConeRegionLarge = null;
 	
 
 	/**
@@ -140,6 +147,8 @@ public class GameCanvas {
 	public static void PreLoadContent(AssetManager manager) {
 		manager.load(YELLOW_CONE,Texture.class);
 		manager.load(RED_CONE,Texture.class);
+		manager.load(YELLOW_CONE_LARGE,Texture.class);
+		manager.load(RED_CONE_LARGE,Texture.class);
 	}
 	
 	/**
@@ -162,6 +171,20 @@ public class GameCanvas {
 			redConeRegion= new TextureRegion(yellowCone);
 		} else {
 			redCone = null;  // Failed to load
+		}
+		if (manager.isLoaded(RED_CONE_LARGE)) {
+			redConeLarge = manager.get(RED_CONE_LARGE,Texture.class);
+			redConeLarge.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+			redConeRegionLarge= new TextureRegion(redConeLarge);
+		} else {
+			redConeLarge = null;  // Failed to load
+		}
+		if (manager.isLoaded(YELLOW_CONE_LARGE)) {
+			yellowConeLarge = manager.get(YELLOW_CONE_LARGE,Texture.class);
+			yellowConeLarge.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+			yellowConeRegionLarge= new TextureRegion(yellowConeLarge);
+		} else {
+			yellowConeLarge = null;  // Failed to load
 		}
 	}
 	
@@ -1255,29 +1278,55 @@ public class GameCanvas {
     	debugRender.line(v1.x, v1.y, v2.x, v2.y);
     }
     
-    public void drawCone(boolean alerted, Vector2 origin, float angle) {
-    	angle=(float) (angle-Math.PI/2);
+    public void drawCone(boolean alerted, Vector2 origin, float angle, actorType actorType) {
     	//the weird math is because it draws the cone in the center of the pig
-    	if(alerted){
-        	this.draw(redConeRegion, 
-        			Color.RED,GameMap.pixelsToMeters(origin.x), 
-        			GameMap.pixelsToMeters(origin.y),  
-        			(float)(origin.x+Math.sin(angle)*20-Math.cos(angle)*100), 
-        			(float)(origin.y-Math.cos(angle)*20-Math.sin(angle)*100), 
-        			(float)(angle), 
-        			1f, 
-        			1f);
+    	angle=(float) (angle-Math.PI/2);
+    	//if owl then draw big cone
+    	if(actorType==actorType.OWL){
+    		if(alerted){
+            	this.draw(redConeRegionLarge, 
+            			Color.RED,GameMap.pixelsToMeters(origin.x), 
+            			GameMap.pixelsToMeters(origin.y),  
+            			(float)(origin.x+Math.sin(angle)*20-Math.cos(angle)*100), 
+            			(float)(origin.y-Math.cos(angle)*20-Math.sin(angle)*100), 
+            			(float)(angle), 
+            			1f, 
+            			1f);
+        	}
+        	else{
+            	this.draw(yellowConeRegionLarge, 
+            			Color.YELLOW,GameMap.pixelsToMeters(origin.x), 
+            			GameMap.pixelsToMeters(origin.y),  
+            			(float)(origin.x+Math.sin(angle)*20-Math.cos(angle)*100), 
+            			(float)(origin.y-Math.cos(angle)*20-Math.sin(angle)*100), 
+            			(float)(angle), 
+            			1f, 
+            			1f);
+        	}
     	}
     	else{
-        	this.draw(yellowConeRegion, 
-        			Color.YELLOW,GameMap.pixelsToMeters(origin.x), 
-        			GameMap.pixelsToMeters(origin.y),  
-        			(float)(origin.x+Math.sin(angle)*20-Math.cos(angle)*100), 
-        			(float)(origin.y-Math.cos(angle)*20-Math.sin(angle)*100), 
-        			(float)(angle), 
-        			1f, 
-        			1f);
+    		if(alerted){
+            	this.draw(redConeRegion, 
+            			Color.RED,GameMap.pixelsToMeters(origin.x), 
+            			GameMap.pixelsToMeters(origin.y),  
+            			(float)(origin.x+Math.sin(angle)*20-Math.cos(angle)*100), 
+            			(float)(origin.y-Math.cos(angle)*20-Math.sin(angle)*100), 
+            			(float)(angle), 
+            			1f, 
+            			1f);
+        	}
+        	else{
+            	this.draw(yellowConeRegion, 
+            			Color.YELLOW,GameMap.pixelsToMeters(origin.x), 
+            			GameMap.pixelsToMeters(origin.y),  
+            			(float)(origin.x+Math.sin(angle)*20-Math.cos(angle)*100), 
+            			(float)(origin.y-Math.cos(angle)*20-Math.sin(angle)*100), 
+            			(float)(angle), 
+            			1f, 
+            			1f);
+        	}
     	}
+    	
 
     }
     
