@@ -105,46 +105,39 @@ public class TrapController {
     	return false;
     }
 
+    	public Vector2 getTrapPositionFromHunter(CircleObject hunter){
+    		float angle = hunter.getAngle();
+    		if (angle == 0.0f) {
+        		tmp.set(hunter.getPosition().x, hunter.getPosition().y - 0.8f);
+        	}
+        	else if (angle == (float) (Math.PI/4.0f)) {
+        		tmp.set(hunter.getPosition().x + 0.6f, hunter.getPosition().y - 0.6f);
+        	}
+        	else if (angle == (float) (Math.PI/2.0f)) {
+        		tmp.set(hunter.getPosition().x + 0.8f, hunter.getPosition().y);
+        	}
+        	else if (angle == (float) (3.0*Math.PI/4.0)) {
+        		tmp.set(hunter.getPosition().x + 0.6f, hunter.getPosition().y + 0.6f);
+        	}
+        	else if (angle == (float) (Math.PI)) {
+        		tmp.set(hunter.getPosition().x, hunter.getPosition().y + 0.8f);
+        	}
+        	else if (angle == (float) -(Math.PI/2.0f)) {
+        		tmp.set(hunter.getPosition().x - 0.8f, hunter.getPosition().y);
+        	}
+        	else if (angle == (float) -(Math.PI/4.0f)) {
+        		tmp.set(hunter.getPosition().x - 0.6f, hunter.getPosition().y - 0.6f);
+        	}
+        	else if (angle == (float) -(3.0*Math.PI/4.0f)) {
+        		tmp.set(hunter.getPosition().x - 0.6f, hunter.getPosition().y + 0.6f);
+        	}
+    		return tmp;
+    	}
+    
     public void setTrap(CircleObject hunter) {
     	//Determine which direction the hunter is facing
-    	float angle = hunter.getAngle();
-    	tmp.set(selectedTrap.getPosition());
-    	
-    	if (angle == 0.0f) {
-    		selectedTrap.setPosition(hunter.getPosition().x, hunter.getPosition().y - 0.8f);
-    		//update inventory
-    		//set selectedTrap inventory status to false
-    		selectedTrap.setInInventory(false);
-    	}
-    	else if (angle == (float) (Math.PI/4.0f)) {
-    		selectedTrap.setPosition(hunter.getPosition().x + 0.6f, hunter.getPosition().y - 0.6f);
-    		selectedTrap.setInInventory(false);
-    	}
-    	else if (angle == (float) (Math.PI/2.0f)) {
-    		selectedTrap.setPosition(hunter.getPosition().x + 0.8f, hunter.getPosition().y);
-    		selectedTrap.setInInventory(false);
-    	}
-    	else if (angle == (float) (3.0*Math.PI/4.0)) {
-    		selectedTrap.setPosition(hunter.getPosition().x + 0.6f, hunter.getPosition().y + 0.6f);
-    		selectedTrap.setInInventory(false);
-    	}
-    	else if (angle == (float) (Math.PI)) {
-    		selectedTrap.setPosition(hunter.getPosition().x, hunter.getPosition().y + 0.8f);
-    		selectedTrap.setInInventory(false);
-    	}
-
-    	else if (angle == (float) -(Math.PI/2.0f)) {
-    		selectedTrap.setPosition(hunter.getPosition().x - 0.8f, hunter.getPosition().y);
-    		selectedTrap.setInInventory(false);
-    	}
-    	else if (angle == (float) -(Math.PI/4.0f)) {
-    		selectedTrap.setPosition(hunter.getPosition().x - 0.6f, hunter.getPosition().y - 0.6f);
-    		selectedTrap.setInInventory(false);
-    	}
-    	else if (angle == (float) -(3.0*Math.PI/4.0f)) {
-    		selectedTrap.setPosition(hunter.getPosition().x - 0.6f, hunter.getPosition().y + 0.6f);
-    		selectedTrap.setInInventory(false);
-    	}
+    	selectedTrap.setInInventory(false);
+    	selectedTrap.setPosition(getTrapPositionFromHunter(hunter));
     	
     	Vector2 trapPosition = selectedTrap.getPosition();
     	if (!map.isSafeAt(GameMap.metersToPixels(trapPosition.x), GameMap.metersToPixels(trapPosition.y))) {
