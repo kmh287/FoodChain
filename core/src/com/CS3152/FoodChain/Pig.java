@@ -65,11 +65,11 @@ public class Pig extends Animal {
     }
     
     public void createSteeringBehaviors() {
-    	Steerable[] steers = new Steerable[GameMode.steerables.size()];
+    	Steerable<Vector2>[] steers = new Steerable[GameMode.steerables.size()];
         GameMode.steerables.toArray(steers);
         Array<Steerable<Vector2>> steerArray = new Array<Steerable<Vector2>>(steers); 
-        proximity = new RadiusProximity<Vector2>(this, steerArray, .1f);
-        collisionAvoidanceSB = new CollisionAvoidance<Vector2>(this, proximity);
+        proximity = new RadiusProximity<Vector2>(this, steerArray, .0001f);
+        collisionAvoidanceSB = new CollisionAvoidance2<Vector2>(this, proximity);
         LinearAccelerationLimiter limiter = new LinearAccelerationLimiter(maxLinearAcceleration);
         limiter.setMaxLinearAcceleration(maxLinearAcceleration);
         collisionAvoidanceSB.setLimiter(limiter);

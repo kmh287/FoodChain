@@ -329,6 +329,10 @@ public abstract class Animal extends Actor{
 		}
 	}
 	
+	public RadiusProximity getProximity() {
+		return this.proximity;
+	}
+	
 	@Override
 	public void draw(GameCanvas canvas) {
 		if (getFinishedDeatAnimation()==false) {

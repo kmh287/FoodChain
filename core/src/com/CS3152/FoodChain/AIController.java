@@ -444,8 +444,7 @@ public class AIController implements InputController {
 			    case FLEE:
 			    	//System.out.println(getAnimal() + " is fleeing");
 			        if (canSettle()) {
-			            //animal.setState(State.WANDER);
-			            animal.setState(State.PATROL);
+			            animal.setState(State.WANDER);
 			            setAttacker(null);
 			            setTarget(null);
 			        }
@@ -464,6 +463,7 @@ public class AIController implements InputController {
 			    case PATROL:
 			    	animal.setState(State.PATROL);
 			    	if (hasTarget()) {
+			    		  animal.getProximity().setRadius(0.01f);
 				    	  if (animal instanceof Pig) {
 				    	    animal.setState(State.FLEE);
 				    	    setTurns(stateDelay);
@@ -486,7 +486,8 @@ public class AIController implements InputController {
 				    	  }
 				    }
 			    	else if (canPatrol()) {
-			    	  animal.setState(State.PATROL);
+			    		animal.getProximity().setRadius(0.0001f);
+			    	    animal.setState(State.PATROL);
 			    	}
 			    	break;
 			    case DEAD:
