@@ -683,7 +683,6 @@ public class GameMode implements Screen{
         
 
         
-//		uncomment this to see lines
 //        canvas.beginDebug();
 //        PooledList<SimplePhysicsObject> objects = collisionController.getObjects();
 //		for(PhysicsObject obj : objects) {

@@ -226,7 +226,6 @@ public class CollisionController implements ContactListener {
 				trapToRemove = trap;
 				trapToAdd = "SHEEP_TRAP";
 				trapLocationToAdd = trap.getPosition();
-
 				
 			}
 			else if (trap.getOnMap() && trap.getType() == "SHEEP_TRAP"
@@ -238,7 +237,6 @@ public class CollisionController implements ContactListener {
 				trapToRemove = trap;
 				trapToAdd = "WOLF_TRAP";
 				trapLocationToAdd = trap.getPosition();
-
 
 			}
 		}
