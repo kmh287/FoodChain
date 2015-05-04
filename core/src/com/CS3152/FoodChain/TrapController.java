@@ -13,14 +13,12 @@ public class TrapController {
 	private Hunter hunter;
 	private GameMap map;
     private HashMap<String, List<Trap>> inventory;
-
     private Trap selectedTrap = null;
     private Vector2 tmp;
     
     public TrapController(Hunter hunter, GameMap map, CollisionController collisionController, int numPigs, int numWolves){
     	this.hunter = hunter;
     	this.map = map;
-
     	
     	inventory= new HashMap<String, List<Trap>>();
     	
@@ -39,7 +37,6 @@ public class TrapController {
     	    Trap tmp = new RegularTrap();
     	    tmp.setSensor(true);
     	    tmp.setBodyType(BodyDef.BodyType.StaticBody);
-
     	    tmp.setInInventory(true);
     	    collisionController.addObject(tmp);
     	    this.addToInventory(tmp);
@@ -51,7 +48,6 @@ public class TrapController {
     	    tmp.setInInventory(false);
     	    collisionController.addObject(tmp);
     	    this.addToInventory(tmp);
-
     	}
     	tmp = new Vector2();
     }

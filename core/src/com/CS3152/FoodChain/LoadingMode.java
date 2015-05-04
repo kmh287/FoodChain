@@ -123,6 +123,8 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 
 	/** Whether or not this player mode is still active */
 	private boolean active;
+	
+	private boolean tf;
 
 	/**
 	 * Returns the budget for the asset loader.
@@ -179,12 +181,12 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 		
 	}
 	/**
-	 * Creates a LoadingMode with the default budget, size and position.
+	 * Creates a LoadingMode with the default budget, size and position, and time.
 	 *
 	 * @param manager The AssetManager to load in the background
 	 */
 	public LoadingMode(GameCanvas canvas, AssetManager manager) {
-		this(canvas, manager,DEFAULT_BUDGET);
+		this(canvas, manager,DEFAULT_BUDGET, false);
 	}
 
 	/**
@@ -198,13 +200,13 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 	 * @param manager The AssetManager to load in the background
 	 * @param millis The loading budget in milliseconds
 	 */
-	public LoadingMode(GameCanvas canvas, AssetManager manager, int millis) {
+	public LoadingMode(GameCanvas canvas, AssetManager manager, int millis, boolean tf) {
 		this.manager = manager;
 		this.canvas  = canvas;
 		budget = millis;
 		
 		// Compute the dimensions from the canvas
-		resize(canvas.getWidth(),canvas.getHeight());
+		//resize(canvas.getWidth(),canvas.getHeight());
 
 		// Load the next two images immediately.
 		playButton1 = null;
@@ -214,6 +216,7 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 		
 		background = new Texture(BACKGROUND_FILE);
 		//background.setSize();
+		this.tf = tf;
 		
 		pressState1 = 0;
 		pressState2 = 0;
@@ -268,7 +271,7 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 	 * @param delta Number of seconds since last animation frame
 	 */
 	private void update(float delta) {
-		if (playButton1 == null && playButton2 == null && playButton3 == null && playButton3 == null) {
+		if (playButton1 == null && playButton2 == null && playButton3 == null && playButton4 == null ) {
 			manager.update(budget);
 			//this.progress = manager.getProgress();
 			//if (progress >= 1.0f) {
@@ -292,7 +295,14 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 		//canvas.draw(background, 0, 0);
 		int width = (int) (Gdx.graphics.getWidth() * .77);
 		int height= (int) (Gdx.graphics.getHeight() * .77);
-		canvas.draw(background, Color.WHITE, 145, 82, width, height);
+		/*x and y of bottom left corner*/
+		if (tf) {
+			canvas.draw(background, Color.WHITE, 392, 660, width, height);
+		}
+		else {
+			canvas.draw(background, Color.WHITE, 147, 82, width, height);
+		}
+		
 		if (playButton1 == null) {
 			//drawProgress(canvas);
 		} 
@@ -316,30 +326,6 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 		canvas.end();
 	}
 	
-	/**
-	 * Updates the progress bar according to loading progress
-	 *
-	 * The progress bar is composed of parts: two rounded caps on the end, 
-	 * and a rectangle in a middle.  We adjust the size of the rectangle in
-	 * the middle to represent the amount of progress.
-	 *
-	 * @param canvas The drawing context
-	 */	
-	/*private void drawProgress(GameCanvas canvas) {	
-		canvas.draw(statusBkgLeft,   centerX-width/2, centerY, scale*PROGRESS_CAP, scale*PROGRESS_HEIGHT);
-		canvas.draw(statusBkgRight,  centerX+width/2-scale*PROGRESS_CAP, centerY, scale*PROGRESS_CAP, scale*PROGRESS_HEIGHT);
-		canvas.draw(statusBkgMiddle, centerX-width/2+scale*PROGRESS_CAP, centerY, width-2*scale*PROGRESS_CAP, scale*PROGRESS_HEIGHT);
-
-		canvas.draw(statusFrgLeft,   centerX-width/2, centerY, scale*PROGRESS_CAP, scale*PROGRESS_HEIGHT);
-		if (progress > 0) {
-			float span = progress*(width-2*scale*PROGRESS_CAP)/2.0f;
-			canvas.draw(statusFrgRight,  centerX-width/2+scale*PROGRESS_CAP+span, centerY, scale*PROGRESS_CAP, scale*PROGRESS_HEIGHT);
-			canvas.draw(statusFrgMiddle, centerX-width/2+scale*PROGRESS_CAP, centerY, span, scale*PROGRESS_HEIGHT);
-		} else {
-			canvas.draw(statusFrgRight,  centerX-width/2+scale*PROGRESS_CAP, centerY, scale*PROGRESS_CAP, scale*PROGRESS_HEIGHT);
-		}
-	}*/
-
 	// ADDITIONAL SCREEN METHODS
 	/**
 	 * Called when the Screen should render itself.
@@ -464,7 +450,7 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 			pressState2 = 1;
 		}
 		
-		if (screenX < ((centerX * 1.15) + (radius3)) && screenX > (centerX * .85)){
+		if (screenX < ((centerX * 1.15) + (radius3)) && screenX > (centerX * .85) + radius2){
 			pressState3 = 1;
 		}
 		

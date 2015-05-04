@@ -57,6 +57,8 @@ public class GameMode implements Screen{
 	private float frameTime;
 	private String levelName;
 	private PlayerController player; 
+	private GDXRoot root; 
+	
 	
 	private int numPigs;
 	private int numWolves;
@@ -85,11 +87,14 @@ public class GameMode implements Screen{
 	private boolean debug;
 	/** Countdown active for winning or losing */
 	private int countdown;
+	private int hunterLife; 
 	
 	//Trpa set delay
 	int TRAP_SETUP_FRAMES = 30; //60FPS so this is 0.5s
 	boolean settingTrap;
 	int trapSetProgress;
+	
+	private boolean playing; 
 	
 	/**sound assets here **/
 	//private static final String TRAP_DROP_FILE = "sounds/trap_drop.mp3";
@@ -151,69 +156,40 @@ public class GameMode implements Screen{
      * 
      * @param canvas The singular instance of GameCanvas
      */
-	public GameMode(GameCanvas canvas, List<String> levelList) {
+	public GameMode(GameCanvas canvas, List<String> levelList, GDXRoot root) {
 		System.out.println("inGameMode levellist");
 		this.canvas = canvas;
 		this.stage = stage;
+		this.root = root;
+		start=true;
+        //active = false;
+        manager = new AssetManager();
+        PreLoadContent(manager);
+        manager.finishLoading();
+        LoadContent(manager);
+        hunterLife = 3; 
+        levelLoad(levelList);
+        
+        
+	}
+	
+	public void levelLoad (List<String> levelList) {
 		this.levelList = levelList;
 		this.levelListIt = levelList.iterator();
 		if (levelList.size() == 0){
 			throw new IllegalArgumentException("At least one level must be in passed in level set");
 		}
-		start=true;
-        //active = false;
-        manager = new AssetManager();
-        PreLoadContent(manager);
-        manager.finishLoading();
-        LoadContent(manager);
-
         initializeLevel(canvas, levelListIt.next());
-        //initializeLevel(canvas, "BetaLevel3");
-        
-	}
-	/*public GameMode(GameCanvas canvas) {
 		
-		this.canvas = canvas;
-		this.stage = stage;
-		/*this.levelList = levelList;
-		this.levelListIt = levelList.iterator();
-		if (levelList.size() == 0){
-			throw new IllegalArgumentException("At least one level must be in passed in level set");
-		}*/
-		/*start=true;
-        //active = false;
-        manager = new AssetManager();
-        PreLoadContent(manager);
-        manager.finishLoading();
-        LoadContent(manager);
-        
-
-        //initializeLevel(canvas, "BetaLevel3");
-        
 	}
 	
-	public GameMode(GameCanvas canvas, int level) {
-		
-		this.canvas = canvas;
-		this.stage = stage;
-		start=true;
-        //active = false;
-        manager = new AssetManager();
-        PreLoadContent(manager);
-        manager.finishLoading();
-        LoadContent(manager);
-        
-        //initializeLevel(canvas, levelListIt.next());
-	}*/
-        
  	private void initializeLevel(GameCanvas canvas, String levelName){
         //For now we will hard code the level to load
         //When we implement a UI that may ask players
         //what level to start on. This code will change
- 		System.out.println("before level initialized " + levelName);
+ 		playing = true; 
  		this.levelName = levelName;
         map = loadMap(levelName);
-        System.out.println("after level loaded " + levelName);
         map.setDimensions();
         map.createGraph();
         map.LoadContent(manager);
@@ -249,7 +225,7 @@ public class GameMode implements Screen{
         
         //Setup traps and the trap UI
 	    traps = (HashMap<String, List<Trap>>) trapController.getInventory();
-  
+	    
 	    player = new PlayerController(); 
         List<Actor> actors = new ArrayList<Actor>();
         actors.add(hunter);
@@ -466,12 +442,29 @@ public class GameMode implements Screen{
 	    			if (levelListIt.hasNext()){
 	    				initializeLevel(canvas, levelListIt.next());
 	    			}
+	    			else {
+	    				//playing = false; 
+	    				//System.out.println("we won, make a loading screen!");
+	    				//root.gameOverScreen();
+	    				//return;
+	    				
+	    			}
 	    		}
 	    		else if (con == gameCondition.LOSE){
 	    			//RESET -- maybe add a timer and some onscreen indication.
-    				initializeLevel(canvas, levelName);
-    				lastResetTicks = ticks;
-	    		}
+    				/*if (hunterLife == 0){
+    					System.out.println("you lost all 3 lives, make a loading screen!");
+    					playing = false; 
+	    				root.gameOverScreen();
+    				}
+    				// hunter life > 0 
+    				else {*/
+    					
+    					initializeLevel(canvas, levelName);
+	    				lastResetTicks = ticks;
+	    				//hunterLife --; 
+    			}
+    				
     		}
     	
     		//The hunter can move when not setting a trap
@@ -707,11 +700,15 @@ public class GameMode implements Screen{
     
     
     public void render(float delta) {
-        update(delta);
-        collisionController.postUpdate(delta);
-        draw(delta);
-        postDraw(delta);
-
+        if (playing) {
+        	update(delta);
+        	/*update is setting playing to false.d*/
+        	if (playing){
+	        	collisionController.postUpdate(delta);
+	            draw(delta);
+        	}
+            postDraw(delta);
+        }  
     }
     
     public boolean isFailure( ) {
@@ -729,6 +726,8 @@ public class GameMode implements Screen{
     public void dispose() {
         // TODO Auto-generated method stub
     	SoundController.UnloadContent(manager);
+    	//canvas = null; 
+    	
         
     }
 

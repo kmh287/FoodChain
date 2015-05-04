@@ -73,25 +73,25 @@ public class GDXRoot extends Game implements ScreenListener {
 		List<String> levelList3 = new ArrayList<String>();
 		List<String> levelList4 = new ArrayList<String>();
 		//tutorial levels
-		levelListTutorial.add("tutorial2");
+		//levelListTutorial.add("tutorial2");
 		levelListTutorial.add("tutorial1");
+		levelListTutorial.add("kpatroltest");
 		//1 levels
+		levelList1.add("tutorial1");
 		levelList1.add("kpatroltest");
-		levelList1.add("kpatroltest2");
+		//levelList1.add("kpatroltest2");
 		//2 levels
-		levelList2.add("PatrolTest1");
-		levelList2.add("PatrolTest2");
+		levelList2.add("tutorial1");
+		levelList2.add("kpatroltest");
 		//3 levels
-		levelList3.add("PatrolTest1");
-		levelList3.add("PatrolTest2");
-		//4 levels
-		levelList4.add("PatrolTest1");
-		levelList4.add("PatrolTest2");
+		levelList3.add("tutorial1");
+		levelList3.add("kpatroltest");
 		
 		List<List<String>> allLists = new ArrayList<List<String>>();
 		allLists.add(levelListTutorial);
 		allLists.add(levelList1);
 		allLists.add(levelList2);
+		allLists.add(levelList3);
 		return allLists;
 	}
 	/** 
@@ -102,7 +102,7 @@ public class GDXRoot extends Game implements ScreenListener {
 	 */
 	public void create() {
 		canvas  = new GameCanvas();
-		loading = new LoadingMode(canvas,manager,1);
+		loading = new LoadingMode(canvas,manager, 1, false);
 		playing = null;
 		List<List<String>> levelList = buildLevelLists();
 		
@@ -144,7 +144,16 @@ public class GDXRoot extends Game implements ScreenListener {
 		canvas.resize();
 		super.resize(width,height);
 	}
-
+	
+	public void gameOverScreen() {
+		int pointx = 1;
+		int pointy = 2;
+		LoadingMode loadingNew = new LoadingMode(canvas,manager,1, true);
+		playing = null;
+		//dispose();
+		loadingNew.setScreenListener(this);
+		setScreen(loadingNew);
+	}
 	
 	/**
 	 * The given screen has made a request to exit its player mode.
@@ -155,23 +164,23 @@ public class GDXRoot extends Game implements ScreenListener {
 	 * @param exitCode The state of the screen upon exit
 	 */
 	public void exitScreen(Screen screen, int exitCode, int level) {
-		if (exitCode == 20) {
+		if (exitCode != 0) {
 			Gdx.app.error("GDXRoot", "Exit with error code "+exitCode, new RuntimeException());
 			Gdx.app.exit();
 		} else if (screen == loading) {
 			List<List<String>> levelLists = buildLevelLists();
 			GameMode.LoadContent(manager);
 			if (level == 1) {
-	            playing = new GameMode(canvas, levelLists.get(0));
+	            playing = new GameMode(canvas, levelLists.get(0), this);
 	        }
 	        if (level == 2) {
-	        	playing = new GameMode(canvas, levelLists.get(1));
+	        	playing = new GameMode(canvas, levelLists.get(1), this);
 	        }
 	        if (level == 3) {
-	        	playing = new GameMode(canvas, levelLists.get(2));
+	        	playing = new GameMode(canvas, levelLists.get(2),this);
 	        }
 	        if (level == 4) {
-	        	playing = new GameMode(canvas, levelLists.get(3));
+	        	playing = new GameMode(canvas, levelLists.get(3), this);
 	        }
 			
 			playing.setScreenListener(this);
