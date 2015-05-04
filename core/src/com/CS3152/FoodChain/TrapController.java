@@ -13,7 +13,7 @@ public class TrapController {
 	private Hunter hunter;
 	private GameMap map;
     private HashMap<String, List<Trap>> inventory;
-    private Trap selectedTrap = null;
+    private static Trap selectedTrap = null;
     private Vector2 tmp;
     
     public TrapController(Hunter hunter, GameMap map, CollisionController collisionController, int numPigs, int numWolves){
@@ -164,7 +164,7 @@ public class TrapController {
     	return inventory;
     }
     
-    public Trap getSelectedTrap(){
+    public static Trap getSelectedTrap(){
     	return selectedTrap;
     }
 
