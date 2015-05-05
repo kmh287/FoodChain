@@ -50,6 +50,7 @@ public class TrapController {
     	    this.addToInventory(tmp);
     	}
     	tmp = new Vector2();
+    	selectedTrap = null;
     }
 
 
@@ -138,6 +139,8 @@ public class TrapController {
     	//Determine which direction the hunter is facing
     	selectedTrap.setInInventory(false);
     	selectedTrap.setPosition(getTrapPositionFromHunter(hunter));
+    	selectedTrap.setOnMap(true);
+    	selectedTrap.setActive(true);
     	
     	Vector2 trapPosition = selectedTrap.getPosition();
     	if (!map.isSafeAt(GameMap.metersToPixels(trapPosition.x), GameMap.metersToPixels(trapPosition.y))) {
@@ -145,7 +148,6 @@ public class TrapController {
     		selectedTrap.setInInventory(true);
     		return;
     	}
-//    	selectedTrap.setOnMap(true);
 
     	//set selectedTrap to next available trap inInventory of same type
     	//if no free trap then selectedTrap does not change and player can't put down another
@@ -167,5 +169,15 @@ public class TrapController {
     public static Trap getSelectedTrap(){
     	return selectedTrap;
     }
+    
+    public Trap findNextWolfTrap(){
+		for (Trap trap : inventory.get("SHEEP_TRAP")) {
+			if(!trap.getInInventory()&&!trap.getOnMap()){
+				return trap;
+			}
+		}
+		return null;
+    }
+
 
 }

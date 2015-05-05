@@ -263,6 +263,7 @@ public class GameMode implements Screen{
         gameplayController = new GameplayController(map, actorArray, controls);
         canvas.getUIControllerStage().setPanic(AIController.getPanicPercentage());
         collisionController.setControls(controls);
+        collisionController.setTrapController(trapController);
         
 	}
 
@@ -611,7 +612,6 @@ public class GameMode implements Screen{
 		if(trapController.getSelectedTrap() == null || !trapController.canSetTrap()){
 			trapController.autoSelectTrap();
 		}
-		
     	
     }
     
