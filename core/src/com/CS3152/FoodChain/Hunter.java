@@ -26,8 +26,12 @@ public class Hunter extends Actor {
     
     private static final String PLAYER_TEX = "assets/hunter_walk_cycle.png";
     private static final String DEATH_TEX = "assets/hunter_death.png";
+    private static final String PLACE_PIG_TRAP = "assets/place pig trap sprite.png";
+    private static final String PLACE_WOLF_TRAP = "assets/place wolf trap sprite.png";
     protected static Texture tex = null;
     protected static Texture deathTex = null;
+    protected static Texture pigTrapTex = null;
+    protected static Texture wolfTrapTex = null;
     
     //how far forward the hunter can move in a turn. 
     private static final float MOVE_SPEED = 9f;
@@ -39,9 +43,13 @@ public class Hunter extends Actor {
     private static float scaleYDrawHunter = 0.15f;
     private static float scaleXDrawHunterDead = 0.22f;
     private static float scaleYDrawHunterDead = 0.21f;
+    private static float scaleXDrawPigTrap = 0.40f;
+    private static float scaleYDrawPigTrap = 0.30f;
     public boolean hunterFinishedDeath; 
     private FilmStrip sprite;
     private FilmStrip spriteDeath;
+    private FilmStrip spritePigTrap;
+    private FilmStrip spriteWolfTrap;
     
     /** The sound currently associated with the hunter */
 	private Sound sound;
@@ -58,6 +66,8 @@ public class Hunter extends Actor {
         tmp = new Vector2();
         sprite = new FilmStrip(tex,1,4,4);
         spriteDeath =  new FilmStrip(deathTex,1,3,3);
+        spritePigTrap = new FilmStrip(pigTrapTex,1,5,5);
+        spriteWolfTrap = new FilmStrip(wolfTrapTex,1,5,5);
         drawScale.x=scaleXDrawHunter;
         drawScale.y=scaleYDrawHunter;
         sound = null;
@@ -81,10 +91,14 @@ public class Hunter extends Actor {
         if (tex == null){
             manager.load(PLAYER_TEX, Texture.class);
             manager.load(DEATH_TEX, Texture.class);
+            manager.load(PLACE_PIG_TRAP,Texture.class);
+            manager.load(PLACE_WOLF_TRAP,Texture.class);
             manager.finishLoading();
             if (manager.isLoaded(PLAYER_TEX)){
                 tex = manager.get(PLAYER_TEX);
-                deathTex= manager.get(DEATH_TEX);
+                deathTex = manager.get(DEATH_TEX);
+                wolfTrapTex = manager.get(PLACE_WOLF_TRAP);
+                pigTrapTex = manager.get(PLACE_PIG_TRAP);
             }
         }
     }
@@ -112,6 +126,8 @@ public class Hunter extends Actor {
   
     
     public void updateWalkFrame(){
+        drawScale.x=scaleXDrawHunter;
+        drawScale.y=scaleYDrawHunter;
     	int frame = sprite.getFrame();
     	frame++;
     	if (frame==4){
@@ -122,13 +138,36 @@ public class Hunter extends Actor {
     	super.setTexture(sprite);
     }
     
+    public void updatePigTrapFrame(){
+        drawScale.x=scaleXDrawPigTrap;
+        drawScale.y=scaleYDrawPigTrap;
+    	int frame = spritePigTrap.getFrame();
+    	if (frame<4){
+        	frame++;
+    	}
+    	spritePigTrap.setFrame(frame);
+    	spritePigTrap.flip(false,true);
+    	super.setTexture(spritePigTrap);
+    }
+    
+    public void updateWolfTrapFrame(){
+        drawScale.x=scaleXDrawPigTrap;
+        drawScale.y=scaleYDrawPigTrap;
+    	int frame = spriteWolfTrap.getFrame();
+    	if (frame<4){
+        	frame++;
+    	}
+    	spriteWolfTrap.setFrame(frame);
+    	spriteWolfTrap.flip(false,true);
+    	super.setTexture(spriteWolfTrap);
+    }
+    
     public void updateDeadFrame(){
         drawScale.x=scaleXDrawHunterDead;
         drawScale.y=scaleYDrawHunterDead;
     	int frame = spriteDeath.getFrame();
     	if(frame<2){
     		frame++;
-    		
     	}
     	else {
     		setFinishedDeatAnimation(true);
@@ -139,8 +178,12 @@ public class Hunter extends Actor {
     }
     
 	public void updateTrapFrame() {
-		// TODO Auto-generated method stub
-		//Please fill this in with the trap setting animation! 
+		if(TrapController.getSelectedTrap().getType()=="REGULAR_TRAP"){
+			this.updatePigTrapFrame();
+		}
+		else{
+			this.updateWolfTrapFrame();
+		}
 	}
     
     public FilmStrip Sprite(){
@@ -148,7 +191,11 @@ public class Hunter extends Actor {
     }
     
     public void setStillFrame(){
+        drawScale.x=scaleXDrawHunter;
+        drawScale.y=scaleYDrawHunter;
     	sprite.setFrame(0);
+    	spriteWolfTrap.setFrame(0);
+    	spritePigTrap.setFrame(0);
     	sprite.flip(false,true);
     	super.setTexture(sprite);
     }
@@ -188,5 +235,11 @@ public class Hunter extends Actor {
 	public void setOrientation(float arg0) {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	//needed because texture looks weird without adjustment
+	public void DrawTrapAnimation(GameCanvas canvas){
+		canvas.draw(texture,Color.WHITE,(origin.x),(origin.y),(float)(GameMap.metersToPixels(getX())+Math.sin(getAngle())*18+Math.cos(getAngle())*1),(float)(GameMap.metersToPixels(getY())-Math.cos(getAngle())*18+Math.sin(getAngle())*1),
+				getAngle(),drawScale.x,drawScale.y);
 	}
 }
