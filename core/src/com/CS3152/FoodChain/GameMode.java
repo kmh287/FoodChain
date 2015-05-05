@@ -645,7 +645,6 @@ public class GameMode implements Screen{
         }
         canvas.end();
         
-        //canvas.begin();
         if(!start){
         	canvas.beginCam(GameMap.metersToPixels(hunter.getPosition().x), GameMap.metersToPixels(hunter.getPosition().y));
         }
@@ -654,10 +653,6 @@ public class GameMode implements Screen{
         	start=false;
         }
 
-        //hunter.drawDebug(canvas);
-    	//Draw the hunter
-    	//Draw the animals
-    	//need to modify this and wolf code once wolf death animation is done
         for (Animal animal : animals){
     		if (animal.getFinishedDeatAnimation()==false) {
         		if(!animal.getTrapped() && animal.getAlive()){
