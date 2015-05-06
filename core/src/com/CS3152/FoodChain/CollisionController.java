@@ -47,6 +47,7 @@ public class CollisionController implements ContactListener {
 	private Sound sound;
 	/** The associated sound cue (if ship is making a sound). */
 	private long sndcue;
+	private TrapController trapController;
 	
 	public CollisionController(){
 		//no gravity for top down
@@ -129,31 +130,38 @@ public class CollisionController implements ContactListener {
     				h.setActive(false);
     			}
     		}
-    		if (trapToRemove != null
+       		if (trapToRemove != null
     				&& o.getBody().getUserData() instanceof Trap) {
     			Trap t = (Trap) o;
     			if (t == trapToRemove) {
     				t.setActive(false);
+    				t.setOnMap(false);
     				trapToRemove = null;
     			}
     		}
-    		if (trapToAdd != null
-    				&& o.getBody().getUserData() instanceof Trap) {
-    			Trap t = (Trap) o;
-    			if (t.getType() == trapToAdd && t.getInInventory()!=true) {
-    				//t.setPosition(trapLocationToAdd);
-    				t.setInInventory(true);
-    				//t.setOnMap(true);
-    				//t.setInInventory(true);
-    				trapToAdd = null;
-    			}
-    		}
-    		if(animalToTrap!=null){
-    			animalToTrap.setPosition(trapLocationToAdd);
-    			animalToTrap.setAngle((float)(animalToTrapAngle-1.9f));
-    			animalToTrap=null;
-    		}
     	}
+    	
+		if(animalToTrap!=null){
+			animalToTrap.setPosition(trapLocationToAdd);
+			animalToTrap.setAngle((float)(animalToTrapAngle-1.9f));
+			animalToTrap=null;
+		}
+		
+		if (trapToAdd != null) {
+			Trap t = null;
+			if(trapToAdd == "SHEEP_TRAP"){
+				t = trapController.findNextWolfTrap();
+				
+			}
+			t.setActive(true);
+			t.setPosition(trapLocationToAdd);
+			t.setOnMap(true);
+			t.setInInventory(false);
+			trapToAdd = null;
+		}
+		
+
+		
     }
 
 	public void setControls(InputController [] controls){
@@ -202,15 +210,11 @@ public class CollisionController implements ContactListener {
 			if (trap.getOnMap()) {
 				trap.setisOver(true);
 				trapOver = trap;
-
-				if (trap.getSetWell() && controls[0].isTrapPickupHeldDown()){
-					trap.setOnMap(false);
-					play(SoundController.TRAP_SOUND);
-					trap.setInInventory(true);
-				}
-				else{
-					trap.setSetWell(true); 
-				}
+			}
+			if (controls[0].isTrapPickupHeldDown()){
+				trap.setOnMap(false);
+				play(SoundController.TRAP_SOUND);
+				trap.setInInventory(true);
 			}
 		}
 		if (bd1 instanceof Animal && bd2 instanceof Trap) {
@@ -222,7 +226,6 @@ public class CollisionController implements ContactListener {
 				animal.setTrapped(true);
 				animalToTrap = animal;
 				animalToTrapAngle= animal.getAngle();
-				trap.setOnMap(false);
 				trapToRemove = trap;
 				trapToAdd = "SHEEP_TRAP";
 				trapLocationToAdd = trap.getPosition();
@@ -235,9 +238,7 @@ public class CollisionController implements ContactListener {
 				animalToTrap = animal;
 				animalToTrapAngle= animal.getAngle();
 				animal.setTrapped(true);
-				trap.setOnMap(false);
 				trapToRemove = trap;
-				trapToAdd = "WOLF_TRAP";
 				trapLocationToAdd = trap.getPosition();
 
 			}
@@ -248,15 +249,12 @@ public class CollisionController implements ContactListener {
 			
 			if (trap.getOnMap() && trap.getType() == "REGULAR_TRAP"
 					&& animal.getType() == Actor.actorType.PIG) {
+				animal.setTrapped(true);
 				animalToTrap = animal;
 				animalToTrapAngle= animal.getAngle();
-				animal.setTrapped(true);
-				trap.setOnMap(false);
-				trapToRemove =trap;
+				trapToRemove = trap;
 				trapToAdd = "SHEEP_TRAP";
 				trapLocationToAdd = trap.getPosition();
-				//trapToAdd.setType("SHEEP_TRAP");
-				//trapToAdd.setInInventory(true);
 				
 				
 			}
@@ -265,12 +263,9 @@ public class CollisionController implements ContactListener {
 				animal.setTrapped(true);
 				animalToTrap = animal;
 				animalToTrapAngle= animal.getAngle();
-				trap.setOnMap(false);
 				trapToRemove = trap;
-				trapToAdd = "WOLF_TRAP";
 				trapLocationToAdd = trap.getPosition();
-				//trapToAdd.setType("WOLF_TRAP");
-				//trapToAdd.setInInventory(true);
+				
 			}
 		}
 		if (bd1 instanceof Animal && bd2 instanceof Animal) {
@@ -358,5 +353,10 @@ public class CollisionController implements ContactListener {
 	
 	public World getWorld() {
 		return this.world;
+	}
+
+	public void setTrapController(TrapController trapController) {
+		this.trapController= trapController;
+		
 	}
 }
