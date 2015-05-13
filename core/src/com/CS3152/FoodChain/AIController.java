@@ -93,7 +93,9 @@ public class AIController implements InputController {
     //this is the delay when animals switch from flee to wander to patrol
     private int stateDelay = 90;
     
-
+    //So the owls can add a random angle offset
+    //So that they are not always in phase with each other.
+    private boolean firstUpdate;
 
     private static float panicPercentage;
     private static boolean panicked;
@@ -102,6 +104,7 @@ public class AIController implements InputController {
     private Vector2 vect;
     private float angle;
     private double angleProg;
+    private Random rand;
 
     private Sound sound;
 	/** The associated sound cue (if ship is making a sound). */
@@ -158,6 +161,8 @@ public class AIController implements InputController {
 		
 		angle = 0f;
 		angleProg = 0f;
+		firstUpdate = true;
+		rand = new Random();
     }
     
     /*
@@ -396,6 +401,12 @@ public class AIController implements InputController {
 		if (animal instanceof Owl) {
 			angleProg = (angleProg > (Math.PI * 2)) ? 0f : angleProg+(Math.PI/120.0);
 			angle += getDiff(angleProg);
+			//If this is the first frame, add a random number to the owl's offset 
+			//To push multiple owls on the same map out of phase
+			if(firstUpdate){
+				angle+= (rand.nextDouble() * 2 * Math.PI);
+				firstUpdate = false;
+			}
 			animal.setAngle(angle);
 			animal.updateLOS(angle);
 			if (hasTarget()) {

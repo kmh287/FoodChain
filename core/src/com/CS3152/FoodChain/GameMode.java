@@ -57,7 +57,7 @@ public class GameMode implements Screen{
     private TrapController trapController;
 	private float TIME_STEP = 1/200f;
 	private float frameTime;
-	private String levelName;
+	protected static String levelName;
 	private PlayerController player; 
 	private GDXRoot root; 
 	
@@ -243,6 +243,10 @@ public class GameMode implements Screen{
         settingTrap = false;
         trapSetProgress = 0;
 
+        //Even if the level is not a tutorial this is necessary
+        //UIControllerStage will handle whether or not the 
+        //current level is a tutorial
+        UIControllerStage.tutorialScreenOpen = true;
         canvas.getUIControllerStage().setTrapController(trapController);
         canvas.getUIControllerStage().loadTextures(manager);
         
@@ -477,33 +481,15 @@ public class GameMode implements Screen{
     }
 
     private void update(float delta){
-
     		//Check if reset has been pressed
     		if (controls[0].resetPressed()){
     			//Only allow the player to reset if they last reset over a second ago
     			if (ticks - lastResetTicks > 60){
+    			  canvas.getUIControllerStage().hideTutorial();
     				initializeLevel(canvas, levelName);
     				lastResetTicks = ticks;
     			}
     		}
-    		
-//    		//DELETE THIS FOR RELEASE
-//    		int levelNum = controls[0].levelPressed();
-//    		if (levelNum != -1){
-//    			switch(levelNum){
-//    			case 1: 
-//    				initializeLevel(canvas, "BetaLevel1");
-//    				break;
-//    			case 2:
-//    				initializeLevel(canvas, "BetaLevel2");
-//    				break;
-//    			default:
-//    				initializeLevel(canvas, "BetaLevel3");
-//    				break;
-//    			}
-//    		}
-    		
-
     	
     		//Check the objective every second, end the game if the player has won or if the objective
     		//cannot be achieved
@@ -528,22 +514,9 @@ public class GameMode implements Screen{
 	    			}
 	    		}
 	    		else if (con == gameCondition.LOSE){
-	    		  System.out.println("You Lost");
-	    			//RESET -- maybe add a timer and some onscreen indication.
-    				if (hunterLife == 0){
-    					/*System.out.println("you lost all 3 lives, make a loading screen!");
-    					playing = false; 
-	    				root.gameOverScreen();*/
-    					
-    				}
-    				// hunter life > 0 
-    				else {
-    					
-    					initializeLevel(canvas, levelName);
-	    				lastResetTicks = ticks;
-	    				hunterLife --; 
-    				}
-    				
+	    		  System.out.println("You Lost");	
+	    		  initializeLevel(canvas, levelName);
+	    		  lastResetTicks = ticks;
 	    		}
     		}
     	
@@ -702,7 +675,7 @@ public class GameMode implements Screen{
         }
 
         for (Animal animal : animals){
-    		if (animal.getFinishedDeatAnimation()==false) {
+          if (animal.getFinishedDeatAnimation()==false) {
         		if(!animal.getTrapped() && animal.getAlive()){
         			animal.drawCone(canvas);
         		}
