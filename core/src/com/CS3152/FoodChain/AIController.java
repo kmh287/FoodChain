@@ -91,7 +91,7 @@ public class AIController implements InputController {
     protected int patrolTurn;
     
     //this is the delay when animals switch from flee to wander to patrol
-    private int stateDelay = 300;
+    private int stateDelay = 90;
     
 
 
