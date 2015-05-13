@@ -68,9 +68,9 @@ public class GDXRoot extends Game implements ScreenListener {
 	private List<List<String>> buildLevelLists(){
 		// Initialize all level lists
 		List<String> levelListTutorial = new ArrayList<String>();
-		List<String> levelList1 = new ArrayList<String>();
-		List<String> levelList2 = new ArrayList<String>();
-		List<String> levelList3 = new ArrayList<String>();
+		//List<String> levelList1 = new ArrayList<String>();
+		//List<String> levelList2 = new ArrayList<String>();
+		//List<String> levelList3 = new ArrayList<String>();
 		//tutorial levels
 		//levelListTutorial.add("owlTest");
 		levelListTutorial.add("tutorial1");
@@ -78,13 +78,16 @@ public class GDXRoot extends Game implements ScreenListener {
 		levelListTutorial.add("tutorial3");
 		levelListTutorial.add("HideAndSeek");
 		levelListTutorial.add("Cycle2");
+		levelListTutorial.add("kpatroltest2");
+		levelListTutorial.add("Maize");
+		levelListTutorial.add("Roundabout");
 		//1 levels
-		levelList1.add("tutorial1");
+		/*levelList1.add("tutorial1");
 		levelList1.add("tutorial2");
 		levelList1.add("tutorial3");
 		levelList1.add("Cycle2");
 		levelList1.add("HideAndSeek");
-		//levelList1.add("kpatroltest2");
+		levelList1.add("kpatroltest2");
 		//2 levels
 		levelList2.add("HideAndSeek");
 		levelList2.add("tutorial1");
@@ -92,16 +95,19 @@ public class GDXRoot extends Game implements ScreenListener {
 		levelList2.add("tutorial3");
 		levelList2.add("Cycle2");
 		//3 levels
+		levelList3.add("Maize");
+		levelList3.add("Roundabout");
 		levelList3.add("tutorial1");
 		levelList3.add("tutorial2");
 		levelList3.add("tutorial3");
 		levelList3.add("Cycle2");
+		*/
 		
 		List<List<String>> allLists = new ArrayList<List<String>>();
 		allLists.add(levelListTutorial);
-		allLists.add(levelList1);
+		/*allLists.add(levelList1);
 		allLists.add(levelList2);
-		allLists.add(levelList3);
+		allLists.add(levelList3);*/
 		return allLists;
 	}
 	/** 
