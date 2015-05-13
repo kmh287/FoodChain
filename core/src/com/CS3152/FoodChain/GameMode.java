@@ -262,6 +262,7 @@ public class GameMode implements Screen{
         GameMode.actors = new Array<Actor>(actorArray);
         gameplayController = new GameplayController(map, actorArray, controls);
         canvas.getUIControllerStage().setPanic(AIController.getPanicPercentage());
+        canvas.getUIControllerStage().setGameMode(this);
         collisionController.setControls(controls);
         collisionController.setTrapController(trapController);
         
@@ -432,6 +433,45 @@ public class GameMode implements Screen{
 		
 		
 		
+    }
+    
+    /*used for uicontroller to draw*/ 
+    public int getRemainingObjectivePigs(){
+    	String[] goals = map.getObjective().split("&");
+		int numPigs = Integer.parseInt(goals[0]);
+		int numPigsCaptured = 0;
+		for (Animal animal : animals){
+			if (animal.getType() == actorType.PIG){
+				if (animal.getTrapped()){
+					numPigsCaptured++;
+					//testSound.play(); 
+				}
+			}
+			
+		}
+		if(numPigsCaptured >= numPigs){
+			return 0;
+		}
+		return numPigs-numPigsCaptured;
+    }
+    
+    /*used for uicontroller to draw*/    
+    public int getRemainingObjectiveWolfs(){
+    	
+		String[] goals = map.getObjective().split("&");
+		int numWolves = Integer.parseInt(goals[1]);
+		int numWolvesCaptured = 0;
+		for (Animal animal : animals){
+			if (animal.getType() == actorType.WOLF){
+				if (animal.getTrapped()){
+					numWolvesCaptured++;
+				}
+			}
+		}
+		if(numWolvesCaptured>=numWolves){
+			return 0;
+		}
+		return numWolves-numWolvesCaptured;
     }
 
     private void update(float delta){
