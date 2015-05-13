@@ -1,4 +1,4 @@
-﻿/*
+/*
  * PhysicsObject.java
  *
  * This class and all of the others in this package are provided to give you easy access 
