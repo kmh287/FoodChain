@@ -368,7 +368,7 @@ public abstract class Animal extends Actor{
 			}
 		}
 		else if(getState()==AIController.State.PATROL ||
-				getState()==AIController.State.STAYSTILL|| getState()==AIController.State.WANDER){
+				getState()==AIController.State.STAYSTILL|| getState()==AIController.State.WANDER || getState()==AIController.State.FIND){
 			canvas.drawCone(false, tmp, body.getAngle(),this.getType());
 		}
 		else{
