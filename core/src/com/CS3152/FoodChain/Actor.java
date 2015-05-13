@@ -25,7 +25,7 @@ public abstract class Actor extends CircleObject implements Steerable<Vector2>{
 	float maxAngularSpeed;
 	float maxAngularAcceleration;
 	
-	private static final float PanicSpeedScale = 8;
+	private static final float PanicSpeedScale = 5;
 	
 	boolean independentFacing;
 	
