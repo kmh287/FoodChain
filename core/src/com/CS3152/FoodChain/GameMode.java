@@ -244,7 +244,7 @@ public class GameMode implements Screen{
         //Even if the level is not a tutorial this is necessary
         //UIControllerStage will handle whether or not the 
         //current level is a tutorial
-        	UIControllerStage.tutorialScreenOpen = true;
+        UIControllerStage.tutorialScreenOpen = true;
         canvas.getUIControllerStage().setTrapController(trapController);
         canvas.getUIControllerStage().loadTextures(manager);
         
@@ -444,6 +444,7 @@ public class GameMode implements Screen{
     		if (controls[0].resetPressed()){
     			//Only allow the player to reset if they last reset over a second ago
     			if (ticks - lastResetTicks > 60){
+    			  canvas.getUIControllerStage().hideTutorial();
     				initializeLevel(canvas, levelName);
     				lastResetTicks = ticks;
     			}

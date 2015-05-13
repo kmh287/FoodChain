@@ -461,5 +461,10 @@ public class UIControllerStage {
     	blackSpace_container.setVisible(false);
     }
     
+    public void hideTutorial() {
+      tutorialScreenOpen = false;
+      tutorial1_container.setVisible(false);
+    }
+    
 }
 
