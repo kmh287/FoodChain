@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -41,6 +42,8 @@ public class UIControllerStage {
     private static final String PANIC_BAR = "assets/panic-bar-small.png";
     private static final String PANIC_CIRCLE = "assets/panic-circle.png";
     
+    private static final String TUTORIAL_1 = "assets/tutorial1.png";
+    
     private TrapController trapController;
     
     private Table container; 
@@ -62,6 +65,7 @@ public class UIControllerStage {
     private static Texture panic_meter_texture = null;
     private static Texture red_bar_texture = null;
     private static Texture panic_circle_texture = null;
+    private static Texture tutorial_1 = null;
     
     private int regularCount = 0;
     private int sheepCount = 0;
@@ -84,6 +88,7 @@ public class UIControllerStage {
 	Image panic_meter;
 	Image red_bar;
 	Image panic_circle;
+	Image tutorial1;
 	
 	Table deselect_container;
 	Table select__trap_1_container;
@@ -98,13 +103,14 @@ public class UIControllerStage {
 	Table trap_2_3_container;
 	Table trap_2_4_container;
 	Table trap_2_5_container;
-	
 	Table blackSpace_container;
 	Table panic_meter_container;
 	Table red_bar_container;
 	Table panic_circle_container;
+	Table tutorial1_container;
 	
 	private static float panic;
+	protected static boolean tutorialScreenOpen = true;
 	
 	
     public void setTrapController(TrapController t){
@@ -128,6 +134,7 @@ public class UIControllerStage {
             manager.load(PANIC_BAR,Texture.class);
             manager.load(RED_BAR,Texture.class);
             manager.load(PANIC_CIRCLE,Texture.class);
+            manager.load(TUTORIAL_1, Texture.class);
             manager.finishLoading();
             if (manager.isLoaded(TRAPS_DESELECT)){
             	allDeselect = manager.get(TRAPS_DESELECT);
@@ -146,6 +153,7 @@ public class UIControllerStage {
             	panic_meter_texture = manager.get(PANIC_BAR);
             	red_bar_texture = manager.get(RED_BAR);
             	panic_circle_texture = manager.get(PANIC_CIRCLE);
+            	tutorial_1 = manager.get(TUTORIAL_1);
             }
         }
         
@@ -177,6 +185,7 @@ public class UIControllerStage {
     	panic_meter = new Image();
     	red_bar = new Image();
     	panic_circle = new Image();
+    	tutorial1 = new Image();
     	
     	deselect_container = new Table();
     	select__trap_1_container = new Table();
@@ -195,6 +204,7 @@ public class UIControllerStage {
     	panic_meter_container = new Table();
     	red_bar_container = new Table();
     	panic_circle_container = new Table();
+    	tutorial1_container = new Table();
     	
     	//assign texture to image
         deselect.setDrawable(new TextureRegionDrawable(new TextureRegion(allDeselect)));
@@ -296,6 +306,12 @@ public class UIControllerStage {
         red_bar_container.setFillParent(true);
         red_bar_container.center().top(); 
         red_bar_container.row();
+        
+        tutorial1.setDrawable(new TextureRegionDrawable(new TextureRegion(tutorial_1)));
+        tutorial1_container.add(tutorial1).width(160f).height(90f).padTop(1.5f).padLeft(2f);
+        tutorial1_container.setFillParent(true);
+        tutorial1_container.center().top(); 
+        tutorial1_container.row();
        
         
     	stage.addActor(deselect_container);
@@ -316,6 +332,7 @@ public class UIControllerStage {
     	stage.addActor(panic_meter_container);
     	stage.addActor(red_bar_container);
     	stage.addActor(panic_circle_container);
+    	stage.addActor(tutorial1_container);
     	trap_1_1_container.setVisible(false);
     	trap_1_2_container.setVisible(false);
     	trap_1_3_container.setVisible(false);
@@ -330,7 +347,7 @@ public class UIControllerStage {
     	select__trap_1_container.setVisible(false);
     	select__trap_2_container.setVisible(false);
     	blackSpace_container.setVisible(false);
- 
+    	tutorial1_container.setVisible(false);
     	
     }
     
@@ -358,6 +375,7 @@ public class UIControllerStage {
     	trap_2_5_container.setVisible(false);
     	select__trap_1_container.setVisible(false);
     	select__trap_2_container.setVisible(false);
+    	tutorial1_container.setVisible(false);
     	regularCount = 0;
         sheepCount = 0;
         
@@ -403,6 +421,19 @@ public class UIControllerStage {
         	trap_2_5_container.setVisible(true);
         }
         
+        if (Gdx.input.isKeyPressed(Input.Keys.ENTER)){
+        		tutorialScreenOpen = false;
+        		tutorial1_container.setVisible(false);
+        }
+        
+        //Tutorial screens
+        if (tutorialScreenOpen){
+	        if (GameMode.levelName.equals("tutorial1")){
+	        		tutorial1_container.setVisible(true);
+	        } else if (GameMode.levelName.equals("tutorial2")){
+	        		tutorial1_container.setVisible(true);
+	        }
+        }
         
         //draw highlighted selected trap
         if(trapController.getSelectedTrap().getInInventory()){
