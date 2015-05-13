@@ -393,14 +393,12 @@ public abstract class Animal extends Actor{
 	}
 	
 	@Override
-	public void calculateSteering() {
-		float minSteeringSquared = MIN_STEERING * MIN_STEERING;
-		
+	public void calculateSteering() {		
 		if (state != AIController.State.FIND) {
 		collisionAvoidanceSB.calculateSteering(steeringOutput);
-		  if (steeringOutput.calculateSquareMagnitude() > minSteeringSquared) {
-			  return; 
-		  }
+//		  if (steeringOutput.calculateSquareMagnitude() > minSteeringSquared) {
+//			  return; 
+//		  }
 		}
 		
 		switch (state) {

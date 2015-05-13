@@ -249,11 +249,9 @@ public abstract class Actor extends CircleObject implements Steerable<Vector2>{
     	// If we haven't got any velocity, then we can do nothing.
     		Vector2 linVel = getLinearVelocity();
     		if (!linVel.isZero(getZeroLinearSpeedThreshold())) {
-    			
     			float newOrientation = vectorToAngle(linVel);
-    			//body.setAngularVelocity((newOrientation-getAngularVelocity()) * deltaTime); // this is superfluous if independentFacing is always true
-    			//body.setTransform(body.getPosition(), oldAngle+((newOrientation-oldAngle)*deltaTime*5));
     			body.setTransform(body.getPosition(), newOrientation);
+
     		}
  
     	if (anyAccelerations) {
