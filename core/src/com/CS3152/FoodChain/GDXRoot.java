@@ -65,22 +65,22 @@ public class GDXRoot extends Game implements ScreenListener {
 		manager.setLoader(BitmapFont.class, ".ttf", new FreetypeFontLoader(resolver));*/
 	}
 	/**Build the level list corresponding to the pressed button**/
-	private List<List<String>> buildLevelLists(){
+	private List<String> buildLevels(){
 		// Initialize all level lists
-		List<String> levelListTutorial = new ArrayList<String>();
+		List<String> levelList = new ArrayList<String>();
 		//List<String> levelList1 = new ArrayList<String>();
 		//List<String> levelList2 = new ArrayList<String>();
 		//List<String> levelList3 = new ArrayList<String>();
 		//tutorial levels
 		//levelListTutorial.add("owlTest");
-		levelListTutorial.add("tutorial1");
-		levelListTutorial.add("tutorial2");
-		levelListTutorial.add("tutorial3");
-		levelListTutorial.add("HideAndSeek");
-		levelListTutorial.add("Cycle2");
-		levelListTutorial.add("kpatroltest2");
-		levelListTutorial.add("Maize");
-		levelListTutorial.add("Roundabout");
+		levelList.add("tutorial1");
+		levelList.add("tutorial2");
+		levelList.add("tutorial3");
+		levelList.add("HideAndSeek");
+		levelList.add("Cycle2");
+		levelList.add("kpatroltest2");
+		levelList.add("Maize");
+		levelList.add("Roundabout");
 		//1 levels
 		/*levelList1.add("tutorial1");
 		levelList1.add("tutorial2");
@@ -103,12 +103,10 @@ public class GDXRoot extends Game implements ScreenListener {
 		levelList3.add("Cycle2");
 		*/
 		
-		List<List<String>> allLists = new ArrayList<List<String>>();
-		allLists.add(levelListTutorial);
 		/*allLists.add(levelList1);
 		allLists.add(levelList2);
 		allLists.add(levelList3);*/
-		return allLists;
+		return levelList;
 	}
 	/** 
 	 * Called when the Application is first created.
@@ -120,7 +118,7 @@ public class GDXRoot extends Game implements ScreenListener {
 		canvas  = new GameCanvas();
 		loading = new LoadingMode(canvas,manager, 1, false);
 		playing = null;
-		List<List<String>> levelList = buildLevelLists();
+		//List<String> levelList = buildLevels();
 		
 		loading.setScreenListener(this);
 		GameMode.PreLoadContent(manager); // Load game assets statically.
@@ -184,20 +182,9 @@ public class GDXRoot extends Game implements ScreenListener {
 			Gdx.app.error("GDXRoot", "Exit with error code "+exitCode, new RuntimeException());
 			Gdx.app.exit();
 		} else if (screen == loading) {
-			List<List<String>> levelLists = buildLevelLists();
+			List<String> levels = buildLevels();
 			GameMode.LoadContent(manager);
-			if (level == 1) {
-	          playing = new GameMode(canvas, levelLists.get(0), this);
-	        }
-	        if (level == 2) {
-	        	playing = new GameMode(canvas, levelLists.get(1), this);
-	        }
-	        if (level == 3) {
-	        	playing = new GameMode(canvas, levelLists.get(2),this);
-	        }
-	        if (level == 4) {
-	        	playing = new GameMode(canvas, levelLists.get(3), this);
-	        }
+			playing = new GameMode(canvas, levels, level, this);
 			
 			playing.setScreenListener(this);
 			setScreen(playing);
