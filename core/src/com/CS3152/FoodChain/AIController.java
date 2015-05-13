@@ -101,6 +101,7 @@ public class AIController implements InputController {
     
     private Vector2 vect;
     private float angle;
+    private double angleProg;
 
     private Sound sound;
 	/** The associated sound cue (if ship is making a sound). */
@@ -156,6 +157,7 @@ public class AIController implements InputController {
 		WanderStopRate= MathUtils.random(175,225);
 		
 		angle = 0f;
+		angleProg = 0f;
     }
     
     /*
@@ -373,10 +375,27 @@ public class AIController implements InputController {
 		  rayCast();
 	}
 	
+	/**
+	 * Returns the difference in angle for this frame
+	 * This function should simulate periodic movement that 
+	 * accelerates and decelerates. This should only be used
+	 * for calculating the owl's new angle.
+	 * 
+	 * The function it simulates is 
+	 * (Pi/100) * cos(4x) + (Pi/100)
+	 * 
+	 * @param angle : The current angle of the owl 
+	 * @return diff : A float representing the angle change for this frame
+	 */
+	private double getDiff(double angle){
+		return (Math.PI / 100) * Math.cos(4*angle) + (Math.PI/100);
+	}
+	
 	public void update(float delta) {
 		// TODO Auto-generated method stub
 		if (animal instanceof Owl) {
-			angle += Math.PI/100;
+			angleProg = (angleProg > (Math.PI * 2)) ? 0f : angleProg+(Math.PI/120.0);
+			angle += getDiff(angleProg);
 			animal.setAngle(angle);
 			animal.updateLOS(angle);
 			if (hasTarget()) {
