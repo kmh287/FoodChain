@@ -8,6 +8,7 @@ import java.util.List;
 import com.badlogic.gdx.ai.pfa.indexed.IndexedAStarPathFinder;
 import com.badlogic.gdx.ai.steer.Steerable;
 import com.badlogic.gdx.ai.steer.behaviors.CollisionAvoidance;
+import com.badlogic.gdx.ai.steer.behaviors.Evade;
 import com.badlogic.gdx.ai.steer.behaviors.Flee;
 import com.badlogic.gdx.ai.steer.behaviors.PrioritySteering;
 import com.badlogic.gdx.ai.steer.behaviors.Wander;
@@ -93,7 +94,7 @@ public class Pig extends Animal {
 				.setWanderRate(.1f);
         
 
-        fleeSB = new Flee<Vector2>(this);
+        fleeSB = new Evade<Vector2>(this, null);
         fleeSB.setLimiter(limiter);
     }
 
@@ -133,7 +134,7 @@ public class Pig extends Animal {
     
     @Override
     public void setTarget(Actor actor) {
-        ((Flee<Vector2>) fleeSB).setTarget(actor);
+        ((Evade<Vector2>) fleeSB).setTarget(actor);
     }
     
     public void updateWalkFrame(){
