@@ -1295,7 +1295,7 @@ public class GameCanvas {
         	}
         	else{
             	this.draw(yellowConeRegionLarge, 
-            			Color.YELLOW,GameMap.pixelsToMeters(origin.x), 
+            			Color.WHITE,GameMap.pixelsToMeters(origin.x), 
             			GameMap.pixelsToMeters(origin.y),  
             			(float)(origin.x+Math.sin(angle)*200-Math.cos(angle)*220), 
             			(float)(origin.y-Math.cos(angle)*200-Math.sin(angle)*220), 
@@ -1317,7 +1317,7 @@ public class GameCanvas {
         	}
         	else{
             	this.draw(yellowConeRegion, 
-            			Color.YELLOW,GameMap.pixelsToMeters(origin.x), 
+            			Color.WHITE,GameMap.pixelsToMeters(origin.x), 
             			GameMap.pixelsToMeters(origin.y),  
             			(float)(origin.x+Math.sin(angle)*20-Math.cos(angle)*100), 
             			(float)(origin.y-Math.cos(angle)*20-Math.sin(angle)*100), 
