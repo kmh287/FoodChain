@@ -177,13 +177,13 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 		Texture button = new Texture("assets/level.png");
 		TextureRegion buttonTextureRegion = new TextureRegion(button);
 		TextureRegionDrawable buttonTRDrawable = new TextureRegionDrawable(buttonTextureRegion);
-		/*Texture buttonDown = new Texture("assets/levelClick.png");
+		Texture buttonDown = new Texture("assets/levelClick.png");
     TextureRegion buttonDownTextureRegion = new TextureRegion(buttonDown);
-    TextureRegionDrawable buttonDownTRDrawable = new TextureRegionDrawable(buttonDownTextureRegion);*/
+    TextureRegionDrawable buttonDownTRDrawable = new TextureRegionDrawable(buttonDownTextureRegion);
 		BitmapFont font = new BitmapFont();
 		font.setColor(Color.BLACK);
 		
-		TextButtonStyle buttonStyle = new TextButtonStyle(buttonTRDrawable, buttonTRDrawable,
+		TextButtonStyle buttonStyle = new TextButtonStyle(buttonTRDrawable, buttonDownTRDrawable,
 		    buttonTRDrawable, font);
 		
 		
@@ -306,6 +306,14 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
     stage.draw();
 	}
 	
+	public void postDraw() {
+	  if (LoadingMode.selectedLevel != 0) {
+	    int nextLevel = selectedLevel;
+	    selectedLevel = 0;
+	    listener.exitScreen(this, 0, nextLevel);
+	  }
+	}
+	
 	// ADDITIONAL SCREEN METHODS
 	/**
 	 * Called when the Screen should render itself.
@@ -319,6 +327,7 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 	  if (active) {
 			update(delta);
 			draw();
+			postDraw();
 
 			// We are are ready, notify our listener
 			if (isReady() && listener != null) {
