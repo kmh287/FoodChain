@@ -1,6 +1,6 @@
 package com.CS3152.FoodChain;
 
-import java.io.FileNotFoundException; 	
+import java.io.FileNotFoundException; 		
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -8,6 +8,9 @@ import java.util.List;
 import java.util.Random;
 
 import com.CS3152.FoodChain.Actor.actorType;
+import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
@@ -24,9 +27,13 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.ai.pfa.indexed.IndexedAStarPathFinder;
 import com.badlogic.gdx.ai.steer.Steerable;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+//import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader;
 
 
-public class GameMode implements Screen {
+
+public class GameMode implements Screen{
 	
 	private CollisionController collisionController;
 	private GameplayController gameplayController;
@@ -50,8 +57,10 @@ public class GameMode implements Screen {
     private TrapController trapController;
 	private float TIME_STEP = 1/200f;
 	private float frameTime;
-	private String levelName;
+	protected static String levelName;
 	private PlayerController player; 
+	private GDXRoot root; 
+	
 	
 	private int numPigs;
 	private int numWolves;
@@ -70,11 +79,31 @@ public class GameMode implements Screen {
 	private int lastResetTicks = 0; //Prevent restart spamming
 	
 	private float accumulator = 0;
+	private ScreenListener listener;
+
+	/** Whether we have completed this level */
+	private boolean complete;
+	/** Whether we have failed at this world (and need a reset) */
+	private boolean failed;
+	/** Whether or not debug mode is active */
+	private boolean debug;
+	/** Countdown active for winning or losing */
+	private int countdown;
+	private int hunterLife; 
+	
+	private float delay;
 	
 	//Trpa set delay
-	int TRAP_SETUP_FRAMES = 90; //60FPS so this is 1.5s
+	int TRAP_SETUP_FRAMES = 25; //60FPS so this is <0.5s
 	boolean settingTrap;
 	int trapSetProgress;
+	
+	private boolean playing;
+	
+	//temporary for final pres.
+	private static String FONT_FILE = "assets/LightPixel7.ttf";
+	private static int FONT_SIZE = 64;
+	protected static BitmapFont displayFont;
 	
 	/**sound assets here **/
 	//private static final String TRAP_DROP_FILE = "sounds/trap_drop.mp3";
@@ -94,8 +123,13 @@ public class GameMode implements Screen {
 	 */
 	public static void PreLoadContent(AssetManager manager) {
 		Trap.PreLoadContent(manager);
-		//manager.load(TRAP_DROP_FILE,Sound.class);
+		GameCanvas.PreLoadContent(manager);
 		SoundController.PreLoadContent(manager);
+		
+		/*FreetypeFontLoader.FreeTypeFontLoaderParameter size2Params = new FreetypeFontLoader.FreeTypeFontLoaderParameter();
+		size2Params.fontFileName = FONT_FILE;
+		size2Params.fontParameters.size = FONT_SIZE;
+		manager.load(FONT_FILE, BitmapFont.class, size2Params);*/
 	}
 	
 	/** 
@@ -113,10 +147,28 @@ public class GameMode implements Screen {
 	 */
 	public static void LoadContent(AssetManager manager) {
 		Trap.LoadContent(manager);
-		//trapSound = manager.get(TRAP_DROP_FILE,  Sound.class);
+		GameCanvas.LoadContent(manager);
 		SoundController.LoadContent(manager);
 		
+        /*if (manager.isLoaded(FONT_FILE)) {
+			displayFont = manager.get(FONT_FILE,BitmapFont.class);
+		} else {
+			displayFont = null;
+		}*/
+		
+		
 	}
+	
+	/** Exit code for quitting the game */
+	public static final int EXIT_QUIT = 0;
+	/** Exit code for advancing to next level */
+	public static final int EXIT_NEXT = 1;
+	/** Exit code for jumping back to previous level */
+	public static final int EXIT_PREV = 2;
+    /** How many frames after winning/losing do we continue? */
+	public static final int EXIT_COUNT = 120;
+	private static final int EXIT_LOSS = 3;
+	private static final int EXIT_WON = 4;
 	
     /**
      * Temporary constructor for GameMode until we have 
@@ -125,28 +177,40 @@ public class GameMode implements Screen {
      * 
      * @param canvas The singular instance of GameCanvas
      */
-	public GameMode(GameCanvas canvas, List<String> levelList) {
-		
+	public GameMode(GameCanvas canvas, List<String> levelList, int level, GDXRoot root) {
+		System.out.println("inGameMode levellist");
 		this.canvas = canvas;
 		this.stage = stage;
-		this.levelList = levelList;
-		this.levelListIt = levelList.iterator();
-		if (levelList.size() == 0){
-			throw new IllegalArgumentException("At least one level must be in passed in level set");
-		}
+		this.root = root;
 		start=true;
         //active = false;
         manager = new AssetManager();
         PreLoadContent(manager);
         manager.finishLoading();
         LoadContent(manager);
+        hunterLife = 3; 
+        levelLoad(levelList, level);
+        
+        
+	}
+	
+	public void levelLoad (List<String> levelList, int level) {
+		this.levelList = levelList;
+		this.levelListIt = levelList.iterator();
+		if (levelList.size() == 0 || levelList.size() < level){
+			throw new IllegalArgumentException("Must choose valid level.");
+		}
+		for (int l = 1; l < level; l++) {
+			levelListIt.next();
+		}
         initializeLevel(canvas, levelListIt.next());
 	}
-        
+	
  	private void initializeLevel(GameCanvas canvas, String levelName){
         //For now we will hard code the level to load
         //When we implement a UI that may ask players
         //what level to start on. This code will change
+ 		playing = true;
  		this.levelName = levelName;
         map = loadMap(levelName);
         map.setDimensions();
@@ -165,7 +229,8 @@ public class GameMode implements Screen {
         List<Vector2> coordinates = map.getCoordinates();
 
         createHunter(map.getHunterStartingCoordinate());
-        buildAnimalList(aTypes, coordinates,map.getPatrolPaths());
+
+        buildAnimalList(aTypes,coordinates,map.getPatrolPaths());
         steerables.addAll(animals);
         
         //All the animals, plus the Hunter
@@ -173,16 +238,21 @@ public class GameMode implements Screen {
         controls = new InputController[animals.size() + 1]; 
         controls[0] = new PlayerController();        
         
+
         trapController = new TrapController(hunter, map, collisionController,numPigs,numWolves);
         settingTrap = false;
         trapSetProgress = 0;
 
+        //Even if the level is not a tutorial this is necessary
+        //UIControllerStage will handle whether or not the 
+        //current level is a tutorial
+        UIControllerStage.tutorialScreenOpen = true;
         canvas.getUIControllerStage().setTrapController(trapController);
         canvas.getUIControllerStage().loadTextures(manager);
         
         //Setup traps and the trap UI
 	    traps = (HashMap<String, List<Trap>>) trapController.getInventory();
-  
+	    
 	    player = new PlayerController(); 
         List<Actor> actors = new ArrayList<Actor>();
         actors.add(hunter);
@@ -198,7 +268,10 @@ public class GameMode implements Screen {
         GameMode.actors = new Array<Actor>(actorArray);
         gameplayController = new GameplayController(map, actorArray, controls);
         canvas.getUIControllerStage().setPanic(AIController.getPanicPercentage());
+        canvas.getUIControllerStage().setGameMode(this);
         collisionController.setControls(controls);
+        collisionController.setTrapController(trapController);
+        
 	}
 
 	private String formatObjective(String obj){
@@ -228,6 +301,7 @@ public class GameMode implements Screen {
         }
         System.out.println(formatObjective(map.getObjective()));
         return map;
+        
 	}
 	
 
@@ -252,10 +326,8 @@ public class GameMode implements Screen {
 	 * 
 	 * @param aTypes The list of animal types
 	 * @param coordinates the coordinates of the animals.
-	 * @param patrolPaths 
 	 */
-	private void buildAnimalList(List<actorType> aTypes,
-	                             List<Vector2> coordinates, 
+	private void buildAnimalList(List<actorType> aTypes,List<Vector2> coordinates, 
 	                             List<List<Vector2>> patrolPaths){
 	    if (coordinates.size() != aTypes.size() || patrolPaths.size() != aTypes.size()){
 	        throw new IllegalArgumentException("Lists of unequal size");
@@ -291,12 +363,9 @@ public class GameMode implements Screen {
 	                
 	            case OWL:
             		Owl.loadTexture(manager);
-            		List<Vector2> nullWaypoints = new ArrayList<Vector2>();
-                    nullWaypoints.add(new Vector2(0,0));
-                    nullWaypoints.add(nullWaypoints.get(0));
             		newAnimal = new Owl(map.mapXToScreen((int)coord.x), 
             							map.mapYToScreen((int)coord.y),pathFinder,map,
-            							nullWaypoints, heuristic);
+            							convertPatrol(patrol), heuristic);
 	                animals.add(newAnimal);
 	                break;
 	            default:
@@ -325,11 +394,6 @@ public class GameMode implements Screen {
 		}
 	}
 	
-    @Override
-    public void show() {
-        // TODO Auto-generated method stub
-        
-    }
     
     private gameCondition checkObjective(){
     	
@@ -376,55 +440,90 @@ public class GameMode implements Screen {
 		
 		
     }
+    
+    /*used for uicontroller to draw*/ 
+    public int getRemainingObjectivePigs(){
+    	String[] goals = map.getObjective().split("&");
+		int numPigs = Integer.parseInt(goals[0]);
+		int numPigsCaptured = 0;
+		for (Animal animal : animals){
+			if (animal.getType() == actorType.PIG){
+				if (animal.getTrapped()){
+					numPigsCaptured++;
+					//testSound.play(); 
+				}
+			}
+			
+		}
+		if(numPigsCaptured >= numPigs){
+			return 0;
+		}
+		return numPigs-numPigsCaptured;
+    }
+    
+    /*used for uicontroller to draw*/    
+    public int getRemainingObjectiveWolfs(){
+    	
+		String[] goals = map.getObjective().split("&");
+		int numWolves = Integer.parseInt(goals[1]);
+		int numWolvesCaptured = 0;
+		for (Animal animal : animals){
+			if (animal.getType() == actorType.WOLF){
+				if (animal.getTrapped()){
+					numWolvesCaptured++;
+				}
+			}
+		}
+		if(numWolvesCaptured>=numWolves){
+			return 0;
+		}
+		return numWolves-numWolvesCaptured;
+    }
 
     private void update(float delta){
-    		
     		//Check if reset has been pressed
     		if (controls[0].resetPressed()){
     			//Only allow the player to reset if they last reset over a second ago
     			if (ticks - lastResetTicks > 60){
+        			canvas.getUIControllerStage().hideSuccess();
+        			canvas.getUIControllerStage().hideTutorial();
     				initializeLevel(canvas, levelName);
     				lastResetTicks = ticks;
     			}
     		}
-    		
-//    		//DELETE THIS FOR RELEASE
-//    		int levelNum = controls[0].levelPressed();
-//    		if (levelNum != -1){
-//    			switch(levelNum){
-//    			case 1: 
-//    				initializeLevel(canvas, "BetaLevel1");
-//    				break;
-//    			case 2:
-//    				initializeLevel(canvas, "BetaLevel2");
-//    				break;
-//    			default:
-//    				initializeLevel(canvas, "BetaLevel3");
-//    				break;
-//    			}
-//    		}
-    		
-
     	
     		//Check the objective every second, end the game if the player has won or if the objective
     		//cannot be achieved
     		if (ticks % 60 == 0){
 	    		gameCondition con = checkObjective();
-	    		if (con == gameCondition.WIN){
-	    			if (levelListIt.hasNext()){
-	    				initializeLevel(canvas, levelListIt.next());
+	    		if (con == gameCondition.WIN) {
+	    			if (delay >= 0.04) {
+		    			if (levelListIt.hasNext()) {
+		    				canvas.getUIControllerStage().hideSuccess();
+		    				initializeLevel(canvas, levelListIt.next());
+		    				delay = 0.0f;
+		    			}
+		    			else {
+		    				//playing = false; 
+		    				//System.out.println("we won, make a loading screen!");
+		    				//root.gameOverScreen();
+		    				//return;
+		    				
+		    			}
+	    			}
+	    			else {
+	    				delay += delta;
 	    			}
 	    		}
 	    		else if (con == gameCondition.LOSE){
-	    		  System.out.println("You Lost");
-	    			//RESET -- maybe add a timer and some onscreen indication.
-    				initializeLevel(canvas, levelName);
-    				lastResetTicks = ticks;
+	    		  System.out.println("You Lost");	
+	    		  initializeLevel(canvas, levelName);
+	    		  lastResetTicks = ticks;
 	    		}
     		}
     	
-    		//The hunter can move when not setting a trap
-    		gameplayController.update(delta, !settingTrap);
+    	//The hunter can move when not setting a trap
+    	gameplayController.update(delta, !settingTrap);
     	
 		hunter.update(delta);
 		trapController.setSelectedTrap(controls[0].getNum());
@@ -444,15 +543,19 @@ public class GameMode implements Screen {
 				trapSetProgress++;
 				//This method is an unimplemented stub at the moment
 				//Please fill it in, then delete this comment
-				hunter.updateTrapFrame();
+				if(ticks%5==0){
+					hunter.updateTrapFrame();
+				}				
 			}
 		}
 		
-		if (controls[0].isSpacePressed()  && trapController.canSetTrap() && !settingTrap) {
-			
-			//Begin the trap set process
-			settingTrap = true;
-			trapSetProgress = 0;
+		if (controls[0].isTrapSetPressed()  && trapController.canSetTrap() && 
+			!settingTrap && hunter.getAlive()) {
+	    		Vector2 trapPosition = trapController.getTrapPositionFromHunter(hunter);
+	    		if (map.isSafeAt(GameMap.metersToPixels(trapPosition.x), GameMap.metersToPixels(trapPosition.y))) 
+				//Begin the trap set process
+				settingTrap = true;
+				trapSetProgress = 0;
 		}
 		
 		
@@ -467,7 +570,7 @@ public class GameMode implements Screen {
 				hunter.updateWalkFrame();
 			}
 		}
-		else{
+		else if(!settingTrap){
 			hunter.setStillFrame();
 		}
 		
@@ -476,7 +579,6 @@ public class GameMode implements Screen {
 		int i = 1;
 		for (Animal an : animals) {
 			an.update(delta);
-			//need to update wolf death once we have animations
 			if(an instanceof Pig) {
 				if(an.getAlive()==false){
 					if(ticks%10==0){
@@ -493,7 +595,12 @@ public class GameMode implements Screen {
 				}
 			}
 			if(an instanceof Wolf){
-				if(controls[i].getAction(delta)!=InputController.NO_ACTION){
+				if(an.getAlive()==false){
+					if(ticks%10==0){
+						((Wolf)an).updateDeadFrame();
+					}
+				}
+				else if(controls[i].getAction(delta)!=InputController.NO_ACTION){
 					if(ticks%10==0){
 						((Wolf) an).updateWalkFrame();
 					}
@@ -509,6 +616,7 @@ public class GameMode implements Screen {
 		//update panic meter
 		if(AIController.AtLeastOneAnimalPanic()){
 			AIController.increasePanic();
+			AIController.resetPanicFlag();
 		}
 		else{
 			AIController.decreasePanic();
@@ -527,40 +635,39 @@ public class GameMode implements Screen {
 		if(trapController.getSelectedTrap() == null || !trapController.canSetTrap()){
 			trapController.autoSelectTrap();
 		}
-		
     	
     }
     
+
     private void draw(float delta){
-    	//canvas.begin();
-    	canvas.DrawBlack(GameMap.metersToPixels(hunter.getPosition().x), GameMap.metersToPixels(hunter.getPosition().y));
-    	canvas.end();
-    	
-        //Draw the map
-    	canvas.begin();
-        map.draw(canvas);
-      
-        
-        for (Trap trap : traps.get("WOLF_TRAP")) {
+		canvas.DrawBlack(GameMap.metersToPixels(hunter.getPosition().x), GameMap.metersToPixels(hunter.getPosition().y));
+		canvas.end();
+		
+	    //Draw the map
+		canvas.begin();
+	    map.draw(canvas);
+	  
+	    
+	    for (Trap trap : traps.get("WOLF_TRAP")) {
 	    		if (trap != null) {
 	    			trap.draw(canvas);
 	    		}
-        }
-        
-        for (Trap trap : traps.get("REGULAR_TRAP")) {
+	    }
+	    
+	    for (Trap trap : traps.get("REGULAR_TRAP")) {
 	        	if (trap != null) {
 	    			trap.draw(canvas);
 	    		}
-        }
-        
-        for (Trap trap : traps.get("SHEEP_TRAP")) {
+	    }
+	    
+	    for (Trap trap : traps.get("SHEEP_TRAP")) {
 	        	if (trap != null) {
 	    			trap.draw(canvas);
 	    		}
+
         }
         canvas.end();
         
-        //canvas.begin();
         if(!start){
         	canvas.beginCam(GameMap.metersToPixels(hunter.getPosition().x), GameMap.metersToPixels(hunter.getPosition().y));
         }
@@ -569,68 +676,90 @@ public class GameMode implements Screen {
         	start=false;
         }
 
-        //hunter.drawDebug(canvas);
-    	//Draw the hunter
-    	//Draw the animals
-    	//need to modify this and wolf code once wolf death animation is done
         for (Animal animal : animals){
-        	if( animal instanceof Pig){
-        		if (!animal.getTrapped() || animal.getFinishedDeatAnimation()==false) {
-            		animal.draw(canvas);
+          if (animal.getFinishedDeatAnimation()==false) {
+        		if(!animal.getTrapped() && animal.getAlive()){
+        			animal.drawCone(canvas);
         		}
-        	}
-        	else{
-        		if (!animal.getTrapped()) {
-            		animal.draw(canvas);
-        		}
-        	}           
+        		animal.draw(canvas);
+    		}          
             //animal.drawDebug(canvas);
         }
         //if (hunter.getAlive()) {
-        hunter.draw(canvas);
+        if(settingTrap){
+        	hunter.DrawTrapAnimation(canvas);
+        }
+        else{
+        	 hunter.draw(canvas);
+        }
         //}
         canvas.end();
 
-        //canvas.begin();
         canvas.beginCam(GameMap.metersToPixels(hunter.getPosition().x), GameMap.metersToPixels(hunter.getPosition().y));
         canvas.end();
-        //hunter.drawDebug(canvas);
 
-        //ui.draw(canvas);
-        //uis.drawStage(stage);
         
-        /*
-        canvas.beginDebug();
-        for (Animal animal : animals) {
-        	animal.drawSight(canvas);
-        }
-        canvas.endDebug();
-        */
+
         
-        canvas.beginDebug();
-        PooledList<SimplePhysicsObject> objects = collisionController.getObjects();
-		for(PhysicsObject obj : objects) {
-			if (obj instanceof Actor && ((Actor) obj).getAlive()) {
-				//obj.drawDebug(canvas);
-				if (obj instanceof Animal) {
-					Animal a = (Animal) obj;
-					if (!a.getTrapped()) {
-						((Animal) obj).drawSight(canvas);
-					}
-				}
+//        canvas.beginDebug();
+//        PooledList<SimplePhysicsObject> objects = collisionController.getObjects();
+//		for(PhysicsObject obj : objects) {
+//			if (obj instanceof Actor && ((Actor) obj).getAlive()) {
+//				//obj.drawDebug(canvas);
+//				if (obj instanceof Animal) {
+//					Animal a = (Animal) obj;
+//					if (!a.getTrapped()) {
+//						//uncomment this to see lines
+//						//((Animal) obj).drawDebugSight(canvas);
+//					}
+//				}
+//			}
+//		}
+//		canvas.endDebug();
+	} 
+    
+    public void postDraw(float delta) {
+		if (listener == null) {
+			return;
+		}
+
+		
+		// Now it is time to maybe switch screens.
+		/*if (PlayerController.didExit()) {
+			listener.exitScreen(this, EXIT_QUIT);
+		} else if (checkObjective() == gameCondition.WIN) {
+			listener.exitScreen(this, EXIT_WON);
+		} else if (checkObjective() == gameCondition.LOSE) {
+			if (hunter.getFinishedDeatAnimation() == true){
+				listener.exitScreen(this, EXIT_LOSS);
 			}
 		}
-		canvas.endDebug();
+		/*else if (countdown > 0) {
+			countdown--;
+		} else if (countdown == 0) {
+			if (failed) {
+				//reset();
+			} 
+		}*/
+	}
+	    
+    
+    
+    public void render(float delta) {
+        if (playing) {
+        	update(delta);
+        	/*update is setting playing to false.d*/
+        	if (playing){
+	        	collisionController.postUpdate(delta);
+	            draw(delta);
+        	}
+            postDraw(delta);
+        }  
     }
     
-    @Override
-    public void render(float delta) {
-        update(delta);
-        collisionController.postUpdate(delta);
-        draw(delta);
-
-
-    }
+    public boolean isFailure( ) {
+		return failed;
+	}
 
     @Override
     public void resize(int width, int height) {
@@ -638,31 +767,44 @@ public class GameMode implements Screen {
         
     }
 
-    @Override
-    public void pause() {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    public void resume() {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    public void hide() {
-        // TODO Auto-generated method stub
-        
-    }
 
     @Override
     public void dispose() {
         // TODO Auto-generated method stub
     	SoundController.UnloadContent(manager);
+    	//canvas = null; 
+    	
         
     }
 
+
+	@Override
+	public void show() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void pause() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void resume() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void hide() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void setScreenListener(ScreenListener listener) {
+		this.listener = listener;
+	}
     
     /** 
 	 * Invokes the controller for the character.

@@ -13,7 +13,7 @@ public class TrapController {
 	private Hunter hunter;
 	private GameMap map;
     private HashMap<String, List<Trap>> inventory;
-    private Trap selectedTrap = null;
+    private static Trap selectedTrap = null;
     private Vector2 tmp;
     
     public TrapController(Hunter hunter, GameMap map, CollisionController collisionController, int numPigs, int numWolves){
@@ -50,6 +50,7 @@ public class TrapController {
     	    this.addToInventory(tmp);
     	}
     	tmp = new Vector2();
+    	selectedTrap = null;
     }
 
 
@@ -105,46 +106,41 @@ public class TrapController {
     	return false;
     }
 
+    	public Vector2 getTrapPositionFromHunter(CircleObject hunter){
+    		float angle = hunter.getAngle();
+    		if (angle == 0.0f) {
+        		tmp.set(hunter.getPosition().x, hunter.getPosition().y - 0.8f);
+        	}
+        	else if (angle == (float) (Math.PI/4.0f)) {
+        		tmp.set(hunter.getPosition().x + 0.6f, hunter.getPosition().y - 0.6f);
+        	}
+        	else if (angle == (float) (Math.PI/2.0f)) {
+        		tmp.set(hunter.getPosition().x + 0.8f, hunter.getPosition().y);
+        	}
+        	else if (angle == (float) (3.0*Math.PI/4.0)) {
+        		tmp.set(hunter.getPosition().x + 0.6f, hunter.getPosition().y + 0.6f);
+        	}
+        	else if (angle == (float) (Math.PI)) {
+        		tmp.set(hunter.getPosition().x, hunter.getPosition().y + 0.8f);
+        	}
+        	else if (angle == (float) -(Math.PI/2.0f)) {
+        		tmp.set(hunter.getPosition().x - 0.8f, hunter.getPosition().y);
+        	}
+        	else if (angle == (float) -(Math.PI/4.0f)) {
+        		tmp.set(hunter.getPosition().x - 0.6f, hunter.getPosition().y - 0.6f);
+        	}
+        	else if (angle == (float) -(3.0*Math.PI/4.0f)) {
+        		tmp.set(hunter.getPosition().x - 0.6f, hunter.getPosition().y + 0.6f);
+        	}
+    		return tmp;
+    	}
+    
     public void setTrap(CircleObject hunter) {
     	//Determine which direction the hunter is facing
-    	float angle = hunter.getAngle();
-    	tmp.set(selectedTrap.getPosition());
-    	
-    	if (angle == 0.0f) {
-    		selectedTrap.setPosition(hunter.getPosition().x, hunter.getPosition().y - 0.8f);
-    		//update inventory
-    		//set selectedTrap inventory status to false
-    		selectedTrap.setInInventory(false);
-    	}
-    	else if (angle == (float) (Math.PI/4.0f)) {
-    		selectedTrap.setPosition(hunter.getPosition().x + 0.6f, hunter.getPosition().y - 0.6f);
-    		selectedTrap.setInInventory(false);
-    	}
-    	else if (angle == (float) (Math.PI/2.0f)) {
-    		selectedTrap.setPosition(hunter.getPosition().x + 0.8f, hunter.getPosition().y);
-    		selectedTrap.setInInventory(false);
-    	}
-    	else if (angle == (float) (3.0*Math.PI/4.0)) {
-    		selectedTrap.setPosition(hunter.getPosition().x + 0.6f, hunter.getPosition().y + 0.6f);
-    		selectedTrap.setInInventory(false);
-    	}
-    	else if (angle == (float) (Math.PI)) {
-    		selectedTrap.setPosition(hunter.getPosition().x, hunter.getPosition().y + 0.8f);
-    		selectedTrap.setInInventory(false);
-    	}
-
-    	else if (angle == (float) -(Math.PI/2.0f)) {
-    		selectedTrap.setPosition(hunter.getPosition().x - 0.8f, hunter.getPosition().y);
-    		selectedTrap.setInInventory(false);
-    	}
-    	else if (angle == (float) -(Math.PI/4.0f)) {
-    		selectedTrap.setPosition(hunter.getPosition().x - 0.6f, hunter.getPosition().y - 0.6f);
-    		selectedTrap.setInInventory(false);
-    	}
-    	else if (angle == (float) -(3.0*Math.PI/4.0f)) {
-    		selectedTrap.setPosition(hunter.getPosition().x - 0.6f, hunter.getPosition().y + 0.6f);
-    		selectedTrap.setInInventory(false);
-    	}
+    	selectedTrap.setInInventory(false);
+    	selectedTrap.setPosition(getTrapPositionFromHunter(hunter));
+    	selectedTrap.setOnMap(true);
+    	selectedTrap.setActive(true);
     	
     	Vector2 trapPosition = selectedTrap.getPosition();
     	if (!map.isSafeAt(GameMap.metersToPixels(trapPosition.x), GameMap.metersToPixels(trapPosition.y))) {
@@ -152,7 +148,6 @@ public class TrapController {
     		selectedTrap.setInInventory(true);
     		return;
     	}
-//    	selectedTrap.setOnMap(true);
 
     	//set selectedTrap to next available trap inInventory of same type
     	//if no free trap then selectedTrap does not change and player can't put down another
@@ -171,8 +166,18 @@ public class TrapController {
     	return inventory;
     }
     
-    public Trap getSelectedTrap(){
+    public static Trap getSelectedTrap(){
     	return selectedTrap;
     }
+    
+    public Trap findNextWolfTrap(){
+		for (Trap trap : inventory.get("SHEEP_TRAP")) {
+			if(!trap.getInInventory()&&!trap.getOnMap()){
+				return trap;
+			}
+		}
+		return null;
+    }
+
 
 }

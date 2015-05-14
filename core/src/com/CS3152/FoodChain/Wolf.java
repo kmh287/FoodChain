@@ -20,11 +20,20 @@ import com.badlogic.gdx.utils.Array;
 public class Wolf extends Animal{
     
     private static final String WOLF_TEX = "assets/wolf_walk_cycle.png";
+    private static final String DEATH_TEX_TRAP = "assets/trap_wolf_sprite.png";
     private static Texture tex = null;
+    private static Texture deathTexTrap = null;
     private FilmStrip sprite;
+    private FilmStrip spriteDeathTrap;
     
     private static float scaleYDrawWolf = .23f;
     private static float scaleXDrawWolf = .3f;
+    private static float scaleXDrawWolfDeadTrap=.4f;
+    private static float scaleYDrawWolfDeadTrap=.4f;
+    
+
+
+
 
     
     static final Actor.actorType prey[] = {Actor.actorType.PIG,
@@ -41,6 +50,7 @@ public class Wolf extends Animal{
         super(new TextureRegion(tex), Actor.actorType.WOLF, x, y, 
               prey, InputController.EAST,patrol, pathFinder, map, heuristic);
         sprite = new FilmStrip(tex,1,4,4);
+        spriteDeathTrap = new FilmStrip(deathTexTrap,1,8,8);
         drawScale.x = scaleXDrawWolf;
         drawScale.y = scaleYDrawWolf;
         SIGHT_LENGTH = 2.4f;
@@ -74,7 +84,7 @@ public class Wolf extends Animal{
 				.setWanderOffset(1) //
 				.setWanderOrientation(GameMode.random.nextFloat()) //
 				.setWanderRadius(1) //
-				.setWanderRate(MathUtils.PI / 5);
+				.setWanderRate(MathUtils.PI / 10);
     }
 
     @Override
@@ -94,9 +104,11 @@ public class Wolf extends Animal{
     public static void loadTexture(AssetManager manager) {
         if (tex == null){
             manager.load(WOLF_TEX, Texture.class);
+            manager.load(DEATH_TEX_TRAP,Texture.class);
             manager.finishLoading();
             if (manager.isLoaded(WOLF_TEX)){
                 tex = manager.get(WOLF_TEX);
+                deathTexTrap = manager.get(DEATH_TEX_TRAP);
             }
         }
     }
@@ -115,6 +127,25 @@ public class Wolf extends Animal{
     	sprite.flip(false,true);
     	super.setTexture(sprite);
     }
+
+    public void updateDeadFrame(){
+
+            drawScale.x=scaleXDrawWolfDeadTrap;
+            drawScale.y=scaleYDrawWolfDeadTrap;
+        	int frame = spriteDeathTrap.getFrame();
+        	if(frame<7){
+        		frame++;
+        		
+        	}
+        	else{
+        		this.setFinishedDeatAnimation(true);
+        	}
+        	spriteDeathTrap.setFrame(frame);
+        	spriteDeathTrap.flip(false,true);
+        	super.setTexture(spriteDeathTrap);
+    	
+
+    }
     
     public FilmStrip Sprite(){
     	return sprite;
@@ -130,5 +161,11 @@ public class Wolf extends Animal{
 	public void setOrientation(float arg0) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public Actor getTarget() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

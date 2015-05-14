@@ -1,4 +1,4 @@
-﻿/**
+/**
  * CircularObject.java
  *
  * Sometimes you want circles instead of boxes. This class gives it to you.
@@ -116,9 +116,6 @@ public class CircleObject extends SimplePhysicsObject {
 	 */
 
 	public void draw(GameCanvas canvas) {
-		//System.out.println(" Position X: " + getX() +" Position Y:" +getY()+" originx: "+origin.x+"origin y:"+origin.y);
-		float testx = GameMap.metersToPixels(getX());
-		float testy = GameMap.metersToPixels(getY());
 		canvas.draw(texture,Color.WHITE,(origin.x),(origin.y),GameMap.metersToPixels(getX()),GameMap.metersToPixels(getY()),
 					getAngle(),drawScale.x,drawScale.y);
 	}

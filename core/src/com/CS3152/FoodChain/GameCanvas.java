@@ -19,7 +19,9 @@ package com.CS3152.FoodChain;
 
 import java.lang.reflect.Array;
 
+import com.CS3152.FoodChain.Actor.actorType;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.ai.steer.utils.paths.LinePath;
 import com.badlogic.gdx.assets.AssetManager;
@@ -88,6 +90,19 @@ public class GameCanvas {
 	
 	protected Hunter hunter; 
 	
+	private static String YELLOW_CONE = "assets/YellowCone.png";
+	private static String RED_CONE = "assets/RedCone.png";
+	private static String YELLOW_CONE_LARGE = "assets/largeVision-Cone.png";
+	private static String RED_CONE_LARGE = "assets/largeVision-Cone-Red.png";
+	protected static Texture yellowCone = null;
+	protected static TextureRegion yellowConeRegion = null;
+	protected static Texture redCone = null;
+	protected static TextureRegion redConeRegion = null;
+	protected static Texture yellowConeLarge = null;
+	protected static TextureRegion yellowConeRegionLarge = null;
+	protected static Texture redConeLarge = null;
+	protected static TextureRegion redConeRegionLarge = null;
+	
 
 	/**
 	 * Creates a new GameCanvas determined by the application configuration.
@@ -128,6 +143,51 @@ public class GameCanvas {
 		global = new Matrix4();
 		vertex = new Vector2();
 	}
+	
+	public static void PreLoadContent(AssetManager manager) {
+		manager.load(YELLOW_CONE,Texture.class);
+		manager.load(RED_CONE,Texture.class);
+		manager.load(YELLOW_CONE_LARGE,Texture.class);
+		manager.load(RED_CONE_LARGE,Texture.class);
+	}
+	
+	/**
+     * Load the texture for the player
+     * This must be called before any calls to Player.draw()
+     * 
+     * @param manager an AssetManager
+     */
+	public static void LoadContent(AssetManager manager) {
+		if (manager.isLoaded(YELLOW_CONE)) {
+			yellowCone = manager.get(YELLOW_CONE,Texture.class);
+			yellowCone.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+			yellowConeRegion= new TextureRegion(yellowCone);
+		} else {
+			yellowCone = null;  // Failed to load
+		}
+		if (manager.isLoaded(RED_CONE)) {
+			redCone = manager.get(RED_CONE,Texture.class);
+			redCone.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+			redConeRegion= new TextureRegion(yellowCone);
+		} else {
+			redCone = null;  // Failed to load
+		}
+		if (manager.isLoaded(RED_CONE_LARGE)) {
+			redConeLarge = manager.get(RED_CONE_LARGE,Texture.class);
+			redConeLarge.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+			redConeRegionLarge= new TextureRegion(redConeLarge);
+		} else {
+			redConeLarge = null;  // Failed to load
+		}
+		if (manager.isLoaded(YELLOW_CONE_LARGE)) {
+			yellowConeLarge = manager.get(YELLOW_CONE_LARGE,Texture.class);
+			yellowConeLarge.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+			yellowConeRegionLarge= new TextureRegion(yellowConeLarge);
+		} else {
+			yellowConeLarge = null;  // Failed to load
+		}
+	}
+	
 		
     /**
      * Eliminate any resources that should be garbage collected manually.
@@ -380,7 +440,7 @@ public class GameCanvas {
     	Vector3 touchpos = new Vector3();
     	 touchpos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
          camera.unproject(touchpos);
-		camera.translate(pos);
+		camera.translate(pos.x/2, pos.y/2);
 		camera.update(); 
     }
     public void beginCam(float x, float y) {
@@ -394,7 +454,7 @@ public class GameCanvas {
     
     //first time cam draws it will center over hunter and not perform lazy scroll
 	public void beginCamStart(float x, float y) {
-
+		
 		camera.position.set(x, y, 0);
        	global.setTranslation(x, y, 0);
         camera.update();        
@@ -402,6 +462,21 @@ public class GameCanvas {
     	spriteBatch.setProjectionMatrix(camera.combined);
     	spriteBatch.begin();
     	active = DrawPass.STANDARD;
+	}
+	public void beginCamMouse() {
+		int x = (int) (camera.viewportWidth - Gdx.input.getX());
+		int y = (int) (camera.viewportHeight - Gdx.input.getY()); 
+		Vector3 mousepost = new Vector3 (x, y, 0);
+    	camera.unproject(mousepost);
+    	camera.position.set(x, y, 0);
+    	global.setTranslation(x, y, 0);
+        camera.update();
+    	
+    	ui.drawStage();
+    	spriteBatch.setProjectionMatrix(camera.combined);
+    	spriteBatch.begin();
+    	active = DrawPass.STANDARD;
+
 	}
     
     public void DrawBlack(float x, float y) {
@@ -730,7 +805,9 @@ public class GameCanvas {
 	 * @param sy 	The y-axis scaling factor
 	 */	
 	public void draw(TextureRegion region, Color tint, float ox, float oy, 
-					 float x, float y, float angle, float sx, float sy) {
+					 float x, float y, float angle, float sx, float sy) {				
+				
+				
 		if (active != DrawPass.STANDARD) {
 			Gdx.app.error("GameCanvas", "Cannot draw without active begin()", new IllegalStateException());
 			return;
@@ -1201,24 +1278,56 @@ public class GameCanvas {
     	debugRender.line(v1.x, v1.y, v2.x, v2.y);
     }
     
-    public void drawCone(Color color, Vector2 origin, Vector2 v2, Vector2 v3, float sightRadius, double sightAngle) {
-    	debugRender.setColor(color);
-    	
-    	float angleIncrement = (float) (sightAngle/200);
-    	float circularX, circularY;
-    	for(int i = 0; i<200 ; i++){
-        	float angle = v2.angle()+angleIncrement*i;
-        	double oppositeSideTriangle = Math.tan(angle)*sightRadius;
-        	double shortTriangleside = sightRadius-Math.cos(angle)*sightRadius;
-        	double angle2 = Math.asin(shortTriangleside/oppositeSideTriangle);
-        	
-    		circularX = (float) (Math.cos(angle2)*oppositeSideTriangle);
-    		circularY = (float) (Math.sin(angle2)*oppositeSideTriangle);
-    		System.out.println(angle);
-    		debugRender.line(origin.x, origin.y, v2.x + circularX, v2.y + circularY);
+    public void drawCone(boolean alerted, Vector2 origin, float angle, actorType actorType) {
+    	//the weird math is because it draws the cone in the center of the pig
+    	angle=(float) (angle-Math.PI/2);
+    	//if owl then draw big cone
+    	if(actorType==actorType.OWL){
+    		if(alerted){
+            	this.draw(redConeRegionLarge, 
+            			Color.RED,GameMap.pixelsToMeters(origin.x), 
+            			GameMap.pixelsToMeters(origin.y),  
+            			(float)(origin.x+Math.sin(angle)*200-Math.cos(angle)*220), 
+            			(float)(origin.y-Math.cos(angle)*200-Math.sin(angle)*220), 
+            			(float)(angle), 
+            			1.2f, 
+            			1.2f);
+        	}
+        	else{
+            	this.draw(yellowConeRegionLarge, 
+            			Color.WHITE,GameMap.pixelsToMeters(origin.x), 
+            			GameMap.pixelsToMeters(origin.y),  
+            			(float)(origin.x+Math.sin(angle)*200-Math.cos(angle)*220), 
+            			(float)(origin.y-Math.cos(angle)*200-Math.sin(angle)*220), 
+            			(float)(angle), 
+            			1.2f, 
+            			1.2f);
+        	}
     	}
-    	//debugRender.line(v1.x, v1.y, v2.x, v2.y);
-		
+    	else{
+    		if(alerted){
+            	this.draw(redConeRegion, 
+            			Color.RED,GameMap.pixelsToMeters(origin.x), 
+            			GameMap.pixelsToMeters(origin.y),  
+            			(float)(origin.x+Math.sin(angle)*20-Math.cos(angle)*100), 
+            			(float)(origin.y-Math.cos(angle)*20-Math.sin(angle)*100), 
+            			(float)(angle), 
+            			1f, 
+            			1f);
+        	}
+        	else{
+            	this.draw(yellowConeRegion, 
+            			Color.WHITE,GameMap.pixelsToMeters(origin.x), 
+            			GameMap.pixelsToMeters(origin.y),  
+            			(float)(origin.x+Math.sin(angle)*20-Math.cos(angle)*100), 
+            			(float)(origin.y-Math.cos(angle)*20-Math.sin(angle)*100), 
+            			(float)(angle), 
+            			1f, 
+            			1f);
+        	}
+    	}
+    	
+
     }
     
 	/**

@@ -8,6 +8,7 @@ import java.util.List;
 import com.badlogic.gdx.ai.pfa.indexed.IndexedAStarPathFinder;
 import com.badlogic.gdx.ai.steer.Steerable;
 import com.badlogic.gdx.ai.steer.behaviors.CollisionAvoidance;
+import com.badlogic.gdx.ai.steer.behaviors.Evade;
 import com.badlogic.gdx.ai.steer.behaviors.Flee;
 import com.badlogic.gdx.ai.steer.behaviors.PrioritySteering;
 import com.badlogic.gdx.ai.steer.behaviors.Wander;
@@ -28,15 +29,20 @@ public class Pig extends Animal {
 
     private static final String PIG_TEX = "assets/pig_walk_cycle.png";
     private static final String DEATH_TEX = "assets/pig-death.png";
+    private static final String DEATH_TEX_TRAP = "assets/trap_pig_sprite.png";
     private static Texture tex = null;
     private static Texture deathTex = null;
+    private static Texture deathTexTrap = null;
     private static float scaleXDrawSheep=0.4f;
     private static float scaleYDrawSheep=0.3f;
     private static float scaleXDrawSheepDead=.4f;
     private static float scaleYDrawSheepDead=.3f;
+    private static float scaleXDrawSheepDeadTrap=.5f;
+    private static float scaleYDrawSheepDeadTrap=.5f;
     static final Actor.actorType prey[] = {};
     private FilmStrip sprite;
     private FilmStrip spriteDeath;
+    private FilmStrip spriteDeathTrap;
     
     
     /**
@@ -51,6 +57,7 @@ public class Pig extends Animal {
               prey, InputController.EAST,patrol, pathFinder, map, heuristic);
         sprite = new FilmStrip(tex,1,4,4);
         spriteDeath = new FilmStrip(deathTex,1,7,7);
+        spriteDeathTrap = new FilmStrip(deathTexTrap,1,9,9);
         drawScale.x=scaleXDrawSheep;
         drawScale.y=scaleYDrawSheep;
         SIGHT_LENGTH = 2.4f;
@@ -67,6 +74,7 @@ public class Pig extends Animal {
     public void createSteeringBehaviors() {
     	Steerable<Vector2>[] steers = new Steerable[GameMode.steerables.size()];
         GameMode.steerables.toArray(steers);
+
         Array<Steerable<Vector2>> steerArray = new Array<Steerable<Vector2>>(steers); 
         proximity = new RadiusProximity<Vector2>(this, steerArray, .0001f);
         collisionAvoidanceSB = new CollisionAvoidance2<Vector2>(this, proximity);
@@ -86,7 +94,7 @@ public class Pig extends Animal {
 				.setWanderRate(.1f);
         
 
-        fleeSB = new Flee<Vector2>(this);
+        fleeSB = new Evade<Vector2>(this, null);
         fleeSB.setLimiter(limiter);
     }
 
@@ -95,7 +103,7 @@ public class Pig extends Animal {
      */
     @Override
     public String getTypeNameString() {
-        return "Pig";
+        return "PIG";
     }
 
     public void updateLOS(float angle) {
@@ -114,17 +122,19 @@ public class Pig extends Animal {
         if (tex == null){
             manager.load(PIG_TEX, Texture.class);
             manager.load(DEATH_TEX,Texture.class);
+            manager.load(DEATH_TEX_TRAP,Texture.class);
             manager.finishLoading();
             if (manager.isLoaded(PIG_TEX)){
                 tex = manager.get(PIG_TEX);
                 deathTex = manager.get(DEATH_TEX);
+                deathTexTrap = manager.get(DEATH_TEX_TRAP);
             }
         }
     }
     
     @Override
     public void setTarget(Actor actor) {
-        ((Flee<Vector2>) fleeSB).setTarget(actor);
+        ((Evade<Vector2>) fleeSB).setTarget(actor);
     }
     
     public void updateWalkFrame(){
@@ -139,19 +149,39 @@ public class Pig extends Animal {
     }
     
     public void updateDeadFrame(){
-        drawScale.x=scaleXDrawSheepDead;
-        drawScale.y=scaleYDrawSheepDead;
-    	int frame = spriteDeath.getFrame();
-    	if(frame<6){
-    		frame++;
-    		
+    	//if killed by wolf, call sprite that splits pig in half
+    	if(!getTrapped()){
+            drawScale.x=scaleXDrawSheepDead;
+            drawScale.y=scaleYDrawSheepDead;
+        	int frame = spriteDeath.getFrame();
+        	if(frame<6){
+        		frame++;
+        		
+        	}
+        	else{
+        		this.setFinishedDeatAnimation(true);
+        	}
+        	spriteDeath.setFrame(frame);
+        	spriteDeath.flip(false,true);
+        	super.setTexture(spriteDeath);
     	}
+    	//else if pig was killed by trap, then run trap animation
     	else{
-    		this.setFinishedDeatAnimation(true);
+            drawScale.x=scaleXDrawSheepDeadTrap;
+            drawScale.y=scaleYDrawSheepDeadTrap;
+        	int frame = spriteDeathTrap.getFrame();
+        	if(frame<8){
+        		frame++;
+        		
+        	}
+        	else{
+        		this.setFinishedDeatAnimation(true);
+        	}
+        	spriteDeathTrap.setFrame(frame);
+        	spriteDeathTrap.flip(false,true);
+        	super.setTexture(spriteDeathTrap);
     	}
-    	spriteDeath.setFrame(frame);
-    	spriteDeath.flip(false,true);
-    	super.setTexture(spriteDeath);
+
     }
     
     public FilmStrip Sprite(){
@@ -163,10 +193,16 @@ public class Pig extends Animal {
     	sprite.flip(false,true);
     	super.setTexture(sprite);
     }
-
+    
 	//@Override
 	public void setOrientation(float arg0) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public Actor getTarget() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

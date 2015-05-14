@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.badlogic.gdx.ai.pfa.DefaultGraphPath;
 import com.badlogic.gdx.ai.pfa.indexed.IndexedAStarPathFinder;
+import com.badlogic.gdx.ai.steer.GroupBehavior;
 import com.badlogic.gdx.ai.steer.Limiter;
 import com.badlogic.gdx.ai.steer.Steerable;
 import com.badlogic.gdx.ai.steer.SteeringAcceleration;
@@ -299,21 +300,19 @@ public abstract class Animal extends Actor{
 		return this.rightSectorLine;
 	}
 	
-	public void drawSight(GameCanvas canvas) {
+	public void drawDebugSight(GameCanvas canvas) {
 		if (getAlive()) {
-			Vector2 position = getPosition();
-			tmp.set(GameMap.metersToPixels(position.x), GameMap.metersToPixels(position.y));
-			tmp2.set(GameMap.metersToPixels(position.x), GameMap.metersToPixels(position.y));
-			Vector2 sectorLine = getLeftSectorLine();
-			tmp2.add(GameMap.metersToPixels(sectorLine.x), GameMap.metersToPixels(sectorLine.y));
-			canvas.drawLine(Color.YELLOW, tmp, tmp2);
-			tmp3.set(GameMap.metersToPixels(position.x), GameMap.metersToPixels(position.y));
-			sectorLine = getRightSectorLine();
-			tmp3.add(GameMap.metersToPixels(sectorLine.x), GameMap.metersToPixels(sectorLine.y));
-			canvas.drawLine(Color.YELLOW, tmp, tmp3);
-			
-			//draw cone
-			//canvas.drawCone(Color.YELLOW, tmp, tmp2, tmp3,SIGHT_RADIUS,SIGHT_ANGLE);
+			//old code that draws vision lines to scale
+//			Vector2 position = getPosition();
+//			tmp.set(GameMap.metersToPixels(position.x), GameMap.metersToPixels(position.y));
+//			tmp2.set(GameMap.metersToPixels(position.x), GameMap.metersToPixels(position.y));
+//			Vector2 sectorLine = getLeftSectorLine();
+//			tmp2.add(GameMap.metersToPixels(sectorLine.x), GameMap.metersToPixels(sectorLine.y));
+//			canvas.drawLine(Color.YELLOW, tmp, tmp2);
+//			tmp3.set(GameMap.metersToPixels(position.x), GameMap.metersToPixels(position.y));
+//			sectorLine = getRightSectorLine();
+//			tmp3.add(GameMap.metersToPixels(sectorLine.x), GameMap.metersToPixels(sectorLine.y));
+//			canvas.drawLine(Color.YELLOW, tmp, tmp3);
 			
 			//draws patrol waypoint if they have waypoints
 			if(wayPoints.size>0){
@@ -325,12 +324,65 @@ public abstract class Animal extends Actor{
 					}
 					canvas.DrawPatrolPaths(GameMap.metersToPixels(wayPoints.get(i).x), GameMap.metersToPixels(wayPoints.get(i).y), 5, wayPoints, linePath);
 				}
-			}		
+			}
+			/*
+			Vector2 position = getPosition();
+      tmp.set(GameMap.metersToPixels(position.x), GameMap.metersToPixels(position.y));
+      tmp2.set(GameMap.metersToPixels(position.x), GameMap.metersToPixels(position.y));
+      Vector2 sectorLine = getLeftSectorLine();
+      tmp2.add(GameMap.metersToPixels(sectorLine.x), GameMap.metersToPixels(sectorLine.y));
+      canvas.drawLine(Color.YELLOW, tmp, tmp2);
+      tmp2.set(GameMap.metersToPixels(position.x), GameMap.metersToPixels(position.y));
+      sectorLine = getRightSectorLine();
+      tmp2.add(GameMap.metersToPixels(sectorLine.x), GameMap.metersToPixels(sectorLine.y));
+      canvas.drawLine(Color.YELLOW, tmp, tmp2);
+      */
 		}
 	}
 	
+<<<<<<< HEAD
 	public RadiusProximity getProximity() {
 		return this.proximity;
+=======
+	
+    public static enum State {
+        // Animal is wandering
+        WANDER,
+        // Animal is chasing
+        CHASE,
+        // Animal is running away
+        FLEE,
+        // Animal kills target
+        KILL,
+        // Animal is dead
+        DEAD,
+        //Animal stays still
+        STAYSTILL, 
+        PATROL 
+    }
+	public void drawCone(GameCanvas canvas){
+		Vector2 position = getPosition();
+		tmp.set(GameMap.metersToPixels(position.x), GameMap.metersToPixels(position.y));
+		//draw cone
+		//if patrolling, staying still, or wandering, then draw yellow cone
+		
+		if (this instanceof Owl) {
+			if (getTarget() != null) {
+				canvas.drawCone(true, tmp, body.getAngle(),this.getType());
+			}
+			else {
+				canvas.drawCone(false, tmp, body.getAngle(),this.getType());
+			}
+		}
+		else if(getState()==AIController.State.PATROL ||
+				getState()==AIController.State.STAYSTILL|| getState()==AIController.State.WANDER || getState()==AIController.State.FIND){
+			canvas.drawCone(false, tmp, body.getAngle(),this.getType());
+		}
+		else{
+			canvas.drawCone(true, tmp, body.getAngle(),this.getType());
+		}
+		
+>>>>>>> 2accc9e0a3225e841e4e3541f498eba2d1710f93
 	}
 	
 	@Override
@@ -347,14 +399,18 @@ public abstract class Animal extends Actor{
 	}
 	
 	@Override
-	public void calculateSteering() {
-		float minSteeringSquared = MIN_STEERING * MIN_STEERING;
-		
+	public void calculateSteering() {		
 		if (state != AIController.State.FIND) {
 		collisionAvoidanceSB.calculateSteering(steeringOutput);
+<<<<<<< HEAD
 		if (steeringOutput.calculateSquareMagnitude() > minSteeringSquared) {
 			return; 
 		}
+=======
+//		  if (steeringOutput.calculateSquareMagnitude() > minSteeringSquared) {
+//			  return; 
+//		  }
+>>>>>>> 2accc9e0a3225e841e4e3541f498eba2d1710f93
 		}
 		
 		switch (state) {
@@ -449,4 +505,11 @@ public abstract class Animal extends Actor{
 		pathToPatrol.createPath(ptp);
 		followPathToPatrol.setPath(pathToPatrol);
 	}
+	
+	public void setProximityRadius(float radius) {
+	  RadiusProximity<Vector2> proximity = (RadiusProximity<Vector2>) ((GroupBehavior<Vector2>) collisionAvoidanceSB).getProximity();
+	  proximity.setRadius(radius);
+	}
+	
+	public abstract Actor getTarget();
 }
