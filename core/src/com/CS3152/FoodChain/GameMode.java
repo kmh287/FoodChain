@@ -485,7 +485,8 @@ public class GameMode implements Screen{
     		if (controls[0].resetPressed()){
     			//Only allow the player to reset if they last reset over a second ago
     			if (ticks - lastResetTicks > 60){
-    			  canvas.getUIControllerStage().hideTutorial();
+        			canvas.getUIControllerStage().hideSuccess();
+        			canvas.getUIControllerStage().hideTutorial();
     				initializeLevel(canvas, levelName);
     				lastResetTicks = ticks;
     			}
@@ -498,6 +499,7 @@ public class GameMode implements Screen{
 	    		if (con == gameCondition.WIN) {
 	    			if (delay >= 0.04) {
 		    			if (levelListIt.hasNext()) {
+		    				canvas.getUIControllerStage().hideSuccess();
 		    				initializeLevel(canvas, levelListIt.next());
 		    				delay = 0.0f;
 		    			}
