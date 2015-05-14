@@ -76,9 +76,9 @@ public class GDXRoot extends Game implements ScreenListener {
 		//THREE NEW LEVELS commented out below 
 		
 		//levelListTutorial.add("owlTest");
-		//levelListTutorial.add("earthAndWater");
-		//levelListTutorial.add("railroad");
-		//levelListTutorial.add("lakes");
+		levelListTutorial.add("earthAndWater");
+		levelListTutorial.add("railroad");
+		levelListTutorial.add("lakes");
 		levelListTutorial.add("tutorial1");
 		levelListTutorial.add("tutorial2");
 		levelListTutorial.add("tutorial3");
