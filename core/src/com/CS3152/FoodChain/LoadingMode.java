@@ -191,7 +191,8 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 		HorizontalGroup h = new HorizontalGroup().space(50).pad(5).fill();
 		
 		for (int i = 1; i <= 9; i++) {
-		  TextButton t = new TextButton("Level "+i, buttonStyle);
+		  //TextButton t = new TextButton("Level "+i, buttonStyle);
+		  TextButton t = new TextButton(Integer.toString(i), buttonStyle);
 		  t.setName(Integer.toString(i));
 		  t.addListener(new ChangeListener() {
 
@@ -214,7 +215,7 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
     h = new HorizontalGroup().space(50).pad(5).fill();
     
     for (int i = 10; i <= 18; i++) {
-      TextButton t = new TextButton("Level "+i, buttonStyle);
+      TextButton t = new TextButton(Integer.toString(i), buttonStyle);
       t.setName(Integer.toString(i));
       t.addListener(new ChangeListener() {
 
@@ -237,7 +238,7 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
     h = new HorizontalGroup().space(50).pad(5).fill();
     
     for (int i = 19; i <= 27; i++) {
-      TextButton t = new TextButton("Level "+i, buttonStyle);
+      TextButton t = new TextButton(Integer.toString(i), buttonStyle);
       t.setName(Integer.toString(i));
       t.addListener(new ChangeListener() {
 
