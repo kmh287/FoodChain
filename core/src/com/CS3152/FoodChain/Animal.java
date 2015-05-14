@@ -324,6 +324,7 @@ public abstract class Animal extends Actor{
 					canvas.DrawPatrolPaths(GameMap.metersToPixels(wayPoints.get(i).x), GameMap.metersToPixels(wayPoints.get(i).y), 5, wayPoints, linePath);
 				}
 			}
+			/*
 			Vector2 position = getPosition();
       tmp.set(GameMap.metersToPixels(position.x), GameMap.metersToPixels(position.y));
       tmp2.set(GameMap.metersToPixels(position.x), GameMap.metersToPixels(position.y));
@@ -334,6 +335,7 @@ public abstract class Animal extends Actor{
       sectorLine = getRightSectorLine();
       tmp2.add(GameMap.metersToPixels(sectorLine.x), GameMap.metersToPixels(sectorLine.y));
       canvas.drawLine(Color.YELLOW, tmp, tmp2);
+      */
 		}
 	}
 	
@@ -368,7 +370,7 @@ public abstract class Animal extends Actor{
 			}
 		}
 		else if(getState()==AIController.State.PATROL ||
-				getState()==AIController.State.STAYSTILL|| getState()==AIController.State.WANDER){
+				getState()==AIController.State.STAYSTILL|| getState()==AIController.State.WANDER || getState()==AIController.State.FIND){
 			canvas.drawCone(false, tmp, body.getAngle(),this.getType());
 		}
 		else{

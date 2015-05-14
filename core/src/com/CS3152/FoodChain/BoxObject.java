@@ -1,4 +1,4 @@
-﻿/*
+/*
  * BoxObject.java
  *
  * Given the name Box2D, this is your primary model class.  Most of the time,

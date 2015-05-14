@@ -1,4 +1,4 @@
-﻿/**
+/**
  * CircularObject.java
  *
  * Sometimes you want circles instead of boxes. This class gives it to you.
