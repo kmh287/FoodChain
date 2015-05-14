@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -45,6 +46,8 @@ public class UIControllerStage {
     private static final String OBJECTIVE_WOLF = "assets/objective-wolf.png";
     private static final String OBJECTIVE_BOTH = "assets/objective-both.png";
     
+    private static final String TUTORIAL_1 = "assets/tutorial1.png";
+    
     private TrapController trapController;
     
     private Table container; 
@@ -70,6 +73,7 @@ public class UIControllerStage {
     private static Texture objective_pig_texture = null;
     private static Texture objective_wolf_texture = null;
     private static Texture objective_both_texture = null;
+    private static Texture tutorial_1 = null;
     
     private int regularCount = 0;
     private int sheepCount = 0;
@@ -96,6 +100,7 @@ public class UIControllerStage {
 	Image objective_pig;
 	Image objective_wolf;
 	Image objective_both;
+	Image tutorial1;
 	
 	Table deselect_container;
 	Table select__trap_1_container;
@@ -110,7 +115,6 @@ public class UIControllerStage {
 	Table trap_2_3_container;
 	Table trap_2_4_container;
 	Table trap_2_5_container;
-	
 	Table blackSpace_container;
 	Table panic_meter_container;
 	Table red_bar_container;
@@ -121,8 +125,10 @@ public class UIControllerStage {
 	Table objective_both_container;
 	
 	private GameMode gameMode;
+	Table tutorial1_container;
 	
 	private static float panic;
+	protected static boolean tutorialScreenOpen = true;
 	
 	
     public void setTrapController(TrapController t){
@@ -150,6 +156,7 @@ public class UIControllerStage {
             manager.load(OBJECTIVE_PIG,Texture.class);
             manager.load(OBJECTIVE_WOLF,Texture.class);
             manager.load(OBJECTIVE_BOTH,Texture.class);
+            manager.load(TUTORIAL_1, Texture.class);
             manager.finishLoading();
             if (manager.isLoaded(TRAPS_DESELECT)){
             	allDeselect = manager.get(TRAPS_DESELECT);
@@ -172,6 +179,7 @@ public class UIControllerStage {
             	objective_pig_texture = manager.get(OBJECTIVE_PIG);
             	objective_wolf_texture = manager.get(OBJECTIVE_WOLF);
             	objective_both_texture = manager.get(OBJECTIVE_BOTH);
+            	tutorial_1 = manager.get(TUTORIAL_1);
             }
         }
         
@@ -207,6 +215,7 @@ public class UIControllerStage {
     	objective_pig = new Image();
     	objective_wolf = new Image();
     	objective_both = new Image();
+    	tutorial1 = new Image();
     	
     	deselect_container = new Table();
     	select__trap_1_container = new Table();
@@ -229,6 +238,7 @@ public class UIControllerStage {
     	objective_pig_container = new Table();
     	objective_wolf_container = new Table();
     	objective_both_container = new Table();
+    	tutorial1_container = new Table();
     	
     	//assign texture to image
         deselect.setDrawable(new TextureRegionDrawable(new TextureRegion(allDeselect)));
@@ -354,6 +364,11 @@ public class UIControllerStage {
         objective_both_container.setFillParent(true);
         objective_both_container.center().top(); 
         objective_both_container.row();
+        tutorial1.setDrawable(new TextureRegionDrawable(new TextureRegion(tutorial_1)));
+        tutorial1_container.add(tutorial1).width(160f).height(90f).padTop(1.5f).padLeft(2f);
+        tutorial1_container.setFillParent(true);
+        tutorial1_container.center().top(); 
+        tutorial1_container.row();
        
         
     	stage.addActor(deselect_container);
@@ -378,6 +393,7 @@ public class UIControllerStage {
     	stage.addActor(objective_pig_container);
     	stage.addActor(objective_wolf_container);
     	stage.addActor(objective_both_container);
+    	stage.addActor(tutorial1_container);
     	trap_1_1_container.setVisible(false);
     	trap_1_2_container.setVisible(false);
     	trap_1_3_container.setVisible(false);
@@ -397,6 +413,7 @@ public class UIControllerStage {
     	objective_wolf_container.setVisible(false);
     	objective_both_container.setVisible(false);
  
+    	tutorial1_container.setVisible(false);
     	
     }
     
@@ -429,6 +446,7 @@ public class UIControllerStage {
     	objective_wolf_container.setVisible(false);
     	objective_both_container.setVisible(false);
     	
+    	tutorial1_container.setVisible(false);
     	regularCount = 0;
         sheepCount = 0;
         
@@ -474,6 +492,19 @@ public class UIControllerStage {
         	trap_2_5_container.setVisible(true);
         }
         
+        if (Gdx.input.isKeyPressed(Input.Keys.ENTER)){
+        		tutorialScreenOpen = false;
+        		tutorial1_container.setVisible(false);
+        }
+        
+        //Tutorial screens
+        if (tutorialScreenOpen){
+	        if (GameMode.levelName.equals("tutorial1")){
+	        		tutorial1_container.setVisible(true);
+	        } else if (GameMode.levelName.equals("tutorial2")){
+	        		tutorial1_container.setVisible(true);
+	        }
+        }
         
         //draw highlighted selected trap
         if(trapController.getSelectedTrap().getInInventory()){
@@ -517,6 +548,11 @@ public class UIControllerStage {
 	}
 	
 	
+    
+    public void hideTutorial() {
+      tutorialScreenOpen = false;
+      tutorial1_container.setVisible(false);
+    }
     
 }
 
