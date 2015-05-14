@@ -24,7 +24,7 @@ public class UIControllerStage {
 	
 	//Gdx.input.setInputProcessor(this);
 	
-	private static final String TRAPS_DESELECT = "assets/all_deselect.png";
+	  private static final String TRAPS_DESELECT = "assets/all_deselect.png";
     private static final String TRAP_ONE_ONE = "assets/trap1_1.png";
     private static final String TRAP_ONE_TWO = "assets/trap1_2.png";
     private static final String TRAP_ONE_THREE = "assets/trap1_3.png";
