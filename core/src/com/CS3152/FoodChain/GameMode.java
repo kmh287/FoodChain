@@ -505,7 +505,8 @@ public class GameMode implements Screen{
     		if (controls[0].resetPressed()){
     			//Only allow the player to reset if they last reset over a second ago
     			if (ticks - lastResetTicks > 60){
-    				stillPlaying = false;
+    			    delay = 0.0f;
+    				  stillPlaying = false;
         			canvas.getUIControllerStage().hideSuccess();
         			canvas.getUIControllerStage().hideFailureEaten();
         			canvas.getUIControllerStage().hideFailurePig();
@@ -541,10 +542,10 @@ public class GameMode implements Screen{
 	    		}
 	    		else if (con == gameCondition.LOSE && !winFlag){
 	    			canvas.getUIControllerStage().hideSuccess();
-	    			if(hunter.getAlive() && delay <= 4.0f){
+	    			if(hunter.getAlive() && delay == 0.0f){
         				canvas.getUIControllerStage().displayFailurePig();
         		}
-	    			else if (delay < 4.0f){
+	    			else if (delay == 0.0f){
 	    			    canvas.getUIControllerStage().displayFailureEaten();
 	    			}
 	    			if (delay >= 4.0f) {

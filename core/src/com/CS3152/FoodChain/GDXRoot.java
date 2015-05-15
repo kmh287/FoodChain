@@ -76,30 +76,19 @@ public class GDXRoot extends Game implements ScreenListener {
 		levelList.add("tutorial3");
 		levelList.add("boxChokePoints");
 		levelList.add("Rectangle");
-		levelList.add("HideAndSeek");
-		levelList.add("Cycle2");
-		levelList.add("earthAndWater");
+		levelList.add("Maize");
 		levelList.add("railroad");
 		levelList.add("lakes");
-		levelList.add("Maize");
-		levelList.add("Roundabout");
-		levelList.add("lakefront");
-
-		levelList.add("Juice");
 		levelList.add("bridge");
 		levelList.add("bridge2");
+		levelList.add("Cycle2");
+		levelList.add("lakefront");
+		levelList.add("HideAndSeek");
+		levelList.add("Roundabout");
+		levelList.add("earthAndWater");
 		levelList.add("gears");
-		//REPLACE BELOW WITH NEW LEVELS
-		levelList.add("tutorial1");
-		levelList.add("tutorial1");
-		levelList.add("tutorial1");
-		levelList.add("tutorial1");
-		levelList.add("tutorial1");
-		levelList.add("tutorial1");
-		levelList.add("tutorial1");
-		levelList.add("tutorial1");
-		levelList.add("tutorial1");
-		levelList.add("tutorial1");
+		levelList.add("Juice");
+
 		return levelList;
 	}
 	/** 
