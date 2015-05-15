@@ -10,6 +10,7 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -45,6 +46,8 @@ public class Hunter extends Actor {
     private static float scaleYDrawHunterDead = 0.21f;
     private static float scaleXDrawPigTrap = 0.40f;
     private static float scaleYDrawPigTrap = 0.30f;
+    private static float scaleXDrawWolfTrap = 0.40f;
+    private static float scaleYDrawWolfTrap = 0.30f;
     public boolean hunterFinishedDeath; 
     private FilmStrip sprite;
     private FilmStrip spriteDeath;
@@ -99,6 +102,11 @@ public class Hunter extends Actor {
                 deathTex = manager.get(DEATH_TEX);
                 wolfTrapTex = manager.get(PLACE_WOLF_TRAP);
                 pigTrapTex = manager.get(PLACE_PIG_TRAP);
+                tex.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+                deathTex.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+                wolfTrapTex.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+                pigTrapTex.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+                
             }
         }
     }

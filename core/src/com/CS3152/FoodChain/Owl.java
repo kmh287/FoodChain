@@ -7,8 +7,10 @@ import com.badlogic.gdx.ai.pfa.indexed.IndexedAStarPathFinder;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+
 import java.util.*;
 
 public class Owl extends Animal {
@@ -56,6 +58,7 @@ public class Owl extends Animal {
             manager.finishLoading();
             if (manager.isLoaded(OWL_TEX)){
                 tex = manager.get(OWL_TEX);
+                tex.setFilter(TextureFilter.Linear, TextureFilter.Linear);
             }
         }
     }

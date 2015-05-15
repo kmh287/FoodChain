@@ -1,5 +1,7 @@
 package com.CS3152.FoodChain;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.HashMap; 
 import java.util.List;
 
@@ -10,6 +12,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -110,6 +113,7 @@ public class UIControllerStage {
     private static Texture success_texture = null;
     private static Texture failure_pig_texture = null;
     private static Texture failure_eaten_texture = null;
+    private static List<Texture> textureArray = (List) new ArrayList();
     
     
     private int regularCount = 0;
@@ -300,6 +304,50 @@ public class UIControllerStage {
             }
         }
     	Gdx.input.setInputProcessor(stage);
+    	
+       	textureArray.add(allDeselect);
+    	textureArray.add(trap_1_1_texture);
+    	textureArray.add(trap_1_2_texture);
+    	textureArray.add(trap_1_3_texture);
+    	textureArray.add(trap_1_4_texture);
+    	textureArray.add(trap_1_5_texture);
+    	textureArray.add(trap_2_1_texture);
+    	textureArray.add(trap_2_2_texture);
+    	textureArray.add(trap_2_3_texture);
+    	textureArray.add(trap_2_4_texture);
+    	textureArray.add(trap_2_5_texture);
+    	textureArray.add(select_texture);
+    	textureArray.add(select_texture_2);
+    	textureArray.add(panic_meter_texture);
+    	textureArray.add(red_bar_texture);
+    	textureArray.add(panic_circle_texture);
+    	textureArray.add(objective_texture);
+    	textureArray.add(objective_pig_texture);
+    	textureArray.add(objective_wolf_texture);
+    	textureArray.add(objective_both_texture);
+    	textureArray.add(pig_0_texture);
+    	textureArray.add(pig_1_texture);
+    	textureArray.add(pig_2_texture);
+    	textureArray.add(pig_3_texture);
+    	textureArray.add(pig_4_texture);
+    	textureArray.add(pig_5_texture);
+    	textureArray.add(pig_6_texture);
+    	textureArray.add(wolf_0_texture);
+    	textureArray.add(wolf_1_texture);
+    	textureArray.add(wolf_2_texture);
+    	textureArray.add(wolf_3_texture);
+    	textureArray.add(wolf_4_texture);
+    	textureArray.add(wolf_5_texture);
+    	textureArray.add(wolf_6_texture);
+    	textureArray.add(tutorial_1);
+    	textureArray.add(success_texture);
+    	textureArray.add(failure_eaten_texture);
+    	textureArray.add(failure_pig_texture);
+    	//remove blur
+    	for(int i = 0;i<textureArray.size();i++){
+    		textureArray.get(i).setFilter(TextureFilter.Linear, TextureFilter.Linear);
+    	}
+    	
     	
     	//init data structures
     	deselect = new Image();
