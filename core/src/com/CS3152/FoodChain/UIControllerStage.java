@@ -908,7 +908,7 @@ public class UIControllerStage {
         	default:break;
         }
         
-        stage.act();
+      stage.act();
     	stage.draw();
     }
     
