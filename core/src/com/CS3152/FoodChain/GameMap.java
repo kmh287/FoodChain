@@ -1,26 +1,18 @@
 package com.CS3152.FoodChain;
 
 import com.CS3152.FoodChain.Tile.tileType;	
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ai.pfa.Connection;
 import com.badlogic.gdx.ai.pfa.DefaultConnection;
 import com.badlogic.gdx.ai.pfa.indexed.IndexedGraph;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.utils.Array;
-import com.google.gson.Gson;
 import java.util.*;
 
 public class GameMap implements IndexedGraph<MapNode> {
-    
-    //Offset for the UI at the bottom of the screen.
-    private static final int UI_OFFSET = 80;
     
     private static final float PIXEL_METER_CONV = 0.02f;
     
@@ -57,10 +49,9 @@ public class GameMap implements IndexedGraph<MapNode> {
     
     // The number of nodes within the map
     private int nodeCount;
-    private static String FONT_FILE = "shared/RetroGame.ttf";
-	private static int FONT_SIZE = 64;
+    private static String FONT_FILE = "assets/LightPixel7.ttf";
+    private static int FONT_SIZE = 64;
 
-    
     private static final String GRASS_TEX = "assets/grass.png";
     private static final String BUSH_TEX = "assets/bush.png";
     private static final String TREE_TEX = "assets/tree.png";
@@ -234,7 +225,6 @@ public class GameMap implements IndexedGraph<MapNode> {
 		for (MapNode node : nodes) {
 			int x = node.getX();
 			int y = node.getY();
-			int index = node.getIndex();
 			
 			if (validTile(x - 1, y) && isSafeAt(x - 1, y)) {
 				int adjIndex = calculateIndex(x - 1, y);
@@ -277,17 +267,6 @@ public class GameMap implements IndexedGraph<MapNode> {
 		return x >= 0 && x < getMapWidth() && y >= 0 && y < getMapHeight() &&
 				y * mapWidth + x >= 0 && y * mapWidth + x < nodeCount;
 	}
-	
-	/**
-	 * Returns whether an index references a valid tile
-	 *  
-	 * @param index the index of a possible tile in question
-	 * @return whether the tile is valid
-	 */
-	private boolean validTile(int index) {
-		return index >= 0 && index < nodeCount;
-	}
-	
 	
 	public void setDimensions() {
 		this.mapWidth = layout[0].length;

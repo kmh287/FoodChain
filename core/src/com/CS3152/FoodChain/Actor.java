@@ -239,7 +239,6 @@ public abstract class Actor extends CircleObject implements Steerable<Vector2>{
     	boolean anyAccelerations = false;
 
     	// Update position and linear velocity.
-    	float oldAngle=getAngle();
     	if (!steeringOutput.linear.isZero()) {
     		Vector2 force = steeringOutput.linear.scl(10);
     		body.applyForceToCenter(force, true);

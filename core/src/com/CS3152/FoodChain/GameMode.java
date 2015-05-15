@@ -28,8 +28,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.ai.pfa.indexed.IndexedAStarPathFinder;
 import com.badlogic.gdx.ai.steer.Steerable;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-//import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader;
+import com.badlogic.gdx.graphics.g2d.*;
 
 
 
@@ -158,8 +157,8 @@ public class GameMode implements Screen{
 			displayFont = manager.get(FONT_FILE,BitmapFont.class);
 		} else {
 			displayFont = null;
-		}*/
-		
+		}
+		*/
 		
 	}
 	
@@ -501,16 +500,25 @@ public class GameMode implements Screen{
 
     private void update(float delta){
     		//Check if reset has been pressed
-    		if (controls[0].resetPressed() && isStillPlaying()){
+    		if (controls[0].resetPressed()){
     			//Only allow the player to reset if they last reset over a second ago
     			//if (ticks - lastResetTicks > 60){
         			canvas.getUIControllerStage().hideSuccess();
+        			canvas.getUIControllerStage().hideFailureEaten();
+        			canvas.getUIControllerStage().hideFailurePig();
         			canvas.getUIControllerStage().hideTutorial();
         			initializeLevel(canvas, levelName);
         			lastResetTicks = ticks;
     			//}
     		}
     	
+    		//Display failure
+    		if(checkObjective() == gameCondition.LOSE){
+    			if(hunter.getAlive()){
+    				canvas.getUIControllerStage().displayFailurePig();
+    			}
+    		}
+    		
     		//Check the objective every second, end the game if the player has won or if the objective
     		//cannot be achieved
     		//if (ticks % 60 == 0){
@@ -522,22 +530,22 @@ public class GameMode implements Screen{
 		    				initializeLevel(canvas, levelListIt.next());
 		    				delay = 0.0f;
 		    			}
-		    			else {
-		    				//playing = false; 
-		    				//System.out.println("we won, make a loading screen!");
-		    				//root.gameOverScreen();
-		    				//return;
-		    				
-		    			}
 	    			}
 	    			else {
 	    				delay += delta;
 	    			}
 	    		}
 	    		else if (con == gameCondition.LOSE){
-	    		  System.out.println("You Lost");	
-	    		  initializeLevel(canvas, levelName);
-	    		  lastResetTicks = ticks;
+	    			if (delay >= 2.04 || hunter.getFinishedDeatAnimation()) {
+		  	    		  System.out.println("You Lost");	
+		  	    		  canvas.getUIControllerStage().hideFailurePig();
+			    		  initializeLevel(canvas, levelName);
+			    		  lastResetTicks = ticks;
+			    		  delay = 0.0f;
+	    			}
+	    			else {
+	    				delay += delta;
+	    			}
 	    		}
     		//}
     	
