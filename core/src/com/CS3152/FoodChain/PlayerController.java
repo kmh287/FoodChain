@@ -1,5 +1,4 @@
 package com.CS3152.FoodChain;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Keys;

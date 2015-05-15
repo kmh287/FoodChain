@@ -304,7 +304,7 @@ public class GameMode implements Screen{
 	 * @return An instance of GameMap for the requested level
 	 */
 	private GameMap loadMap(String mapName){
-	      try {
+        try {
             map = MapManager.GsonToMap(mapName);
         } catch (FileNotFoundException e) {
             // TODO Auto-generated catch block
@@ -505,16 +505,14 @@ public class GameMode implements Screen{
     		//Check if reset has been pressed
     		if (controls[0].resetPressed()){
     			//Only allow the player to reset if they last reset over a second ago
-    			if (ticks - lastResetTicks > 60){
+    			//if (ticks - lastResetTicks > 60){
         			canvas.getUIControllerStage().hideSuccess();
         			canvas.getUIControllerStage().hideFailureEaten();
         			canvas.getUIControllerStage().hideFailurePig();
         			canvas.getUIControllerStage().hideTutorial();
-        			stillPlaying = false;
         			initializeLevel(canvas, levelName);
         			lastResetTicks = ticks;
-        			
-    			}
+    			//}
     		}
     		
     		//Check the objective every second, end the game if the player has won or if the objective
@@ -589,8 +587,8 @@ public class GameMode implements Screen{
 			}
 		}
 		
-		if (stillPlaying && controls[0].isTrapSetPressed()  && trapController.canSetTrap() && 
-			 !settingTrap && hunter.getAlive()) {
+		if (controls[0].isTrapSetPressed()  && trapController.canSetTrap() && 
+			!settingTrap && hunter.getAlive()) {
 	    		Vector2 trapPosition = trapController.getTrapPositionFromHunter(hunter);
 	    		if (map.isSafeAt(GameMap.metersToPixels(trapPosition.x), GameMap.metersToPixels(trapPosition.y))) 
 				//Begin the trap set process
