@@ -426,7 +426,12 @@ public abstract class Animal extends Actor{
 			this.setLinearVelocity(new Vector2(0,0));
 			break;
 		case FIND:
-			followPathToPatrol.calculateSteering(steeringOutput);
+			try {
+				followPathToPatrol.calculateSteering(steeringOutput);
+			}
+			catch (Exception e) {
+				setState(AIController.State.WANDER);
+			}
 			break;
     case DEAD:
       break;

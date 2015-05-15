@@ -540,13 +540,13 @@ public class GameMode implements Screen{
 	    		}
 	    		else if (con == gameCondition.LOSE && !winFlag){
 	    			canvas.getUIControllerStage().hideSuccess();
-	    			if(hunter.getAlive() && delay == 0.0f){
+	    			if(hunter.getAlive() && delay <= 4.0f){
         				canvas.getUIControllerStage().displayFailurePig();
         		}
-	    			else if (delay == 0.0f){
+	    			else if (delay < 4.0f){
 	    			    canvas.getUIControllerStage().displayFailureEaten();
 	    			}
-	    			if (delay >= 4.0f) {	
+	    			if (delay >= 4.0f) {
 			    		  initializeLevel(canvas, levelName);
 		      			  canvas.getUIControllerStage().hideFailureEaten();
 		      			  canvas.getUIControllerStage().hideFailurePig();
