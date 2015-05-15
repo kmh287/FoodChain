@@ -55,13 +55,12 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 	// Textures necessary to support the loading screen 
 	private static final String BACKGROUND_FILE = "assets/levelselectbackgroundnoarrow.png";
 	//private static final String PROGRESS_FILE = "assets/level1select.png";
-
+	
 	private Stage stage;
 	
 	/** Background texture for start-up */
 	private Texture background;
 	/** Play button to display when done */
-
 
 	/** Default budget for asset loader (do nothing but load 60 fps) */
 	private static int DEFAULT_BUDGET = 15;
