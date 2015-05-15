@@ -16,6 +16,7 @@ import com.badlogic.gdx.ai.steer.limiters.LinearAccelerationLimiter;
 import com.badlogic.gdx.ai.steer.proximities.RadiusProximity;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
@@ -131,6 +132,9 @@ public class Pig extends Animal {
                 tex = manager.get(PIG_TEX);
                 deathTex = manager.get(DEATH_TEX);
                 deathTexTrap = manager.get(DEATH_TEX_TRAP);
+                tex.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+                deathTex.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+                deathTexTrap.setFilter(TextureFilter.Linear, TextureFilter.Linear);
             }
         }
     }
