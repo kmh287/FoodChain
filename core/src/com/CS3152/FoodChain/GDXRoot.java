@@ -19,12 +19,13 @@
 
 package com.CS3152.FoodChain;
 
-import java.util.ArrayList;
+import java.util.ArrayList;		
 import java.util.List;
 
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.assets.*;
 import com.badlogic.gdx.graphics.g2d.*;
+import com.badlogic.gdx.graphics.g2d.freetype.*;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.assets.loaders.*;
 import com.badlogic.gdx.assets.loaders.resolvers.*;
@@ -48,6 +49,7 @@ public class GDXRoot extends Game implements ScreenListener {
 	private LoadingMode loading_after;
 	/** Player mode for the the game proper (CONTROLLER CLASS) */
 	private GameMode    playing;
+	
 	
 	/**
 	 * Creates a new game from the configuration settings.
@@ -79,6 +81,7 @@ public class GDXRoot extends Game implements ScreenListener {
 		levelList.add("tutorial1");
 		levelList.add("tutorial2");
 		levelList.add("tutorial3");
+		levelList.add("Juice");
 		levelList.add("HideAndSeek");
 		levelList.add("Cycle2");
 		levelList.add("earthAndWater");
@@ -166,8 +169,6 @@ public class GDXRoot extends Game implements ScreenListener {
 	}
 	
 	public void gameOverScreen() {
-		int pointx = 1;
-		int pointy = 2;
 		LoadingMode loadingNew = new LoadingMode(canvas,manager,1, true);
 		playing = null;
 		//dispose();
@@ -187,7 +188,9 @@ public class GDXRoot extends Game implements ScreenListener {
 		if (exitCode != 0) {
 			Gdx.app.error("GDXRoot", "Exit with error code "+exitCode, new RuntimeException());
 			Gdx.app.exit();
-		} else if (screen == loading) {
+		}
+		
+		else if (screen == loading) {
 			List<String> levels = buildLevels();
 			GameMode.LoadContent(manager);
 			playing = new GameMode(canvas, levels, level, this);
@@ -198,28 +201,16 @@ public class GDXRoot extends Game implements ScreenListener {
 			//loading.dispose();
 			loading = null;
 		}
-		/*loss
-		else if (exitCode == 3) {
-			//LoadingMode.loadContent(manager);
-			LoadingMode loading_again = new LoadingMode(canvas, manager, 1);
-			playing.dispose();
-			playing = null; 
-			
-			loading_again.setScreenListener(this);
-			setScreen(loading_again);
-						
+		
+		else if (screen == playing) {
+		  loading = new LoadingMode(canvas, manager);
+		  loading.setScreenListener(this);
+		  setScreen(loading);
+		  
+		  playing.dispose();
+		  playing = null;
 		}
 		
-		else if (exitCode == 4) {
-			//LoadingMode.loadContent(manager);
-			LoadingMode loading_again = new LoadingMode(canvas, manager, 1);
-			playing = null;
-			loading_again.setScreenListener(this);
-			setScreen(loading_again);
-			
-			//playing.dispose();
-			
-		}*/
 
 		else {
 			// We quit the main application
@@ -233,6 +224,8 @@ public class GDXRoot extends Game implements ScreenListener {
 		/*this will never be called.*/
 		if (screen == loading) {
 			GameMode.LoadContent(manager);
+			List<String> levels = buildLevels();
+			playing = new GameMode(canvas, levels, 0, this);
 			//playing = new GameMode(canvas);
 			
 			playing.setScreenListener(this);
@@ -241,29 +234,15 @@ public class GDXRoot extends Game implements ScreenListener {
 			loading.dispose();
 			loading = null;
 		}
-		/*
-		else if (exitCode == 3) {
-			loading_after = new LoadingMode(canvas,manager,1);
-			
-			//playing.dispose();
-			//playing = null;
-			
 		
-			loading_after.setScreenListener(this);
-			//GameMode.PreLoadContent(manager); // Load game assets statically.
-			setScreen(loading_after);
-		}
-		//win
-		else if (exitCode == 4) {
-			//LoadingMode.loadContent(manager);
-			loading_after = new LoadingMode(canvas,manager,1);
-			//playing = null;
-			//playing.dispose();
-		
-			loading_after.setScreenListener(this);
-			GameMode.PreLoadContent(manager); // Load game assets statically.
-			setScreen(loading);
-		}*/
+		else if (screen == playing) {
+		  loading = new LoadingMode(canvas, manager);
+      loading.setScreenListener(this);
+      setScreen(loading);
+      
+      playing.dispose();
+      playing = null;
+    }
 
 		else {
 			 // We quit the main application

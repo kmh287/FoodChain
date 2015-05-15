@@ -22,10 +22,17 @@
  */
 package com.CS3152.FoodChain;
 
-import java.util.List;
-
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.math.*;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.assets.*;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.*;
@@ -46,68 +53,24 @@ import com.badlogic.gdx.controllers.*;
  */
 public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 	// Textures necessary to support the loading screen 
-	private static final String BACKGROUND_FILE = "assets/levelselectbackground.png";
+	private static final String BACKGROUND_FILE = "assets/levelselectbackgroundnoarrow.png";
 	//private static final String PROGRESS_FILE = "assets/level1select.png";
-	private static final String PLAY1_BTN_FILE = "assets/level1.png";
-	private static final String PLAY2_BTN_FILE = "assets/level2.png";
-	private static final String PLAY3_BTN_FILE = "assets/level3.png";
-	private static final String PLAY4_BTN_FILE = "assets/level4.png";
-	private static final String BACK_BTN_FILE = "assets/arrowback.png";
 
+	private Stage stage;
 	
 	/** Background texture for start-up */
 	private Texture background;
 	/** Play button to display when done */
-	private List playButtonList;
-	private Texture playButton1;
-	private Texture playButton2;
-	private Texture playButton3;
-	private Texture playButton4;
 
 
 	/** Default budget for asset loader (do nothing but load 60 fps) */
 	private static int DEFAULT_BUDGET = 15;
-	/** Standard window size (for scaling) */
-	private static int STANDARD_WIDTH  = 800;
-	/** Standard window height (for scaling) */
-	private static int STANDARD_HEIGHT = 700;
-	/** Ratio of the bar width to the screen */
-	private static float BAR_WIDTH_RATIO  = 0.66f;
-	/** Ration of the bar height to the screen */
-	private static float BAR_HEIGHT_RATIO = 0.25f;	
-	/** Height of the progress bar */
-	private static int PROGRESS_HEIGHT = 30;
-	/** Width of the rounded cap on left or right */
-	private static int PROGRESS_CAP    = 15;
-	/** Width of the middle portion in texture atlas */
-	private static int PROGRESS_MIDDLE = 200;
-	private static float BUTTON_SCALE  = 0.75f;
-	
-	/** Start button for XBox controller on Windows */
-	private static int WINDOWS_START = 7;
-	/** Start button for XBox controller on Mac OS X */
-	private static int MAC_OS_X_START = 4;
 
 	/** AssetManager to be loading in the background */
 	private AssetManager manager;
-	/** Reference to GameCanvas created by the root */
-	private GameCanvas canvas;
 	/** Listener that will update the player mode when we are done */
 	private ScreenListener listener;
 
-	/** The width of the progress bar */	
-	private int width;
-	/** The y-coordinate of the center of the progress bar */
-	private int centerY;
-	/** The x-coordinate of the center of the progress bar */
-	private int centerX;
-	/** The height of the canvas window (necessary since sprite origin != screen origin) */
-	private int heightY;
-	/** Scaling factor for when the student changes the resolution. */
-	private float scale;
-	
-	/** Current progress (0 to 1) of the asset manager */
-	private float progress;
 	/** The current state of the play button */
 	private int   pressState1;
 	private int   pressState2;
@@ -125,6 +88,8 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 	private boolean active;
 	
 	private boolean tf;
+	
+	public static int selectedLevel = 0;
 
 	/**
 	 * Returns the budget for the asset loader.
@@ -186,7 +151,7 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 	 * @param manager The AssetManager to load in the background
 	 */
 	public LoadingMode(GameCanvas canvas, AssetManager manager) {
-		this(canvas, manager,DEFAULT_BUDGET, false);
+		this(canvas, manager, DEFAULT_BUDGET, false);
 	}
 
 	/**
@@ -201,39 +166,97 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 	 * @param millis The loading budget in milliseconds
 	 */
 	public LoadingMode(GameCanvas canvas, AssetManager manager, int millis, boolean tf) {
-		this.manager = manager;
-		this.canvas  = canvas;
-		budget = millis;
-		
-		// Compute the dimensions from the canvas
-		//resize(canvas.getWidth(),canvas.getHeight());
-
-		// Load the next two images immediately.
-		playButton1 = null;
-		playButton2 = null;
-		playButton3 = null;
-		playButton4 = null;
+		stage = new Stage();
+		Gdx.input.setInputProcessor(stage);
 		
 		background = new Texture(BACKGROUND_FILE);
-		//background.setSize();
-		this.tf = tf;
+		Image image = new Image(background);
 		
-		pressState1 = 0;
-		pressState2 = 0;
-		pressState3 = 0; 
-		pressState4 = 0; 
-		active = false;
+		stage.addActor(image);
+		
+		Texture button = new Texture("assets/level.png");
+		TextureRegion buttonTextureRegion = new TextureRegion(button);
+		TextureRegionDrawable buttonTRDrawable = new TextureRegionDrawable(buttonTextureRegion);
+		Texture buttonDown = new Texture("assets/levelClick.png");
+    TextureRegion buttonDownTextureRegion = new TextureRegion(buttonDown);
+    TextureRegionDrawable buttonDownTRDrawable = new TextureRegionDrawable(buttonDownTextureRegion);
+		BitmapFont font = new BitmapFont();
+		font.setColor(Color.BLACK);
+		
+		TextButtonStyle buttonStyle = new TextButtonStyle(buttonTRDrawable, buttonDownTRDrawable,
+		    buttonTRDrawable, font);
+		
+		
+		Table table = new Table();//.debug();
+		HorizontalGroup h = new HorizontalGroup().space(50).pad(5).fill();
+		
+		for (int i = 1; i <= 9; i++) {
+		  //TextButton t = new TextButton("Level "+i, buttonStyle);
+		  TextButton t = new TextButton(Integer.toString(i), buttonStyle);
+		  t.setName(Integer.toString(i));
+		  t.addListener(new ChangeListener() {
 
-		startLevel1Button = (System.getProperty("os.name").equals("Mac OS X") ? MAC_OS_X_START : WINDOWS_START);
-		startLevel2Button = (System.getProperty("os.name").equals("Mac OS X") ? MAC_OS_X_START : WINDOWS_START);
-		startLevel3Button = (System.getProperty("os.name").equals("Mac OS X") ? MAC_OS_X_START : WINDOWS_START);
-		startLevel4Button = (System.getProperty("os.name").equals("Mac OS X") ? MAC_OS_X_START : WINDOWS_START);
-
-		Gdx.input.setInputProcessor(this);
-		// Let ANY connected controller start the game.
-		for(Controller controller : Controllers.getControllers()) {
-			controller.addListener(this);
+        @Override
+        public void changed(ChangeEvent event, Actor actor) {
+          LoadingMode.selectedLevel = Integer.parseInt(actor.getName());
+          System.out.println(actor.getName());
+        }
+		  });
+		  h.addActor(t);
 		}
+		
+		table.add(h);
+		table.pack();
+		table.setPosition(70, 425);
+		stage.addActor(table);
+		table.toFront();
+		
+		table = new Table();//.debug();
+    h = new HorizontalGroup().space(50).pad(5).fill();
+    
+    for (int i = 10; i <= 18; i++) {
+      TextButton t = new TextButton(Integer.toString(i), buttonStyle);
+      t.setName(Integer.toString(i));
+      t.addListener(new ChangeListener() {
+
+        @Override
+        public void changed(ChangeEvent event, Actor actor) {
+          LoadingMode.selectedLevel = Integer.parseInt(actor.getName());
+          System.out.println(actor.getName());
+        }
+      });
+      h.addActor(t);
+    }
+    
+    table.add(h);
+    table.pack();
+    table.setPosition(70, 275);
+    stage.addActor(table);
+    table.toFront();
+    
+    table = new Table();//.debug();
+    h = new HorizontalGroup().space(50).pad(5).fill();
+    
+    for (int i = 19; i <= 27; i++) {
+      TextButton t = new TextButton(Integer.toString(i), buttonStyle);
+      t.setName(Integer.toString(i));
+      t.addListener(new ChangeListener() {
+
+        @Override
+        public void changed(ChangeEvent event, Actor actor) {
+          LoadingMode.selectedLevel = Integer.parseInt(actor.getName());
+          System.out.println(actor.getName());
+        }
+      });
+      h.addActor(t);
+    }
+    
+    table.add(h);
+    table.pack();
+    table.setPosition(70, 125);
+    stage.addActor(table);
+    table.toFront();
+
 		active = true;
 	}
 	
@@ -241,24 +264,7 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 	 * Called when this screen should release all resources.
 	 */
 	public void dispose() {
-		 background.dispose();
-		 background = null;
-		 if (playButton1 != null) {
-			 playButton1.dispose();
-			 playButton1 = null;
-		 }
-		 if (playButton2 != null) {
-			 playButton2.dispose();
-			 playButton2 = null;
-		 }
-		 if (playButton3 != null) {
-			 playButton3.dispose();
-			 playButton3 = null;
-		 }
-		 if (playButton4 != null) {
-			 playButton4.dispose();
-			 playButton4 = null;
-		 }
+		 
 	}
 	
 	/**
@@ -271,7 +277,11 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 	 * @param delta Number of seconds since last animation frame
 	 */
 	private void update(float delta) {
-		if (playButton1 == null && playButton2 == null && playButton3 == null && playButton4 == null ) {
+	  stage.act(Gdx.graphics.getDeltaTime());
+	  
+	  /*
+	  if (playButton1 == null && playButton2 == null && playButton3 == null && playButton4 == null ) {
+	   
 			manager.update(budget);
 			//this.progress = manager.getProgress();
 			//if (progress >= 1.0f) {
@@ -281,6 +291,7 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 				playButton3 = new Texture(PLAY3_BTN_FILE);
 				playButton4 = new Texture(PLAY4_BTN_FILE);
 		}
+		*/
 	}
 
 	/**
@@ -290,40 +301,17 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 	 * of using the single render() method that LibGDX does.  We will talk about why we
 	 * prefer this in lecture.
 	 */
-	private void draw() {
-		canvas.begin();
-		//canvas.draw(background, 0, 0);
-		int width = (int) (Gdx.graphics.getWidth() * .77);
-		int height= (int) (Gdx.graphics.getHeight() * .77);
-		/*x and y of bottom left corner*/
-		if (tf) {
-			canvas.draw(background, Color.WHITE, 392, 660, width, height);
-		}
-		else {
-			canvas.draw(background, Color.WHITE, 147, 82, width, height);
-		}
-		
-		if (playButton1 == null) {
-			//drawProgress(canvas);
-		} 
-		else {
-			Color tint1 = (pressState1 == 1 ? Color.GRAY: Color.WHITE);
-			canvas.draw(playButton1, tint1, playButton1.getWidth()/2, playButton1.getHeight()/2, 
-						(int)(centerX * .50), 2 * centerY, 0, BUTTON_SCALE*scale, BUTTON_SCALE*scale);
-		
-			Color tint2 = (pressState2 == 1 ? Color.GRAY: Color.WHITE);
-			canvas.draw(playButton2, tint2, playButton2.getWidth()/2, playButton2.getHeight()/2, 
-						(int)(centerX * .85), 2*(centerY), 0, BUTTON_SCALE*scale, BUTTON_SCALE*scale);
-		
-			Color tint3 = (pressState3 == 1 ? Color.GRAY: Color.WHITE);
-			canvas.draw(playButton3, tint3, playButton3.getWidth()/2, playButton3.getHeight()/2, 
-						(int)(centerX * 1.15), (2*centerY), 0, BUTTON_SCALE*scale, BUTTON_SCALE*scale);
-			
-			Color tint4 = (pressState4 == 1 ? Color.GRAY: Color.WHITE);
-			canvas.draw(playButton4, tint4, playButton4.getWidth()/2, playButton4.getHeight()/2, 
-						(int) (centerX * 1.45), (2*centerY), 0, BUTTON_SCALE*scale, BUTTON_SCALE*scale);
-		}
-		canvas.end();
+	public void draw() {
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+    stage.draw();
+	}
+	
+	public void postDraw() {
+	  if (LoadingMode.selectedLevel != 0) {
+	    int nextLevel = selectedLevel;
+	    selectedLevel = 0;
+	    listener.exitScreen(this, 0, nextLevel);
+	  }
 	}
 	
 	// ADDITIONAL SCREEN METHODS
@@ -336,9 +324,10 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 	 * @param delta Number of seconds since last animation frame
 	 */
 	public void render(float delta) {
-		if (active) {
+	  if (active) {
 			update(delta);
 			draw();
+			postDraw();
 
 			// We are are ready, notify our listener
 			if (isReady() && listener != null) {
@@ -357,15 +346,7 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 	 * @param height The new height in pixels
 	 */
 	public void resize(int width, int height) {
-		// Compute the drawing scale
-		float sx = ((float)width)/STANDARD_WIDTH;
-		float sy = ((float)height)/STANDARD_HEIGHT;
-		scale = (sx < sy ? sx : sy);
 		
-		this.width = (int)(BAR_WIDTH_RATIO*width);
-		centerY = (int)(BAR_HEIGHT_RATIO*height);
-		centerX = width/2;
-		heightY = height;
 	}
 
 	/**
@@ -428,40 +409,9 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 	 * @return whether to hand the event to other listeners. 
 	 */
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		if ((playButton1 == null || pressState1 == 2) || (playButton2 == null || pressState2 == 2) || 
-				(playButton3 == null || pressState3 == 2) || (playButton4 == null || pressState4 == 2)) {
-			return true;
-		}
-		
-		// Flip to match graphics coordinates
-		screenY = heightY-screenY;
-		
-		// TODO: Fix scaling
-		// Play button is a circle.
-		float radius1 = playButton1.getWidth();
-		float radius2 = playButton2.getWidth();
-		float radius3 = playButton3.getWidth();
-		float radius4 = playButton4.getWidth();
-		
-		if (screenX < (centerX * .50)){
-			pressState1 = 1;
-		}
-		if (screenX < ((centerX * .85) + radius2) && screenX > (centerX * .5)){
-			pressState2 = 1;
-		}
-		
-		if (screenX < ((centerX * 1.15) + (radius3)) && screenX > (centerX * .85) + radius2){
-			pressState3 = 1;
-		}
-		
-		if (screenX < (centerX * 1.45 + radius4) && screenX > ((centerX * 1.15) + (radius3))){
-			pressState4 = 1;
-		}
-		
+	  
 		return false;
 		
-		
-
 	}
 	
 	/** 

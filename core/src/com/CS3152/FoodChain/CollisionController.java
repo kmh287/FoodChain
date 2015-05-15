@@ -1,11 +1,5 @@
 package com.CS3152.FoodChain;
 
-import java.util.List;
-import java.util.Random;
-import java.util.Random;
-
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
 import com.CS3152.FoodChain.Tile.tileType;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.*;
@@ -20,7 +14,7 @@ import com.badlogic.gdx.physics.box2d.World;
 /**
  * Class to handle basic collisions in the game.
  *
- * This is the simplest of physics engines.  In later labs, we will see how to work 
+ * This is the st of physics engines.  In later labs, we will see how to work 
  * with more interesting engines.
  *
  * As a major sub-controller, this class must have a reference to all the models.
@@ -31,10 +25,7 @@ public class CollisionController implements ContactListener {
 	private World world;
 	/** All the objects in the world. */
 	protected PooledList<SimplePhysicsObject> objects  = new PooledList<SimplePhysicsObject>();
-	//Vector2 cache for calculations
-	private Vector2 tmp;
 	private InputController[] controls;
-	private Vector2 action;
 	
 	private Trap trapToRemove = null;
 	private String trapToAdd = null;
@@ -53,7 +44,6 @@ public class CollisionController implements ContactListener {
 		//no gravity for top down
 		this.world = new World(new Vector2(0,0), false);
 		world.setContactListener(this);
-		this.tmp = new Vector2();
 		trapLocationToAdd = new Vector2();
 		
 		sound = null;
@@ -116,7 +106,7 @@ public class CollisionController implements ContactListener {
 	
 
     public void postUpdate(float dt) {
-    	for (SimplePhysicsObject o : objects) {
+    	for (PhysicsObject o : objects) {
     		if (o.getBody().getUserData() instanceof Animal) {
     			Animal a = (Animal) o;
     			if (a.getTrapped() || !a.getAlive()) {
@@ -176,9 +166,6 @@ public class CollisionController implements ContactListener {
 
 		Body body1 = fix1.getBody();
 		Body body2 = fix2.getBody();
-
-		Object fd1 = fix1.getUserData();
-		Object fd2 = fix2.getUserData();
 		
 		//System.out.println("Collision!!!");
 		
@@ -312,9 +299,6 @@ public class CollisionController implements ContactListener {
 
 		Body body1 = fix1.getBody();
 		Body body2 = fix2.getBody();
-
-		Object fd1 = fix1.getUserData();
-		Object fd2 = fix2.getUserData();
 		
 		Object bd1 = body1.getUserData();
 		Object bd2 = body2.getUserData();
@@ -358,5 +342,21 @@ public class CollisionController implements ContactListener {
 	public void setTrapController(TrapController trapController) {
 		this.trapController= trapController;
 		
+	}
+	
+	public void reset() {
+		for (PhysicsObject obj : objects) {
+			obj.deactivatePhysics(world);
+		}
+		objects.clear();
+		controls = null;
+		trapToRemove = null;
+		trapToAdd = null;
+		animalToTrap = null;
+		trapOver = null;
+		trapController = null;
+		this.world.dispose();
+		world = new World(new Vector2(0, 0), false);
+		world.setContactListener(this);
 	}
 }
