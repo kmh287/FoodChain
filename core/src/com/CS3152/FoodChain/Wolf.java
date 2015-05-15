@@ -57,7 +57,7 @@ public class Wolf extends Animal{
         SIGHT_LENGTH = 2.4f;
         SIGHT_RADIUS = 0f;
         SIGHT_ANGLE = 0.35;
-        maxLinearSpeed = 4f;
+        maxLinearSpeed = 4.5f;
         maxLinearAcceleration = 10.0f;
         maxAngularSpeed = 20.0f;
         maxAngularAcceleration = 20.0f;
