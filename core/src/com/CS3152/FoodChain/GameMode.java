@@ -29,7 +29,6 @@ import com.badlogic.gdx.ai.pfa.indexed.IndexedAStarPathFinder;
 import com.badlogic.gdx.ai.steer.Steerable;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.*;
-import com.badlogic.gdx.graphics.g2d.freetype.*;
 
 
 
@@ -505,12 +504,24 @@ public class GameMode implements Screen{
     			//Only allow the player to reset if they last reset over a second ago
     			//if (ticks - lastResetTicks > 60){
         			canvas.getUIControllerStage().hideSuccess();
+        			canvas.getUIControllerStage().hideFailureEaten();
+        			canvas.getUIControllerStage().hideFailurePig();
         			canvas.getUIControllerStage().hideTutorial();
         			initializeLevel(canvas, levelName);
         			lastResetTicks = ticks;
     			//}
     		}
     	
+    		//Display failure
+    		if(checkObjective() == gameCondition.LOSE){
+    			if(hunter.getAlive()){
+    				canvas.getUIControllerStage().displayFailurePig();
+    			}
+    			else{
+    				canvas.getUIControllerStage().displayFailureEaten();
+    			}
+    		}
+    		
     		//Check the objective every second, end the game if the player has won or if the objective
     		//cannot be achieved
     		//if (ticks % 60 == 0){
@@ -535,10 +546,17 @@ public class GameMode implements Screen{
 	    			}
 	    		}
 	    		else if (con == gameCondition.LOSE){
-
-	    		  System.out.println("You Lost");	
-	    		  initializeLevel(canvas, levelName);
-	    		  lastResetTicks = ticks;
+	    			if (delay >= 0.04) {
+		  	    		  System.out.println("You Lost");	
+		  	    		  canvas.getUIControllerStage().hideFailureEaten();
+		  	    		  canvas.getUIControllerStage().hideFailurePig();
+			    		  initializeLevel(canvas, levelName);
+			    		  lastResetTicks = ticks;
+			    		  delay = 0.0f;
+	    			}
+	    			else {
+	    				delay += delta;
+	    			}
 	    		}
     		//}
     	
