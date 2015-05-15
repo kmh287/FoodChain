@@ -20,7 +20,7 @@ import com.badlogic.gdx.physics.box2d.World;
 /**
  * Class to handle basic collisions in the game.
  *
- * This is the simplest of physics engines.  In later labs, we will see how to work 
+ * This is the st of physics engines.  In later labs, we will see how to work 
  * with more interesting engines.
  *
  * As a major sub-controller, this class must have a reference to all the models.
@@ -30,7 +30,7 @@ public class CollisionController implements ContactListener {
 	//The game world
 	private World world;
 	/** All the objects in the world. */
-	protected PooledList<SimplePhysicsObject> objects  = new PooledList<SimplePhysicsObject>();
+	protected PooledList<PhysicsObject> objects  = new PooledList<PhysicsObject>();
 	//Vector2 cache for calculations
 	private Vector2 tmp;
 	private InputController[] controls;
@@ -65,7 +65,7 @@ public class CollisionController implements ContactListener {
 	 * @param obj: the object to add
 	 */
 	//protected void addObject(BoxObject obj, Object data) {
-	protected void addObject(SimplePhysicsObject obj) {
+	protected void addObject(PhysicsObject obj) {
 		objects.add(obj);
 		obj.activatePhysics(world);
 		obj.setBullet(true);
@@ -92,7 +92,7 @@ public class CollisionController implements ContactListener {
 	 * 
 	 * @return PooledList of BoxObjects
 	 */
-	public PooledList<SimplePhysicsObject> getObjects() {
+	public PooledList<PhysicsObject> getObjects() {
 		return objects;
 	}
 
@@ -116,7 +116,7 @@ public class CollisionController implements ContactListener {
 	
 
     public void postUpdate(float dt) {
-    	for (SimplePhysicsObject o : objects) {
+    	for (PhysicsObject o : objects) {
     		if (o.getBody().getUserData() instanceof Animal) {
     			Animal a = (Animal) o;
     			if (a.getTrapped() || !a.getAlive()) {
@@ -358,5 +358,19 @@ public class CollisionController implements ContactListener {
 	public void setTrapController(TrapController trapController) {
 		this.trapController= trapController;
 		
+	}
+	
+	public void reset() {
+		for (PhysicsObject obj : objects) {
+			obj.deactivatePhysics(world);
+		}
+		objects.clear();
+		controls = null;
+		trapToRemove = null;
+		trapToAdd = "";
+		animalToTrap = null;
+		trapOver = null;
+		trapController = null;
+		this.world.dispose();
 	}
 }

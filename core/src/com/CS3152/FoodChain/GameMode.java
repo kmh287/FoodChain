@@ -71,6 +71,8 @@ public class GameMode implements Screen{
 
     protected InputController[] controls;
     
+    protected PlayerController playerController;
+    
     public static final Random random = new Random();
     
 //  /** Cache attribute for calculations */
@@ -192,8 +194,13 @@ public class GameMode implements Screen{
         LoadContent(manager);
         hunterLife = 3; 
         levelLoad(levelList, level);
-        
-        
+        collisionController = new CollisionController();
+        steerables = new ArrayList<Steerable<Vector2>>();
+        animals = new ArrayList<Animal>();
+        playerController = new PlayerController();
+        trapController = new TrapController(null, null, null, 0, 0);
+        actors = new Array<Actor>();
+        gameplayController = new GameplayController(null, null, null);
 	}
 	
 	public void levelLoad (List<String> levelList, int level) {
@@ -209,7 +216,14 @@ public class GameMode implements Screen{
 	}
 	
  	private void initializeLevel(GameCanvas canvas, String levelName){
-        //For now we will hard code the level to load
+        steerables.clear();
+ 		animals.clear();
+        actors.clear();
+        collisionController.reset();
+        trapController.reset();
+ 		gameplayController.reset();
+        
+ 		//For now we will hard code the level to load
         //When we implement a UI that may ask players
         //what level to start on. This code will change
  		 playing = true;
@@ -218,14 +232,13 @@ public class GameMode implements Screen{
         map.setDimensions();
         map.createGraph();
         map.LoadContent(manager);
-        collisionController = new CollisionController();
         map.addTilesToWorld(collisionController);
-        steerables = new ArrayList<Steerable<Vector2>>();
+        
         steerables.addAll(map.getTileList());
 
         //Get the animal types from map
         //but build and keep the actual list here
-        animals = new ArrayList<Animal>();
+      
         List<Actor.actorType> aTypes = 
                             map.getActorTypeList();
         List<Vector2> coordinates = map.getCoordinates();
@@ -237,11 +250,12 @@ public class GameMode implements Screen{
         
         //All the animals, plus the Hunter
         //The hunter is always first in this array
+      
         controls = new InputController[animals.size() + 1]; 
-        controls[0] = new PlayerController();        
-        
+        controls[0] = playerController;  
 
-        trapController = new TrapController(hunter, map, collisionController,numPigs,numWolves);
+        trapController.set(hunter, map, collisionController, numPigs, numWolves);
+        
         settingTrap = false;
         trapSetProgress = 0;
 
@@ -254,9 +268,7 @@ public class GameMode implements Screen{
         
         //Setup traps and the trap UI
 	    traps = (HashMap<String, List<Trap>>) trapController.getInventory();
-	    
-	    player = new PlayerController(); 
-        List<Actor> actors = new ArrayList<Actor>();
+        
         actors.add(hunter);
         for (int i = 0; i < animals.size(); i++) {
         		actors.add(animals.get(i));
@@ -265,10 +277,8 @@ public class GameMode implements Screen{
         }
         
         createSteeringBehaviors();
-        Actor[] actorArray = new Actor[actors.size()];
-        actors.toArray(actorArray);
-        GameMode.actors = new Array<Actor>(actorArray);
-        gameplayController = new GameplayController(map, actorArray, controls);
+        Actor[] actorArray = actors.toArray();
+        gameplayController.set(map, actorArray, controls);
         canvas.getUIControllerStage().setPanic(AIController.getPanicPercentage());
         canvas.getUIControllerStage().setGameMode(this);
         collisionController.setControls(controls);
@@ -491,7 +501,7 @@ public class GameMode implements Screen{
 
     private void update(float delta){
     		//Check if reset has been pressed
-    		if (controls[0].resetPressed()){
+    		if (controls[0].resetPressed() && isStillPlaying()){
     			//Only allow the player to reset if they last reset over a second ago
     			//if (ticks - lastResetTicks > 60){
         			canvas.getUIControllerStage().hideSuccess();
@@ -503,10 +513,10 @@ public class GameMode implements Screen{
     	
     		//Check the objective every second, end the game if the player has won or if the objective
     		//cannot be achieved
-    		if (ticks % 60 == 0){
+    		//if (ticks % 60 == 0){
 	    		gameCondition con = checkObjective();
 	    		if (con == gameCondition.WIN) {
-	    			if (delay >= 0.04) {
+	    			if (delay >= 2.4) {
 		    			if (levelListIt.hasNext()) {
 		    				canvas.getUIControllerStage().hideSuccess();
 		    				initializeLevel(canvas, levelListIt.next());
@@ -529,7 +539,7 @@ public class GameMode implements Screen{
 	    		  initializeLevel(canvas, levelName);
 	    		  lastResetTicks = ticks;
 	    		}
-    		}
+    		//}
     	
     	//The hunter can move when not setting a trap
     	gameplayController.update(delta, !settingTrap);

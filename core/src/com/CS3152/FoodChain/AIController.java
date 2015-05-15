@@ -61,7 +61,7 @@ public class AIController implements InputController {
     // The animal that this animal is fleeing
     protected Actor attacker;
     // All actors on the map
-    protected List<Actor> actors;
+    protected Array<Actor> actors;
     
     protected VisionCallback vcb;
     //protected FleeCallback fcb;
@@ -122,7 +122,7 @@ public class AIController implements InputController {
      * @param animal The Animal being controlled
      * @param map The game map
      */
-    public AIController(Animal animal, World world, GameMap map, List<Actor> actors) {
+    public AIController(Animal animal, World world, GameMap map, Array<Actor> actors) {
         this.animal = animal;
         this.world = world;
         this.map = map;
