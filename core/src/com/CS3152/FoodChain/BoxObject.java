@@ -212,8 +212,6 @@ public class BoxObject extends SimplePhysicsObject {
 	 * @param canvas Drawing context
 	 */
 	public void draw(GameCanvas canvas) {
-		float testx = GameMap.metersToPixels(getX());
-		float testy = GameMap.metersToPixels(getY());
 		canvas.draw(texture,Color.WHITE,origin.x,origin.y,
 				GameMap.metersToPixels(getX()),
 				GameMap.metersToPixels(getY()),
