@@ -43,18 +43,18 @@ public class GameMode implements Screen{
 	
 	private static enum gameCondition {IN_PLAY, WIN, LOSE};
 	
-    private GameMap map;
-    private AssetManager manager;
-    private List<String> levelList;
-    private Iterator<String> levelListIt;
-    public static Array<Actor> actors;
-    public static List<Animal> animals;
-    public static List<Steerable<Vector2>> steerables;
-    public static Hunter hunter;
-    private Stage stage; 
-    private UIControllerStage uis;
-    private HashMap<String, List<Trap>> traps;
-    private TrapController trapController;
+  private GameMap map;
+  private AssetManager manager;
+  private List<String> levelList;
+  private Iterator<String> levelListIt;
+  public static Array<Actor> actors;
+  public static List<Animal> animals;
+  public static List<Steerable<Vector2>> steerables;
+  public static Hunter hunter;
+  private Stage stage; 
+  private UIControllerStage uis;
+  private HashMap<String, List<Trap>> traps;
+  private TrapController trapController;
 	private float TIME_STEP = 1/200f;
 	private float frameTime;
 	protected static String levelName;
@@ -193,18 +193,18 @@ public class GameMode implements Screen{
         manager.finishLoading();
         LoadContent(manager);
         hunterLife = 3; 
-        levelLoad(levelList, level);
         collisionController = new CollisionController();
         steerables = new ArrayList<Steerable<Vector2>>();
         animals = new ArrayList<Animal>();
         playerController = new PlayerController();
         trapController = new TrapController(null, null, null, 0, 0);
-        actors = new Array<Actor>();
+        actors = new Array<Actor>(Actor.class);
         gameplayController = new GameplayController(null, null, null);
+        levelLoad(levelList, level);
 	}
 	
 	public void levelLoad (List<String> levelList, int level) {
-		this.levelList = levelList;
+	  this.levelList = levelList;
 		this.levelListIt = levelList.iterator();
 		if (levelList.size() == 0 || levelList.size() < level){
 			throw new IllegalArgumentException("Must choose valid level.");
@@ -212,7 +212,7 @@ public class GameMode implements Screen{
 		for (int l = 1; l < level; l++) {
 			levelListIt.next();
 		}
-        initializeLevel(canvas, levelListIt.next());
+		initializeLevel(canvas, levelListIt.next());
 	}
 	
  	private void initializeLevel(GameCanvas canvas, String levelName){
