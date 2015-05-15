@@ -500,7 +500,7 @@ public class GameMode implements Screen{
 
     private void update(float delta){
     		//Check if reset has been pressed
-    		if (controls[0].resetPressed() && isStillPlaying()){
+    		if (controls[0].resetPressed()){
     			//Only allow the player to reset if they last reset over a second ago
     			//if (ticks - lastResetTicks > 60){
         			canvas.getUIControllerStage().hideSuccess();
@@ -517,9 +517,6 @@ public class GameMode implements Screen{
     			if(hunter.getAlive()){
     				canvas.getUIControllerStage().displayFailurePig();
     			}
-    			else{
-    				canvas.getUIControllerStage().displayFailureEaten();
-    			}
     		}
     		
     		//Check the objective every second, end the game if the player has won or if the objective
@@ -533,22 +530,14 @@ public class GameMode implements Screen{
 		    				initializeLevel(canvas, levelListIt.next());
 		    				delay = 0.0f;
 		    			}
-		    			else {
-		    				//playing = false; 
-		    				//System.out.println("we won, make a loading screen!");
-		    				//root.gameOverScreen();
-		    				//return;
-		    				
-		    			}
 	    			}
 	    			else {
 	    				delay += delta;
 	    			}
 	    		}
 	    		else if (con == gameCondition.LOSE){
-	    			if (delay >= 0.04) {
+	    			if (delay >= 2.04 || hunter.getFinishedDeatAnimation()) {
 		  	    		  System.out.println("You Lost");	
-		  	    		  canvas.getUIControllerStage().hideFailureEaten();
 		  	    		  canvas.getUIControllerStage().hideFailurePig();
 			    		  initializeLevel(canvas, levelName);
 			    		  lastResetTicks = ticks;
