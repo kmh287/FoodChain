@@ -94,6 +94,8 @@ public class GameMode implements Screen{
 	private int countdown;
 	private int hunterLife; 
 	
+	private boolean winFlag;
+	
 	private float delay;
 	
 	//Trpa set delay
@@ -186,6 +188,7 @@ public class GameMode implements Screen{
 		this.stage = stage;
 		this.root = root;
 		start=true;
+		this.winFlag = false;
         //active = false;
         manager = new AssetManager();
         PreLoadContent(manager);
@@ -411,7 +414,7 @@ public class GameMode implements Screen{
 	
     private gameCondition checkObjective(){
     	
-    		if (!hunter.getAlive()){
+    		if (!hunter.getAlive() && !winFlag){
     			stillPlaying = false;
     			return gameCondition.LOSE;
     		}
@@ -513,35 +516,39 @@ public class GameMode implements Screen{
         			
     			}
     		}
-    	
-    		//Display failure
-    		if(checkObjective() == gameCondition.LOSE){
-    			if(hunter.getAlive()){
-    				canvas.getUIControllerStage().displayFailurePig();
-    			}
-    		}
     		
     		//Check the objective every second, end the game if the player has won or if the objective
     		//cannot be achieved
     		//if (ticks % 60 == 0){
 	    		gameCondition con = checkObjective();
 	    		if (con == gameCondition.WIN) {
+	    			winFlag = true;
 	    			if (delay >= 2.4) {
 		    			if (levelListIt.hasNext()) {
 		    				canvas.getUIControllerStage().hideSuccess();
+		    				winFlag = false;
 		    				initializeLevel(canvas, levelListIt.next());
 		    				delay = 0.0f;
 		    			}
+		    			else {
+		    				listener.exitScreen(this, 0);
+		    			}
+		    			return;
 	    			}
 	    			else {
 	    				delay += delta;
 	    			}
 	    		}
-	    		else if (con == gameCondition.LOSE){
-	    			if (delay >= 2.04 || hunter.getFinishedDeatAnimation()) {
-		  	    		  System.out.println("You Lost");	
-		  	    		  canvas.getUIControllerStage().hideFailurePig();
+	    		else if (con == gameCondition.LOSE && !winFlag){
+	    			canvas.getUIControllerStage().hideSuccess();
+	    			if(hunter.getAlive()){
+        				canvas.getUIControllerStage().displayFailurePig();
+        			}
+	    			if (delay >= 2.04 || hunter.getFinishedDeatAnimation()) {	
 			    		  initializeLevel(canvas, levelName);
+		      			  canvas.getUIControllerStage().hideFailureEaten();
+		      			  canvas.getUIControllerStage().hideFailurePig();
+		      			  canvas.getUIControllerStage().hideTutorial();
 			    		  lastResetTicks = ticks;
 			    		  delay = 0.0f;
 	    			}

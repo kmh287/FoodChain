@@ -802,7 +802,8 @@ public class UIControllerStage {
         }
         
         //draw highlighted selected trap
-        if(trapController.getSelectedTrap().getInInventory()){
+        if(GameMode.isStillPlaying() &&
+           trapController.getSelectedTrap().getInInventory()){
         	if(trapController.getSelectedTrap().getType().toString().equals("REGULAR_TRAP")){
         		select__trap_1_container.setVisible(true);
         	}
