@@ -85,7 +85,7 @@ public class AIController implements InputController {
     protected int patrolTurn;
     
     //this is the delay when animals switch from flee to wander to patrol
-    private int stateDelay = 110;
+    private int stateDelay = 60;
     
     private int rabidLength = 90;
     
@@ -472,7 +472,6 @@ public class AIController implements InputController {
 			          animal.setProximityRadius(0.0001f);
 			        	animal.setState(State.FLEE);
 			        }
-			        turns--;
 			        if (hasTarget() && !target.getAlive()) {
 			        	animal.setState(State.KILL);
 			        	setTarget(null);
@@ -482,6 +481,7 @@ public class AIController implements InputController {
 			        if(getTarget() instanceof Hunter){
 				        panicked = true;
 			        }
+			        turns--;
 			        break;
 			    case FLEE:
 			    	//System.out.println(getAnimal() + " is fleeing");
@@ -493,7 +493,6 @@ public class AIController implements InputController {
 			            setTarget(null);
 			            break;
 			        }
-			        turns--;
 			        //if fleeing hunter, then increase panic
 			        if(getTarget() instanceof Hunter){
 				        panicked = true;
@@ -507,6 +506,7 @@ public class AIController implements InputController {
 			        	rabidity--;
 			        	animal.setRabid(rabidity);
 			        }
+			        turns--;
 			    	break;
 			    case KILL:
 			    	if (turns <= 0) {
@@ -533,11 +533,11 @@ public class AIController implements InputController {
 				    	  if (animal instanceof Pig) {
 				    	    animal.setProximityRadius(0.0001f);
 				    		  animal.setState(State.FLEE);
-				    		  setTurns(1000);
+				    		  setTurns(stateDelay);
 				    	  }
 				    	  else if (animal instanceof Wolf) {
 				    		  animal.setState(State.CHASE);
-				    		  setTurns(1000);
+				    		  setTurns(stateDelay);
 				    	  }
 				    }
 			    	else if (canPatrol()) {
