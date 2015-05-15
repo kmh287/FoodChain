@@ -522,7 +522,7 @@ public class GameMode implements Screen{
 	    		if (con == gameCondition.WIN) {
 	    			winFlag = true;
 	    			canvas.getUIControllerStage().displaySuccess();
-	    			if (delay >= 5.0f) {
+	    			if (delay >= 4.0f) {
 		    			if (levelListIt.hasNext()) {
 		    				canvas.getUIControllerStage().hideSuccess();
 		    				winFlag = false;
@@ -546,7 +546,7 @@ public class GameMode implements Screen{
 	    			else if (delay == 0.0f){
 	    			    canvas.getUIControllerStage().displayFailureEaten();
 	    			}
-	    			if (delay >= 5.0f) {	
+	    			if (delay >= 4.0f) {	
 			    		  initializeLevel(canvas, levelName);
 		      			  canvas.getUIControllerStage().hideFailureEaten();
 		      			  canvas.getUIControllerStage().hideFailurePig();
