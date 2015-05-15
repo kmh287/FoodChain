@@ -2,6 +2,7 @@ package com.CS3152.FoodChain;
 
 import java.util.List;
 
+import com.CS3152.FoodChain.Actor.actorType;
 import com.badlogic.gdx.ai.pfa.DefaultGraphPath;
 import com.badlogic.gdx.ai.pfa.indexed.IndexedAStarPathFinder;
 import com.badlogic.gdx.ai.steer.GroupBehavior;
@@ -382,6 +383,9 @@ public abstract class Animal extends Actor{
 		if (getFinishedDeatAnimation()==false) {
 			super.draw(canvas);
 		}
+		if(isRabid && this.getType()==actorType.PIG){
+			canvas.drawExclamation(body.getPosition());
+		}
 	}
 	
 	@Override
@@ -431,6 +435,7 @@ public abstract class Animal extends Actor{
 		}
 		return;
 	}
+
 	
 	public Array<Vector2> getWayPointList() {
 		return wayPoints;
