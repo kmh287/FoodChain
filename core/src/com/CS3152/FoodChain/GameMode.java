@@ -505,16 +505,14 @@ public class GameMode implements Screen{
     		//Check if reset has been pressed
     		if (controls[0].resetPressed()){
     			//Only allow the player to reset if they last reset over a second ago
-    			if (ticks - lastResetTicks > 60){
+    			//if (ticks - lastResetTicks > 60){
         			canvas.getUIControllerStage().hideSuccess();
         			canvas.getUIControllerStage().hideFailureEaten();
         			canvas.getUIControllerStage().hideFailurePig();
         			canvas.getUIControllerStage().hideTutorial();
-        			stillPlaying = false;
         			initializeLevel(canvas, levelName);
         			lastResetTicks = ticks;
-        			
-    			}
+    			//}
     		}
     		
     		//Check the objective every second, end the game if the player has won or if the objective
@@ -523,7 +521,8 @@ public class GameMode implements Screen{
 	    		gameCondition con = checkObjective();
 	    		if (con == gameCondition.WIN) {
 	    			winFlag = true;
-	    			if (delay >= 2.4) {
+	    			canvas.getUIControllerStage().displaySuccess();
+	    			if (delay >= 5.0f) {
 		    			if (levelListIt.hasNext()) {
 		    				canvas.getUIControllerStage().hideSuccess();
 		    				winFlag = false;
@@ -541,10 +540,13 @@ public class GameMode implements Screen{
 	    		}
 	    		else if (con == gameCondition.LOSE && !winFlag){
 	    			canvas.getUIControllerStage().hideSuccess();
-	    			if(hunter.getAlive()){
+	    			if(hunter.getAlive() && delay == 0.0f){
         				canvas.getUIControllerStage().displayFailurePig();
-        			}
-	    			if (delay >= 2.04 || hunter.getFinishedDeatAnimation()) {	
+        		}
+	    			else if (delay == 0.0f){
+	    			    canvas.getUIControllerStage().displayFailureEaten();
+	    			}
+	    			if (delay >= 5.0f) {	
 			    		  initializeLevel(canvas, levelName);
 		      			  canvas.getUIControllerStage().hideFailureEaten();
 		      			  canvas.getUIControllerStage().hideFailurePig();
@@ -585,8 +587,8 @@ public class GameMode implements Screen{
 			}
 		}
 		
-		if (stillPlaying && controls[0].isTrapSetPressed()  && trapController.canSetTrap() && 
-			 !settingTrap && hunter.getAlive()) {
+		if (controls[0].isTrapSetPressed()  && trapController.canSetTrap() && 
+			!settingTrap && hunter.getAlive()) {
 	    		Vector2 trapPosition = trapController.getTrapPositionFromHunter(hunter);
 	    		if (map.isSafeAt(GameMap.metersToPixels(trapPosition.x), GameMap.metersToPixels(trapPosition.y))) 
 				//Begin the trap set process

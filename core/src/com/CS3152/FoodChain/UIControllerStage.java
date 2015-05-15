@@ -976,7 +976,7 @@ public class UIControllerStage {
         	default:break;
         }
         
-        stage.act();
+      stage.act();
     	stage.draw();
     }
     
@@ -1001,6 +1001,10 @@ public class UIControllerStage {
       wolfTutorial_container.setVisible(false);
       owlTutorial_container.setVisible(false);
       first = true;
+    }
+    
+    public void displaySuccess() {
+      success_container.setVisible(true);
     }
     
     public void hideSuccess() {

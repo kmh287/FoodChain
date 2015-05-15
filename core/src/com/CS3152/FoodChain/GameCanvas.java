@@ -83,6 +83,7 @@ public class GameCanvas {
 	private static String RED_CONE = "assets/RedCone.png";
 	private static String YELLOW_CONE_LARGE = "assets/largeVision-Cone.png";
 	private static String RED_CONE_LARGE = "assets/largeVision-Cone-Red.png";
+    private static String EXCLAMATION = "assets/exclamation.png";
 	protected static Texture yellowCone = null;
 	protected static TextureRegion yellowConeRegion = null;
 	protected static Texture redCone = null;
@@ -91,6 +92,9 @@ public class GameCanvas {
 	protected static TextureRegion yellowConeRegionLarge = null;
 	protected static Texture redConeLarge = null;
 	protected static TextureRegion redConeRegionLarge = null;
+	protected static Texture exclamation = null;
+	protected static TextureRegion exclamationRegion = null;
+	
 	
 
 	/**
@@ -137,6 +141,7 @@ public class GameCanvas {
 		manager.load(RED_CONE,Texture.class);
 		manager.load(YELLOW_CONE_LARGE,Texture.class);
 		manager.load(RED_CONE_LARGE,Texture.class);
+		manager.load(EXCLAMATION,Texture.class);
 	}
 	
 	/**
@@ -173,6 +178,13 @@ public class GameCanvas {
 			yellowConeRegionLarge= new TextureRegion(yellowConeLarge);
 		} else {
 			yellowConeLarge = null;  // Failed to load
+		}
+		if (manager.isLoaded(EXCLAMATION)) {
+			exclamation= manager.get(EXCLAMATION,Texture.class);
+			exclamation.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+			exclamationRegion= new TextureRegion(exclamation);
+		} else {
+			exclamation = null;  // Failed to load
 		}
 	}
 	
@@ -1362,6 +1374,19 @@ public class GameCanvas {
 		//draw target
 		debugRender.circle(x, y, radius);
 
+	}
+
+	public void drawExclamation(Vector2 tmp) {
+    	this.draw(exclamationRegion, 
+    			Color.RED,
+    			tmp.x, 
+    			tmp.y,  
+    			GameMap.metersToPixels(tmp.x)+5, 
+    			GameMap.metersToPixels(tmp.y)+30, 
+    			0f, 
+    			.8f, 
+    			.8f);
+		
 	}
 
 
