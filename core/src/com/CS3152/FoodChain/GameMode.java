@@ -505,7 +505,7 @@ public class GameMode implements Screen{
     		//Check if reset has been pressed
     		if (controls[0].resetPressed()){
     			//Only allow the player to reset if they last reset over a second ago
-    			if (ticks - lastResetTicks > 60){
+    			//if (ticks - lastResetTicks > 60){
         			canvas.getUIControllerStage().hideSuccess();
         			canvas.getUIControllerStage().hideFailureEaten();
         			canvas.getUIControllerStage().hideFailurePig();
@@ -514,7 +514,7 @@ public class GameMode implements Screen{
         			initializeLevel(canvas, levelName);
         			lastResetTicks = ticks;
         			
-    			}
+    			//}
     		}
     		
     		//Check the objective every second, end the game if the player has won or if the objective
