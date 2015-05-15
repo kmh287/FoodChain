@@ -129,8 +129,6 @@ public class CircleObject extends SimplePhysicsObject {
 	 * @param canvas Drawing context
 	 */
 	 public void drawDebug(GameCanvas canvas) {
-		 float testx = GameMap.metersToPixels(getX());
-		 float testy = GameMap.metersToPixels(getY());
 		canvas.drawPhysics(shape,Color.YELLOW,GameMap.metersToPixels(getX()),GameMap.metersToPixels(getY()));
 	}
 

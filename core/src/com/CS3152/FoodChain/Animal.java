@@ -5,9 +5,6 @@ import java.util.List;
 import com.badlogic.gdx.ai.pfa.DefaultGraphPath;
 import com.badlogic.gdx.ai.pfa.indexed.IndexedAStarPathFinder;
 import com.badlogic.gdx.ai.steer.GroupBehavior;
-import com.badlogic.gdx.ai.steer.Limiter;
-import com.badlogic.gdx.ai.steer.Steerable;
-import com.badlogic.gdx.ai.steer.SteeringAcceleration;
 import com.badlogic.gdx.ai.steer.SteeringBehavior;
 import com.badlogic.gdx.ai.steer.behaviors.Flee;
 import com.badlogic.gdx.ai.steer.behaviors.FollowPath;
@@ -15,15 +12,8 @@ import com.badlogic.gdx.ai.steer.behaviors.Seek;
 import com.badlogic.gdx.ai.steer.proximities.RadiusProximity;
 import com.badlogic.gdx.ai.steer.utils.paths.LinePath;
 import com.badlogic.gdx.ai.steer.utils.paths.LinePath.LinePathParam;
-import com.badlogic.gdx.ai.tests.steer.box2d.Box2dLocation;
-import com.badlogic.gdx.ai.tests.steer.box2d.Box2dSteeringUtils;
-import com.badlogic.gdx.ai.utils.Location;
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
@@ -43,8 +33,6 @@ public abstract class Animal extends Actor{
     
     // A vector used for temporary calculations
     private Vector2 tmp;
-    private Vector2 tmp2;
-    private Vector2 tmp3;
 
 	//texture used in getCenter and setCenter
 	private float texWidth;
@@ -67,7 +55,7 @@ public abstract class Animal extends Actor{
     protected SteeringBehavior<Vector2> fleeSB;
     protected SteeringBehavior<Vector2> evadeSB;
     protected SteeringBehavior<Vector2> seekSB;
-    protected RadiusProximity proximity;
+    protected RadiusProximity<Vector2> proximity;
     
     protected boolean isRabid;
     
@@ -101,7 +89,7 @@ public abstract class Animal extends Actor{
 	 */
 	public Animal(TextureRegion tr, actorType type, float x, float y, 
 	              actorType[] prey, Vector2 facing, List<Vector2> patrol,
-	              IndexedAStarPathFinder<MapNode> pathFinder, GameMap map, TiledManhattanDistance heuristic){
+	              IndexedAStarPathFinder<MapNode> pathFinder, GameMap map, TiledManhattanDistance<MapNode> heuristic){
 		super(tr, type, x, y, AnimalWidth, AnimalHeight, prey);
 		this.heuristic = heuristic;
 		this.setPos(GameMap.pixelsToMeters(x), GameMap.pixelsToMeters(y));
@@ -115,8 +103,6 @@ public abstract class Animal extends Actor{
 
 		
 		this.tmp = new Vector2();
-		this.tmp2 = new Vector2();
-		this.tmp3 = new Vector2();
 
 		updateLOS(0);
 		setTexWidth(GameMap.pixelsToMeters(tr.getRegionWidth()));
@@ -438,6 +424,10 @@ public abstract class Animal extends Actor{
 		case FIND:
 			followPathToPatrol.calculateSteering(steeringOutput);
 			break;
+    case DEAD:
+      break;
+    default:
+      break;
 		}
 		return;
 	}
