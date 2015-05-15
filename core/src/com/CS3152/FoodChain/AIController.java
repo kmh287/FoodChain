@@ -570,7 +570,7 @@ public class AIController implements InputController {
 
   public static void increasePanic() {
 		if(panicPercentage<1f){
-			panicPercentage+=.005f;
+			panicPercentage+=.003f;
 		}
 	}
 	
