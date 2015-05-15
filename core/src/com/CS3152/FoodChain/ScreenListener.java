@@ -1,5 +1,7 @@
 package com.CS3152.FoodChain;
+
 import com.badlogic.gdx.Screen;
+
 public interface ScreenListener {
 
 		/**
