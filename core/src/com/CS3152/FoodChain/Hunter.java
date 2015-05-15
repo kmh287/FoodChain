@@ -34,7 +34,7 @@ public class Hunter extends Actor {
     protected static Texture wolfTrapTex = null;
     
     //how far forward the hunter can move in a turn. 
-    private static final float MOVE_SPEED = 9f;
+    private static final float MOVE_SPEED = 7f;
 
     /** How far the hunter can lay a trap from itself */
     private static final float TRAP_RADIUS = 1.0f;

@@ -93,7 +93,7 @@ public class AIController implements InputController {
     protected int patrolTurn;
     
     //this is the delay when animals switch from flee to wander to patrol
-    private int stateDelay = 90;
+    private int stateDelay = 110;
     
     private int rabidLength = 90;
     
