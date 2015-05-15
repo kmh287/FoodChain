@@ -523,6 +523,7 @@ public class GameMode implements Screen{
 	    		gameCondition con = checkObjective();
 	    		if (con == gameCondition.WIN) {
 	    			winFlag = true;
+	    			canvas.getUIControllerStage().displaySuccess();
 	    			if (delay >= 5.0f) {
 		    			if (levelListIt.hasNext()) {
 		    				canvas.getUIControllerStage().hideSuccess();
@@ -547,7 +548,7 @@ public class GameMode implements Screen{
 	    			else if (delay == 0.0f){
 	    			    canvas.getUIControllerStage().displayFailureEaten();
 	    			}
-	    			if (delay >= 5.0f && hunter.getFinishedDeatAnimation()) {	
+	    			if (delay >= 5.0f) {	
 			    		  initializeLevel(canvas, levelName);
 		      			  canvas.getUIControllerStage().hideFailureEaten();
 		      			  canvas.getUIControllerStage().hideFailurePig();
