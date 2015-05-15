@@ -173,12 +173,13 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 		
 		stage.addActor(image);
 		
-		Texture button = new Texture("assets/level.png");
+		Texture button = new Texture("assets/levelnoclick1.png");
 		TextureRegion buttonTextureRegion = new TextureRegion(button);
 		TextureRegionDrawable buttonTRDrawable = new TextureRegionDrawable(buttonTextureRegion);
-		Texture buttonDown = new Texture("assets/levelClick.png");
-    TextureRegion buttonDownTextureRegion = new TextureRegion(buttonDown);
-    TextureRegionDrawable buttonDownTRDrawable = new TextureRegionDrawable(buttonDownTextureRegion);
+		
+		Texture buttonDown = new Texture("assets/levelclick1.png");
+		TextureRegion buttonDownTextureRegion = new TextureRegion(buttonDown);
+		TextureRegionDrawable buttonDownTRDrawable = new TextureRegionDrawable(buttonDownTextureRegion);
 		BitmapFont font = new BitmapFont();
 		font.setColor(Color.BLACK);
 		
