@@ -12,6 +12,7 @@ import com.badlogic.gdx.ai.steer.limiters.LinearAccelerationLimiter;
 import com.badlogic.gdx.ai.steer.proximities.RadiusProximity;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
@@ -108,7 +109,9 @@ public class Wolf extends Animal{
             manager.finishLoading();
             if (manager.isLoaded(WOLF_TEX)){
                 tex = manager.get(WOLF_TEX);
+                tex.setFilter(TextureFilter.Linear, TextureFilter.Linear);
                 deathTexTrap = manager.get(DEATH_TEX_TRAP);
+                deathTexTrap.setFilter(TextureFilter.Linear, TextureFilter.Linear);
             }
         }
     }
