@@ -88,6 +88,7 @@ public class GDXRoot extends Game implements ScreenListener {
 		levelList.add("lakes");
 		levelList.add("Maize");
 		levelList.add("Roundabout");
+		levelList.add("bridge");
 
 		//1 levels
 		/*levelList1.add("tutorial1");
