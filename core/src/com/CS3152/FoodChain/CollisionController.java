@@ -30,7 +30,7 @@ public class CollisionController implements ContactListener {
 	//The game world
 	private World world;
 	/** All the objects in the world. */
-	protected PooledList<PhysicsObject> objects  = new PooledList<PhysicsObject>();
+	protected PooledList<SimplePhysicsObject> objects  = new PooledList<SimplePhysicsObject>();
 	//Vector2 cache for calculations
 	private Vector2 tmp;
 	private InputController[] controls;
@@ -65,7 +65,7 @@ public class CollisionController implements ContactListener {
 	 * @param obj: the object to add
 	 */
 	//protected void addObject(BoxObject obj, Object data) {
-	protected void addObject(PhysicsObject obj) {
+	protected void addObject(SimplePhysicsObject obj) {
 		objects.add(obj);
 		obj.activatePhysics(world);
 		obj.setBullet(true);
@@ -92,7 +92,7 @@ public class CollisionController implements ContactListener {
 	 * 
 	 * @return PooledList of BoxObjects
 	 */
-	public PooledList<PhysicsObject> getObjects() {
+	public PooledList<SimplePhysicsObject> getObjects() {
 		return objects;
 	}
 
@@ -367,10 +367,12 @@ public class CollisionController implements ContactListener {
 		objects.clear();
 		controls = null;
 		trapToRemove = null;
-		trapToAdd = "";
+		trapToAdd = null;
 		animalToTrap = null;
 		trapOver = null;
 		trapController = null;
 		this.world.dispose();
+		world = new World(new Vector2(0, 0), false);
+		world.setContactListener(this);
 	}
 }
