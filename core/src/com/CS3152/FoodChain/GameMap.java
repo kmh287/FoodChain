@@ -57,7 +57,7 @@ public class GameMap implements IndexedGraph<MapNode> {
     
     // The number of nodes within the map
     private int nodeCount;
-    private static String FONT_FILE = "shared/RetroGame.ttf";
+    private static String FONT_FILE = "assets/LightPixel7.ttf";
 	private static int FONT_SIZE = 64;
 
     

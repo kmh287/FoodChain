@@ -28,8 +28,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.ai.pfa.indexed.IndexedAStarPathFinder;
 import com.badlogic.gdx.ai.steer.Steerable;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-//import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader;
+import com.badlogic.gdx.graphics.g2d.*;
 
 
 
@@ -43,18 +42,18 @@ public class GameMode implements Screen{
 	
 	private static enum gameCondition {IN_PLAY, WIN, LOSE};
 	
-    private GameMap map;
-    private AssetManager manager;
-    private List<String> levelList;
-    private Iterator<String> levelListIt;
-    public static Array<Actor> actors;
-    public static List<Animal> animals;
-    public static List<Steerable<Vector2>> steerables;
-    public static Hunter hunter;
-    private Stage stage; 
-    private UIControllerStage uis;
-    private HashMap<String, List<Trap>> traps;
-    private TrapController trapController;
+  private GameMap map;
+  private AssetManager manager;
+  private List<String> levelList;
+  private Iterator<String> levelListIt;
+  public static Array<Actor> actors;
+  public static List<Animal> animals;
+  public static List<Steerable<Vector2>> steerables;
+  public static Hunter hunter;
+  private Stage stage; 
+  private UIControllerStage uis;
+  private HashMap<String, List<Trap>> traps;
+  private TrapController trapController;
 	private float TIME_STEP = 1/200f;
 	private float frameTime;
 	protected static String levelName;
@@ -70,6 +69,8 @@ public class GameMode implements Screen{
 	private boolean start;
 
     protected InputController[] controls;
+    
+    protected PlayerController playerController;
     
     public static final Random random = new Random();
     
@@ -156,8 +157,8 @@ public class GameMode implements Screen{
 			displayFont = manager.get(FONT_FILE,BitmapFont.class);
 		} else {
 			displayFont = null;
-		}*/
-		
+		}
+		*/
 		
 	}
 	
@@ -191,13 +192,18 @@ public class GameMode implements Screen{
         manager.finishLoading();
         LoadContent(manager);
         hunterLife = 3; 
+        collisionController = new CollisionController();
+        steerables = new ArrayList<Steerable<Vector2>>();
+        animals = new ArrayList<Animal>();
+        playerController = new PlayerController();
+        trapController = new TrapController(null, null, null, 0, 0);
+        actors = new Array<Actor>(Actor.class);
+        gameplayController = new GameplayController(null, null, null);
         levelLoad(levelList, level);
-        
-        
 	}
 	
 	public void levelLoad (List<String> levelList, int level) {
-		this.levelList = levelList;
+	  this.levelList = levelList;
 		this.levelListIt = levelList.iterator();
 		if (levelList.size() == 0 || levelList.size() < level){
 			throw new IllegalArgumentException("Must choose valid level.");
@@ -205,11 +211,18 @@ public class GameMode implements Screen{
 		for (int l = 1; l < level; l++) {
 			levelListIt.next();
 		}
-        initializeLevel(canvas, levelListIt.next());
+		initializeLevel(canvas, levelListIt.next());
 	}
 	
  	private void initializeLevel(GameCanvas canvas, String levelName){
-        //For now we will hard code the level to load
+        steerables.clear();
+ 		animals.clear();
+        actors.clear();
+        collisionController.reset();
+        trapController.reset();
+ 		gameplayController.reset();
+        
+ 		//For now we will hard code the level to load
         //When we implement a UI that may ask players
         //what level to start on. This code will change
  		 playing = true;
@@ -218,14 +231,13 @@ public class GameMode implements Screen{
         map.setDimensions();
         map.createGraph();
         map.LoadContent(manager);
-        collisionController = new CollisionController();
         map.addTilesToWorld(collisionController);
-        steerables = new ArrayList<Steerable<Vector2>>();
+        
         steerables.addAll(map.getTileList());
 
         //Get the animal types from map
         //but build and keep the actual list here
-        animals = new ArrayList<Animal>();
+      
         List<Actor.actorType> aTypes = 
                             map.getActorTypeList();
         List<Vector2> coordinates = map.getCoordinates();
@@ -237,11 +249,12 @@ public class GameMode implements Screen{
         
         //All the animals, plus the Hunter
         //The hunter is always first in this array
+      
         controls = new InputController[animals.size() + 1]; 
-        controls[0] = new PlayerController();        
-        
+        controls[0] = playerController;  
 
-        trapController = new TrapController(hunter, map, collisionController,numPigs,numWolves);
+        trapController.set(hunter, map, collisionController, numPigs, numWolves);
+        
         settingTrap = false;
         trapSetProgress = 0;
 
@@ -254,9 +267,7 @@ public class GameMode implements Screen{
         
         //Setup traps and the trap UI
 	    traps = (HashMap<String, List<Trap>>) trapController.getInventory();
-	    
-	    player = new PlayerController(); 
-        List<Actor> actors = new ArrayList<Actor>();
+        
         actors.add(hunter);
         for (int i = 0; i < animals.size(); i++) {
         		actors.add(animals.get(i));
@@ -265,10 +276,8 @@ public class GameMode implements Screen{
         }
         
         createSteeringBehaviors();
-        Actor[] actorArray = new Actor[actors.size()];
-        actors.toArray(actorArray);
-        GameMode.actors = new Array<Actor>(actorArray);
-        gameplayController = new GameplayController(map, actorArray, controls);
+        Actor[] actorArray = actors.toArray();
+        gameplayController.set(map, actorArray, controls);
         canvas.getUIControllerStage().setPanic(AIController.getPanicPercentage());
         canvas.getUIControllerStage().setGameMode(this);
         collisionController.setControls(controls);
@@ -491,7 +500,7 @@ public class GameMode implements Screen{
 
     private void update(float delta){
     		//Check if reset has been pressed
-    		if (controls[0].resetPressed()){
+    		if (controls[0].resetPressed() && isStillPlaying()){
     			//Only allow the player to reset if they last reset over a second ago
     			//if (ticks - lastResetTicks > 60){
         			canvas.getUIControllerStage().hideSuccess();
@@ -515,10 +524,10 @@ public class GameMode implements Screen{
     		
     		//Check the objective every second, end the game if the player has won or if the objective
     		//cannot be achieved
-    		if (ticks % 60 == 0){
+    		//if (ticks % 60 == 0){
 	    		gameCondition con = checkObjective();
 	    		if (con == gameCondition.WIN) {
-	    			if (delay >= 0.04) {
+	    			if (delay >= 2.4) {
 		    			if (levelListIt.hasNext()) {
 		    				canvas.getUIControllerStage().hideSuccess();
 		    				initializeLevel(canvas, levelListIt.next());
@@ -548,9 +557,8 @@ public class GameMode implements Screen{
 	    			else {
 	    				delay += delta;
 	    			}
-
 	    		}
-    		}
+    		//}
     	
     	//The hunter can move when not setting a trap
     	gameplayController.update(delta, !settingTrap);

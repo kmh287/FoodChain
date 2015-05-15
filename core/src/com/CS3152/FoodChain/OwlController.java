@@ -6,6 +6,7 @@ import java.util.*;
 
 import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.Array;
 
 public class OwlController extends AIController {
 	    
@@ -53,7 +54,7 @@ public class OwlController extends AIController {
 	    
 	    private Random random;
 	    //actors on the screen now 
-		private List<Actor> actors;
+		private Array<Actor> actors;
 	    
 	    
 	    /*
@@ -62,7 +63,7 @@ public class OwlController extends AIController {
 	     * @param animal The Animal being controlled
 	     * @param map The game map
 	     */
-	    public OwlController(Owl owl, World world, GameMap map, List<Actor> actors) {
+	    public OwlController(Owl owl, World world, GameMap map, Array<Actor> actors) {
 	        super(owl, world, map, actors);
 	    		this.owl = owl;
 	        this.world = world;

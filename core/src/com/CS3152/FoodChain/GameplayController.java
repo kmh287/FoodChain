@@ -86,4 +86,16 @@ public class GameplayController {
 			actor.setFacing(((AIController) controls[index]).getAction(delta));
 		}
 	}
+	
+	public void set(GameMap map, Actor[] actors, InputController[] controls) {
+		this.map = map;
+		this.actors = actors;
+		this.controls = controls;
+	}
+	
+	public void reset() {
+		this.map = null;
+		this.actors = null;
+		this.controls = null;
+	}
 }

@@ -179,5 +179,40 @@ public class TrapController {
 		return null;
     }
 
-
+    public void set(Hunter hunter, GameMap map, CollisionController colCon,
+    		        int nPigs, int nWolves) {
+    	this.hunter = hunter;
+    	this.map = map;
+    	int max;
+    	if(nPigs > nWolves){
+    		max = nPigs;
+    	}
+    	else{
+    		max = nWolves;
+    	}
+    	for(int i =0;i<max;i++){
+    	    Trap tmp = new RegularTrap();
+    	    tmp.setSensor(true);
+    	    tmp.setBodyType(BodyDef.BodyType.StaticBody);
+    	    tmp.setInInventory(true);
+    	    colCon.addObject(tmp);
+    	    this.addToInventory(tmp);
+    	}
+    	for(int i =0;i<max;i++){
+    	    Trap tmp = new SheepTrap();
+    	    tmp.setSensor(true);
+    	    tmp.setBodyType(BodyDef.BodyType.StaticBody);
+    	    tmp.setInInventory(false);
+    	    colCon.addObject(tmp);
+    	    this.addToInventory(tmp);
+    	}
+    	selectedTrap = null;
+    }
+    
+    public void reset() {
+    	this.hunter = null;
+    	this.map = null;
+    	inventory.get("REGULAR_TRAP").clear();
+    	inventory.get("SHEEP_TRAP").clear();
+    }
 }
