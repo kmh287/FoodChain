@@ -931,6 +931,10 @@ public class UIControllerStage {
       tutorial1_container.setVisible(false);
     }
     
+    public void displaySuccess() {
+      success_container.setVisible(true);
+    }
+    
     public void hideSuccess() {
         success_container.setVisible(false);
     }
