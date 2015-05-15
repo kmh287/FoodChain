@@ -499,6 +499,10 @@ public abstract class Animal extends Actor{
 			float y = GameMap.pixelsToMeters(pixY + 20.0f);
 			ptp.add(new Vector2(x,y));
 		}
+		if (ptp.size <= 1) {
+		  setState(AIController.State.WANDER);
+		  return;
+		}
 		pathToPatrol.createPath(ptp);
 		followPathToPatrol.setPath(pathToPatrol);
 	}
