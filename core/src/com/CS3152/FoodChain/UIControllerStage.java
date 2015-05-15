@@ -27,7 +27,7 @@ public class UIControllerStage {
 	
 	//Gdx.input.setInputProcessor(this);
 	
-	  private static final String TRAPS_DESELECT = "assets/all_deselect.png";
+	 private static final String TRAPS_DESELECT = "assets/all_deselect.png";
     private static final String TRAP_ONE_ONE = "assets/trap1_1.png";
     private static final String TRAP_ONE_TWO = "assets/trap1_2.png";
     private static final String TRAP_ONE_THREE = "assets/trap1_3.png";
@@ -64,8 +64,12 @@ public class UIControllerStage {
     private static final String WOLF_6 = "assets/wolf_6.png";
     
     
-    private static final String TUTORIAL_1 = "assets/tutorial1.png";
-  
+    private static final String BASICS_TUTORIAL = "assets/BasicsTutorial.png";
+    private static final String PIG_TUTORIAL = "assets/PigTutorial.png";
+    private static final String WOLF_TUTORIAL = "assets/WolfTutorial.png";
+    private static final String OWL_TUTORIAL = "assets/OwlTutorial.png";
+    private boolean first = true;
+    
     private static final String SUCCESS = "assets/Success.png";
     private static final String FAILURE_PIG = "assets/failure.png";
     private static final String FAILURE_EATEN = "assets/failure_eaten.png";
@@ -109,7 +113,10 @@ public class UIControllerStage {
     private static Texture wolf_4_texture = null;
     private static Texture wolf_5_texture = null;
     private static Texture wolf_6_texture = null;
-    private static Texture tutorial_1 = null;
+    private static Texture basicsTutorial_texture = null;
+    private static Texture pigTutorial_texture = null;
+    private static Texture wolfTutorial_texture = null;
+    private static Texture owlTutorial_texture = null;
     private static Texture success_texture = null;
     private static Texture failure_pig_texture = null;
     private static Texture failure_eaten_texture = null;
@@ -156,7 +163,10 @@ public class UIControllerStage {
 	Image wolf_4;
 	Image wolf_5;
 	Image wolf_6;
-	Image tutorial1;
+	Image basicsTutorial;
+	Image pigTutorial;
+	Image wolfTutorial;
+	Image owlTutorial;
 	Image success;
 	Image failure_pig;
 	Image failure_eaten;
@@ -202,10 +212,15 @@ public class UIControllerStage {
 	Table failure_pig_container;
 	
 	private GameMode gameMode;
-	Table tutorial1_container;
+	Table basicsTutorial_container;
+	Table pigTutorial_container;
+	Table wolfTutorial_container;
+	Table owlTutorial_container;
 	
 	private static float panic;
 	protected static boolean tutorialScreenOpen = true;
+	
+	private int tics = 0;
 	
 	
     public void setTrapController(TrapController t){
@@ -247,7 +262,10 @@ public class UIControllerStage {
             manager.load(WOLF_4,Texture.class);
             manager.load(WOLF_5,Texture.class);
             manager.load(WOLF_6,Texture.class);
-            manager.load(TUTORIAL_1, Texture.class);
+            manager.load(BASICS_TUTORIAL, Texture.class);
+            manager.load(PIG_TUTORIAL, Texture.class);
+            manager.load(WOLF_TUTORIAL, Texture.class);
+            manager.load(OWL_TUTORIAL, Texture.class);
             manager.load(SUCCESS, Texture.class);
             manager.load(FAILURE_EATEN, Texture.class);
             manager.load(FAILURE_PIG, Texture.class);
@@ -289,7 +307,10 @@ public class UIControllerStage {
             	wolf_4_texture = manager.get(WOLF_4);
             	wolf_5_texture = manager.get(WOLF_5);
             	wolf_6_texture = manager.get(WOLF_6);
-            	tutorial_1 = manager.get(TUTORIAL_1);
+            	basicsTutorial_texture = manager.get(BASICS_TUTORIAL);
+            	pigTutorial_texture = manager.get(PIG_TUTORIAL);
+            	wolfTutorial_texture = manager.get(WOLF_TUTORIAL);
+            	owlTutorial_texture = manager.get(OWL_TUTORIAL);
             	success_texture = manager.get(SUCCESS);
             	failure_eaten_texture= manager.get(FAILURE_EATEN);
             	failure_pig_texture= manager.get(FAILURE_PIG);
@@ -316,7 +337,10 @@ public class UIControllerStage {
             	objective_pig = new Image();
             	objective_wolf = new Image();
             	objective_both = new Image();
-            	tutorial1 = new Image();
+            	basicsTutorial = new Image();
+            	pigTutorial = new Image();
+            	wolfTutorial = new Image();
+            	owlTutorial = new Image();
             	success= new Image();
             	pig_0 = new Image();
             	pig_1 = new Image();
@@ -370,7 +394,10 @@ public class UIControllerStage {
             	wolf_4_container = new Table();
             	wolf_5_container = new Table();
             	wolf_6_container = new Table();
-            	tutorial1_container = new Table();
+            	basicsTutorial_container = new Table();
+            	pigTutorial_container = new Table();
+            	wolfTutorial_container = new Table();
+            	owlTutorial_container = new Table();
             	success_container = new Table();
             	failure_pig_container = new Table();
             	failure_eaten_container = new Table();
@@ -602,11 +629,29 @@ public class UIControllerStage {
                 failure_pig_container.center(); 
                 failure_pig_container.row();
                 
-                tutorial1.setDrawable(new TextureRegionDrawable(new TextureRegion(tutorial_1)));
-                tutorial1_container.add(tutorial1).width(160f).height(90f).padTop(1.5f).padLeft(2f);
-                tutorial1_container.setFillParent(true);
-                tutorial1_container.center().top(); 
-                tutorial1_container.row();
+                basicsTutorial.setDrawable(new TextureRegionDrawable(new TextureRegion(basicsTutorial_texture)));
+                basicsTutorial_container.add(basicsTutorial).width(160f).height(90f).padTop(1.5f).padLeft(2f);
+                basicsTutorial_container.setFillParent(true);
+                basicsTutorial_container.center().top(); 
+                basicsTutorial_container.row();
+                
+                pigTutorial.setDrawable(new TextureRegionDrawable(new TextureRegion(pigTutorial_texture)));
+                pigTutorial_container.add(pigTutorial).width(160f).height(90f).padTop(1.5f).padLeft(2f);
+                pigTutorial_container.setFillParent(true);
+                pigTutorial_container.center().top(); 
+                pigTutorial_container.row();
+                
+                wolfTutorial.setDrawable(new TextureRegionDrawable(new TextureRegion(wolfTutorial_texture)));
+                wolfTutorial_container.add(wolfTutorial).width(160f).height(90f).padTop(1.5f).padLeft(2f);
+                wolfTutorial_container.setFillParent(true);
+                wolfTutorial_container.center().top(); 
+                wolfTutorial_container.row();
+                
+                owlTutorial.setDrawable(new TextureRegionDrawable(new TextureRegion(owlTutorial_texture)));
+                owlTutorial_container.add(owlTutorial).width(160f).height(90f).padTop(1.5f).padLeft(2f);
+                owlTutorial_container.setFillParent(true);
+                owlTutorial_container.center().top(); 
+                owlTutorial_container.row();
                
                 
             	stage.addActor(deselect_container);
@@ -645,7 +690,10 @@ public class UIControllerStage {
             	stage.addActor(wolf_4_container);
             	stage.addActor(wolf_5_container);
             	stage.addActor(wolf_6_container);
-            	stage.addActor(tutorial1_container);
+            	stage.addActor(pigTutorial_container);
+            	stage.addActor(basicsTutorial_container);
+            	stage.addActor(wolfTutorial_container);
+            	stage.addActor(owlTutorial_container);
             	stage.addActor(success_container);
             	stage.addActor(failure_pig_container);
             	stage.addActor(failure_eaten_container);
@@ -688,7 +736,10 @@ public class UIControllerStage {
     	textureArray.add(wolf_4_texture);
     	textureArray.add(wolf_5_texture);
     	textureArray.add(wolf_6_texture);
-    	textureArray.add(tutorial_1);
+    	textureArray.add(basicsTutorial_texture);
+    	textureArray.add(pigTutorial_texture);
+    	textureArray.add(wolfTutorial_texture);
+    	textureArray.add(owlTutorial_texture);
     	textureArray.add(success_texture);
     	textureArray.add(failure_eaten_texture);
     	textureArray.add(failure_pig_texture);
@@ -736,7 +787,10 @@ public class UIControllerStage {
     	failure_pig_container.setVisible(false);
     	
  
-    	tutorial1_container.setVisible(false);
+    	basicsTutorial_container.setVisible(false);
+    	pigTutorial_container.setVisible(false);
+    	wolfTutorial_container.setVisible(false);
+    	owlTutorial_container.setVisible(false);
     	success.setVisible(false);
     	
     }
@@ -785,7 +839,10 @@ public class UIControllerStage {
     	wolf_6_container.setVisible(false);
     	
     	success.setVisible(false);
-    	tutorial1_container.setVisible(false);
+    	basicsTutorial_container.setVisible(false);
+    	pigTutorial_container.setVisible(false);
+    	wolfTutorial_container.setVisible(false);
+    	owlTutorial_container.setVisible(false);
     	regularCount = 0;
         sheepCount = 0;
         
@@ -831,17 +888,28 @@ public class UIControllerStage {
         	trap_2_5_container.setVisible(true);
         }
         
-        if (Gdx.input.isKeyPressed(Input.Keys.ENTER)){
+        if (Gdx.input.isKeyPressed(Input.Keys.ENTER) && tics >= 60){
+        	tics = 0;
+        	if (!(GameMode.levelName.equals("tutorial1") && first)) {
         		tutorialScreenOpen = false;
-        		tutorial1_container.setVisible(false);
+        	}
+        	else {
+        		first = false;
+        	}
         }
+        tics++;
         
         //Tutorial screens
         if (tutorialScreenOpen){
 	        if (GameMode.levelName.equals("tutorial1")){
-	        		tutorial1_container.setVisible(true);
+	        	if (first) {
+	        		basicsTutorial_container.setVisible(true);
+	        	}
+	        	pigTutorial_container.setVisible(true);
 	        } else if (GameMode.levelName.equals("tutorial2")){
-	        		tutorial1_container.setVisible(true);
+	        	wolfTutorial_container.setVisible(true);
+	        } else if (GameMode.levelName.equals("tutorial3")){
+	        	owlTutorial_container.setVisible(true);
 	        }
         }
         
@@ -928,7 +996,11 @@ public class UIControllerStage {
     
     public void hideTutorial() {
       tutorialScreenOpen = false;
-      tutorial1_container.setVisible(false);
+      basicsTutorial_container.setVisible(false);
+      pigTutorial_container.setVisible(false);
+      wolfTutorial_container.setVisible(false);
+      owlTutorial_container.setVisible(false);
+      first = true;
     }
     
     public void hideSuccess() {
