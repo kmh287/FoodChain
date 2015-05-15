@@ -97,7 +97,7 @@ public class TrapController {
 	if (Math.abs(tmp.len()) <= TRAP_RADIUS && selectedTrap.getInInventory()==true) {
 		return true;
 	} */
-    	if (selectedTrap.getInInventory()==true && hunter.getAlive()) {
+    	if (selectedTrap != null && selectedTrap.getInInventory()==true && hunter.getAlive()) {
     		return true;
     	}
     	//tmp.set(getPosition());
