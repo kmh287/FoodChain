@@ -63,8 +63,8 @@ public class Trap extends BoxObject {
 			drawScale.y = .8f; 
 		}
 		else{
-			drawScale.x = 0.6f; 
-			drawScale.y = 0.6f; 
+			drawScale.x = 0.55f; 
+			drawScale.y = 0.55f; 
 		}
 
 	}
