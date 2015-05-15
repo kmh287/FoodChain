@@ -25,7 +25,6 @@ import java.util.List;
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.assets.*;
 import com.badlogic.gdx.graphics.g2d.*;
-import com.badlogic.gdx.graphics.g2d.freetype.*;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.assets.loaders.*;
 import com.badlogic.gdx.assets.loaders.resolvers.*;
@@ -77,7 +76,6 @@ public class GDXRoot extends Game implements ScreenListener {
 
 		//THREE NEW LEVELS commented out below 
 		
-		//levelListTutorial.add("owlTest");
 		levelList.add("tutorial1");
 		levelList.add("tutorial2");
 		levelList.add("tutorial3");
