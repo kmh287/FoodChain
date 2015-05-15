@@ -505,6 +505,7 @@ public class GameMode implements Screen{
     		if (controls[0].resetPressed()){
     			//Only allow the player to reset if they last reset over a second ago
     			if (ticks - lastResetTicks > 60){
+    				stillPlaying = false;
         			canvas.getUIControllerStage().hideSuccess();
         			canvas.getUIControllerStage().hideFailureEaten();
         			canvas.getUIControllerStage().hideFailurePig();
@@ -525,6 +526,7 @@ public class GameMode implements Screen{
 		    			if (levelListIt.hasNext()) {
 		    				canvas.getUIControllerStage().hideSuccess();
 		    				winFlag = false;
+		    				stillPlaying = false;
 		    				initializeLevel(canvas, levelListIt.next());
 		    				delay = 0.0f;
 		    			}
@@ -546,6 +548,7 @@ public class GameMode implements Screen{
 	    			    canvas.getUIControllerStage().displayFailureEaten();
 	    			}
 	    			if (delay >= 4.0f) {
+	    				  stillPlaying = false;
 			    		  initializeLevel(canvas, levelName);
 		      			  canvas.getUIControllerStage().hideFailureEaten();
 		      			  canvas.getUIControllerStage().hideFailurePig();
@@ -586,7 +589,7 @@ public class GameMode implements Screen{
 			}
 		}
 		
-		if (controls[0].isTrapSetPressed()  && trapController.canSetTrap() && 
+		if (isStillPlaying() && controls[0].isTrapSetPressed()  && trapController.canSetTrap() && 
 			!settingTrap && hunter.getAlive()) {
 	    		Vector2 trapPosition = trapController.getTrapPositionFromHunter(hunter);
 	    		if (map.isSafeAt(GameMap.metersToPixels(trapPosition.x), GameMap.metersToPixels(trapPosition.y))) 
