@@ -88,10 +88,10 @@ public class Pig extends Animal {
 				// We don't need a limiter supporting angular components because Face is not used
 				// No need to call setAlignTolerance, setDecelerationRadius and setTimeToTarget for the same reason
 				.setLimiter(limiter) //
-				.setWanderOffset(1) //
+				.setWanderOffset(3) //
 				.setWanderOrientation(1) //
 				.setWanderRadius(1) //
-				.setWanderRate(.1f);
+				.setWanderRate(.5f);
         
 
         fleeSB = new Flee<Vector2>(this);

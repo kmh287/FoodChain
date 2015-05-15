@@ -81,7 +81,7 @@ public class Wolf extends Animal{
 				// We don't need a limiter supporting angular components because Face is not used
 				// No need to call setAlignTolerance, setDecelerationRadius and setTimeToTarget for the same reason
 				.setLimiter(new LinearAccelerationLimiter(maxLinearAcceleration)) //
-				.setWanderOffset(1) //
+				.setWanderOffset(3) //
 				.setWanderOrientation(GameMode.random.nextFloat()) //
 				.setWanderRadius(1) //
 				.setWanderRate(MathUtils.PI / 10);

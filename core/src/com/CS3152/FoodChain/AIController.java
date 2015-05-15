@@ -491,13 +491,14 @@ public class AIController implements InputController {
 			            animal.setState(State.WANDER);
 			            setAttacker(null);
 			            setTarget(null);
+			            break;
 			        }
 			        turns--;
 			        //if fleeing hunter, then increase panic
 			        if(getTarget() instanceof Hunter){
 				        panicked = true;
 			        }
-			        if(getPanicPercentage() >= .9f) {
+			        if(getPanicPercentage() >= .75f) {
 			        	// For Evade
 			        	setRabidity(rabidLength);
 			        	animal.setRabid(rabidity);
