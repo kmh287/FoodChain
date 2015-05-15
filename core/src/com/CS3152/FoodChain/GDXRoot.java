@@ -25,9 +25,7 @@ import java.util.List;
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.assets.*;
 import com.badlogic.gdx.graphics.g2d.*;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGeneratorLoader;
-import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader;
+import com.badlogic.gdx.graphics.g2d.freetype.*;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.assets.loaders.*;
 import com.badlogic.gdx.assets.loaders.resolvers.*;
@@ -160,8 +158,6 @@ public class GDXRoot extends Game implements ScreenListener {
 	}
 	
 	public void gameOverScreen() {
-		int pointx = 1;
-		int pointy = 2;
 		LoadingMode loadingNew = new LoadingMode(canvas,manager,1, true);
 		playing = null;
 		//dispose();

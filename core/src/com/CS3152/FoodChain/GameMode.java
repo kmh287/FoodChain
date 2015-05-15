@@ -32,8 +32,6 @@ import com.badlogic.gdx.ai.steer.Steerable;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.graphics.g2d.freetype.*;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader;
 
 
 
@@ -152,12 +150,12 @@ public class GameMode implements Screen{
 		GameCanvas.LoadContent(manager);
 		SoundController.LoadContent(manager);
 		
-       /* if (manager.isLoaded(FONT_FILE)) {
+        /*if (manager.isLoaded(FONT_FILE)) {
 			displayFont = manager.get(FONT_FILE,BitmapFont.class);
 		} else {
 			displayFont = null;
-		}*/
-		
+		}
+		*/
 		
 	}
 	
@@ -471,6 +469,10 @@ public class GameMode implements Screen{
 	    		gameCondition con = checkObjective();
 	    		if (con == gameCondition.WIN){
 	    			if (levelListIt.hasNext()){
+	    				/*displayFont.setColor(Color.RED);
+	    				canvas.begin(); // DO NOT SCALE
+	    				canvas.drawTextCentered("YOU WON!", displayFont, 0.0f);
+	    				canvas.end();*/
 	    				initializeLevel(canvas, levelListIt.next());
 	    			}
 	    			else {
@@ -478,10 +480,6 @@ public class GameMode implements Screen{
 	    				//System.out.println("we won, make a loading screen!");
 	    				//root.gameOverScreen();
 	    				//return;
-	    				/*displayFont.setColor(Color.RED);
-	    				canvas.begin(); // DO NOT SCALE
-	    				canvas.drawTextCentered("YOU WON!", displayFont, 0.0f);
-	    				canvas.end();*/
 	    				
 	    			}
 	    		}
@@ -492,10 +490,7 @@ public class GameMode implements Screen{
     					/*System.out.println("you lost all 3 lives, make a loading screen!");
     					playing = false; 
 	    				root.gameOverScreen();*/
-    					/*displayFont.setColor(Color.RED);
-    					canvas.begin(); // DO NOT SCALE
-    					canvas.drawTextCentered("FAILURE!", displayFont, 0.0f);
-    					canvas.end();*/
+    					
     					
     				}
     				// hunter life > 0 
