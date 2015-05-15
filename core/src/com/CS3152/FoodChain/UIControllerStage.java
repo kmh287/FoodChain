@@ -908,7 +908,7 @@ public class UIControllerStage {
         	default:break;
         }
         
-        stage.act();
+      stage.act();
     	stage.draw();
     }
     
@@ -929,6 +929,10 @@ public class UIControllerStage {
     public void hideTutorial() {
       tutorialScreenOpen = false;
       tutorial1_container.setVisible(false);
+    }
+    
+    public void displaySuccess() {
+      success_container.setVisible(true);
     }
     
     public void hideSuccess() {
