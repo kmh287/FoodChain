@@ -65,8 +65,11 @@ public abstract class Animal extends Actor{
     protected SteeringBehavior<Vector2> collisionAvoidanceSB;
     protected SteeringBehavior<Vector2> wanderSB;
     protected SteeringBehavior<Vector2> fleeSB;
+    protected SteeringBehavior<Vector2> evadeSB;
     protected SteeringBehavior<Vector2> seekSB;
     protected RadiusProximity proximity;
+    
+    protected boolean isRabid;
     
     private boolean finishedDeatAnimation;
     
@@ -300,6 +303,16 @@ public abstract class Animal extends Actor{
 		return this.rightSectorLine;
 	}
 	
+	public void setRabid(int rabidity) {
+		if (rabidity <= 0) {
+			isRabid = false;
+		}
+		else {
+			isRabid = true;
+		}
+		
+	}
+	
 	public void drawDebugSight(GameCanvas canvas) {
 		if (getAlive()) {
 			//old code that draws vision lines to scale
@@ -340,11 +353,6 @@ public abstract class Animal extends Actor{
 		}
 	}
 	
-<<<<<<< HEAD
-	public RadiusProximity getProximity() {
-		return this.proximity;
-=======
-	
     public static enum State {
         // Animal is wandering
         WANDER,
@@ -381,8 +389,6 @@ public abstract class Animal extends Actor{
 		else{
 			canvas.drawCone(true, tmp, body.getAngle(),this.getType());
 		}
-		
->>>>>>> 2accc9e0a3225e841e4e3541f498eba2d1710f93
 	}
 	
 	@Override
@@ -401,16 +407,7 @@ public abstract class Animal extends Actor{
 	@Override
 	public void calculateSteering() {		
 		if (state != AIController.State.FIND) {
-		collisionAvoidanceSB.calculateSteering(steeringOutput);
-<<<<<<< HEAD
-		if (steeringOutput.calculateSquareMagnitude() > minSteeringSquared) {
-			return; 
-		}
-=======
-//		  if (steeringOutput.calculateSquareMagnitude() > minSteeringSquared) {
-//			  return; 
-//		  }
->>>>>>> 2accc9e0a3225e841e4e3541f498eba2d1710f93
+			collisionAvoidanceSB.calculateSteering(steeringOutput);
 		}
 		
 		switch (state) {
@@ -421,7 +418,12 @@ public abstract class Animal extends Actor{
 			seekSB.calculateSteering(steeringOutput);
 			break;
 		case FLEE:
-			fleeSB.calculateSteering(steeringOutput);
+			if (isRabid) {
+				evadeSB.calculateSteering(steeringOutput);
+			}
+			else {
+				fleeSB.calculateSteering(steeringOutput);
+			}
 			break;
 		case KILL:
 			steeringOutput.setZero();

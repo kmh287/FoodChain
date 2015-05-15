@@ -94,8 +94,11 @@ public class Pig extends Animal {
 				.setWanderRate(.1f);
         
 
-        fleeSB = new Evade<Vector2>(this, null);
+        fleeSB = new Flee<Vector2>(this);
         fleeSB.setLimiter(limiter);
+        
+        evadeSB = new Evade<Vector2>(this, null);
+        evadeSB.setLimiter(limiter);
     }
 
     /* (non-Javadoc)
@@ -134,7 +137,8 @@ public class Pig extends Animal {
     
     @Override
     public void setTarget(Actor actor) {
-        ((Evade<Vector2>) fleeSB).setTarget(actor);
+        ((Flee<Vector2>) fleeSB).setTarget(actor);
+        ((Evade<Vector2>) evadeSB).setTarget(actor);
     }
     
     public void updateWalkFrame(){
