@@ -53,7 +53,7 @@ import com.badlogic.gdx.controllers.*;
  */
 public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 	// Textures necessary to support the loading screen 
-	private static final String BACKGROUND_FILE = "assets/levelselectbackground.png";
+	private static final String BACKGROUND_FILE = "assets/levelselectbackgroundnoarrow.png";
 	//private static final String PROGRESS_FILE = "assets/level1select.png";
 
 	private Stage stage;
