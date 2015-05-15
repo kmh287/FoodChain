@@ -6,6 +6,7 @@ import com.badlogic.gdx.ai.pfa.DefaultConnection;
 import com.badlogic.gdx.ai.pfa.indexed.IndexedGraph;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -103,6 +104,8 @@ public class GameMap implements IndexedGraph<MapNode> {
     protected static Texture grassWTexture;
     protected static Texture grassNWTexture;
     
+    protected static List<Texture> textureArray = (List) new ArrayList();
+    
     /**
      * Load all of the tile textures for this map.
      * @param manager
@@ -144,6 +147,31 @@ public class GameMap implements IndexedGraph<MapNode> {
         grassSWTexture 	= (Texture) (manager.isLoaded(SW_GRASS) ? manager.get(SW_GRASS) : null);
         grassWTexture 	= (Texture) (manager.isLoaded(W_GRASS) ? manager.get(W_GRASS) : null);
         grassNWTexture 	= (Texture) (manager.isLoaded(NW_GRASS) ? manager.get(NW_GRASS) : null);
+        textureArray.add(grassTexture);      
+	    textureArray.add(bushTexture);           
+	    textureArray.add(treeTexture);           
+	    textureArray.add(waterTexture);    
+	    textureArray.add(dirtTexture);           
+	    textureArray.add(waterNTexture);   
+	    textureArray.add(waterNETexture);  
+	    textureArray.add(waterETexture);   
+	    textureArray.add(waterSETexture);  
+	    textureArray.add(waterSTexture);   
+	    textureArray.add(waterSWTexture);  
+	    textureArray.add(waterWTexture);   
+	    textureArray.add(waterNWTexture);  
+	    textureArray.add(grassNTexture);   
+	    textureArray.add(grassNETexture);  
+	    textureArray.add(grassETexture);   
+	    textureArray.add(grassSETexture);  
+	    textureArray.add(grassSTexture);   
+	    textureArray.add(grassSWTexture);  
+	    textureArray.add(grassWTexture);   
+	    textureArray.add(grassNWTexture);  
+    	//remove blur
+    	for(int i = 0;i<textureArray.size();i++){
+    		textureArray.get(i).setFilter(TextureFilter.Linear, TextureFilter.Linear);
+    	}
     }
     
     /**

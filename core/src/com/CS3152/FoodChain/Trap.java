@@ -58,8 +58,15 @@ public class Trap extends BoxObject {
 		setWell = false;
 		this.type=type;
 		isOver= false;
-		drawScale.x = 0.6f; 
-		drawScale.y = 0.6f; 
+		if(type=="SHEEP_TRAP"){
+			drawScale.x =.8f; 
+			drawScale.y = .8f; 
+		}
+		else{
+			drawScale.x = 0.55f; 
+			drawScale.y = 0.55f; 
+		}
+
 	}
 	
 	/** 

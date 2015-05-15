@@ -65,54 +65,40 @@ public class GDXRoot extends Game implements ScreenListener {
 		manager.setLoader(FreeTypeFontGenerator.class, new FreeTypeFontGeneratorLoader(resolver));
 		manager.setLoader(BitmapFont.class, ".ttf", new FreetypeFontLoader(resolver));*/
 	}
-	/**Build the level list corresponding to the pressed button**/
+	/**
+	 * Builds the level list from pre-set file names
+	 * @return A string list with the level names 
+	 */
 	private List<String> buildLevels(){
-		// Initialize all level lists
 		List<String> levelList = new ArrayList<String>();
-		//List<String> levelList1 = new ArrayList<String>();
-		//List<String> levelList2 = new ArrayList<String>();
-		//List<String> levelList3 = new ArrayList<String>();
-		//tutorial levels
-
-		//THREE NEW LEVELS commented out below 
-		
 		levelList.add("tutorial1");
 		levelList.add("tutorial2");
 		levelList.add("tutorial3");
 		levelList.add("Juice");
-		levelList.add("HideAndSeek");
 		levelList.add("Cycle2");
 		levelList.add("earthAndWater");
 		levelList.add("railroad");
 		levelList.add("lakes");
 		levelList.add("Maize");
 		levelList.add("Roundabout");
-
-		//1 levels
-		/*levelList1.add("tutorial1");
-		levelList1.add("tutorial2");
-		levelList1.add("tutorial3");
-		levelList1.add("Cycle2");
-		levelList1.add("HideAndSeek");
-		levelList1.add("kpatroltest2");
-		//2 levels
-		levelList2.add("HideAndSeek");
-		levelList2.add("tutorial1");
-		levelList2.add("tutorial2");
-		levelList2.add("tutorial3");
-		levelList2.add("Cycle2");
-		//3 levels
-		levelList3.add("Maize");
-		levelList3.add("Roundabout");
-		levelList3.add("tutorial1");
-		levelList3.add("tutorial2");
-		levelList3.add("tutorial3");
-		levelList3.add("Cycle2");
-		*/
-		
-		/*allLists.add(levelList1);
-		allLists.add(levelList2);
-		allLists.add(levelList3);*/
+		levelList.add("lakefront");
+		levelList.add("HideAndSeek");
+		levelList.add("bridge");
+		levelList.add("bridge2");
+		levelList.add("boxChokePoints");
+		levelList.add("Rectangle");
+		levelList.add("gears");
+		//REPLACE BELOW WITH NEW LEVELS
+		levelList.add("tutorial1");
+		levelList.add("tutorial1");
+		levelList.add("tutorial1");
+		levelList.add("tutorial1");
+		levelList.add("tutorial1");
+		levelList.add("tutorial1");
+		levelList.add("tutorial1");
+		levelList.add("tutorial1");
+		levelList.add("tutorial1");
+		levelList.add("tutorial1");
 		return levelList;
 	}
 	/** 

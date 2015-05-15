@@ -16,6 +16,7 @@ import com.badlogic.gdx.ai.steer.limiters.LinearAccelerationLimiter;
 import com.badlogic.gdx.ai.steer.proximities.RadiusProximity;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
@@ -88,7 +89,7 @@ public class Pig extends Animal {
 				// We don't need a limiter supporting angular components because Face is not used
 				// No need to call setAlignTolerance, setDecelerationRadius and setTimeToTarget for the same reason
 				.setLimiter(limiter) //
-				.setWanderOffset(1) //
+				.setWanderOffset(3) //
 				.setWanderOrientation(1) //
 				.setWanderRadius(1) //
 				.setWanderRate(.1f);
@@ -131,6 +132,9 @@ public class Pig extends Animal {
                 tex = manager.get(PIG_TEX);
                 deathTex = manager.get(DEATH_TEX);
                 deathTexTrap = manager.get(DEATH_TEX_TRAP);
+                tex.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+                deathTex.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+                deathTexTrap.setFilter(TextureFilter.Linear, TextureFilter.Linear);
             }
         }
     }

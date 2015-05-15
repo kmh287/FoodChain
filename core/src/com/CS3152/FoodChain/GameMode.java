@@ -93,6 +93,8 @@ public class GameMode implements Screen{
 	private int countdown;
 	private int hunterLife; 
 	
+	private boolean winFlag;
+	
 	private float delay;
 	
 	//Trpa set delay
@@ -185,6 +187,7 @@ public class GameMode implements Screen{
 		this.stage = stage;
 		this.root = root;
 		start=true;
+		this.winFlag = false;
         //active = false;
         manager = new AssetManager();
         PreLoadContent(manager);
@@ -410,7 +413,7 @@ public class GameMode implements Screen{
 	
     private gameCondition checkObjective(){
     	
-    		if (!hunter.getAlive()){
+    		if (!hunter.getAlive() && !winFlag){
     			stillPlaying = false;
     			return gameCondition.LOSE;
     		}
@@ -499,44 +502,60 @@ public class GameMode implements Screen{
 
     private void update(float delta){
     		//Check if reset has been pressed
-    		if (controls[0].resetPressed() && isStillPlaying()){
+    		if (controls[0].resetPressed()){
     			//Only allow the player to reset if they last reset over a second ago
     			//if (ticks - lastResetTicks > 60){
         			canvas.getUIControllerStage().hideSuccess();
+        			canvas.getUIControllerStage().hideFailureEaten();
+        			canvas.getUIControllerStage().hideFailurePig();
         			canvas.getUIControllerStage().hideTutorial();
         			initializeLevel(canvas, levelName);
         			lastResetTicks = ticks;
     			//}
     		}
-    	
+    		
     		//Check the objective every second, end the game if the player has won or if the objective
     		//cannot be achieved
     		//if (ticks % 60 == 0){
 	    		gameCondition con = checkObjective();
 	    		if (con == gameCondition.WIN) {
-	    			if (delay >= 2.4) {
+	    			winFlag = true;
+	    			canvas.getUIControllerStage().displaySuccess();
+	    			if (delay >= 4.0f) {
 		    			if (levelListIt.hasNext()) {
 		    				canvas.getUIControllerStage().hideSuccess();
+		    				winFlag = false;
 		    				initializeLevel(canvas, levelListIt.next());
 		    				delay = 0.0f;
 		    			}
 		    			else {
-		    				//playing = false; 
-		    				//System.out.println("we won, make a loading screen!");
-		    				//root.gameOverScreen();
-		    				//return;
-		    				
+		    				listener.exitScreen(this, 0);
 		    			}
+		    			return;
 	    			}
 	    			else {
 	    				delay += delta;
 	    			}
 	    		}
-	    		else if (con == gameCondition.LOSE){
-
-	    		  System.out.println("You Lost");	
-	    		  initializeLevel(canvas, levelName);
-	    		  lastResetTicks = ticks;
+	    		else if (con == gameCondition.LOSE && !winFlag){
+	    			canvas.getUIControllerStage().hideSuccess();
+	    			if(hunter.getAlive() && delay == 0.0f){
+        				canvas.getUIControllerStage().displayFailurePig();
+        		}
+	    			else if (delay == 0.0f){
+	    			    canvas.getUIControllerStage().displayFailureEaten();
+	    			}
+	    			if (delay >= 4.0f) {	
+			    		  initializeLevel(canvas, levelName);
+		      			  canvas.getUIControllerStage().hideFailureEaten();
+		      			  canvas.getUIControllerStage().hideFailurePig();
+		      			  canvas.getUIControllerStage().hideTutorial();
+			    		  lastResetTicks = ticks;
+			    		  delay = 0.0f;
+	    			}
+	    			else {
+	    				delay += delta;
+	    			}
 	    		}
     		//}
     	
