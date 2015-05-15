@@ -76,7 +76,7 @@ public class Pig extends Animal {
         GameMode.steerables.toArray(steers);
 
         Array<Steerable<Vector2>> steerArray = new Array<Steerable<Vector2>>(steers); 
-        RadiusProximity<Vector2> proximity = new RadiusProximity<Vector2>(this, steerArray, .0001f);
+        proximity = new RadiusProximity<Vector2>(this, steerArray, .0001f);
         collisionAvoidanceSB = new CollisionAvoidance2<Vector2>(this, proximity);
         LinearAccelerationLimiter limiter = new LinearAccelerationLimiter(maxLinearAcceleration);
         limiter.setMaxLinearAcceleration(maxLinearAcceleration);
@@ -94,8 +94,11 @@ public class Pig extends Animal {
 				.setWanderRate(.1f);
         
 
-        fleeSB = new Evade<Vector2>(this, null);
+        fleeSB = new Flee<Vector2>(this);
         fleeSB.setLimiter(limiter);
+        
+        evadeSB = new Evade<Vector2>(this, null);
+        evadeSB.setLimiter(limiter);
     }
 
     /* (non-Javadoc)
@@ -134,7 +137,8 @@ public class Pig extends Animal {
     
     @Override
     public void setTarget(Actor actor) {
-        ((Evade<Vector2>) fleeSB).setTarget(actor);
+        ((Flee<Vector2>) fleeSB).setTarget(actor);
+        ((Evade<Vector2>) evadeSB).setTarget(actor);
     }
     
     public void updateWalkFrame(){
