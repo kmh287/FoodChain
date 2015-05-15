@@ -92,7 +92,7 @@ public class Pig extends Animal {
 				.setWanderOffset(3) //
 				.setWanderOrientation(1) //
 				.setWanderRadius(1) //
-				.setWanderRate(.5f);
+				.setWanderRate(.1f);
         
 
         fleeSB = new Flee<Vector2>(this);
