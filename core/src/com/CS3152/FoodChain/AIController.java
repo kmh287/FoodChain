@@ -81,6 +81,8 @@ public class AIController implements InputController {
     protected int turns;
     protected int Wanderturns;
     
+    protected int rabidity;
+    
     // The animal's next move; a ControlCode
     protected Vector2 move;
 
@@ -92,6 +94,8 @@ public class AIController implements InputController {
     
     //this is the delay when animals switch from flee to wander to patrol
     private int stateDelay = 90;
+    
+    private int rabidLength = 90;
     
     //So the owls can add a random angle offset
     //So that they are not always in phase with each other.
@@ -332,6 +336,10 @@ public class AIController implements InputController {
       this.turns = turns;
     }
     
+    public void setRabidity(int rabidLength) {
+    	this.rabidity = rabidLength;
+    }
+    
     // Should not be here, but need to finish
     public Vector2 getClickPos() {return new Vector2();}
     
@@ -342,7 +350,7 @@ public class AIController implements InputController {
     public static float getPanicPercentage() {
       return panicPercentage;
     }
-
+    
     public void play(String sound) {
 		if (sndcue != -1) {
 			this.sound.stop(sndcue);
@@ -490,7 +498,8 @@ public class AIController implements InputController {
 			    case FLEE:
 			    	//System.out.println(getAnimal() + " is fleeing");
 			        if (canSettle()) {
-			            //animal.setState(State.WANDER);
+			        	setRabidity(0);
+			        	animal.setRabid(rabidity);
 			            animal.setState(State.WANDER);
 			            setAttacker(null);
 			            setTarget(null);
@@ -499,6 +508,15 @@ public class AIController implements InputController {
 			        //if fleeing hunter, then increase panic
 			        if(getTarget() instanceof Hunter){
 				        panicked = true;
+			        }
+			        if(getPanicPercentage() >= .9f) {
+			        	// For Evade
+			        	setRabidity(rabidLength);
+			        	animal.setRabid(rabidity);
+			        }
+			        else {
+			        	rabidity--;
+			        	animal.setRabid(rabidity);
 			        }
 			    	break;
 			    case KILL:
@@ -534,7 +552,7 @@ public class AIController implements InputController {
 				    	  }
 				    }
 			    	else if (canPatrol()) {
-			    	  animal.setState(State.PATROL);
+			    	    animal.setState(State.PATROL);
 			    	}
 			    	break;
 			    case DEAD:

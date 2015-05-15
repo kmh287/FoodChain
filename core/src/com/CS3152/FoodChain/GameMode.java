@@ -65,6 +65,8 @@ public class GameMode implements Screen{
 	private int numPigs;
 	private int numWolves;
 	
+	private static boolean stillPlaying = true;
+	
 	private boolean start;
 
     protected InputController[] controls;
@@ -394,10 +396,14 @@ public class GameMode implements Screen{
 		}
 	}
 	
-    
+    public static boolean isStillPlaying() {
+    	return stillPlaying;
+    }
+	
     private gameCondition checkObjective(){
     	
     		if (!hunter.getAlive()){
+    			stillPlaying = false;
     			return gameCondition.LOSE;
     		}
     	
@@ -427,14 +433,17 @@ public class GameMode implements Screen{
 		}
 		//Win
 		if (numPigsCaptured >= numPigs && numWolvesCaptured >= numWolves){
+			stillPlaying = false;
 			return gameCondition.WIN;
 		}
 		//Lose
 
 		if ((numPigsCaptured + numPigsOnMap < numPigs) || 
 			(numWolvesCaptured + numWolvesOnMap < numWolves)){
+			stillPlaying = false;
 			return gameCondition.LOSE;
 		}
+		stillPlaying = true;
 		return gameCondition.IN_PLAY;
 		
 		
