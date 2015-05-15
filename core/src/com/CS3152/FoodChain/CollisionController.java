@@ -20,7 +20,7 @@ import com.badlogic.gdx.physics.box2d.World;
 /**
  * Class to handle basic collisions in the game.
  *
- * This is the simplest of physics engines.  In later labs, we will see how to work 
+ * This is the st of physics engines.  In later labs, we will see how to work 
  * with more interesting engines.
  *
  * As a major sub-controller, this class must have a reference to all the models.
@@ -116,7 +116,7 @@ public class CollisionController implements ContactListener {
 	
 
     public void postUpdate(float dt) {
-    	for (SimplePhysicsObject o : objects) {
+    	for (PhysicsObject o : objects) {
     		if (o.getBody().getUserData() instanceof Animal) {
     			Animal a = (Animal) o;
     			if (a.getTrapped() || !a.getAlive()) {
@@ -358,5 +358,21 @@ public class CollisionController implements ContactListener {
 	public void setTrapController(TrapController trapController) {
 		this.trapController= trapController;
 		
+	}
+	
+	public void reset() {
+		for (PhysicsObject obj : objects) {
+			obj.deactivatePhysics(world);
+		}
+		objects.clear();
+		controls = null;
+		trapToRemove = null;
+		trapToAdd = null;
+		animalToTrap = null;
+		trapOver = null;
+		trapController = null;
+		this.world.dispose();
+		world = new World(new Vector2(0, 0), false);
+		world.setContactListener(this);
 	}
 }
