@@ -453,8 +453,14 @@ public class AIController implements InputController {
 			    		int y = map.screenYToMap(pixY);
 			    		
 			    		animal.calculatePath(map.getNode(map.calculateIndex(x,y)));
+			    		// May change state
 			    		animal.getPathToPatrol();
-			    		animal.setState(State.FIND);
+			    		if (animal.getState() == State.WANDER) {
+			    			break;
+			    		}
+			    		else {
+			    			animal.setState(State.FIND);
+			    		}
 			    	}
 			    	else if(Wanderturns%250>WanderStopRate){
 			    		animal.setState(State.WANDER);
