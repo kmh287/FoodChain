@@ -28,8 +28,8 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.ai.pfa.indexed.IndexedAStarPathFinder;
 import com.badlogic.gdx.ai.steer.Steerable;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-//import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader;
+import com.badlogic.gdx.graphics.g2d.*;
+import com.badlogic.gdx.graphics.g2d.freetype.*;
 
 
 
@@ -158,8 +158,8 @@ public class GameMode implements Screen{
 			displayFont = manager.get(FONT_FILE,BitmapFont.class);
 		} else {
 			displayFont = null;
-		}*/
-		
+		}
+		*/
 		
 	}
 	
@@ -535,6 +535,7 @@ public class GameMode implements Screen{
 	    			}
 	    		}
 	    		else if (con == gameCondition.LOSE){
+
 	    		  System.out.println("You Lost");	
 	    		  initializeLevel(canvas, levelName);
 	    		  lastResetTicks = ticks;

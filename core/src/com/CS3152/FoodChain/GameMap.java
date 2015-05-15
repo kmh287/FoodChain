@@ -49,7 +49,9 @@ public class GameMap implements IndexedGraph<MapNode> {
     
     // The number of nodes within the map
     private int nodeCount;
-  
+    private static String FONT_FILE = "assets/LightPixel7.ttf";
+    private static int FONT_SIZE = 64;
+
     private static final String GRASS_TEX = "assets/grass.png";
     private static final String BUSH_TEX = "assets/bush.png";
     private static final String TREE_TEX = "assets/tree.png";
