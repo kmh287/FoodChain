@@ -10,6 +10,7 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -34,7 +35,7 @@ public class Hunter extends Actor {
     protected static Texture wolfTrapTex = null;
     
     //how far forward the hunter can move in a turn. 
-    private static final float MOVE_SPEED = 9f;
+    private static final float MOVE_SPEED = 7f;
 
     /** How far the hunter can lay a trap from itself */
     private static final float TRAP_RADIUS = 1.0f;
@@ -45,6 +46,8 @@ public class Hunter extends Actor {
     private static float scaleYDrawHunterDead = 0.21f;
     private static float scaleXDrawPigTrap = 0.40f;
     private static float scaleYDrawPigTrap = 0.30f;
+    private static float scaleXDrawWolfTrap = 0.40f;
+    private static float scaleYDrawWolfTrap = 0.30f;
     public boolean hunterFinishedDeath; 
     private FilmStrip sprite;
     private FilmStrip spriteDeath;
@@ -99,6 +102,11 @@ public class Hunter extends Actor {
                 deathTex = manager.get(DEATH_TEX);
                 wolfTrapTex = manager.get(PLACE_WOLF_TRAP);
                 pigTrapTex = manager.get(PLACE_PIG_TRAP);
+                tex.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+                deathTex.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+                wolfTrapTex.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+                pigTrapTex.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+                
             }
         }
     }
