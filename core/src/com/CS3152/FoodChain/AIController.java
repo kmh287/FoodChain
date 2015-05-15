@@ -2,15 +2,7 @@ package com.CS3152.FoodChain;
 
 import java.util.*; 	
 
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
-import com.badlogic.gdx.ai.pfa.PathSmoother;
-import com.badlogic.gdx.ai.pfa.indexed.IndexedAStarPathFinder;
-import com.badlogic.gdx.ai.steer.behaviors.FollowPath;
-import com.badlogic.gdx.ai.steer.utils.paths.LinePath;
-import com.badlogic.gdx.ai.steer.utils.paths.LinePath.LinePathParam;
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.World;
@@ -103,9 +95,6 @@ public class AIController implements InputController {
 
     private static float panicPercentage;
     private static boolean panicked;
-    private Hunter hunter; 
-    
-    private Vector2 vect;
     private float angle;
     private double angleProg;
     private Random rand;
@@ -157,7 +146,6 @@ public class AIController implements InputController {
         
         panicPercentage = 0f;
         angle = animal.getAngle();
-        vect = new Vector2(animal.getPosition());
         
         sound = null;
 		sndcue = -1;

@@ -62,7 +62,10 @@ public class UIControllerStage {
     
     
     private static final String TUTORIAL_1 = "assets/tutorial1.png";
+  
     private static final String SUCCESS = "assets/Success.png";
+    private static final String FAILURE_PIG = "assets/failure.png";
+    private static final String FAILURE_EATEN = "assets/failure_eaten.png";
     
     private TrapController trapController;
     
@@ -105,6 +108,8 @@ public class UIControllerStage {
     private static Texture wolf_6_texture = null;
     private static Texture tutorial_1 = null;
     private static Texture success_texture = null;
+    private static Texture failure_pig_texture = null;
+    private static Texture failure_eaten_texture = null;
     
     
     private int regularCount = 0;
@@ -149,6 +154,8 @@ public class UIControllerStage {
 	Image wolf_6;
 	Image tutorial1;
 	Image success;
+	Image failure_pig;
+	Image failure_eaten;
 
 	
 	Table deselect_container;
@@ -187,6 +194,8 @@ public class UIControllerStage {
 	Table wolf_5_container;
 	Table wolf_6_container;
 	Table success_container;
+	Table failure_eaten_container;
+	Table failure_pig_container;
 	
 	private GameMode gameMode;
 	Table tutorial1_container;
@@ -236,6 +245,9 @@ public class UIControllerStage {
             manager.load(WOLF_6,Texture.class);
             manager.load(TUTORIAL_1, Texture.class);
             manager.load(SUCCESS, Texture.class);
+            manager.load(FAILURE_EATEN, Texture.class);
+            manager.load(FAILURE_PIG, Texture.class);
+            
             manager.finishLoading();
             if (manager.isLoaded(TRAPS_DESELECT)){
             	allDeselect = manager.get(TRAPS_DESELECT);
@@ -274,6 +286,8 @@ public class UIControllerStage {
             	wolf_6_texture = manager.get(WOLF_6);
             	tutorial_1 = manager.get(TUTORIAL_1);
             	success_texture = manager.get(SUCCESS);
+            	failure_eaten_texture= manager.get(FAILURE_EATEN);
+            	failure_pig_texture= manager.get(FAILURE_PIG);
             }
         }
         
@@ -325,6 +339,8 @@ public class UIControllerStage {
     	wolf_4 = new Image();
     	wolf_5 = new Image();
     	wolf_6 = new Image();
+    	failure_eaten = new Image();
+    	failure_pig = new Image();
     	
     	deselect_container = new Table();
     	select__trap_1_container = new Table();
@@ -363,6 +379,8 @@ public class UIControllerStage {
     	wolf_6_container = new Table();
     	tutorial1_container = new Table();
     	success_container = new Table();
+    	failure_pig_container = new Table();
+    	failure_eaten_container = new Table();
     	
     	//assign texture to image
         deselect.setDrawable(new TextureRegionDrawable(new TextureRegion(allDeselect)));
@@ -578,6 +596,18 @@ public class UIControllerStage {
         success_container.setFillParent(true);
         success_container.center(); 
         success_container.row();
+
+        failure_eaten.setDrawable(new TextureRegionDrawable(new TextureRegion(failure_eaten_texture)));
+        failure_eaten_container.add(failure_eaten).width(failure_eaten_texture.getWidth()/7.8f).height(failure_eaten_texture.getHeight()/7.8f).padTop(.5f);
+        failure_eaten_container.setFillParent(true);
+        failure_eaten_container.center(); 
+        failure_eaten_container.row();
+        
+        failure_pig.setDrawable(new TextureRegionDrawable(new TextureRegion(failure_pig_texture)));
+        failure_pig_container.add(failure_pig).width(failure_pig_texture.getWidth()/7.8f).height(failure_pig_texture.getHeight()/7.8f).padTop(.5f);
+        failure_pig_container.setFillParent(true);
+        failure_pig_container.center(); 
+        failure_pig_container.row();
         
         tutorial1.setDrawable(new TextureRegionDrawable(new TextureRegion(tutorial_1)));
         tutorial1_container.add(tutorial1).width(160f).height(90f).padTop(1.5f).padLeft(2f);
@@ -624,6 +654,8 @@ public class UIControllerStage {
     	stage.addActor(wolf_6_container);
     	stage.addActor(tutorial1_container);
     	stage.addActor(success_container);
+    	stage.addActor(failure_pig_container);
+    	stage.addActor(failure_eaten_container);
     	trap_1_1_container.setVisible(false);
     	trap_1_2_container.setVisible(false);
     	trap_1_3_container.setVisible(false);
@@ -656,6 +688,8 @@ public class UIControllerStage {
     	wolf_4_container.setVisible(false);
     	wolf_5_container.setVisible(false);
     	wolf_6_container.setVisible(false);
+    	failure_eaten_container.setVisible(false);
+    	failure_pig_container.setVisible(false);
     	
  
     	tutorial1_container.setVisible(false);
@@ -854,6 +888,22 @@ public class UIControllerStage {
     
     public void hideSuccess() {
         success_container.setVisible(false);
+    }
+    
+    public void displayFailurePig(){
+    	failure_pig_container.setVisible(true);
+    }
+    
+    public void displayFailureEaten(){
+    	failure_eaten_container.setVisible(true);
+    }
+    
+    public void hideFailurePig(){
+    	failure_pig_container.setVisible(false);
+    }
+    
+    public void hideFailureEaten(){
+    	failure_eaten_container.setVisible(false);
     }
     
 }

@@ -17,25 +17,18 @@
  */
 package com.CS3152.FoodChain;
 
-import java.lang.reflect.Array;
-
 import com.CS3152.FoodChain.Actor.actorType;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.ai.steer.utils.paths.LinePath;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.graphics.glutils.*;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
-import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.ScalingViewport;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 /**
@@ -68,16 +61,12 @@ public class GameCanvas {
 	private BlendState blend;
 		
 	/** Camera for the underlying SpriteBatch */
-	private OrthographicCamera camera;
-	private PlayerController player; 
+	private OrthographicCamera camera; 
 	
-	private Viewport viewport; 
-	private Viewport viewportS; 
+	private Viewport viewport;  
 
 	private Stage stage;
 	private UIControllerStage ui; 
-	
-	private final static float cam_radius=100;
 	
 	// CACHE OBJECTS
 	/** Affine cache for current sprite to draw */
@@ -127,7 +116,6 @@ public class GameCanvas {
 	    viewport = new FitViewport((float) (Gdx.graphics.getWidth()/1.3), (float) (Gdx.graphics.getHeight()/1.3), camera);
 	    viewport.apply(); 
 	    ui = new UIControllerStage(); 
-	    player = new PlayerController(); 
 	    
 	    stage = new Stage(new ExtendViewport(100, 100));
 	    //stage = new Stage(new StretchViewport(viewport.getScreenWidth()), viewport.getScreenHeight());
@@ -1282,7 +1270,7 @@ public class GameCanvas {
     	//the weird math is because it draws the cone in the center of the pig
     	angle=(float) (angle-Math.PI/2);
     	//if owl then draw big cone
-    	if(actorType==actorType.OWL){
+    	if(actorType == Actor.actorType.OWL){
     		if(alerted){
             	this.draw(redConeRegionLarge, 
             			Color.RED,GameMap.pixelsToMeters(origin.x), 
