@@ -628,6 +628,12 @@ public class AIController implements InputController {
     }
 	}
 
+  @Override
+  public boolean escPressed() {
+    
+    return false;
+  }
+
 
 //	@Override
 //	public int levelPressed() {

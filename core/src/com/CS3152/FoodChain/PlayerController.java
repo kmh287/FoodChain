@@ -104,6 +104,10 @@ public class PlayerController implements InputController{
 		return Gdx.input.isKeyPressed(Input.Keys.R);
 	}
 	
+	public boolean escPressed() {
+	  return Gdx.input.isKeyPressed(Input.Keys.ESCAPE);
+	}
+	
 	public static boolean didExit() {
 		return exitPressed  = (Gdx.input.isKeyPressed(Input.Keys.ESCAPE));
 

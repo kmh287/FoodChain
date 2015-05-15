@@ -212,8 +212,8 @@ public class GameMode implements Screen{
         //For now we will hard code the level to load
         //When we implement a UI that may ask players
         //what level to start on. This code will change
- 		playing = true;
- 		this.levelName = levelName;
+ 		 playing = true;
+ 		 this.levelName = levelName;
         map = loadMap(levelName);
         map.setDimensions();
         map.createGraph();
@@ -496,8 +496,8 @@ public class GameMode implements Screen{
     			//if (ticks - lastResetTicks > 60){
         			canvas.getUIControllerStage().hideSuccess();
         			canvas.getUIControllerStage().hideTutorial();
-    				initializeLevel(canvas, levelName);
-    				lastResetTicks = ticks;
+        			initializeLevel(canvas, levelName);
+        			lastResetTicks = ticks;
     			//}
     		}
     	
@@ -728,9 +728,15 @@ public class GameMode implements Screen{
 	} 
     
     public void postDraw(float delta) {
-		if (listener == null) {
-			return;
-		}
+      if (listener == null) {
+        return;
+      }
+		
+      if (controls[0].escPressed()) {
+        canvas.getUIControllerStage().hideSuccess();
+        canvas.getUIControllerStage().hideTutorial();
+        listener.exitScreen(this, 0);
+      }
 
 		
 		// Now it is time to maybe switch screens.

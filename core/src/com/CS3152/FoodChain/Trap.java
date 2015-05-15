@@ -52,14 +52,14 @@ public class Trap extends BoxObject {
 	public Trap(Texture texture, String type) {
 		super(new TextureRegion(texture), GameMap.pixelsToMeters(0.0f), GameMap.pixelsToMeters(0.0f),
 				//texture.getWidth(), texture.getHeight());
-				GameMap.pixelsToMeters(texture.getWidth()), GameMap.pixelsToMeters(texture.getHeight()));
+				GameMap.pixelsToMeters(texture.getWidth()/4), GameMap.pixelsToMeters(texture.getHeight()/4));
 		inInventory = true;
 		onMap = false;
 		setWell = false;
 		this.type=type;
 		isOver= false;
-		drawScale.x = .6f; 
-		drawScale.y = .6f; 
+		drawScale.x = 0.6f; 
+		drawScale.y = 0.6f; 
 	}
 	
 	/** 
