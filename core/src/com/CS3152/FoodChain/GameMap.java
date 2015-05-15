@@ -495,6 +495,7 @@ public class GameMap implements IndexedGraph<MapNode> {
 			for (int j = 0; j < this.layout[0].length; ++j){
         			Tile.tileType curr = layout[i][j];
         			TextureRegion tr = new TextureRegion(getTextureFromTileType(curr));
+        			
         			Tile t = new Tile(tr, (float)mapXToScreen(j), (float)mapYToScreen(i),
         										 (float)0.9 * tr.getRegionWidth(), (float) 0.9 * tr.getRegionHeight(),
         										 curr);
