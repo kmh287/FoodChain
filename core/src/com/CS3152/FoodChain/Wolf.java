@@ -68,7 +68,7 @@ public class Wolf extends Animal{
         GameMode.steerables.toArray(steers);
         Array<Steerable<Vector2>> steerArray = new Array<Steerable<Vector2>>(steers);
         
-        RadiusProximity proximity = new RadiusProximity<Vector2>(this, steerArray, 0.0001f);
+        proximity = new RadiusProximity<Vector2>(this, steerArray, 0.0001f);
         collisionAvoidanceSB = new CollisionAvoidance2<Vector2>(this, proximity);
         collisionAvoidanceSB.setLimiter(new LinearAccelerationLimiter(maxLinearAcceleration));
         
@@ -84,7 +84,7 @@ public class Wolf extends Animal{
 				.setWanderOffset(1) //
 				.setWanderOrientation(GameMode.random.nextFloat()) //
 				.setWanderRadius(1) //
-				.setWanderRate(MathUtils.PI / 5);
+				.setWanderRate(MathUtils.PI / 10);
     }
 
     @Override

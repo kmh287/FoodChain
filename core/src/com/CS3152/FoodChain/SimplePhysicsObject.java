@@ -1,4 +1,4 @@
-﻿/*
+/*
  * SimplePhysicsObject.cs
  *
  * This class is a subclass of PhysicsObject that supports only one Body.

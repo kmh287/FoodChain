@@ -65,7 +65,11 @@ public abstract class Animal extends Actor{
     protected SteeringBehavior<Vector2> collisionAvoidanceSB;
     protected SteeringBehavior<Vector2> wanderSB;
     protected SteeringBehavior<Vector2> fleeSB;
+    protected SteeringBehavior<Vector2> evadeSB;
     protected SteeringBehavior<Vector2> seekSB;
+    protected RadiusProximity proximity;
+    
+    protected boolean isRabid;
     
     private boolean finishedDeatAnimation;
     
@@ -299,6 +303,16 @@ public abstract class Animal extends Actor{
 		return this.rightSectorLine;
 	}
 	
+	public void setRabid(int rabidity) {
+		if (rabidity <= 0) {
+			isRabid = false;
+		}
+		else {
+			isRabid = true;
+		}
+		
+	}
+	
 	public void drawDebugSight(GameCanvas canvas) {
 		if (getAlive()) {
 			//old code that draws vision lines to scale
@@ -324,6 +338,7 @@ public abstract class Animal extends Actor{
 					canvas.DrawPatrolPaths(GameMap.metersToPixels(wayPoints.get(i).x), GameMap.metersToPixels(wayPoints.get(i).y), 5, wayPoints, linePath);
 				}
 			}
+			/*
 			Vector2 position = getPosition();
       tmp.set(GameMap.metersToPixels(position.x), GameMap.metersToPixels(position.y));
       tmp2.set(GameMap.metersToPixels(position.x), GameMap.metersToPixels(position.y));
@@ -334,9 +349,9 @@ public abstract class Animal extends Actor{
       sectorLine = getRightSectorLine();
       tmp2.add(GameMap.metersToPixels(sectorLine.x), GameMap.metersToPixels(sectorLine.y));
       canvas.drawLine(Color.YELLOW, tmp, tmp2);
+      */
 		}
 	}
-	
 	
     public static enum State {
         // Animal is wandering
@@ -368,13 +383,12 @@ public abstract class Animal extends Actor{
 			}
 		}
 		else if(getState()==AIController.State.PATROL ||
-				getState()==AIController.State.STAYSTILL|| getState()==AIController.State.WANDER){
+				getState()==AIController.State.STAYSTILL|| getState()==AIController.State.WANDER || getState()==AIController.State.FIND){
 			canvas.drawCone(false, tmp, body.getAngle(),this.getType());
 		}
 		else{
 			canvas.drawCone(true, tmp, body.getAngle(),this.getType());
 		}
-		
 	}
 	
 	@Override
@@ -393,10 +407,7 @@ public abstract class Animal extends Actor{
 	@Override
 	public void calculateSteering() {		
 		if (state != AIController.State.FIND) {
-		collisionAvoidanceSB.calculateSteering(steeringOutput);
-//		  if (steeringOutput.calculateSquareMagnitude() > minSteeringSquared) {
-//			  return; 
-//		  }
+			collisionAvoidanceSB.calculateSteering(steeringOutput);
 		}
 		
 		switch (state) {
@@ -407,7 +418,12 @@ public abstract class Animal extends Actor{
 			seekSB.calculateSteering(steeringOutput);
 			break;
 		case FLEE:
-			fleeSB.calculateSteering(steeringOutput);
+			if (isRabid) {
+				evadeSB.calculateSteering(steeringOutput);
+			}
+			else {
+				fleeSB.calculateSteering(steeringOutput);
+			}
 			break;
 		case KILL:
 			steeringOutput.setZero();

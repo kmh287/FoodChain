@@ -49,22 +49,31 @@ public class PlayerController implements InputController{
     public Vector2 getAction(float delta) {
 		PlayerAction = NO_ACTION; 
 			// Directional controls
-
+		
+		boolean d_pressed = Gdx.input.isKeyPressed(Input.Keys.D);
+		boolean a_pressed = Gdx.input.isKeyPressed(Input.Keys.A);
+		boolean s_pressed = Gdx.input.isKeyPressed(Input.Keys.S);
+		boolean w_pressed = Gdx.input.isKeyPressed(Input.Keys.W);
+		boolean ra_pressed = Gdx.input.isKeyPressed(Input.Keys.RIGHT);
+		boolean ua_pressed = Gdx.input.isKeyPressed(Input.Keys.UP);
+		boolean la_pressed = Gdx.input.isKeyPressed(Input.Keys.LEFT);
+		boolean da_pressed = Gdx.input.isKeyPressed(Input.Keys.DOWN);
+		boolean north = w_pressed || ua_pressed;
+		boolean east = d_pressed || ra_pressed;
+		boolean south = s_pressed || da_pressed;
+		boolean west = a_pressed || la_pressed;
+		
 		if (keyboard && mouse) {
-			if (Gdx.input.isKeyPressed(Input.Keys.D)) PlayerAction = EAST; 
-			if (Gdx.input.isKeyPressed(Input.Keys.A)) PlayerAction = WEST; 
-			if (Gdx.input.isKeyPressed(Input.Keys.S)) PlayerAction = SOUTH; 
-			if (Gdx.input.isKeyPressed(Input.Keys.W)) PlayerAction = NORTH; 
+			if (east) PlayerAction = EAST; 
+			if (west) PlayerAction = WEST; 
+			if (south) PlayerAction = SOUTH; 
+			if (north) PlayerAction = NORTH; 
 			
 			/*These diagonals may have to be changed. How will turns work/updating? */
-			if (Gdx.input.isKeyPressed(Input.Keys.W) 
-				&& Gdx.input.isKeyPressed(Input.Keys.D)) PlayerAction = NORTHEAST; 
-			if (Gdx.input.isKeyPressed(Input.Keys.S) 
-				&& Gdx.input.isKeyPressed(Input.Keys.D)) PlayerAction = SOUTHEAST; 
-			if (Gdx.input.isKeyPressed(Input.Keys.S) 
-				&& Gdx.input.isKeyPressed(Input.Keys.A)) PlayerAction = SOUTHWEST; 
-			if (Gdx.input.isKeyPressed(Input.Keys.W) 
-				&& Gdx.input.isKeyPressed(Input.Keys.A)) PlayerAction = NORTHWEST; 
+			if (north && east) PlayerAction = NORTHEAST; 
+			if (south && east) PlayerAction = SOUTHEAST; 
+			if (south && west) PlayerAction = SOUTHWEST; 
+			if (north && west) PlayerAction = NORTHWEST; 
 		}
 
 			// Cancel out conflicting movements.
@@ -77,20 +86,26 @@ public class PlayerController implements InputController{
 	} 
 	
 	public boolean isTrapSetPressed(){
+		if (!GameMode.isStillPlaying()) {
+			return false;
+		}
 		return Gdx.input.isKeyPressed(Input.Keys.J); 
 	}
 	
 	public boolean isMousePressed(){
 		return Gdx.input.isButtonPressed(Input.Buttons.LEFT); 
 	}
-	
 
 	public boolean isTrapPickupHeldDown(){
-		return Gdx.input.isKeyPressed(Input.Keys.K);
+		return Gdx.input.isKeyPressed(Input.Keys.L);
 	}
 	
 	public boolean resetPressed(){
 		return Gdx.input.isKeyPressed(Input.Keys.R);
+	}
+	
+	public boolean escPressed() {
+	  return Gdx.input.isKeyPressed(Input.Keys.ESCAPE);
 	}
 	
 	public static boolean didExit() {

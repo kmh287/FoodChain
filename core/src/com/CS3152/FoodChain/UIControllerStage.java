@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -23,7 +24,7 @@ public class UIControllerStage {
 	
 	//Gdx.input.setInputProcessor(this);
 	
-	private static final String TRAPS_DESELECT = "assets/all_deselect.png";
+	  private static final String TRAPS_DESELECT = "assets/all_deselect.png";
     private static final String TRAP_ONE_ONE = "assets/trap1_1.png";
     private static final String TRAP_ONE_TWO = "assets/trap1_2.png";
     private static final String TRAP_ONE_THREE = "assets/trap1_3.png";
@@ -40,6 +41,13 @@ public class UIControllerStage {
     private static final String RED_BAR = "assets/red-small.png";
     private static final String PANIC_BAR = "assets/panic-bar-small.png";
     private static final String PANIC_CIRCLE = "assets/panic-circle.png";
+    private static final String OBJECTIVE = "assets/objectives.png";
+    private static final String OBJECTIVE_PIG = "assets/objective-pig.png";
+    private static final String OBJECTIVE_WOLF = "assets/objective-wolf.png";
+    private static final String OBJECTIVE_BOTH = "assets/objective-both.png";
+    
+    private static final String TUTORIAL_1 = "assets/tutorial1.png";
+    private static final String SUCCESS = "assets/Success.png";
     
     private TrapController trapController;
     
@@ -62,6 +70,13 @@ public class UIControllerStage {
     private static Texture panic_meter_texture = null;
     private static Texture red_bar_texture = null;
     private static Texture panic_circle_texture = null;
+    private static Texture objective_texture = null;
+    private static Texture objective_pig_texture = null;
+    private static Texture objective_wolf_texture = null;
+    private static Texture objective_both_texture = null;
+    private static Texture tutorial_1 = null;
+    private static Texture success_texture = null;
+    
     
     private int regularCount = 0;
     private int sheepCount = 0;
@@ -84,6 +99,12 @@ public class UIControllerStage {
 	Image panic_meter;
 	Image red_bar;
 	Image panic_circle;
+	Image objective;
+	Image objective_pig;
+	Image objective_wolf;
+	Image objective_both;
+	Image tutorial1;
+	Image success;
 	
 	Table deselect_container;
 	Table select__trap_1_container;
@@ -98,13 +119,21 @@ public class UIControllerStage {
 	Table trap_2_3_container;
 	Table trap_2_4_container;
 	Table trap_2_5_container;
-	
 	Table blackSpace_container;
 	Table panic_meter_container;
 	Table red_bar_container;
 	Table panic_circle_container;
+	Table objective_container;
+	Table objective_pig_container;
+	Table objective_wolf_container;
+	Table objective_both_container;
+	Table success_container;
+	
+	private GameMode gameMode;
+	Table tutorial1_container;
 	
 	private static float panic;
+	protected static boolean tutorialScreenOpen = true;
 	
 	
     public void setTrapController(TrapController t){
@@ -128,6 +157,12 @@ public class UIControllerStage {
             manager.load(PANIC_BAR,Texture.class);
             manager.load(RED_BAR,Texture.class);
             manager.load(PANIC_CIRCLE,Texture.class);
+            manager.load(OBJECTIVE,Texture.class);
+            manager.load(OBJECTIVE_PIG,Texture.class);
+            manager.load(OBJECTIVE_WOLF,Texture.class);
+            manager.load(OBJECTIVE_BOTH,Texture.class);
+            manager.load(TUTORIAL_1, Texture.class);
+            manager.load(SUCCESS, Texture.class);
             manager.finishLoading();
             if (manager.isLoaded(TRAPS_DESELECT)){
             	allDeselect = manager.get(TRAPS_DESELECT);
@@ -146,6 +181,12 @@ public class UIControllerStage {
             	panic_meter_texture = manager.get(PANIC_BAR);
             	red_bar_texture = manager.get(RED_BAR);
             	panic_circle_texture = manager.get(PANIC_CIRCLE);
+            	objective_texture = manager.get(OBJECTIVE);
+            	objective_pig_texture = manager.get(OBJECTIVE_PIG);
+            	objective_wolf_texture = manager.get(OBJECTIVE_WOLF);
+            	objective_both_texture = manager.get(OBJECTIVE_BOTH);
+            	tutorial_1 = manager.get(TUTORIAL_1);
+            	success_texture = manager.get(SUCCESS);
             }
         }
         
@@ -177,6 +218,12 @@ public class UIControllerStage {
     	panic_meter = new Image();
     	red_bar = new Image();
     	panic_circle = new Image();
+    	objective = new Image();
+    	objective_pig = new Image();
+    	objective_wolf = new Image();
+    	objective_both = new Image();
+    	tutorial1 = new Image();
+    	success= new Image();
     	
     	deselect_container = new Table();
     	select__trap_1_container = new Table();
@@ -195,6 +242,12 @@ public class UIControllerStage {
     	panic_meter_container = new Table();
     	red_bar_container = new Table();
     	panic_circle_container = new Table();
+    	objective_container = new Table();
+    	objective_pig_container = new Table();
+    	objective_wolf_container = new Table();
+    	objective_both_container = new Table();
+    	tutorial1_container = new Table();
+    	success_container = new Table();
     	
     	//assign texture to image
         deselect.setDrawable(new TextureRegionDrawable(new TextureRegion(allDeselect)));
@@ -296,6 +349,42 @@ public class UIControllerStage {
         red_bar_container.setFillParent(true);
         red_bar_container.center().top(); 
         red_bar_container.row();
+        
+        objective.setDrawable(new TextureRegionDrawable(new TextureRegion(objective_texture)));
+        objective_container.add(objective).width(objective_texture.getWidth()/7.8f).height(objective_texture.getHeight()/7.8f).padTop(.5f);
+        objective_container.setFillParent(true);
+        objective_container.center().top(); 
+        objective_container.row();
+       
+        objective_pig.setDrawable(new TextureRegionDrawable(new TextureRegion(objective_pig_texture)));
+        objective_pig_container.add(objective_pig).width(objective_pig_texture.getWidth()/7.8f).height(objective_pig_texture.getHeight()/7.8f).padTop(.5f);
+        objective_pig_container.setFillParent(true);
+        objective_pig_container.center().top(); 
+        objective_pig_container.row();
+       
+        objective_wolf.setDrawable(new TextureRegionDrawable(new TextureRegion(objective_wolf_texture)));
+        objective_wolf_container.add(objective_wolf).width(objective_wolf_texture.getWidth()/7.8f).height(objective_wolf_texture.getHeight()/7.8f).padTop(.5f);
+        objective_wolf_container.setFillParent(true);
+        objective_wolf_container.center().top(); 
+        objective_wolf_container.row();
+       
+        objective_both.setDrawable(new TextureRegionDrawable(new TextureRegion(objective_both_texture)));
+        objective_both_container.add(objective_both).width(objective_both_texture.getWidth()/7.8f).height(objective_both_texture.getHeight()/7.8f).padTop(.5f);
+        objective_both_container.setFillParent(true);
+        objective_both_container.center().top(); 
+        objective_both_container.row();
+        
+        success.setDrawable(new TextureRegionDrawable(new TextureRegion(success_texture)));
+        success_container.add(success).width(success_texture.getWidth()/7.8f).height(success_texture.getHeight()/7.8f).padTop(.5f);
+        success_container.setFillParent(true);
+        success_container.center(); 
+        success_container.row();
+        
+        tutorial1.setDrawable(new TextureRegionDrawable(new TextureRegion(tutorial_1)));
+        tutorial1_container.add(tutorial1).width(160f).height(90f).padTop(1.5f).padLeft(2f);
+        tutorial1_container.setFillParent(true);
+        tutorial1_container.center().top(); 
+        tutorial1_container.row();
        
         
     	stage.addActor(deselect_container);
@@ -316,6 +405,12 @@ public class UIControllerStage {
     	stage.addActor(panic_meter_container);
     	stage.addActor(red_bar_container);
     	stage.addActor(panic_circle_container);
+    	stage.addActor(objective_container);
+    	stage.addActor(objective_pig_container);
+    	stage.addActor(objective_wolf_container);
+    	stage.addActor(objective_both_container);
+    	stage.addActor(tutorial1_container);
+    	stage.addActor(success_container);
     	trap_1_1_container.setVisible(false);
     	trap_1_2_container.setVisible(false);
     	trap_1_3_container.setVisible(false);
@@ -330,7 +425,13 @@ public class UIControllerStage {
     	select__trap_1_container.setVisible(false);
     	select__trap_2_container.setVisible(false);
     	blackSpace_container.setVisible(false);
+    	objective_container.setVisible(true);
+    	objective_pig_container.setVisible(false);
+    	objective_wolf_container.setVisible(false);
+    	objective_both_container.setVisible(false);
  
+    	tutorial1_container.setVisible(false);
+    	success.setVisible(false);
     	
     }
     
@@ -343,6 +444,7 @@ public class UIControllerStage {
     public void setPanic(float panic){
     	this.panic=panic;
     }
+    
     
     public void drawStage () {
     	
@@ -358,6 +460,12 @@ public class UIControllerStage {
     	trap_2_5_container.setVisible(false);
     	select__trap_1_container.setVisible(false);
     	select__trap_2_container.setVisible(false);
+    	objective_pig_container.setVisible(false);
+    	objective_wolf_container.setVisible(false);
+    	objective_both_container.setVisible(false);
+    	
+    	success.setVisible(false);
+    	tutorial1_container.setVisible(false);
     	regularCount = 0;
         sheepCount = 0;
         
@@ -403,6 +511,19 @@ public class UIControllerStage {
         	trap_2_5_container.setVisible(true);
         }
         
+        if (Gdx.input.isKeyPressed(Input.Keys.ENTER)){
+        		tutorialScreenOpen = false;
+        		tutorial1_container.setVisible(false);
+        }
+        
+        //Tutorial screens
+        if (tutorialScreenOpen){
+	        if (GameMode.levelName.equals("tutorial1")){
+	        		tutorial1_container.setVisible(true);
+	        } else if (GameMode.levelName.equals("tutorial2")){
+	        		tutorial1_container.setVisible(true);
+	        }
+        }
         
         //draw highlighted selected trap
         if(trapController.getSelectedTrap().getInInventory()){
@@ -418,7 +539,18 @@ public class UIControllerStage {
 
         red_bar.setScaleX(0.06f + 0.95f * AIController.getPanicPercentage());
         
-    	
+    	//objective code
+        if(gameMode.getRemainingObjectivePigs()==0 && gameMode.getRemainingObjectiveWolfs()==0){
+        	objective_both_container.setVisible(true);
+        	success.setVisible(true);
+        }
+        else if(gameMode.getRemainingObjectivePigs()==0){
+        	objective_pig_container.setVisible(true);
+        }
+        else if(gameMode.getRemainingObjectiveWolfs()==0){
+        	objective_wolf_container.setVisible(true);
+        }
+        
         stage.act();
     	stage.draw();
     }
@@ -428,6 +560,22 @@ public class UIControllerStage {
     	stage.act();
     	stage.draw();
     	blackSpace_container.setVisible(false);
+    }
+
+	public void setGameMode(GameMode gameMode) {
+		this.gameMode = gameMode;
+		
+	}
+	
+	
+    
+    public void hideTutorial() {
+      tutorialScreenOpen = false;
+      tutorial1_container.setVisible(false);
+    }
+    
+    public void hideSuccess() {
+        success_container.setVisible(false);
     }
     
 }

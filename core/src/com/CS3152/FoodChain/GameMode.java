@@ -8,11 +8,9 @@ import java.util.List;
 import java.util.Random;
 
 import com.CS3152.FoodChain.Actor.actorType;
-
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
@@ -59,13 +57,15 @@ public class GameMode implements Screen{
     private TrapController trapController;
 	private float TIME_STEP = 1/200f;
 	private float frameTime;
-	private String levelName;
+	protected static String levelName;
 	private PlayerController player; 
 	private GDXRoot root; 
 	
 	
 	private int numPigs;
 	private int numWolves;
+	
+	private static boolean stillPlaying = true;
 	
 	private boolean start;
 
@@ -92,6 +92,8 @@ public class GameMode implements Screen{
 	/** Countdown active for winning or losing */
 	private int countdown;
 	private int hunterLife; 
+	
+	private float delay;
 	
 	//Trpa set delay
 	int TRAP_SETUP_FRAMES = 25; //60FPS so this is <0.5s
@@ -177,7 +179,7 @@ public class GameMode implements Screen{
      * 
      * @param canvas The singular instance of GameCanvas
      */
-	public GameMode(GameCanvas canvas, List<String> levelList, GDXRoot root) {
+	public GameMode(GameCanvas canvas, List<String> levelList, int level, GDXRoot root) {
 		System.out.println("inGameMode levellist");
 		this.canvas = canvas;
 		this.stage = stage;
@@ -189,27 +191,29 @@ public class GameMode implements Screen{
         manager.finishLoading();
         LoadContent(manager);
         hunterLife = 3; 
-        levelLoad(levelList);
+        levelLoad(levelList, level);
         
         
 	}
 	
-	public void levelLoad (List<String> levelList) {
+	public void levelLoad (List<String> levelList, int level) {
 		this.levelList = levelList;
 		this.levelListIt = levelList.iterator();
-		if (levelList.size() == 0){
-			throw new IllegalArgumentException("At least one level must be in passed in level set");
+		if (levelList.size() == 0 || levelList.size() < level){
+			throw new IllegalArgumentException("Must choose valid level.");
+		}
+		for (int l = 1; l < level; l++) {
+			levelListIt.next();
 		}
         initializeLevel(canvas, levelListIt.next());
-		
 	}
 	
  	private void initializeLevel(GameCanvas canvas, String levelName){
         //For now we will hard code the level to load
         //When we implement a UI that may ask players
         //what level to start on. This code will change
- 		playing = true; 
- 		this.levelName = levelName;
+ 		 playing = true;
+ 		 this.levelName = levelName;
         map = loadMap(levelName);
         map.setDimensions();
         map.createGraph();
@@ -241,6 +245,10 @@ public class GameMode implements Screen{
         settingTrap = false;
         trapSetProgress = 0;
 
+        //Even if the level is not a tutorial this is necessary
+        //UIControllerStage will handle whether or not the 
+        //current level is a tutorial
+        UIControllerStage.tutorialScreenOpen = true;
         canvas.getUIControllerStage().setTrapController(trapController);
         canvas.getUIControllerStage().loadTextures(manager);
         
@@ -262,6 +270,7 @@ public class GameMode implements Screen{
         GameMode.actors = new Array<Actor>(actorArray);
         gameplayController = new GameplayController(map, actorArray, controls);
         canvas.getUIControllerStage().setPanic(AIController.getPanicPercentage());
+        canvas.getUIControllerStage().setGameMode(this);
         collisionController.setControls(controls);
         collisionController.setTrapController(trapController);
         
@@ -387,10 +396,14 @@ public class GameMode implements Screen{
 		}
 	}
 	
-    
+    public static boolean isStillPlaying() {
+    	return stillPlaying;
+    }
+	
     private gameCondition checkObjective(){
     	
     		if (!hunter.getAlive()){
+    			stillPlaying = false;
     			return gameCondition.LOSE;
     		}
     	
@@ -420,87 +433,102 @@ public class GameMode implements Screen{
 		}
 		//Win
 		if (numPigsCaptured >= numPigs && numWolvesCaptured >= numWolves){
+			stillPlaying = false;
 			return gameCondition.WIN;
 		}
 		//Lose
 
 		if ((numPigsCaptured + numPigsOnMap < numPigs) || 
 			(numWolvesCaptured + numWolvesOnMap < numWolves)){
+			stillPlaying = false;
 			return gameCondition.LOSE;
 		}
+		stillPlaying = true;
 		return gameCondition.IN_PLAY;
 		
 		
 		
     }
+    
+    /*used for uicontroller to draw*/ 
+    public int getRemainingObjectivePigs(){
+    	String[] goals = map.getObjective().split("&");
+		int numPigs = Integer.parseInt(goals[0]);
+		int numPigsCaptured = 0;
+		for (Animal animal : animals){
+			if (animal.getType() == actorType.PIG){
+				if (animal.getTrapped()){
+					numPigsCaptured++;
+					//testSound.play(); 
+				}
+			}
+			
+		}
+		if(numPigsCaptured >= numPigs){
+			return 0;
+		}
+		return numPigs-numPigsCaptured;
+    }
+    
+    /*used for uicontroller to draw*/    
+    public int getRemainingObjectiveWolfs(){
+    	
+		String[] goals = map.getObjective().split("&");
+		int numWolves = Integer.parseInt(goals[1]);
+		int numWolvesCaptured = 0;
+		for (Animal animal : animals){
+			if (animal.getType() == actorType.WOLF){
+				if (animal.getTrapped()){
+					numWolvesCaptured++;
+				}
+			}
+		}
+		if(numWolvesCaptured>=numWolves){
+			return 0;
+		}
+		return numWolves-numWolvesCaptured;
+    }
 
     private void update(float delta){
-    		
     		//Check if reset has been pressed
     		if (controls[0].resetPressed()){
     			//Only allow the player to reset if they last reset over a second ago
     			if (ticks - lastResetTicks > 60){
-    				initializeLevel(canvas, levelName);
-    				lastResetTicks = ticks;
+        			canvas.getUIControllerStage().hideSuccess();
+        			canvas.getUIControllerStage().hideTutorial();
+        			initializeLevel(canvas, levelName);
+        			lastResetTicks = ticks;
     			}
     		}
-    		
-//    		//DELETE THIS FOR RELEASE
-//    		int levelNum = controls[0].levelPressed();
-//    		if (levelNum != -1){
-//    			switch(levelNum){
-//    			case 1: 
-//    				initializeLevel(canvas, "BetaLevel1");
-//    				break;
-//    			case 2:
-//    				initializeLevel(canvas, "BetaLevel2");
-//    				break;
-//    			default:
-//    				initializeLevel(canvas, "BetaLevel3");
-//    				break;
-//    			}
-//    		}
-    		
-
     	
     		//Check the objective every second, end the game if the player has won or if the objective
     		//cannot be achieved
     		if (ticks % 60 == 0){
 	    		gameCondition con = checkObjective();
-	    		if (con == gameCondition.WIN){
-	    			if (levelListIt.hasNext()){
-	    				/*displayFont.setColor(Color.RED);
-	    				canvas.begin(); // DO NOT SCALE
-	    				canvas.drawTextCentered("YOU WON!", displayFont, 0.0f);
-	    				canvas.end();*/
-	    				initializeLevel(canvas, levelListIt.next());
+	    		if (con == gameCondition.WIN) {
+	    			if (delay >= 0.04) {
+		    			if (levelListIt.hasNext()) {
+		    				canvas.getUIControllerStage().hideSuccess();
+		    				initializeLevel(canvas, levelListIt.next());
+		    				delay = 0.0f;
+		    			}
+		    			else {
+		    				//playing = false; 
+		    				//System.out.println("we won, make a loading screen!");
+		    				//root.gameOverScreen();
+		    				//return;
+		    				
+		    			}
 	    			}
 	    			else {
-	    				//playing = false; 
-	    				//System.out.println("we won, make a loading screen!");
-	    				//root.gameOverScreen();
-	    				//return;
-	    				
+	    				delay += delta;
 	    			}
 	    		}
 	    		else if (con == gameCondition.LOSE){
-	    		  System.out.println("You Lost");
-	    			//RESET -- maybe add a timer and some onscreen indication.
-    				if (hunterLife == 0){
-    					/*System.out.println("you lost all 3 lives, make a loading screen!");
-    					playing = false; 
-	    				root.gameOverScreen();*/
-    					
-    					
-    				}
-    				// hunter life > 0 
-    				else {
-    					
-    					initializeLevel(canvas, levelName);
-	    				lastResetTicks = ticks;
-	    				hunterLife --; 
-    				}
-    				
+
+	    		  System.out.println("You Lost");	
+	    		  initializeLevel(canvas, levelName);
+	    		  lastResetTicks = ticks;
 	    		}
     		}
     	
@@ -659,7 +687,7 @@ public class GameMode implements Screen{
         }
 
         for (Animal animal : animals){
-    		if (animal.getFinishedDeatAnimation()==false) {
+          if (animal.getFinishedDeatAnimation()==false) {
         		if(!animal.getTrapped() && animal.getAlive()){
         			animal.drawCone(canvas);
         		}
@@ -701,9 +729,15 @@ public class GameMode implements Screen{
 	} 
     
     public void postDraw(float delta) {
-		if (listener == null) {
-			return;
-		}
+      if (listener == null) {
+        return;
+      }
+		
+      if (controls[0].escPressed()) {
+        canvas.getUIControllerStage().hideSuccess();
+        canvas.getUIControllerStage().hideTutorial();
+        listener.exitScreen(this, 0);
+      }
 
 		
 		// Now it is time to maybe switch screens.

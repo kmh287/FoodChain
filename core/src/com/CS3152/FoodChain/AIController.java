@@ -81,6 +81,8 @@ public class AIController implements InputController {
     protected int turns;
     protected int Wanderturns;
     
+    protected int rabidity;
+    
     // The animal's next move; a ControlCode
     protected Vector2 move;
 
@@ -91,9 +93,13 @@ public class AIController implements InputController {
     protected int patrolTurn;
     
     //this is the delay when animals switch from flee to wander to patrol
-    private int stateDelay = 300;
+    private int stateDelay = 90;
     
-
+    private int rabidLength = 90;
+    
+    //So the owls can add a random angle offset
+    //So that they are not always in phase with each other.
+    private boolean firstUpdate;
 
     private static float panicPercentage;
     private static boolean panicked;
@@ -101,6 +107,8 @@ public class AIController implements InputController {
     
     private Vector2 vect;
     private float angle;
+    private double angleProg;
+    private Random rand;
 
     private Sound sound;
 	/** The associated sound cue (if ship is making a sound). */
@@ -156,6 +164,9 @@ public class AIController implements InputController {
 		WanderStopRate= MathUtils.random(175,225);
 		
 		angle = 0f;
+		angleProg = 0f;
+		firstUpdate = true;
+		rand = new Random();
     }
     
     /*
@@ -325,6 +336,10 @@ public class AIController implements InputController {
       this.turns = turns;
     }
     
+    public void setRabidity(int rabidLength) {
+    	this.rabidity = rabidLength;
+    }
+    
     // Should not be here, but need to finish
     public Vector2 getClickPos() {return new Vector2();}
     
@@ -335,7 +350,7 @@ public class AIController implements InputController {
     public static float getPanicPercentage() {
       return panicPercentage;
     }
-
+    
     public void play(String sound) {
 		if (sndcue != -1) {
 			this.sound.stop(sndcue);
@@ -373,10 +388,33 @@ public class AIController implements InputController {
 		  rayCast();
 	}
 	
+	/**
+	 * Returns the difference in angle for this frame
+	 * This function should simulate periodic movement that 
+	 * accelerates and decelerates. This should only be used
+	 * for calculating the owl's new angle.
+	 * 
+	 * The function it simulates is 
+	 * (Pi/100) * cos(4x) + (Pi/100)
+	 * 
+	 * @param angle : The current angle of the owl 
+	 * @return diff : A float representing the angle change for this frame
+	 */
+	private double getDiff(double angle){
+		return (Math.PI / 100) * Math.cos(4*angle) + (Math.PI/100);
+	}
+	
 	public void update(float delta) {
 		// TODO Auto-generated method stub
 		if (animal instanceof Owl) {
-			angle += Math.PI/100;
+			angleProg = (angleProg > (Math.PI * 2)) ? 0f : angleProg+(Math.PI/120.0);
+			angle += getDiff(angleProg);
+			//If this is the first frame, add a random number to the owl's offset 
+			//To push multiple owls on the same map out of phase
+			if(firstUpdate){
+				angle+= (rand.nextDouble() * 2 * Math.PI);
+				firstUpdate = false;
+			}
 			animal.setAngle(angle);
 			animal.updateLOS(angle);
 			if (hasTarget()) {
@@ -460,7 +498,8 @@ public class AIController implements InputController {
 			    case FLEE:
 			    	//System.out.println(getAnimal() + " is fleeing");
 			        if (canSettle()) {
-			            //animal.setState(State.WANDER);
+			        	setRabidity(0);
+			        	animal.setRabid(rabidity);
 			            animal.setState(State.WANDER);
 			            setAttacker(null);
 			            setTarget(null);
@@ -469,6 +508,15 @@ public class AIController implements InputController {
 			        //if fleeing hunter, then increase panic
 			        if(getTarget() instanceof Hunter){
 				        panicked = true;
+			        }
+			        if(getPanicPercentage() >= .9f) {
+			        	// For Evade
+			        	setRabidity(rabidLength);
+			        	animal.setRabid(rabidity);
+			        }
+			        else {
+			        	rabidity--;
+			        	animal.setRabid(rabidity);
 			        }
 			    	break;
 			    case KILL:
@@ -504,7 +552,7 @@ public class AIController implements InputController {
 				    	  }
 				    }
 			    	else if (canPatrol()) {
-			    	  animal.setState(State.PATROL);
+			    	    animal.setState(State.PATROL);
 			    	}
 			    	break;
 			    case DEAD:
@@ -579,6 +627,12 @@ public class AIController implements InputController {
       }
     }
 	}
+
+  @Override
+  public boolean escPressed() {
+    
+    return false;
+  }
 
 
 //	@Override

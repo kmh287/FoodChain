@@ -8,6 +8,7 @@ import java.util.List;
 import com.badlogic.gdx.ai.pfa.indexed.IndexedAStarPathFinder;
 import com.badlogic.gdx.ai.steer.Steerable;
 import com.badlogic.gdx.ai.steer.behaviors.CollisionAvoidance;
+import com.badlogic.gdx.ai.steer.behaviors.Evade;
 import com.badlogic.gdx.ai.steer.behaviors.Flee;
 import com.badlogic.gdx.ai.steer.behaviors.PrioritySteering;
 import com.badlogic.gdx.ai.steer.behaviors.Wander;
@@ -75,7 +76,7 @@ public class Pig extends Animal {
         GameMode.steerables.toArray(steers);
 
         Array<Steerable<Vector2>> steerArray = new Array<Steerable<Vector2>>(steers); 
-        RadiusProximity<Vector2> proximity = new RadiusProximity<Vector2>(this, steerArray, .0001f);
+        proximity = new RadiusProximity<Vector2>(this, steerArray, .0001f);
         collisionAvoidanceSB = new CollisionAvoidance2<Vector2>(this, proximity);
         LinearAccelerationLimiter limiter = new LinearAccelerationLimiter(maxLinearAcceleration);
         limiter.setMaxLinearAcceleration(maxLinearAcceleration);
@@ -95,6 +96,9 @@ public class Pig extends Animal {
 
         fleeSB = new Flee<Vector2>(this);
         fleeSB.setLimiter(limiter);
+        
+        evadeSB = new Evade<Vector2>(this, null);
+        evadeSB.setLimiter(limiter);
     }
 
     /* (non-Javadoc)
@@ -134,6 +138,7 @@ public class Pig extends Animal {
     @Override
     public void setTarget(Actor actor) {
         ((Flee<Vector2>) fleeSB).setTarget(actor);
+        ((Evade<Vector2>) evadeSB).setTarget(actor);
     }
     
     public void updateWalkFrame(){
