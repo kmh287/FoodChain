@@ -86,6 +86,9 @@ public class PlayerController implements InputController{
 	} 
 	
 	public boolean isTrapSetPressed(){
+		if (!GameMode.isStillPlaying()) {
+			return false;
+		}
 		return Gdx.input.isKeyPressed(Input.Keys.J); 
 	}
 	
@@ -99,6 +102,10 @@ public class PlayerController implements InputController{
 	
 	public boolean resetPressed(){
 		return Gdx.input.isKeyPressed(Input.Keys.R);
+	}
+	
+	public boolean escPressed() {
+	  return Gdx.input.isKeyPressed(Input.Keys.ESCAPE);
 	}
 	
 	public static boolean didExit() {

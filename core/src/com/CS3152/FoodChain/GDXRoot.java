@@ -79,6 +79,7 @@ public class GDXRoot extends Game implements ScreenListener {
 		levelList.add("tutorial1");
 		levelList.add("tutorial2");
 		levelList.add("tutorial3");
+		levelList.add("Juice");
 		levelList.add("HideAndSeek");
 		levelList.add("Cycle2");
 		levelList.add("earthAndWater");
@@ -86,6 +87,7 @@ public class GDXRoot extends Game implements ScreenListener {
 		levelList.add("lakes");
 		levelList.add("Maize");
 		levelList.add("Roundabout");
+
 		//1 levels
 		/*levelList1.add("tutorial1");
 		levelList1.add("tutorial2");
@@ -186,7 +188,9 @@ public class GDXRoot extends Game implements ScreenListener {
 		if (exitCode != 0) {
 			Gdx.app.error("GDXRoot", "Exit with error code "+exitCode, new RuntimeException());
 			Gdx.app.exit();
-		} else if (screen == loading) {
+		}
+		
+		else if (screen == loading) {
 			List<String> levels = buildLevels();
 			GameMode.LoadContent(manager);
 			playing = new GameMode(canvas, levels, level, this);
@@ -197,6 +201,16 @@ public class GDXRoot extends Game implements ScreenListener {
 			//loading.dispose();
 			loading = null;
 		}
+		
+		else if (screen == playing) {
+		  loading = new LoadingMode(canvas, manager);
+		  loading.setScreenListener(this);
+		  setScreen(loading);
+		  
+		  playing.dispose();
+		  playing = null;
+		}
+		
 		/*loss
 		else if (exitCode == 3) {
 			//LoadingMode.loadContent(manager);
@@ -232,6 +246,8 @@ public class GDXRoot extends Game implements ScreenListener {
 		/*this will never be called.*/
 		if (screen == loading) {
 			GameMode.LoadContent(manager);
+			List<String> levels = buildLevels();
+			playing = new GameMode(canvas, levels, 0, this);
 			//playing = new GameMode(canvas);
 			
 			playing.setScreenListener(this);
@@ -240,6 +256,15 @@ public class GDXRoot extends Game implements ScreenListener {
 			loading.dispose();
 			loading = null;
 		}
+		
+		else if (screen == playing) {
+		  loading = new LoadingMode(canvas, manager);
+      loading.setScreenListener(this);
+      setScreen(loading);
+      
+      playing.dispose();
+      playing = null;
+    }
 		/*
 		else if (exitCode == 3) {
 			loading_after = new LoadingMode(canvas,manager,1);

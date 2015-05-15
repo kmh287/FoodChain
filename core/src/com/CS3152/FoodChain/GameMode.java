@@ -65,6 +65,8 @@ public class GameMode implements Screen{
 	private int numPigs;
 	private int numWolves;
 	
+	private static boolean stillPlaying = true;
+	
 	private boolean start;
 
     protected InputController[] controls;
@@ -210,8 +212,8 @@ public class GameMode implements Screen{
         //For now we will hard code the level to load
         //When we implement a UI that may ask players
         //what level to start on. This code will change
- 		playing = true;
- 		this.levelName = levelName;
+ 		 playing = true;
+ 		 this.levelName = levelName;
         map = loadMap(levelName);
         map.setDimensions();
         map.createGraph();
@@ -394,10 +396,14 @@ public class GameMode implements Screen{
 		}
 	}
 	
-    
+    public static boolean isStillPlaying() {
+    	return stillPlaying;
+    }
+	
     private gameCondition checkObjective(){
     	
     		if (!hunter.getAlive()){
+    			stillPlaying = false;
     			return gameCondition.LOSE;
     		}
     	
@@ -427,14 +433,17 @@ public class GameMode implements Screen{
 		}
 		//Win
 		if (numPigsCaptured >= numPigs && numWolvesCaptured >= numWolves){
+			stillPlaying = false;
 			return gameCondition.WIN;
 		}
 		//Lose
 
 		if ((numPigsCaptured + numPigsOnMap < numPigs) || 
 			(numWolvesCaptured + numWolvesOnMap < numWolves)){
+			stillPlaying = false;
 			return gameCondition.LOSE;
 		}
+		stillPlaying = true;
 		return gameCondition.IN_PLAY;
 		
 		
@@ -484,12 +493,12 @@ public class GameMode implements Screen{
     		//Check if reset has been pressed
     		if (controls[0].resetPressed()){
     			//Only allow the player to reset if they last reset over a second ago
-    			if (ticks - lastResetTicks > 60){
+    			//if (ticks - lastResetTicks > 60){
         			canvas.getUIControllerStage().hideSuccess();
         			canvas.getUIControllerStage().hideTutorial();
-    				initializeLevel(canvas, levelName);
-    				lastResetTicks = ticks;
-    			}
+        			initializeLevel(canvas, levelName);
+        			lastResetTicks = ticks;
+    			//}
     		}
     	
     		//Check the objective every second, end the game if the player has won or if the objective
@@ -719,9 +728,15 @@ public class GameMode implements Screen{
 	} 
     
     public void postDraw(float delta) {
-		if (listener == null) {
-			return;
-		}
+      if (listener == null) {
+        return;
+      }
+		
+      if (controls[0].escPressed()) {
+        canvas.getUIControllerStage().hideSuccess();
+        canvas.getUIControllerStage().hideTutorial();
+        listener.exitScreen(this, 0);
+      }
 
 		
 		// Now it is time to maybe switch screens.
