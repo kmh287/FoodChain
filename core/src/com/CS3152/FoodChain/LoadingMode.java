@@ -214,7 +214,7 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
 		table = new Table();//.debug();
     h = new HorizontalGroup().space(50).pad(5).fill();
     
-    for (int i = 10; i <= 18; i++) {
+    for (int i = 10; i < 18; i++) {
       TextButton t = new TextButton(Integer.toString(i), buttonStyle);
       t.setName(Integer.toString(i));
       t.addListener(new ChangeListener() {
@@ -231,29 +231,6 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
     table.add(h);
     table.pack();
     table.setPosition(70, 275);
-    stage.addActor(table);
-    table.toFront();
-    
-    table = new Table();//.debug();
-    h = new HorizontalGroup().space(50).pad(5).fill();
-    
-    for (int i = 19; i <= 27; i++) {
-      TextButton t = new TextButton(Integer.toString(i), buttonStyle);
-      t.setName(Integer.toString(i));
-      t.addListener(new ChangeListener() {
-
-        @Override
-        public void changed(ChangeEvent event, Actor actor) {
-          LoadingMode.selectedLevel = Integer.parseInt(actor.getName());
-          System.out.println(actor.getName());
-        }
-      });
-      h.addActor(t);
-    }
-    
-    table.add(h);
-    table.pack();
-    table.setPosition(70, 125);
     stage.addActor(table);
     table.toFront();
 
