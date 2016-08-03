@@ -1,0 +1,6 @@
+{
+   "jar": "FoodChain.jar",
+   "mainClass": "com/CS3152/FoodChain/desktop/DesktopLauncher",
+   "vmArgs": [
+      "-Xmx1G"
+   ]}
